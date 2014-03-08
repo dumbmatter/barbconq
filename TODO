@@ -1,0 +1,12 @@
+2d UI in HTML5
+  read about how to do this, in general
+  take inspiration from civ5 2d mode
+  how to make it wrap at sides?
+
+Base object types:
+  map (only one of these, containing tile properties at each coordinate)
+  unit (each civ can have many of these, and there are many different types)
+  city (each civ can have many of these)
+
+Data
+  keep it all in memory. write to indexeddb every turn
