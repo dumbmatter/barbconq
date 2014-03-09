@@ -2,6 +2,22 @@
   read about how to do this, in general
   take inspiration from civ5 2d mode
   how to make it wrap at sides?
+  libraries
+    threejs?
+      frustrum culling http://www.html5gamedevs.com/topic/930-best-practice-for-large-2d-world-in-threejs/
+    pixi.js?
+    IvanK?
+      http://p.brm.sk/being/
+
+For some reason, I feel the desire to try making a TypeScript-based Civilization-type game. My main problem is I have no idea how to do the UI. The core of it is a large grid map with the following properties:
+
+* Can contain units or other things on top of the tiles
+* Can easily zoom in/out
+* Can easily pan around
+* Wraps around the sides as you pan
+
+I guess it should use the <canvas> element. But is there any library on top of that which will make my life easier? Some Googling didn't seem to turn up anything promising. I don't really care about it being a beautiful or perfect UI since I mainly want to hack on the backend of the game at first, but I'd really like to have at least some semi-reasonable UI.
+
 
 Base object types:
   map (only one of these, containing tile properties at each coordinate)
