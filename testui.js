@@ -60,6 +60,13 @@ function setCanvasSize() {
 }
 setCanvasSize();
 
+function goToCoords(i, j) {
+    // ith row, jth column, 0 indexed
+    playerX = i * TILES_IN_A_LINE + TILE_SIZE / 2;
+    playerY = j * TILES_IN_A_LINE + TILE_SIZE / 2;
+    requestAnimationFrame(onEnterFrame);
+}
+
 function onEnterFrame() {
     if (keysPressed[RIGHT_KEY_CODE]) playerX = playerX + 20;
     if (keysPressed[LEFT_KEY_CODE]) playerX = playerX - 20;
@@ -91,6 +98,12 @@ function onEnterFrame() {
         //playerX += 20;
         //return;
     }
+
+    // Recalculate
+    var top = playerY - VIEW_HEIGHT/2;
+    var right = playerX + VIEW_WIDTH/2;
+    var bottom = playerY + VIEW_HEIGHT/2;
+    var left = playerX - VIEW_WIDTH/2;
 
     var leftTile = Math.floor ( left / TILE_SIZE );
     var topTile = Math.floor ( top / TILE_SIZE );
