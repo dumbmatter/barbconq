@@ -23,11 +23,6 @@ var TILE_SIZE = 50;
 var WORLD_SIZE = 2000;
 var TILES_IN_A_LINE = Math.floor ( WORLD_SIZE/TILE_SIZE );
 
-var VIEW_WIDTH = canvas.width;
-var VIEW_HEIGHT = canvas.height;
-var VIEW_TILE_WIDTH = Math.floor ( VIEW_WIDTH / TILE_SIZE ) + 2;
-var VIEW_TILE_HEIGHT = Math.floor ( VIEW_HEIGHT / TILE_SIZE ) + 2;
-
 //INITIALIZATION
 var keysPressed = {};
 keysPressed[RIGHT_KEY_CODE] = false;
@@ -54,11 +49,22 @@ document.addEventListener ( 'keyup', keyUp, false );
 //setInterval ( onEnterFrame, 1000 / 30 ); //30 FPS
 requestAnimationFrame(onEnterFrame);
 
-    function onEnterFrame() {
-        if (keysPressed[RIGHT_KEY_CODE]) playerX = playerX + 20;
-        if (keysPressed[LEFT_KEY_CODE]) playerX = playerX - 20;
-        if (keysPressed[UP_KEY_CODE]) playerY = playerY - 20;
-        if (keysPressed[DOWN_KEY_CODE]) playerY = playerY + 20; 
+var VIEW_HEIGHT, VIEW_TILE_HEIGHT, VIEW_TILE_WIDTH, VIEW_WIDTH;
+function setCanvasSize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    VIEW_WIDTH = canvas.width;
+    VIEW_HEIGHT = canvas.height;
+    VIEW_TILE_WIDTH = Math.floor ( VIEW_WIDTH / TILE_SIZE ) + 2;
+    VIEW_TILE_HEIGHT = Math.floor ( VIEW_HEIGHT / TILE_SIZE ) + 2;
+}
+setCanvasSize();
+
+function onEnterFrame() {
+    if (keysPressed[RIGHT_KEY_CODE]) playerX = playerX + 20;
+    if (keysPressed[LEFT_KEY_CODE]) playerX = playerX - 20;
+    if (keysPressed[UP_KEY_CODE]) playerY = playerY - 20;
+    if (keysPressed[DOWN_KEY_CODE]) playerY = playerY + 20; 
     
     var top = playerY - VIEW_HEIGHT/2;
     var right = playerX + VIEW_WIDTH/2;
@@ -121,3 +127,9 @@ function keyUp(e) {
     requestAnimationFrame(onEnterFrame);
 }
 
+window.addEventListener("resize", function () {
+    requestAnimationFrame(function () {
+        setCanvasSize();
+        onEnterFrame();
+    });
+});
