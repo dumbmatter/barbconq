@@ -8,6 +8,9 @@
     pixi.js?
     IvanK?
       http://p.brm.sk/being/
+    http://www.reddit.com/r/html5/comments/1zw8yl/canvas_newb_seeking_some_pointers_about_making_a/
+    PROBABLY BEST:
+      either threejs or raw webgl. try threejs first, looks easier
 
 For some reason, I feel the desire to try making a TypeScript-based Civilization-type game. My main problem is I have no idea how to do the UI. The core of it is a large grid map with the following properties:
 
