@@ -129,6 +129,10 @@ function onEnterFrame() {
                 var tileColor = tileGrid[leftTile+x][topTile+y];
                 context.fillStyle = TILE_COLORS[tileColor];
                 context.fillRect ( x * TILE_SIZE - tileOffsetX, y * TILE_SIZE - tileOffsetY, TILE_SIZE, TILE_SIZE );
+
+                // Grid lines
+                context.strokeStyle = "#000";
+                context.strokeRect ( x * TILE_SIZE - tileOffsetX, y * TILE_SIZE - tileOffsetY, TILE_SIZE, TILE_SIZE );
             }
         }
     }
