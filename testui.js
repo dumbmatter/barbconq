@@ -72,20 +72,24 @@ function onEnterFrame() {
     var left = playerX - VIEW_WIDTH/2;
 
     if (top < -TILE_SIZE) {
-        playerY += 20;
-        return;
+        playerY = VIEW_HEIGHT / 2 - TILE_SIZE;
+        //playerY += 20;
+        //return;
     }
     if (right > WORLD_SIZE + TILE_SIZE) {
-        playerX -= 20;
-        return;
+        playerX = WORLD_SIZE + TILE_SIZE - VIEW_WIDTH / 2;
+        //playerX -= 20;
+        //return;
     }
     if (bottom > WORLD_SIZE + TILE_SIZE) {
-        playerY -= 20;
-        return;
+        playerY = WORLD_SIZE + TILE_SIZE - VIEW_HEIGHT / 2;
+        //playerY -= 20;
+        //return;
     }
     if (left < -TILE_SIZE) {
-        playerX += 20;
-        return;
+        playerX = VIEW_WIDTH / 2 - TILE_SIZE;
+        //playerX += 20;
+        //return;
     }
 
     var leftTile = Math.floor ( left / TILE_SIZE );
