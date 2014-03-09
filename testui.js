@@ -2,6 +2,8 @@
 
 //DOM
 var canvas = document.getElementById ( 'canvas' );
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 var context = canvas.getContext ( '2d' );
 
 //CONSTS
@@ -18,11 +20,11 @@ var NUM_TILE_TYPES = 4;
 var TILE_COLORS = [ '#0000DD', '#00CC00', '#AAAAAA', '#773300' ];
 
 var TILE_SIZE = 50;
-var WORLD_SIZE = 1000;
+var WORLD_SIZE = 2000;
 var TILES_IN_A_LINE = Math.floor ( WORLD_SIZE/TILE_SIZE );
 
-var VIEW_WIDTH = 480;
-var VIEW_HEIGHT = 480;
+var VIEW_WIDTH = canvas.width;
+var VIEW_HEIGHT = canvas.height;
 var VIEW_TILE_WIDTH = Math.floor ( VIEW_WIDTH / TILE_SIZE ) + 2;
 var VIEW_TILE_HEIGHT = Math.floor ( VIEW_HEIGHT / TILE_SIZE ) + 2;
 
@@ -107,12 +109,6 @@ requestAnimationFrame(onEnterFrame);
             }
         }
     }
-    
-    context.fillStyle = '#000000';
-    context.fillRect ( VIEW_WIDTH/2 - 10, VIEW_HEIGHT/2 - 10, 20, 20 );
-    context.fillStyle = '#FFFFFF';
-    context.fillRect ( VIEW_WIDTH/2 - 7, VIEW_HEIGHT/2 - 7, 14, 14);    
-
 }
 
 function keyDown(e) {
