@@ -133,6 +133,10 @@ function onEnterFrame() {
                 // Grid lines
                 context.strokeStyle = "#000";
                 context.strokeRect ( x * TILE_SIZE - tileOffsetX, y * TILE_SIZE - tileOffsetY, TILE_SIZE, TILE_SIZE );
+
+                context.fillStyle = "#fff";
+                context.textBaseline = "top";
+                context.fillText("text", x * TILE_SIZE - tileOffsetX + 2, y * TILE_SIZE - tileOffsetY);
             }
         }
     }
