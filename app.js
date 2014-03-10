@@ -22,6 +22,27 @@ ui.keysPressed[ui.KEYS.DOWN] = false;
 ui.X = ui.WORLD_SIZE / 2;
 ui.Y = ui.WORLD_SIZE / 2;
 
+ui.terrainColors = {
+    peak: "#000",
+    snow: "#fff",
+    desert: "#f1eabd",
+    tundra: "#ddd",
+    sea: "#00f",
+    coast: "#7c7cff",
+    grassland: "#070",
+    plains: "#fd0"
+};
+ui.terrainFontColors = {
+    peak: "#fff",
+    snow: "#000",
+    desert: "#000",
+    tundra: "#000",
+    sea: "#fff",
+    coast: "#000",
+    grassland: "#fff",
+    plains: "#000"
+};
+
 function choice(x) {
     return x[Math.floor(Math.random() * x.length)];
 }
@@ -40,6 +61,24 @@ function initMapDisplay() {
     ui.canvas.width = window.innerWidth;
     ui.canvas.height = window.innerHeight;
     ui.context = ui.canvas.getContext("2d");
+
+    // Handle hover
+    ui.canvas.onmousemove = function (e) {
+        var i, j, left, top;
+
+        // Top left coordinate in pixels, relative to the whole map
+        top = ui.Y - ui.VIEW_HEIGHT / 2;
+        left = ui.X - ui.VIEW_WIDTH / 2;
+
+        // Coordinates in tiles
+        i = Math.floor((top + e.y) / ui.TILE_SIZE);
+        j = Math.floor((left + e.x) / ui.TILE_SIZE);
+
+        console.log([top, left]);
+        console.log([top + e.y, left + e.x]);
+        console.log([i, j]);
+        console.log(game.map.tiles[i][j]);
+    };
 
     // Handle key presses
     document.addEventListener("keydown", function (e) {
@@ -73,25 +112,8 @@ function goToCoords(i, j) {
     window.requestAnimationFrame(render);
 }
 
-/*function updateMapDisplay(map : Mapp) {
-var i, j, tile, world;
-world = document.getElementById("world");
-world.style.width = (map.width * 103) + "px";
-world.style.height = (map.height * 104) + "px";
-for (i = 0; i < map.tiles[0].length; i++) {
-for (j = 0; j < map.tiles.length; j++) {
-tile = document.createElement("div");
-tile.classList.add("tile");
-if (j === 0) {
-tile.classList.add("new-row");
-}
-tile.innerHTML = map.tiles[i][j].terrain + "<br>" + map.tiles[i][j].features.join(" ");
-world.appendChild(tile);
-}
-}
-}*/
 function render() {
-    var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
+    var bottom, i, j, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
 
     // Has there been movement?
     if (ui.keysPressed[ui.KEYS.RIGHT]) {
@@ -149,14 +171,40 @@ function render() {
         tileOffsetX += ui.TILE_SIZE;
     }
 
+    /*function updateMapDisplay(map : Mapp) {
+    var i, j, tile, world;
+    
+    world = document.getElementById("world");
+    world.style.width = (map.width * 103) + "px";
+    world.style.height = (map.height * 104) + "px";
+    
+    for (i = 0; i < map.tiles[0].length; i++) {
+    for (j = 0; j < map.tiles.length; j++) {
+    tile = document.createElement("div");
+    
+    tile.classList.add("tile");
+    if (j === 0) {
+    tile.classList.add("new-row");
+    }
+    
+    tile.innerHTML = map.tiles[i][j].terrain + "<br>" + map.tiles[i][j].features.join(" ");
+    
+    world.appendChild(tile);
+    }
+    }
+    }*/
     // Clear canvas and redraw everything in view
     ui.context.clearRect(0, 0, ui.canvas.width, ui.canvas.height);
     for (x = 0; x < ui.VIEW_TILE_WIDTH; x++) {
         for (y = 0; y < ui.VIEW_TILE_HEIGHT; y++) {
+            // Coordinates in the map
+            i = topTile + y;
+            j = leftTile + x;
+
             // The "if" restricts this to only draw tiles that are in view
-            if (leftTile + x >= 0 && topTile + y >= 0 && leftTile + x < ui.TILES_IN_A_LINE && topTile + y < ui.TILES_IN_A_LINE) {
+            if (i >= 0 && j >= 0 && i < ui.TILES_IN_A_LINE && j < ui.TILES_IN_A_LINE) {
                 // Background
-                ui.context.fillStyle = "#aaa";
+                ui.context.fillStyle = ui.terrainColors[game.map.tiles[i][j].terrain];
                 ui.context.fillRect(x * ui.TILE_SIZE - tileOffsetX, y * ui.TILE_SIZE - tileOffsetY, ui.TILE_SIZE, ui.TILE_SIZE);
 
                 // Grid lines
@@ -164,17 +212,15 @@ function render() {
                 ui.context.strokeRect(x * ui.TILE_SIZE - tileOffsetX, y * ui.TILE_SIZE - tileOffsetY, ui.TILE_SIZE, ui.TILE_SIZE);
 
                 // Text
-                ui.context.fillStyle = "#fff";
+                ui.context.fillStyle = ui.terrainFontColors[game.map.tiles[i][j].terrain];
                 ui.context.textBaseline = "top";
-                ui.context.fillText("text", x * ui.TILE_SIZE - tileOffsetX + 2, y * ui.TILE_SIZE - tileOffsetY);
+                ui.context.fillText(game.map.tiles[i][j].terrain, x * ui.TILE_SIZE - tileOffsetX + 2, y * ui.TILE_SIZE - tileOffsetY);
             }
         }
     }
 }
 
 function genMap(width, height) {
-    if (typeof width === "undefined") { width = 2; }
-    if (typeof height === "undefined") { height = 2; }
     var i, j, map, types;
 
     map = {};
@@ -209,7 +255,7 @@ function genMap(width, height) {
     return map;
 }
 
-game.map = genMap();
+game.map = genMap(ui.TILES_IN_A_LINE, ui.TILES_IN_A_LINE);
 
 initMapDisplay();
 window.requestAnimationFrame(render);

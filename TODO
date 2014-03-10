@@ -1,5 +1,6 @@
 testui canvas
-  link up to backend code
+  hover
+    in/out updating, not every pixel move
   modularize
 
 2d UI in HTML5

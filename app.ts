@@ -8,6 +8,8 @@ interface UI {
     WORLD_SIZE : number;
     TILES_IN_A_LINE : number;
     KEYS : any;
+    terrainColors: any;
+    terrainFontColors: any;
 
     // Input
     keysPressed : any;
@@ -48,6 +50,27 @@ ui.keysPressed[ui.KEYS.DOWN] = false;
 ui.X = ui.WORLD_SIZE / 2;
 ui.Y = ui.WORLD_SIZE / 2;
 
+ui.terrainColors = {
+    peak: "#000",
+    snow: "#fff",
+    desert: "#f1eabd",
+    tundra: "#ddd",
+    sea: "#00f",
+    coast: "#7c7cff",
+    grassland: "#070",
+    plains: "#fd0"
+}
+ui.terrainFontColors = {
+    peak: "#fff",
+    snow: "#000",
+    desert: "#000",
+    tundra: "#000",
+    sea: "#fff",
+    coast: "#000",
+    grassland: "#fff",
+    plains: "#000"
+}
+
 function choice(x : any[]) {
     return x[Math.floor(Math.random() * x.length)];
 }
@@ -66,6 +89,24 @@ function initMapDisplay() {
     ui.canvas.width = window.innerWidth;
     ui.canvas.height = window.innerHeight;
     ui.context = ui.canvas.getContext("2d");
+
+    // Handle hover
+    ui.canvas.onmousemove = function(e) {
+        var i, j, left, top;
+
+        // Top left coordinate in pixels, relative to the whole map
+        top = ui.Y - ui.VIEW_HEIGHT / 2;
+        left = ui.X - ui.VIEW_WIDTH / 2;
+
+        // Coordinates in tiles
+        i = Math.floor((top + e.y) / ui.TILE_SIZE);
+        j = Math.floor((left + e.x) / ui.TILE_SIZE);
+
+console.log([top, left])
+console.log([top + e.y, left + e.x])
+console.log([i, j])
+console.log(game.map.tiles[i][j])
+    };
 
     // Handle key presses
     document.addEventListener("keydown", function (e) {
@@ -99,6 +140,65 @@ function goToCoords(i, j) {
     window.requestAnimationFrame(render);
 }
 
+function render() {
+    var bottom, i, j, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
+
+    // Has there been movement?
+    if (ui.keysPressed[ui.KEYS.RIGHT]) {
+        ui.X = ui.X + 20;
+    }
+    if (ui.keysPressed[ui.KEYS.LEFT]) {
+        ui.X = ui.X - 20;
+    }
+    if (ui.keysPressed[ui.KEYS.UP]) {
+        ui.Y = ui.Y - 20;
+    }
+    if (ui.keysPressed[ui.KEYS.DOWN]) {
+        ui.Y = ui.Y + 20;
+    }
+
+    // Check the bounds for the view
+    top = ui.Y - ui.VIEW_HEIGHT / 2;
+    right = ui.X + ui.VIEW_WIDTH / 2;
+    bottom = ui.Y + ui.VIEW_HEIGHT / 2;
+    left = ui.X - ui.VIEW_WIDTH / 2;
+
+    // Adjust position if hitting the boundary
+    if (top < -ui.TILE_SIZE) {
+        ui.Y = ui.VIEW_HEIGHT / 2 - ui.TILE_SIZE;
+    }
+    if (right > ui.WORLD_SIZE + ui.TILE_SIZE) {
+        ui.X = ui.WORLD_SIZE + ui.TILE_SIZE - ui.VIEW_WIDTH / 2;
+    }
+    if (bottom > ui.WORLD_SIZE + ui.TILE_SIZE) {
+        ui.Y = ui.WORLD_SIZE + ui.TILE_SIZE - ui.VIEW_HEIGHT / 2;
+    }
+    if (left < -ui.TILE_SIZE) {
+        ui.X = ui.VIEW_WIDTH / 2 - ui.TILE_SIZE;
+    }
+
+    // Recalculate bounds after adjustments
+    top = ui.Y - ui.VIEW_HEIGHT / 2;
+    right = ui.X + ui.VIEW_WIDTH / 2;
+    bottom = ui.Y + ui.VIEW_HEIGHT / 2;
+    left = ui.X - ui.VIEW_WIDTH / 2;
+
+    // Find top left coordinates
+    leftTile = Math.floor(left / ui.TILE_SIZE);
+    topTile = Math.floor(top / ui.TILE_SIZE);
+
+    // Offsets for showing partial tiles
+    tileOffsetX = left % ui.TILE_SIZE;
+    tileOffsetY = top % ui.TILE_SIZE;
+
+    // Fix top and left limits (don't really understand this)
+    if (tileOffsetY < 0) {
+        tileOffsetY += ui.TILE_SIZE;
+    }
+    if (tileOffsetX < 0) {
+        tileOffsetX += ui.TILE_SIZE;
+    }
+
 /*function updateMapDisplay(map : Mapp) {
     var i, j, tile, world;
 
@@ -121,74 +221,18 @@ function goToCoords(i, j) {
         }
     }
 }*/
-
-function render() {
-    var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
-
-    // Has there been movement?
-    if (ui.keysPressed[ui.KEYS.RIGHT]) {
-        ui.X = ui.X + 20;
-    }
-    if (ui.keysPressed[ui.KEYS.LEFT]) {
-        ui.X = ui.X - 20;
-    }
-    if (ui.keysPressed[ui.KEYS.UP]) {
-        ui.Y = ui.Y - 20;
-    }
-    if (ui.keysPressed[ui.KEYS.DOWN]) {
-        ui.Y = ui.Y + 20;
-    }
-
-    // Check the bounds for the view
-    top = ui.Y - ui.VIEW_HEIGHT/2;
-    right = ui.X + ui.VIEW_WIDTH/2;
-    bottom = ui.Y + ui.VIEW_HEIGHT/2;
-    left = ui.X - ui.VIEW_WIDTH/2;
-
-    // Adjust position if hitting the boundary
-    if (top < -ui.TILE_SIZE) {
-        ui.Y = ui.VIEW_HEIGHT / 2 - ui.TILE_SIZE;
-    }
-    if (right > ui.WORLD_SIZE + ui.TILE_SIZE) {
-        ui.X = ui.WORLD_SIZE + ui.TILE_SIZE - ui.VIEW_WIDTH / 2;
-    }
-    if (bottom > ui.WORLD_SIZE + ui.TILE_SIZE) {
-        ui.Y = ui.WORLD_SIZE + ui.TILE_SIZE - ui.VIEW_HEIGHT / 2;
-    }
-    if (left < -ui.TILE_SIZE) {
-        ui.X = ui.VIEW_WIDTH / 2 - ui.TILE_SIZE;
-    }
-
-    // Recalculate bounds after adjustments
-    top = ui.Y - ui.VIEW_HEIGHT/2;
-    right = ui.X + ui.VIEW_WIDTH/2;
-    bottom = ui.Y + ui.VIEW_HEIGHT/2;
-    left = ui.X - ui.VIEW_WIDTH/2;
-
-    // Find top left coordinates
-    leftTile = Math.floor(left / ui.TILE_SIZE);
-    topTile = Math.floor(top / ui.TILE_SIZE);
-
-    // Offsets for showing partial tiles
-    tileOffsetX = left % ui.TILE_SIZE;
-    tileOffsetY = top % ui.TILE_SIZE;
-
-    // Fix top and left limits (don't really understand this)
-    if (tileOffsetY < 0) {
-        tileOffsetY += ui.TILE_SIZE;
-    }
-    if (tileOffsetX < 0) {
-        tileOffsetX += ui.TILE_SIZE;
-    }
-    
     // Clear canvas and redraw everything in view
     ui.context.clearRect(0, 0, ui.canvas.width, ui.canvas.height);
     for (x = 0; x < ui.VIEW_TILE_WIDTH; x++) {
         for (y = 0; y < ui.VIEW_TILE_HEIGHT; y++) {
+            // Coordinates in the map
+            i = topTile + y;
+            j = leftTile + x;
+
             // The "if" restricts this to only draw tiles that are in view
-            if (leftTile + x >= 0 && topTile + y >= 0 && leftTile + x < ui.TILES_IN_A_LINE && topTile + y < ui.TILES_IN_A_LINE) {
+            if (i >= 0 && j >= 0 && i < ui.TILES_IN_A_LINE && j < ui.TILES_IN_A_LINE) {
                 // Background
-                ui.context.fillStyle = "#aaa";
+                ui.context.fillStyle = ui.terrainColors[game.map.tiles[i][j].terrain];
                 ui.context.fillRect(x * ui.TILE_SIZE - tileOffsetX, y * ui.TILE_SIZE - tileOffsetY, ui.TILE_SIZE, ui.TILE_SIZE);
 
                 // Grid lines
@@ -196,9 +240,9 @@ function render() {
                 ui.context.strokeRect(x * ui.TILE_SIZE - tileOffsetX, y * ui.TILE_SIZE - tileOffsetY, ui.TILE_SIZE, ui.TILE_SIZE);
 
                 // Text
-                ui.context.fillStyle = "#fff";
+                ui.context.fillStyle = ui.terrainFontColors[game.map.tiles[i][j].terrain];
                 ui.context.textBaseline = "top";
-                ui.context.fillText("text", x * ui.TILE_SIZE - tileOffsetX + 2, y * ui.TILE_SIZE - tileOffsetY);
+                ui.context.fillText(game.map.tiles[i][j].terrain, x * ui.TILE_SIZE - tileOffsetX + 2, y * ui.TILE_SIZE - tileOffsetY);
             }
         }
     }
