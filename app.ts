@@ -175,17 +175,17 @@ function render() {
     left = ui.X - ui.VIEW_WIDTH / 2;
 
     // Adjust position if hitting the boundary
-    if (top < -ui.TILE_SIZE) {
-        ui.Y = ui.VIEW_HEIGHT / 2 - ui.TILE_SIZE;
+    if (top < -ui.VIEW_HEIGHT / 2) {
+        ui.Y = 0;
     }
-    if (right > ui.WORLD_SIZE + ui.TILE_SIZE) {
-        ui.X = ui.WORLD_SIZE + ui.TILE_SIZE - ui.VIEW_WIDTH / 2;
+    if (right > ui.WORLD_SIZE + ui.VIEW_WIDTH / 2) {
+        ui.X = ui.WORLD_SIZE;
     }
-    if (bottom > ui.WORLD_SIZE + ui.TILE_SIZE) {
-        ui.Y = ui.WORLD_SIZE + ui.TILE_SIZE - ui.VIEW_HEIGHT / 2;
+    if (bottom > ui.WORLD_SIZE + ui.VIEW_HEIGHT / 2) {
+        ui.Y = ui.WORLD_SIZE;
     }
-    if (left < -ui.TILE_SIZE) {
-        ui.X = ui.VIEW_WIDTH / 2 - ui.TILE_SIZE;
+    if (left < -ui.VIEW_WIDTH / 2) {
+        ui.X = 0;
     }
 
     // Recalculate bounds after adjustments
