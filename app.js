@@ -7,10 +7,10 @@ ui.TILES_IN_A_LINE = Math.floor(ui.WORLD_SIZE / ui.TILE_SIZE);
 
 // Keyboard shortcuts
 ui.KEYS = {
-    UP: 87,
-    RIGHT: 68,
-    DOWN: 83,
-    LEFT: 65
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
+    LEFT: 37
 };
 ui.keysPressed = {};
 ui.keysPressed[ui.KEYS.RIGHT] = false;
@@ -57,13 +57,17 @@ function setCanvasSize() {
 }
 
 function initMapDisplay() {
+    var elTileInfo;
+
     ui.canvas = document.getElementById("canvas");
     ui.canvas.width = window.innerWidth;
     ui.canvas.height = window.innerHeight;
     ui.context = ui.canvas.getContext("2d");
 
     // Handle hover
-    ui.canvas.onmousemove = function (e) {
+    elTileInfo = document.getElementById("tile-info");
+    ui.hoveredTile = [-1, -1];
+    ui.canvas.addEventListener("mousemove", function (e) {
         var i, j, left, top;
 
         // Top left coordinate in pixels, relative to the whole map
@@ -74,11 +78,17 @@ function initMapDisplay() {
         i = Math.floor((top + e.y) / ui.TILE_SIZE);
         j = Math.floor((left + e.x) / ui.TILE_SIZE);
 
-        console.log([top, left]);
-        console.log([top + e.y, left + e.x]);
-        console.log([i, j]);
-        console.log(game.map.tiles[i][j]);
-    };
+        if ((i !== ui.hoveredTile[0] || j !== ui.hoveredTile[1]) && i > 0 && j > 0 && i < ui.TILES_IN_A_LINE && j < ui.TILES_IN_A_LINE) {
+            ui.hoveredTile = [i, j];
+
+            // Show tile info
+            elTileInfo.innerHTML = game.map.tiles[i][j].features.join("/") + (game.map.tiles[i][j].features.length ? "/" : "") + game.map.tiles[i][j].terrain;
+            elTileInfo.style.display = "block";
+        }
+    });
+    ui.canvas.addEventListener("mouseout", function (e) {
+        elTileInfo.style.display = "none";
+    });
 
     // Handle key presses
     document.addEventListener("keydown", function (e) {
@@ -246,7 +256,7 @@ function genMap(width, height) {
             map.tiles[i][j] = {};
             map.tiles[i][j].terrain = choice(Object.keys(types));
             map.tiles[i][j].features = [];
-            if (Math.random() < 0.5) {
+            if (Math.random() < 0.5 && types[map.tiles[i][j].terrain].length > 0) {
                 map.tiles[i][j].features.push(choice(types[map.tiles[i][j].terrain]));
             }
         }
