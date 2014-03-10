@@ -225,7 +225,7 @@ class MapUI {
 }
 
 var game : Game = <any>{};
-var ui = new MapUI();
+var mapUI = new MapUI();
 
 function choice(x : any[]) {
     return x[Math.floor(Math.random() * x.length)];
@@ -280,7 +280,7 @@ function genMap(width : number, height : number) : Mapp {
     return map;
 }
 
-game.map = genMap(ui.TILES_IN_A_LINE, ui.TILES_IN_A_LINE);
+game.map = genMap(mapUI.TILES_IN_A_LINE, mapUI.TILES_IN_A_LINE);
 
-ui.initMapDisplay();
-window.requestAnimationFrame(ui.render.bind(ui));
+mapUI.initMapDisplay();
+window.requestAnimationFrame(mapUI.render.bind(mapUI));

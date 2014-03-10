@@ -208,7 +208,7 @@ var MapUI = (function () {
 })();
 
 var game = {};
-var ui = new MapUI();
+var mapUI = new MapUI();
 
 function choice(x) {
     return x[Math.floor(Math.random() * x.length)];
@@ -249,7 +249,7 @@ function genMap(width, height) {
     return map;
 }
 
-game.map = genMap(ui.TILES_IN_A_LINE, ui.TILES_IN_A_LINE);
+game.map = genMap(mapUI.TILES_IN_A_LINE, mapUI.TILES_IN_A_LINE);
 
-ui.initMapDisplay();
-window.requestAnimationFrame(ui.render.bind(ui));
+mapUI.initMapDisplay();
+window.requestAnimationFrame(mapUI.render.bind(mapUI));
