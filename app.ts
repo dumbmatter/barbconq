@@ -24,6 +24,7 @@ interface UI {
     VIEW_HEIGHT : number;
     VIEW_TILE_WIDTH : number;
     VIEW_TILE_HEIGHT : number;
+    hoveredTile : any;
 }
 
 var game : Game = <any>{};
@@ -102,10 +103,13 @@ function initMapDisplay() {
         i = Math.floor((top + e.y) / ui.TILE_SIZE);
         j = Math.floor((left + e.x) / ui.TILE_SIZE);
 
+        if (!ui.hoveredTile || (i !== ui.hoveredTile[0] || j !== ui.hoveredTile[1])) {
+            ui.hoveredTile = [i, j];
 console.log([top, left])
 console.log([top + e.y, left + e.x])
 console.log([i, j])
 console.log(game.map.tiles[i][j])
+        }
     };
 
     // Handle key presses
