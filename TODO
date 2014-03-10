@@ -1,13 +1,12 @@
 makefile
   tsc --sourcemap --out gen/app.js ts/app.ts
 
-single file per class/module/interface
-
 source maps
 
 core modules
   Game
   MapUI
+    should this assume "game" is a global, or pass it as this.game? Will that be pass by reference?
   ChromeUI
   MapMaker
   UnitMaker
