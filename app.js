@@ -210,47 +210,55 @@ var MapUI = (function () {
     return MapUI;
 })();
 
-var game = {};
+var Random;
+(function (Random) {
+    function choice(x) {
+        return x[Math.floor(Math.random() * x.length)];
+    }
+    Random.choice = choice;
+})(Random || (Random = {}));
 
-function choice(x) {
-    return x[Math.floor(Math.random() * x.length)];
-}
+var MapMaker;
+(function (MapMaker) {
+    function generate(width, height) {
+        var i, j, map, types;
 
-function genMap(width, height) {
-    var i, j, map, types;
+        map = {};
 
-    map = {};
+        map.width = width !== undefined ? width : 80;
+        map.height = height !== undefined ? height : 40;
 
-    map.width = width !== undefined ? width : 80;
-    map.height = height !== undefined ? height : 40;
+        types = {
+            peak: [],
+            snow: ["hills"],
+            desert: ["flood-plains", "hills", "oasis"],
+            tundra: ["forest", "hills"],
+            sea: ["ice"],
+            coast: ["ice"],
+            grassland: ["forest", "hills", "jungle"],
+            plains: ["forest", "hills"]
+        };
 
-    types = {
-        peak: [],
-        snow: ["hills"],
-        desert: ["flood-plains", "hills", "oasis"],
-        tundra: ["forest", "hills"],
-        sea: ["ice"],
-        coast: ["ice"],
-        grassland: ["forest", "hills", "jungle"],
-        plains: ["forest", "hills"]
-    };
-
-    map.tiles = [];
-    for (i = 0; i < map.height; i++) {
-        map.tiles[i] = [];
-        for (j = 0; j < map.width; j++) {
-            map.tiles[i][j] = {};
-            map.tiles[i][j].terrain = choice(Object.keys(types));
-            map.tiles[i][j].features = [];
-            if (Math.random() < 0.5 && types[map.tiles[i][j].terrain].length > 0) {
-                map.tiles[i][j].features.push(choice(types[map.tiles[i][j].terrain]));
+        map.tiles = [];
+        for (i = 0; i < map.height; i++) {
+            map.tiles[i] = [];
+            for (j = 0; j < map.width; j++) {
+                map.tiles[i][j] = {};
+                map.tiles[i][j].terrain = Random.choice(Object.keys(types));
+                map.tiles[i][j].features = [];
+                if (Math.random() < 0.5 && types[map.tiles[i][j].terrain].length > 0) {
+                    map.tiles[i][j].features.push(Random.choice(types[map.tiles[i][j].terrain]));
+                }
             }
         }
+
+        return map;
     }
+    MapMaker.generate = generate;
+})(MapMaker || (MapMaker = {}));
 
-    return map;
-}
-
-game.map = genMap(80, 40);
+var game = {
+    map: MapMaker.generate(80, 40)
+};
 
 var mapUI = new MapUI();

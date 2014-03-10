@@ -1,6 +1,4 @@
-interface Game {
-    map : Mapp;
-}
+// MapUI - Everything related to the display and interactivity of the on-screen map (including units, but not including non-map chrome)
 
 class MapUI {
     // Constants
@@ -231,61 +229,73 @@ class MapUI {
     }
 }
 
-var game : Game = <any>{};
+// Random - utility functions like Python's random module
 
-function choice(x : any[]) {
-    return x[Math.floor(Math.random() * x.length)];
+module Random {
+    export function choice(x : any[]) {
+        return x[Math.floor(Math.random() * x.length)];
+    }
 }
 
+// MapMaker - map generation module
 
-
-interface Tile {
-    terrain : string;
-    features : string[];
-}
-
-interface Mapp {
-    width : number;
-    height : number;
-    tiles : Tile[][];
-}
-
-
-function genMap(width : number, height : number) : Mapp {
-    var i, j, map, types;
-
-    map = {};
-
-    map.width = width !== undefined ? width : 80;
-    map.height = height !== undefined ? height : 40;
-
-    types = {
-        peak: [],
-        snow: ["hills"],
-        desert: ["flood-plains", "hills", "oasis"],
-        tundra: ["forest", "hills"],
-        sea: ["ice"],
-        coast: ["ice"],
-        grassland: ["forest", "hills", "jungle"],
-        plains: ["forest", "hills"]
-    };
-
-    map.tiles = [];
-    for (i = 0; i < map.height; i++) {
-        map.tiles[i] = [];
-        for (j = 0; j < map.width; j++) {
-            map.tiles[i][j] = {};
-            map.tiles[i][j].terrain = choice(Object.keys(types));
-            map.tiles[i][j].features = [];
-            if (Math.random() < 0.5 && types[map.tiles[i][j].terrain].length > 0) {
-                map.tiles[i][j].features.push(choice(types[map.tiles[i][j].terrain]));
-            }
-        }
+module MapMaker {
+    export interface Tile {
+        terrain : string;
+        features : string[];
     }
 
-    return map;
+    export interface Map {
+        width : number;
+        height : number;
+        tiles : Tile[][];
+    }
+
+    export function generate(width : number, height : number) : Map {
+        var i, j, map, types;
+
+        map = {};
+
+        map.width = width !== undefined ? width : 80;
+        map.height = height !== undefined ? height : 40;
+
+        types = {
+            peak: [],
+            snow: ["hills"],
+            desert: ["flood-plains", "hills", "oasis"],
+            tundra: ["forest", "hills"],
+            sea: ["ice"],
+            coast: ["ice"],
+            grassland: ["forest", "hills", "jungle"],
+            plains: ["forest", "hills"]
+        };
+
+        map.tiles = [];
+        for (i = 0; i < map.height; i++) {
+            map.tiles[i] = [];
+            for (j = 0; j < map.width; j++) {
+                map.tiles[i][j] = {};
+                map.tiles[i][j].terrain = Random.choice(Object.keys(types));
+                map.tiles[i][j].features = [];
+                if (Math.random() < 0.5 && types[map.tiles[i][j].terrain].length > 0) {
+                    map.tiles[i][j].features.push(Random.choice(types[map.tiles[i][j].terrain]));
+                }
+            }
+        }
+
+        return map;
+    }
 }
 
-game.map = genMap(80, 40);
+
+// Game - store the state of the game here, any non-UI stuff that would need for saving/loading a game
+
+interface Game {
+    map : MapMaker.Map;
+}
+
+var game : Game = {
+    map: MapMaker.generate(80, 40)
+};
 
 var mapUI = new MapUI();
