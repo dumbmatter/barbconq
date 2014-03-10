@@ -24,7 +24,7 @@ interface UI {
     VIEW_HEIGHT : number;
     VIEW_TILE_WIDTH : number;
     VIEW_TILE_HEIGHT : number;
-    hoveredTile : any;
+    hoveredTile : number[];
 }
 
 var game : Game = <any>{};
@@ -92,6 +92,7 @@ function initMapDisplay() {
     ui.context = ui.canvas.getContext("2d");
 
     // Handle hover
+    ui.hoveredTile = [-1, -1];
     ui.canvas.onmousemove = function(e) {
         var i, j, left, top;
 
@@ -103,7 +104,7 @@ function initMapDisplay() {
         i = Math.floor((top + e.y) / ui.TILE_SIZE);
         j = Math.floor((left + e.x) / ui.TILE_SIZE);
 
-        if (!ui.hoveredTile || (i !== ui.hoveredTile[0] || j !== ui.hoveredTile[1])) {
+        if (i !== ui.hoveredTile[0] || j !== ui.hoveredTile[1]) {
             ui.hoveredTile = [i, j];
 console.log([top, left])
 console.log([top + e.y, left + e.x])
