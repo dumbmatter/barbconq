@@ -216,7 +216,7 @@ interface Mapp {
 }
 
 
-function genMap(width : number = 2, height : number = 2) : Mapp {
+function genMap(width : number, height : number) : Mapp {
     var i, j, map, types;
 
     map = {};
@@ -251,7 +251,7 @@ function genMap(width : number = 2, height : number = 2) : Mapp {
     return map;
 }
 
-game.map = genMap();
+game.map = genMap(ui.TILES_IN_A_LINE, ui.TILES_IN_A_LINE);
 
 initMapDisplay();
 window.requestAnimationFrame(render);
