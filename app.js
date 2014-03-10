@@ -181,28 +181,6 @@ function render() {
         tileOffsetX += ui.TILE_SIZE;
     }
 
-    /*function updateMapDisplay(map : Mapp) {
-    var i, j, tile, world;
-    
-    world = document.getElementById("world");
-    world.style.width = (map.width * 103) + "px";
-    world.style.height = (map.height * 104) + "px";
-    
-    for (i = 0; i < map.tiles[0].length; i++) {
-    for (j = 0; j < map.tiles.length; j++) {
-    tile = document.createElement("div");
-    
-    tile.classList.add("tile");
-    if (j === 0) {
-    tile.classList.add("new-row");
-    }
-    
-    tile.innerHTML = map.tiles[i][j].terrain + "<br>" + map.tiles[i][j].features.join(" ");
-    
-    world.appendChild(tile);
-    }
-    }
-    }*/
     // Clear canvas and redraw everything in view
     ui.context.clearRect(0, 0, ui.canvas.width, ui.canvas.height);
     for (x = 0; x < ui.VIEW_TILE_WIDTH; x++) {
@@ -224,7 +202,7 @@ function render() {
                 // Text
                 ui.context.fillStyle = ui.terrainFontColors[game.map.tiles[i][j].terrain];
                 ui.context.textBaseline = "top";
-                ui.context.fillText(game.map.tiles[i][j].terrain, x * ui.TILE_SIZE - tileOffsetX + 2, y * ui.TILE_SIZE - tileOffsetY);
+                ui.context.fillText("Text", x * ui.TILE_SIZE - tileOffsetX + 2, y * ui.TILE_SIZE - tileOffsetY);
             }
         }
     }

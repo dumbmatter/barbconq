@@ -1,7 +1,24 @@
 testui canvas
-  hover
-    in/out updating, not every pixel move
-  modularize
+  modularize, design
+    Game
+    MapUI
+    ChromeUI
+    Maps
+    Units
+    UI
+
+Base object types:
+  map (only one of these, containing tile properties at each coordinate)
+  unit (each civ can have many of these, and there are many different types)
+  city (each civ can have many of these)
+
+Data
+  keep it all in memory. write to indexeddb every turn
+
+TypeScript
+  Reevaluate all uses of "any"
+
+# Far future notes
 
 2d UI in HTML5
   read about how to do this, in general
@@ -16,24 +33,3 @@ testui canvas
     http://www.reddit.com/r/html5/comments/1zw8yl/canvas_newb_seeking_some_pointers_about_making_a/
     PROBABLY BEST:
       either threejs or raw webgl. try threejs first, looks easier
-
-For some reason, I feel the desire to try making a TypeScript-based Civilization-type game. My main problem is I have no idea how to do the UI. The core of it is a large grid map with the following properties:
-
-* Can contain units or other things on top of the tiles
-* Can easily zoom in/out
-* Can easily pan around
-* Wraps around the sides as you pan
-
-I guess it should use the <canvas> element. But is there any library on top of that which will make my life easier? Some Googling didn't seem to turn up anything promising. I don't really care about it being a beautiful or perfect UI since I mainly want to hack on the backend of the game at first, but I'd really like to have at least some semi-reasonable UI.
-
-
-Base object types:
-  map (only one of these, containing tile properties at each coordinate)
-  unit (each civ can have many of these, and there are many different types)
-  city (each civ can have many of these)
-
-Data
-  keep it all in memory. write to indexeddb every turn
-
-TypeScript
-  Reevaluate all uses of "any"
