@@ -225,6 +225,6 @@ class MapUI {
         // ith row, jth column, 0 indexed
         this.X = j * game.map.width + this.TILE_SIZE / 2;
         this.Y = i * game.map.height + this.TILE_SIZE / 2;
-        window.requestAnimationFrame(this.render);
+        window.requestAnimationFrame(this.render.bind(this));
     }
 }
