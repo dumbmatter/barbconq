@@ -38,6 +38,8 @@ var MapUI = (function () {
             grassland: "#fff",
             plains: "#000"
         };
+
+        this.initMapDisplay();
     }
     MapUI.prototype.initMapDisplay = function () {
         var elTileInfo;
@@ -45,7 +47,7 @@ var MapUI = (function () {
         this.X = game.map.width * this.TILE_SIZE / 2;
         this.Y = game.map.height * this.TILE_SIZE / 2;
 
-        this.canvas = document.getElementById("canvas");
+        this.canvas = document.getElementById("map");
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
@@ -99,6 +101,9 @@ var MapUI = (function () {
         }.bind(this));
 
         this.setCanvasSize();
+
+        // Initial render
+        window.requestAnimationFrame(this.render.bind(this));
     };
 
     MapUI.prototype.setCanvasSize = function () {
@@ -206,7 +211,6 @@ var MapUI = (function () {
 })();
 
 var game = {};
-var mapUI = new MapUI();
 
 function choice(x) {
     return x[Math.floor(Math.random() * x.length)];
@@ -247,7 +251,6 @@ function genMap(width, height) {
     return map;
 }
 
-game.map = genMap(20, 10);
+game.map = genMap(80, 40);
 
-mapUI.initMapDisplay();
-window.requestAnimationFrame(mapUI.render.bind(mapUI));
+var mapUI = new MapUI();

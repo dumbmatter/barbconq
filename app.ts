@@ -59,6 +59,8 @@ class MapUI {
             grassland: "#fff",
             plains: "#000"
         }
+
+        this.initMapDisplay();
     }
 
     initMapDisplay() {
@@ -67,7 +69,7 @@ class MapUI {
         this.X = game.map.width * this.TILE_SIZE / 2;
         this.Y = game.map.height * this.TILE_SIZE / 2;
 
-        this.canvas = <HTMLCanvasElement> document.getElementById("canvas");
+        this.canvas = <HTMLCanvasElement> document.getElementById("map");
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
@@ -121,6 +123,9 @@ class MapUI {
         }.bind(this));
 
         this.setCanvasSize();
+
+        // Initial render
+        window.requestAnimationFrame(this.render.bind(this));
     }
 
     setCanvasSize() {
@@ -227,7 +232,6 @@ class MapUI {
 }
 
 var game : Game = <any>{};
-var mapUI = new MapUI();
 
 function choice(x : any[]) {
     return x[Math.floor(Math.random() * x.length)];
@@ -282,7 +286,6 @@ function genMap(width : number, height : number) : Mapp {
     return map;
 }
 
-game.map = genMap(20, 10);
+game.map = genMap(80, 40);
 
-mapUI.initMapDisplay();
-window.requestAnimationFrame(mapUI.render.bind(mapUI));
+var mapUI = new MapUI();
