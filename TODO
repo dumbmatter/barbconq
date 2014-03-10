@@ -1,3 +1,5 @@
+MapUI should have widths and heights not equal, and they should be set by the map object given to it on initialization. Then the constructor can call initMapDisplay
+
 testui canvas
   modularize, design
     Game

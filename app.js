@@ -3,7 +3,6 @@ var MapUI = (function () {
         // Constants
         this.TILE_SIZE = 50;
         this.WORLD_SIZE = 2000;
-        this.TILES_IN_A_LINE = Math.floor(this.WORLD_SIZE / this.TILE_SIZE);
         this.KEYS = {
             UP: 38,
             RIGHT: 39,
@@ -12,10 +11,6 @@ var MapUI = (function () {
         };
         // Input
         this.keysPressed = {};
-        // Display
-        // (X, Y) is the center of the region of the map displayed on the screen.
-        this.X = this.WORLD_SIZE / 2;
-        this.Y = this.WORLD_SIZE / 2;
         var key;
 
         for (key in this.KEYS) {
@@ -47,6 +42,9 @@ var MapUI = (function () {
     MapUI.prototype.initMapDisplay = function () {
         var elTileInfo;
 
+        this.X = game.map.width * this.TILE_SIZE / 2;
+        this.Y = game.map.height * this.TILE_SIZE / 2;
+
         this.canvas = document.getElementById("canvas");
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
@@ -66,7 +64,7 @@ var MapUI = (function () {
             i = Math.floor((top + e.y) / this.TILE_SIZE);
             j = Math.floor((left + e.x) / this.TILE_SIZE);
 
-            if ((i !== this.hoveredTile[0] || j !== this.hoveredTile[1]) && i > 0 && j > 0 && i < this.TILES_IN_A_LINE && j < this.TILES_IN_A_LINE) {
+            if ((i !== this.hoveredTile[0] || j !== this.hoveredTile[1]) && i > 0 && j > 0 && i < game.map.height && j < game.map.width) {
                 this.hoveredTile = [i, j];
 
                 // Show tile info
@@ -139,11 +137,11 @@ var MapUI = (function () {
         if (top < -this.VIEW_HEIGHT / 2) {
             this.Y = 0;
         }
-        if (right > this.WORLD_SIZE + this.VIEW_WIDTH / 2) {
-            this.X = this.WORLD_SIZE;
+        if (right > game.map.width * this.TILE_SIZE + this.VIEW_WIDTH / 2) {
+            this.X = game.map.width * this.TILE_SIZE;
         }
-        if (bottom > this.WORLD_SIZE + this.VIEW_HEIGHT / 2) {
-            this.Y = this.WORLD_SIZE;
+        if (bottom > game.map.height * this.TILE_SIZE + this.VIEW_HEIGHT / 2) {
+            this.Y = game.map.height * this.TILE_SIZE;
         }
         if (left < -this.VIEW_WIDTH / 2) {
             this.X = 0;
@@ -180,7 +178,7 @@ var MapUI = (function () {
                 j = leftTile + x;
 
                 // The "if" restricts this to only draw tiles that are in view
-                if (i >= 0 && j >= 0 && i < this.TILES_IN_A_LINE && j < this.TILES_IN_A_LINE) {
+                if (i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
                     // Background
                     this.context.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
                     this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
@@ -200,8 +198,8 @@ var MapUI = (function () {
 
     MapUI.prototype.goToCoords = function (i, j) {
         // ith row, jth column, 0 indexed
-        this.X = i * this.TILES_IN_A_LINE + this.TILE_SIZE / 2;
-        this.Y = j * this.TILES_IN_A_LINE + this.TILE_SIZE / 2;
+        this.X = j * game.map.width + this.TILE_SIZE / 2;
+        this.Y = i * game.map.height + this.TILE_SIZE / 2;
         window.requestAnimationFrame(this.render);
     };
     return MapUI;
@@ -249,7 +247,7 @@ function genMap(width, height) {
     return map;
 }
 
-game.map = genMap(mapUI.TILES_IN_A_LINE, mapUI.TILES_IN_A_LINE);
+game.map = genMap(20, 10);
 
 mapUI.initMapDisplay();
 window.requestAnimationFrame(mapUI.render.bind(mapUI));
