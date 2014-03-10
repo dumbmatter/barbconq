@@ -7,10 +7,12 @@ canvas.height = window.innerHeight;
 var context = canvas.getContext ( '2d' );
 
 //CONSTS
-var RIGHT_KEY_CODE = 68;
-var LEFT_KEY_CODE = 65;
-var UP_KEY_CODE = 87;
-var DOWN_KEY_CODE = 83;
+var KEYS = {
+    UP: 87,
+    RIGHT: 68,
+    DOWN: 83,
+    LEFT: 65
+};
 
 var TILE_TYPE_WATER = 0;
 var TILE_TYPE_GRASS = 1;
@@ -25,10 +27,10 @@ var TILES_IN_A_LINE = Math.floor ( WORLD_SIZE/TILE_SIZE );
 
 //INITIALIZATION
 var keysPressed = {};
-keysPressed[RIGHT_KEY_CODE] = false;
-keysPressed[LEFT_KEY_CODE] = false;
-keysPressed[UP_KEY_CODE] = false;
-keysPressed[DOWN_KEY_CODE] = false;
+keysPressed[KEYS.RIGHT] = false;
+keysPressed[KEYS.LEFT] = false;
+keysPressed[KEYS.UP] = false;
+keysPressed[KEYS.DOWN] = false;
 
 var playerX = WORLD_SIZE/2; //center
 var playerY = WORLD_SIZE/2; //center
@@ -68,10 +70,10 @@ function goToCoords(i, j) {
 }
 
 function onEnterFrame() {
-    if (keysPressed[RIGHT_KEY_CODE]) playerX = playerX + 20;
-    if (keysPressed[LEFT_KEY_CODE]) playerX = playerX - 20;
-    if (keysPressed[UP_KEY_CODE]) playerY = playerY - 20;
-    if (keysPressed[DOWN_KEY_CODE]) playerY = playerY + 20; 
+    if (keysPressed[KEYS.RIGHT]) playerX = playerX + 20;
+    if (keysPressed[KEYS.LEFT]) playerX = playerX - 20;
+    if (keysPressed[KEYS.UP]) playerY = playerY - 20;
+    if (keysPressed[KEYS.DOWN]) playerY = playerY + 20; 
     
     var top = playerY - VIEW_HEIGHT/2;
     var right = playerX + VIEW_WIDTH/2;
@@ -143,13 +145,17 @@ function onEnterFrame() {
 }
 
 function keyDown(e) {
-    if ( e.keyCode in keysPressed ) keysPressed[e.keyCode] = true;
-    requestAnimationFrame(onEnterFrame);
+    if (e.keyCode in keysPressed) {
+        keysPressed[e.keyCode] = true;
+        requestAnimationFrame(onEnterFrame);
+    }
 }
 
 function keyUp(e) {
-    if ( e.keyCode in keysPressed ) keysPressed[e.keyCode] = false;
-    requestAnimationFrame(onEnterFrame);
+    if (e.keyCode in keysPressed) {
+        keysPressed[e.keyCode] = false;
+        requestAnimationFrame(onEnterFrame);
+    }
 }
 
 window.addEventListener("resize", function () {

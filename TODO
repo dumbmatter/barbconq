@@ -1,5 +1,6 @@
 testui canvas
   link up to backend code
+  modularize
 
 2d UI in HTML5
   read about how to do this, in general
@@ -32,3 +33,6 @@ Base object types:
 
 Data
   keep it all in memory. write to indexeddb every turn
+
+TypeScript
+  Reevaluate all uses of "any"
