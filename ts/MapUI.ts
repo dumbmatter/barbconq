@@ -117,7 +117,7 @@ class MapUI {
             requestAnimationFrame(function () {
                 this.setCanvasSize();
                 this.render();
-            });
+            }.bind(this));
         }.bind(this));
 
         this.setCanvasSize();

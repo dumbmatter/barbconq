@@ -2,4 +2,5 @@
 
 interface Game {
     map : MapMaker.Map;
+    maxId : number;
 }

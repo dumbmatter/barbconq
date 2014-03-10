@@ -106,7 +106,7 @@ var MapUI = (function () {
             requestAnimationFrame(function () {
                 this.setCanvasSize();
                 this.render();
-            });
+            }.bind(this));
         }.bind(this));
 
         this.setCanvasSize();
@@ -258,13 +258,61 @@ var MapMaker;
     MapMaker.generate = generate;
 })(MapMaker || (MapMaker = {}));
 // Game - store the state of the game here, any non-UI stuff that would need for saving/loading a game
+// Units - classes for the various units types
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var Units;
+(function (Units) {
+    var BaseUnit = (function () {
+        function BaseUnit(owner, coords) {
+            this.canAttack = true;
+            this.canDefend = true;
+            // UI stuff
+            this.active = false;
+            this.id = game.maxId;
+            game.maxId += 1;
+
+            this.owner = owner;
+            this.coords = coords;
+        }
+        BaseUnit.prototype.move = function (direction) {
+        };
+        return BaseUnit;
+    })();
+    Units.BaseUnit = BaseUnit;
+
+    var Warrior = (function (_super) {
+        __extends(Warrior, _super);
+        function Warrior() {
+            _super.apply(this, arguments);
+            this.strength = 2;
+            this.currentStrength = 2;
+            this.movement = 2;
+            this.currentMovement = 2;
+            this.landOrSea = "land";
+        }
+        Warrior.prototype.move = function (direction) {
+            console.log(direction);
+        };
+        return Warrior;
+    })(BaseUnit);
+    Units.Warrior = Warrior;
+})(Units || (Units = {}));
 ///<reference path='Random.ts'/>
 ///<reference path='MapUI.ts'/>
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
+///<reference path='Units.ts'/>
 var game = {
-    map: MapMaker.generate(80, 40)
+    map: MapMaker.generate(80, 40),
+    maxId: 0
 };
 
 var mapUI = new MapUI();
+
+var w = new Units.Warrior(0, [10, 10]);
 //# sourceMappingURL=app.js.map
