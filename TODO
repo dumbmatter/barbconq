@@ -1,10 +1,16 @@
-testui canvas
-  modularize, design
-    Game
-    MapUI
-    ChromeUI
-    MapMaker
-    UnitMaker
+makefile
+  tsc --sourcemap --out gen/app.js ts/app.ts
+
+single file per class/module/interface
+
+source maps
+
+core modules
+  Game
+  MapUI
+  ChromeUI
+  MapMaker
+  UnitMaker
 
 Base object types:
   map (only one of these, containing tile properties at each coordinate)

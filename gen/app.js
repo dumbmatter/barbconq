@@ -1,3 +1,4 @@
+// MapUI - Everything related to the display and interactivity of the on-screen map (including units, but not including non-map chrome)
 var MapUI = (function () {
     function MapUI() {
         // Constants
@@ -46,7 +47,7 @@ var MapUI = (function () {
 
         this.X = game.map.width * this.TILE_SIZE / 2;
         this.Y = game.map.height * this.TILE_SIZE / 2;
-
+        this.X.fuck = 5;
         this.canvas = document.getElementById("map");
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
@@ -210,6 +211,7 @@ var MapUI = (function () {
     return MapUI;
 })();
 
+// Random - utility functions like Python's random module
 var Random;
 (function (Random) {
     function choice(x) {
@@ -218,6 +220,7 @@ var Random;
     Random.choice = choice;
 })(Random || (Random = {}));
 
+// MapMaker - map generation module
 var MapMaker;
 (function (MapMaker) {
     function generate(width, height) {
@@ -257,8 +260,10 @@ var MapMaker;
     MapMaker.generate = generate;
 })(MapMaker || (MapMaker = {}));
 
+
 var game = {
     map: MapMaker.generate(80, 40)
 };
 
 var mapUI = new MapUI();
+//# sourceMappingURL=app.js.map
