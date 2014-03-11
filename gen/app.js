@@ -75,7 +75,7 @@ var MapUI = (function () {
             i = Math.floor((top + e.y) / this.TILE_SIZE);
             j = Math.floor((left + e.x) / this.TILE_SIZE);
 
-            if ((i !== this.hoveredTile[0] || j !== this.hoveredTile[1]) && i > 0 && j > 0 && i < game.map.height && j < game.map.width) {
+            if ((i !== this.hoveredTile[0] || j !== this.hoveredTile[1]) && i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
                 this.hoveredTile = [i, j];
 
                 // Show tile info
@@ -201,10 +201,12 @@ var MapUI = (function () {
                     this.context.strokeStyle = "#000";
                     this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
-                    // Text
-                    this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
-                    this.context.textBaseline = "top";
-                    this.context.fillText("Text", x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+                    // Text - list units
+                    if (game.map.tiles[i][j].units.length > 0) {
+                        this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
+                        this.context.textBaseline = "top";
+                        this.context.fillText(game.getUnit(game.map.tiles[i][j].units[0]).type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+                    }
                 }
             }
         }
@@ -221,13 +223,13 @@ var MapUI = (function () {
 // MapMaker - map generation module
 var MapMaker;
 (function (MapMaker) {
-    function generate(width, height) {
+    function generate(rows, cols) {
         var i, j, map, types;
 
         map = {};
 
-        map.width = width !== undefined ? width : 80;
-        map.height = height !== undefined ? height : 40;
+        map.width = cols !== undefined ? cols : 80;
+        map.height = rows !== undefined ? rows : 40;
 
         types = {
             peak: [],
@@ -244,7 +246,9 @@ var MapMaker;
         for (i = 0; i < map.height; i++) {
             map.tiles[i] = [];
             for (j = 0; j < map.width; j++) {
-                map.tiles[i][j] = {};
+                map.tiles[i][j] = {
+                    units: []
+                };
                 map.tiles[i][j].terrain = Random.choice(Object.keys(types));
                 map.tiles[i][j].features = [];
                 if (Math.random() < 0.5 && types[map.tiles[i][j].terrain].length > 0) {
@@ -258,6 +262,23 @@ var MapMaker;
     MapMaker.generate = generate;
 })(MapMaker || (MapMaker = {}));
 // Game - store the state of the game here, any non-UI stuff that would need for saving/loading a game
+var Game = (function () {
+    function Game(numPlayers, mapRows, mapCols) {
+        this.maxId = 0;
+        var i;
+
+        this.map = MapMaker.generate(mapRows, mapCols);
+        this.units = [];
+
+        for (i = 0; i < numPlayers + 1; i++) {
+            this.units.push({});
+        }
+    }
+    Game.prototype.getUnit = function (unitStub) {
+        return this.units[unitStub.owner][unitStub.id];
+    };
+    return Game;
+})();
 // Units - classes for the various units types
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -267,6 +288,8 @@ var __extends = this.__extends || function (d, b) {
 };
 var Units;
 (function (Units) {
+    
+
     var BaseUnit = (function () {
         function BaseUnit(owner, coords) {
             this.canAttack = true;
@@ -277,9 +300,25 @@ var Units;
             game.maxId += 1;
 
             this.owner = owner;
+
+            // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
+            game.map.tiles[coords[0]][coords[1]].units.push({
+                id: this.id,
+                owner: this.owner
+            });
+            console.log(game.map.tiles[coords[0]][coords[1]]);
+
+            // Store reference to unit in game.units
+            game.units[this.owner][this.id] = this;
         }
+        BaseUnit.prototype.getName = function (inputClass) {
+            return inputClass.constructor.name;
+        };
+
         BaseUnit.prototype.move = function (direction) {
+            // Should be able to make this general enough to handle all units
+            console.log(direction);
         };
         return BaseUnit;
     })();
@@ -289,15 +328,13 @@ var Units;
         __extends(Warrior, _super);
         function Warrior() {
             _super.apply(this, arguments);
+            this.type = "Warrior";
             this.strength = 2;
             this.currentStrength = 2;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
         }
-        Warrior.prototype.move = function (direction) {
-            console.log(direction);
-        };
         return Warrior;
     })(BaseUnit);
     Units.Warrior = Warrior;
@@ -307,12 +344,8 @@ var Units;
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
-var game = {
-    map: MapMaker.generate(80, 40),
-    maxId: 0
-};
-
+var game = new Game(1, 40, 80);
 var mapUI = new MapUI();
 
-var w = new Units.Warrior(0, [10, 10]);
+new Units.Warrior(0, [1, 1]);
 //# sourceMappingURL=app.js.map

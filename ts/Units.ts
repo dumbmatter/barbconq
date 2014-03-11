@@ -1,10 +1,17 @@
 // Units - classes for the various units types
 
 module Units {
+    // This allows a real Unit to be easily found from game.units[owner][id]
+    export interface Stub {
+        id : number;
+        owner : number;
+    }
+
     export class BaseUnit {
         // Identification
         id : number; // Unique, incrementing
         owner : number;
+        type : string;
 
         // Key attributes
         strength : number;
@@ -29,7 +36,18 @@ module Units {
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
+            game.map.tiles[coords[0]][coords[1]].units.push({
+                id: this.id,
+                owner: this.owner
+            });
 console.log(game.map.tiles[coords[0]][coords[1]]);
+
+            // Store reference to unit in game.units
+            game.units[this.owner][this.id] = this;
+        }
+
+        getName(inputClass) { 
+            return (<any> inputClass).constructor.name;
         }
 
         move(direction : string) {
@@ -39,6 +57,8 @@ console.log(game.map.tiles[coords[0]][coords[1]]);
     }
 
     export class Warrior extends BaseUnit {
+        type = "Warrior";
+
         strength = 2;
         currentStrength = 2;
         movement = 2;

@@ -86,7 +86,7 @@ class MapUI {
             i = Math.floor((top + e.y) / this.TILE_SIZE);
             j = Math.floor((left + e.x) / this.TILE_SIZE);
 
-            if ((i !== this.hoveredTile[0] || j !== this.hoveredTile[1]) && i > 0 && j > 0 && i < game.map.height && j < game.map.width) {
+            if ((i !== this.hoveredTile[0] || j !== this.hoveredTile[1]) && i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
                 this.hoveredTile = [i, j];
 
                 // Show tile info
@@ -212,10 +212,12 @@ class MapUI {
                     this.context.strokeStyle = "#000";
                     this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
-                    // Text
-                    this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
-                    this.context.textBaseline = "top";
-                    this.context.fillText("Text", x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+                    // Text - list units
+                    if (game.map.tiles[i][j].units.length > 0) {
+                        this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
+                        this.context.textBaseline = "top";
+                        this.context.fillText(game.getUnit(game.map.tiles[i][j].units[0]).type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+                    }
                 }
             }
         }

@@ -4,11 +4,7 @@
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
 
-var game : Game = {
-    map: MapMaker.generate(80, 40),
-    maxId: 0
-};
-
+var game = new Game(1, 40, 80);
 var mapUI = new MapUI();
 
-var w = new Units.Warrior(0, [1, 1]);
+new Units.Warrior(0, [1, 1]);
