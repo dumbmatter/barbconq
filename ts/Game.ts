@@ -16,7 +16,7 @@ class Game {
 
         // + 1 is for barbarians at index 0
         for (i = 0; i < numPlayers + 1; i++) {
-            if (i = 0) {
+            if (i === 0) {
                 this.names.push("Barbarian");
             } else {
                 this.names.push("Player " + i);

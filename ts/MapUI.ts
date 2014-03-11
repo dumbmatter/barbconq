@@ -62,8 +62,6 @@ class MapUI {
     }
 
     initMapDisplay() {
-        var elTileInfo;
-
         this.X = game.map.width * this.TILE_SIZE / 2;
         this.Y = game.map.height * this.TILE_SIZE / 2;
 

@@ -20,11 +20,25 @@ var ChromeUI = (function () {
 
             for (i = 0; i < tile.units.length; i++) {
                 unit = game.getUnit(tile.units[i]);
-                content += unit.type + "<br>";
+                content += '<span class="unit-name">' + unit.type + '</span>, ';
+                if (unit.strength === unit.currentStrength) {
+                    content += unit.currentStrength + ' S, ';
+                } else {
+                    content += unit.currentStrength + '/' + unit.strength + ' S, ';
+                }
+                if (unit.movement === unit.currentMovement) {
+                    content += unit.currentMovement + ' M, ';
+                } else {
+                    content += unit.currentMovement + '/' + unit.movement + ' M, ';
+                }
+                content += game.names[unit.owner];
+                content += '<br>';
             }
 
-            // Show tile info
-            this.elInfoBox.innerHTML = tile.features.join("/") + (tile.features.length ? "/" : "") + tile.terrain;
+            // Show tile terrain and features
+            content += tile.features.join("/") + (tile.features.length ? "/" : "") + tile.terrain;
+
+            this.elInfoBox.innerHTML = content;
             this.elInfoBox.style.display = "block";
         } else {
             // Hide info box
@@ -78,8 +92,6 @@ var MapUI = (function () {
         this.initMapDisplay();
     }
     MapUI.prototype.initMapDisplay = function () {
-        var elTileInfo;
-
         this.X = game.map.width * this.TILE_SIZE / 2;
         this.Y = game.map.height * this.TILE_SIZE / 2;
 
@@ -297,7 +309,7 @@ var Game = (function () {
         this.units = [];
 
         for (i = 0; i < numPlayers + 1; i++) {
-            if (i = 0) {
+            if (i === 0) {
                 this.names.push("Barbarian");
             } else {
                 this.names.push("Player " + i);
@@ -383,4 +395,6 @@ var mapUI = new MapUI();
 
 new Units.Warrior(0, [1, 1]);
 new Units.Warrior(0, [20, 40]);
+new Units.Warrior(0, [20, 40]);
+new Units.Warrior(1, [20, 40]);
 //# sourceMappingURL=app.js.map
