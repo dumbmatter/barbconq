@@ -73,7 +73,6 @@ class MapUI {
         this.context = this.canvas.getContext("2d");
 
         // Handle hover
-        elTileInfo = document.getElementById("tile-info");
         this.hoveredTile = [-1, -1];
         this.canvas.addEventListener("mousemove", function(e) {
             var i, j, left, top;
@@ -89,13 +88,11 @@ class MapUI {
             if ((i !== this.hoveredTile[0] || j !== this.hoveredTile[1]) && i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
                 this.hoveredTile = [i, j];
 
-                // Show tile info
-                elTileInfo.innerHTML = game.map.tiles[i][j].features.join("/") + (game.map.tiles[i][j].features.length ? "/" : "") + game.map.tiles[i][j].terrain;
-                elTileInfo.style.display = "block";
+                chromeUI.onHoverTile(game.map.tiles[i][j]);
             }
         }.bind(this));
         this.canvas.addEventListener("mouseout", function(e) {
-            elTileInfo.style.display = "none";
+            chromeUI.onHoverTile();
         }.bind(this));
 
         // Handle key presses
@@ -152,7 +149,7 @@ class MapUI {
             this.Y = this.Y + 20;
         }
 
-        // Check the bounds for the view
+        // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
         right = this.X + this.VIEW_WIDTH / 2;
         bottom = this.Y + this.VIEW_HEIGHT / 2;

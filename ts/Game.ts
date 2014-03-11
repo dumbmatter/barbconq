@@ -3,16 +3,25 @@
 class Game {
     map : MapMaker.Map;
     maxId : number = 0;
+    names: string[];
     units : {}[];
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
         var i;
 
         this.map = MapMaker.generate(mapRows, mapCols);
+
+        this.names = [];
         this.units = [];
 
         // + 1 is for barbarians at index 0
         for (i = 0; i < numPlayers + 1; i++) {
+            if (i = 0) {
+                this.names.push("Barbarian");
+            } else {
+                this.names.push("Player " + i);
+            }
+
             this.units.push({});
         }
     }

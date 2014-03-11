@@ -1,4 +1,6 @@
 Abstract updating of tooltip to ChromeUI
+  ChromeUI
+    updateHoveredTile(tile)
 
 Create a basic unit, handle its basic actions
 
