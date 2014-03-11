@@ -11,5 +11,7 @@ var mapUI = new MapUI();
 
 new Units.Warrior(0, [1, 1]);
 new Units.Warrior(0, [20, 40]);
-new Units.Warrior(0, [20, 40]);
+new Units.Warrior(1, [21, 40]);
 new Units.Warrior(1, [20, 40]);
+
+game.turn();

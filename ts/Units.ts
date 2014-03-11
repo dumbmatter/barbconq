@@ -25,8 +25,9 @@ module Units {
         canAttack : boolean = true;
         canDefend : boolean = true;
 
-        // UI stuff
-        active : boolean = false;
+        // Turn stuff
+        active : boolean = false; // When set, show UI options for this unit
+        moved : boolean = false; // When set, no need to loop through this unit before showing turn is over
 
         constructor(owner : number, coords : number[]) {
             this.id = game.maxId;
@@ -40,7 +41,6 @@ module Units {
                 id: this.id,
                 owner: this.owner
             });
-console.log(game.map.tiles[coords[0]][coords[1]]);
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
@@ -48,6 +48,11 @@ console.log(game.map.tiles[coords[0]][coords[1]]);
 
         getName(inputClass) { 
             return (<any> inputClass).constructor.name;
+        }
+
+        activate() {
+console.log("activate")
+console.log(this)
         }
 
         move(direction : string) {

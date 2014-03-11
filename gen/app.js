@@ -124,19 +124,15 @@ var MapUI = (function () {
         }.bind(this));
 
         // Handle key presses
-        document.addEventListener("keydown", function (e) {
-            if (e.keyCode in this.keysPressed) {
-                this.keysPressed[e.keyCode] = true;
-                requestAnimationFrame(this.render.bind(this));
-            }
-        }.bind(this));
-        document.addEventListener("keyup", function (e) {
-            if (e.keyCode in this.keysPressed) {
-                this.keysPressed[e.keyCode] = false;
-                requestAnimationFrame(this.render.bind(this));
-            }
-        }.bind(this));
+        document.addEventListener("keydown", this.onKeyDown.bind(this));
+        document.addEventListener("keyup", this.onKeyUp.bind(this));
 
+        /*        document.addEventListener("keyup", function (e) {
+        if (e.keyCode in this.keysPressed) {
+        this.keysPressed[e.keyCode] = false;
+        requestAnimationFrame(this.render.bind(this));
+        }
+        }.bind(this));*/
         // Handle resize
         window.addEventListener("resize", function () {
             requestAnimationFrame(function () {
@@ -160,22 +156,36 @@ var MapUI = (function () {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     };
 
+    MapUI.prototype.onKeyDown = function (e) {
+        if (e.keyCode in this.keysPressed) {
+            this.keysPressed[e.keyCode] = true;
+
+            // Panning viewport based on keyboard arrows
+            if (this.keysPressed[this.KEYS.UP]) {
+                this.Y = this.Y - 20;
+            }
+            if (this.keysPressed[this.KEYS.RIGHT]) {
+                this.X = this.X + 20;
+            }
+            if (this.keysPressed[this.KEYS.DOWN]) {
+                this.Y = this.Y + 20;
+            }
+            if (this.keysPressed[this.KEYS.LEFT]) {
+                this.X = this.X - 20;
+            }
+
+            requestAnimationFrame(this.render.bind(this));
+        }
+    };
+
+    MapUI.prototype.onKeyUp = function (e) {
+        if (e.keyCode in this.keysPressed) {
+            this.keysPressed[e.keyCode] = false;
+        }
+    };
+
     MapUI.prototype.render = function () {
         var bottom, i, j, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
-
-        // Has there been movement?
-        if (this.keysPressed[this.KEYS.RIGHT]) {
-            this.X = this.X + 20;
-        }
-        if (this.keysPressed[this.KEYS.LEFT]) {
-            this.X = this.X - 20;
-        }
-        if (this.keysPressed[this.KEYS.UP]) {
-            this.Y = this.Y - 20;
-        }
-        if (this.keysPressed[this.KEYS.DOWN]) {
-            this.Y = this.Y + 20;
-        }
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -321,6 +331,23 @@ var Game = (function () {
     Game.prototype.getUnit = function (unitStub) {
         return this.units[unitStub.owner][unitStub.id];
     };
+
+    Game.prototype.turn = function () {
+        var i, j, unit;
+
+        for (i = 0; i < this.names.length; i++) {
+            // Player 1
+            if (i === 1) {
+                for (j in this.units[i]) {
+                    unit = this.units[i][j];
+                    if (!unit.moved) {
+                        unit.activate();
+                        return;
+                    }
+                }
+            }
+        }
+    };
     return Game;
 })();
 // Units - classes for the various units types
@@ -338,8 +365,9 @@ var Units;
         function BaseUnit(owner, coords) {
             this.canAttack = true;
             this.canDefend = true;
-            // UI stuff
+            // Turn stuff
             this.active = false;
+            this.moved = false;
             this.id = game.maxId;
             game.maxId += 1;
 
@@ -351,13 +379,17 @@ var Units;
                 id: this.id,
                 owner: this.owner
             });
-            console.log(game.map.tiles[coords[0]][coords[1]]);
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
         }
         BaseUnit.prototype.getName = function (inputClass) {
             return inputClass.constructor.name;
+        };
+
+        BaseUnit.prototype.activate = function () {
+            console.log("activate");
+            console.log(this);
         };
 
         BaseUnit.prototype.move = function (direction) {
@@ -395,6 +427,8 @@ var mapUI = new MapUI();
 
 new Units.Warrior(0, [1, 1]);
 new Units.Warrior(0, [20, 40]);
-new Units.Warrior(0, [20, 40]);
+new Units.Warrior(1, [21, 40]);
 new Units.Warrior(1, [20, 40]);
+
+game.turn();
 //# sourceMappingURL=app.js.map

@@ -1,3 +1,11 @@
+GameLoop
+  iterate over game.units, either auto-moving for AI or activating for player
+
+abstract controller to handle user input
+  panning
+
+typescript live compile
+
 Create a basic unit, handle its basic actions
 
 core modules

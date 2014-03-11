@@ -94,18 +94,14 @@ class MapUI {
         }.bind(this));
 
         // Handle key presses
-        document.addEventListener("keydown", function (e) {
-            if (e.keyCode in this.keysPressed) {
-                this.keysPressed[e.keyCode] = true;
-                requestAnimationFrame(this.render.bind(this));
-            }
-        }.bind(this));
-        document.addEventListener("keyup", function (e) {
+        document.addEventListener("keydown", this.onKeyDown.bind(this));
+        document.addEventListener("keyup", this.onKeyUp.bind(this));
+/*        document.addEventListener("keyup", function (e) {
             if (e.keyCode in this.keysPressed) {
                 this.keysPressed[e.keyCode] = false;
                 requestAnimationFrame(this.render.bind(this));
             }
-        }.bind(this));
+        }.bind(this));*/
 
         // Handle resize
         window.addEventListener("resize", function () {
@@ -130,22 +126,36 @@ class MapUI {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     }
 
+    onKeyDown(e) {
+        if (e.keyCode in this.keysPressed) {
+            this.keysPressed[e.keyCode] = true;
+
+            // Panning viewport based on keyboard arrows
+            if (this.keysPressed[this.KEYS.UP]) {
+                this.Y = this.Y - 20;
+            }
+            if (this.keysPressed[this.KEYS.RIGHT]) {
+                this.X = this.X + 20;
+            }
+            if (this.keysPressed[this.KEYS.DOWN]) {
+                this.Y = this.Y + 20;
+            }
+            if (this.keysPressed[this.KEYS.LEFT]) {
+                this.X = this.X - 20;
+            }
+
+            requestAnimationFrame(this.render.bind(this));
+        }
+    }
+
+    onKeyUp(e) {
+        if (e.keyCode in this.keysPressed) {
+            this.keysPressed[e.keyCode] = false;
+        }
+    }
+
     render() {
         var bottom, i, j, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
-
-        // Has there been movement?
-        if (this.keysPressed[this.KEYS.RIGHT]) {
-            this.X = this.X + 20;
-        }
-        if (this.keysPressed[this.KEYS.LEFT]) {
-            this.X = this.X - 20;
-        }
-        if (this.keysPressed[this.KEYS.UP]) {
-            this.Y = this.Y - 20;
-        }
-        if (this.keysPressed[this.KEYS.DOWN]) {
-            this.Y = this.Y + 20;
-        }
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;

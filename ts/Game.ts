@@ -29,4 +29,21 @@ class Game {
     getUnit(unitStub : Units.Stub) {
         return this.units[unitStub.owner][unitStub.id];
     }
+
+    turn() {
+        var i, j, unit;
+
+        for (i = 0; i < this.names.length; i++) {
+            // Player 1
+            if (i === 1) {
+                for (j in this.units[i]) {
+                    unit = this.units[i][j];
+                    if (!unit.moved) {
+                        unit.activate();
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }
