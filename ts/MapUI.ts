@@ -263,10 +263,10 @@ class MapUI {
         }.bind(this));
     }
 
-    goToCoords(i, j) {
+    goToCoords(coords) {
         // ith row, jth column, 0 indexed
-        this.X = j * game.map.width + this.TILE_SIZE / 2;
-        this.Y = i * game.map.height + this.TILE_SIZE / 2;
+        this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
+        this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;
         window.requestAnimationFrame(this.render.bind(this));
     }
 }

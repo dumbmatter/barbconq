@@ -293,10 +293,12 @@ var MapUI = (function () {
         }.bind(this));
     };
 
-    MapUI.prototype.goToCoords = function (i, j) {
+    MapUI.prototype.goToCoords = function (coords) {
         // ith row, jth column, 0 indexed
-        this.X = j * game.map.width + this.TILE_SIZE / 2;
-        this.Y = i * game.map.height + this.TILE_SIZE / 2;
+        console.log([this.X, this.Y]);
+        this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
+        this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;
+        console.log([this.X, this.Y]);
         window.requestAnimationFrame(this.render.bind(this));
     };
     return MapUI;
@@ -424,6 +426,7 @@ var Units;
 
         BaseUnit.prototype.activate = function () {
             this.active = true;
+            mapUI.goToCoords(this.coords);
             console.log("activate");
             console.log(this);
         };
@@ -463,7 +466,7 @@ var mapUI = new MapUI();
 
 new Units.Warrior(0, [1, 1]);
 new Units.Warrior(0, [20, 40]);
-new Units.Warrior(1, [21, 40]);
+new Units.Warrior(1, [10, 40]);
 new Units.Warrior(1, [20, 40]);
 
 game.moveUnits();

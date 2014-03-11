@@ -52,6 +52,7 @@ module Units {
 
         activate() {
             this.active = true;
+            mapUI.goToCoords(this.coords);
 console.log("activate")
 console.log(this)
         }

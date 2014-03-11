@@ -8,6 +8,7 @@ GameLoop
 
 abstract controller to handle user input
   panning
+  press "c" to go to active unit (if one exists)
 
 typescript live compile
 
