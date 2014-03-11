@@ -30,7 +30,7 @@ class Game {
         return this.units[unitStub.owner][unitStub.id];
     }
 
-    turn() {
+    moveUnits() {
         var i, j, unit;
 
         for (i = 0; i < this.names.length; i++) {

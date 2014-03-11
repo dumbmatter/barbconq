@@ -155,7 +155,7 @@ class MapUI {
     }
 
     render() {
-        var bottom, i, j, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
+        var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -201,31 +201,66 @@ class MapUI {
 
         // Clear canvas and redraw everything in view
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        for (x = 0; x < this.VIEW_TILE_WIDTH; x++) {
-            for (y = 0; y < this.VIEW_TILE_HEIGHT; y++) {
-                // Coordinates in the map
-                i = topTile + y;
-                j = leftTile + x;
 
-                // The "if" restricts this to only draw tiles that are in view
-                if (i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
-                    // Background
-                    this.context.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
-                    this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
+        // Loop over all tiles, call cb on each tile in the viewport
+        var drawViewport = function (cb) {
+            var i, j, x, y;
 
-                    // Grid lines
-                    this.context.strokeStyle = "#000";
-                    this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
+            for (x = 0; x < this.VIEW_TILE_WIDTH; x++) {
+                for (y = 0; y < this.VIEW_TILE_HEIGHT; y++) {
+                    // Coordinates in the map
+                    i = topTile + y;
+                    j = leftTile + x;
 
-                    // Text - list units
-                    if (game.map.tiles[i][j].units.length > 0) {
-                        this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
-                        this.context.textBaseline = "top";
-                        this.context.fillText(game.getUnit(game.map.tiles[i][j].units[0]).type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+                    // The "if" restricts this to only draw tiles that are in view
+                    if (i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
+                        cb(i, j, x, y);
                     }
                 }
             }
-        }
+        }.bind(this);
+
+        // First pass: draw tiles and units
+        drawViewport(function (i, j, x, y) {
+            var unit;
+
+            // Background
+            this.context.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
+            this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
+
+            // Grid lines
+            this.context.strokeStyle = "#000";
+            this.context.lineWidth = 1;
+            this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
+
+            // Text - list units
+            if (game.map.tiles[i][j].units.length > 0) {
+                // Show first unit, arbitrarily
+                unit = game.getUnit(game.map.tiles[i][j].units[0]);
+
+                this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
+                this.context.textBaseline = "top";
+                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+            }
+        }.bind(this));
+
+        // Second pass: highlight
+        drawViewport(function (i, j, x, y) {
+            var k, unit;
+
+            // Highlight active tile
+            if (game.map.tiles[i][j].units.length > 0) {
+                for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
+                    unit = game.getUnit(game.map.tiles[i][j].units[k]);
+
+                    if (unit.active) {
+                        this.context.strokeStyle = "#f00";
+                        this.context.lineWidth = 4;
+                        this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX - 2, y * this.TILE_SIZE - tileOffsetY - 2, this.TILE_SIZE + 2, this.TILE_SIZE + 2);
+                    }
+                }
+            }
+        }.bind(this));
     }
 
     goToCoords(i, j) {

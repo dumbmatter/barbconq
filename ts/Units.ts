@@ -51,6 +51,7 @@ module Units {
         }
 
         activate() {
+            this.active = true;
 console.log("activate")
 console.log(this)
         }
