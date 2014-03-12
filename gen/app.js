@@ -79,7 +79,6 @@ var Controller = (function () {
                 this.hoveredTile = [-1, -1];
                 chromeUI.onHoverTile();
             }
-            console.log(this.hoveredTile);
         }.bind(this));
         mapUI.canvas.addEventListener("mouseout", function (e) {
             this.hoveredTile = [-1, -1];
@@ -90,24 +89,26 @@ var Controller = (function () {
     // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
     // if one of your units is not on the clicked tile, center the map
     Controller.prototype.initMapClick = function () {
-        /*        // Handle hover
-        mapUI.canvas.addEventListener("click", function(e) {
-        var activeUnit, i, j, left, top;
-        
-        if (game.activeUnit) {
-        activeUnit = game.getUnit(game.activeUnit);
-        console.log("active: " + game.activeUnit);
-        }
-        // Top left coordinate in pixels, relative to the whole map
-        top = mapUI.Y - mapUI.VIEW_HEIGHT / 2;
-        left = mapUI.X - mapUI.VIEW_WIDTH / 2;
-        
-        // Coordinates in tiles
-        i = Math.floor((top + e.y) / mapUI.TILE_SIZE);
-        j = Math.floor((left + e.x) / mapUI.TILE_SIZE);
-        
-        console.log([i, j]);
-        });*/
+        mapUI.canvas.addEventListener("click", function (e) {
+            var foundUnit, i, coords, units;
+
+            coords = mapUI.pixelsToCoords(e.x, e.y);
+
+            units = game.getTile(coords).units;
+            foundUnit = false;
+
+            for (i = 0; i < units.length; i++) {
+                if (units[i].owner === 1) {
+                    game.getUnit(units[i]).activate(false); // Activate, but don't center map!
+                    foundUnit = true;
+                    requestAnimationFrame(mapUI.render.bind(mapUI));
+                    return;
+                }
+            }
+
+            // If we made it this far, none of the user's units are on this tile
+            mapUI.goToCoords(coords);
+        });
     };
     return Controller;
 })();
@@ -372,6 +373,7 @@ var MapUI = (function () {
         window.requestAnimationFrame(this.render.bind(this));
     };
 
+    // Input: pixel coordinates from canvas events like "click" and "mousemove". Output: tile coordinates (row, col) 0 indexed
     MapUI.prototype.pixelsToCoords = function (x, y) {
         var coords, left, top;
 
@@ -459,7 +461,11 @@ var Game = (function () {
         }
     }
     Game.prototype.getUnit = function (unitStub) {
-        return this.units[unitStub.owner][unitStub.id];
+        if (unitStub) {
+            return this.units[unitStub.owner][unitStub.id];
+        } else {
+            return null;
+        }
     };
 
     Game.prototype.getTile = function (coords) {
@@ -548,10 +554,20 @@ var Units;
             };
         };
 
-        BaseUnit.prototype.activate = function () {
+        BaseUnit.prototype.activate = function (goToCoords) {
+            if (typeof goToCoords === "undefined") { goToCoords = true; }
+            // Deactivate current active unit, if there is one
+            if (game.activeUnit) {
+                game.getUnit(game.activeUnit).active = false;
+                game.activeUnit = null;
+            }
+
+            // Activate this unit
             this.active = true;
             game.activeUnit = this.stub();
-            mapUI.goToCoords(this.coords);
+            if (goToCoords) {
+                mapUI.goToCoords(this.coords);
+            }
         };
 
         BaseUnit.prototype.move = function (direction) {
@@ -559,6 +575,11 @@ var Units;
 
             // Should be able to make this general enough to handle all units
             // Handle fight initiation here, if move goes to tile with enemy on it
+            // Short circuit if no moves are available
+            if (this.currentMovement <= 0) {
+                return;
+            }
+
             // Save a copy
             initialCoords = this.coords.slice();
 
@@ -627,7 +648,7 @@ var Units;
                     }, 500);
                 }
 
-                mapUI.render();
+                requestAnimationFrame(mapUI.render.bind(mapUI));
             }
         };
         return BaseUnit;
@@ -665,8 +686,11 @@ for (var i = 0; i < 200; i++) {
     new Units.Warrior(0, [Math.floor(40 * Math.random()), Math.floor(80 * Math.random())]);
 }
 for (var i = 0; i < 1; i++) {
-    new Units.Warrior(1, [Math.floor(40 * Math.random()), Math.floor(80 * Math.random())]);
+    //    new Units.Warrior(1, [Math.floor(40 * Math.random()), Math.floor(80 * Math.random())]);
 }
+
+new Units.Warrior(1, [0, 0]);
+new Units.Warrior(1, [1, 0]);
 
 game.newTurn();
 //# sourceMappingURL=app.js.map

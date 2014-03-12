@@ -55,16 +55,31 @@ module Units {
             };
         }
 
-        activate() {
+        // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
+        activate(goToCoords : boolean = true) {
+            // Deactivate current active unit, if there is one
+            if (game.activeUnit) {
+                game.getUnit(game.activeUnit).active = false;
+                game.activeUnit = null;
+            }
+
+            // Activate this unit
             this.active = true;
             game.activeUnit = this.stub();
-            mapUI.goToCoords(this.coords);
+            if (goToCoords) {
+                mapUI.goToCoords(this.coords);
+            }
         }
 
         move(direction : string) {
             var i, initialCoords, tileUnits;
             // Should be able to make this general enough to handle all units
             // Handle fight initiation here, if move goes to tile with enemy on it
+
+            // Short circuit if no moves are available
+            if (this.currentMovement <= 0) {
+                return;
+            }
 
             // Save a copy
             initialCoords = this.coords.slice();
@@ -134,7 +149,7 @@ module Units {
                     }, 500);
                 }
 
-                mapUI.render();
+                requestAnimationFrame(mapUI.render.bind(mapUI));
 
             }
         }

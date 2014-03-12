@@ -11,11 +11,10 @@ Controller
     fortify, etc
 
 right click to move
-left click
-  if one of your units is on that tile, activate it and DO NOT CENTER THE MAP
-  if one of your units is not on that tile, center the map
 
 stacked unit actions and UI
+
+should unitStubs just be replaced by unit objects? It'll be a reference to them, right?
 
 typescript live compile
 

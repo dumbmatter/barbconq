@@ -85,23 +85,26 @@ class Controller {
     // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
     // if one of your units is not on the clicked tile, center the map
     initMapClick() {
-/*        // Handle hover
         mapUI.canvas.addEventListener("click", function(e) {
-            var activeUnit, i, j, left, top;
+            var foundUnit, i, coords, units;
 
-            if (game.activeUnit) {
-                activeUnit = game.getUnit(game.activeUnit);
-console.log("active: " + game.activeUnit);
+            coords = mapUI.pixelsToCoords(e.x, e.y);
+
+            units = game.getTile(coords).units;
+            foundUnit = false;
+
+            // This should be made smarter (i.e. pick the strongest unit with moves left - easy if units is sorted by strength by default)
+            for (i = 0; i < units.length; i++) {
+                if (units[i].owner === 1) {
+                    game.getUnit(units[i]).activate(false); // Activate, but don't center map!
+                    foundUnit = true;
+                    requestAnimationFrame(mapUI.render.bind(mapUI));
+                    return;
+                }
             }
-            // Top left coordinate in pixels, relative to the whole map
-            top = mapUI.Y - mapUI.VIEW_HEIGHT / 2;
-            left = mapUI.X - mapUI.VIEW_WIDTH / 2;
 
-            // Coordinates in tiles
-            i = Math.floor((top + e.y) / mapUI.TILE_SIZE);
-            j = Math.floor((left + e.x) / mapUI.TILE_SIZE);
-
-console.log([i, j]);
-        });*/
+            // If we made it this far, none of the user's units are on this tile
+            mapUI.goToCoords(coords);
+        });
     }
 }

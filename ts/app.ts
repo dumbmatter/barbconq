@@ -15,7 +15,10 @@ for (var i = 0; i < 200; i++) {
     new Units.Warrior(0, [Math.floor(40 * Math.random()), Math.floor(80 * Math.random())]);
 }
 for (var i = 0; i < 1; i++) {
-    new Units.Warrior(1, [Math.floor(40 * Math.random()), Math.floor(80 * Math.random())]);
+//    new Units.Warrior(1, [Math.floor(40 * Math.random()), Math.floor(80 * Math.random())]);
 }
+
+new Units.Warrior(1, [0, 0]);
+new Units.Warrior(1, [1, 0]);
 
 game.newTurn();

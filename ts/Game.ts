@@ -29,7 +29,11 @@ class Game {
     }
 
     getUnit(unitStub : Units.Stub) {
-        return this.units[unitStub.owner][unitStub.id];
+        if (unitStub) {
+            return this.units[unitStub.owner][unitStub.id];
+        } else {
+            return null;
+        }
     }
 
     getTile(coords : number[]) {

@@ -236,6 +236,7 @@ class MapUI {
         window.requestAnimationFrame(this.render.bind(this));
     }
 
+    // Input: pixel coordinates from canvas events like "click" and "mousemove". Output: tile coordinates (row, col) 0 indexed
     pixelsToCoords(x : number, y : number) : number[] {
         var coords, left, top;
 
