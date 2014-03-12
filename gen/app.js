@@ -6,6 +6,13 @@ var Random;
     }
     Random.choice = choice;
 })(Random || (Random = {}));
+// Handle user input from keyboard and mouse, and route it to the appropriate place based on the state of the game
+document.addEventListener("keydown", function (e) {
+    mapUI.onKeyDown(e.keyCode);
+});
+document.addEventListener("keyup", function (e) {
+    mapUI.onKeyUp(e.keyCode);
+});
 // ChromeUI - Everything related to the display and interactivity of the on-screen chrome (everything not on the map)
 var ChromeUI = (function () {
     function ChromeUI() {
@@ -123,16 +130,6 @@ var MapUI = (function () {
             chromeUI.onHoverTile();
         }.bind(this));
 
-        // Handle key presses
-        document.addEventListener("keydown", this.onKeyDown.bind(this));
-        document.addEventListener("keyup", this.onKeyUp.bind(this));
-
-        /*        document.addEventListener("keyup", function (e) {
-        if (e.keyCode in this.keysPressed) {
-        this.keysPressed[e.keyCode] = false;
-        requestAnimationFrame(this.render.bind(this));
-        }
-        }.bind(this));*/
         // Handle resize
         window.addEventListener("resize", function () {
             requestAnimationFrame(function () {
@@ -156,9 +153,9 @@ var MapUI = (function () {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     };
 
-    MapUI.prototype.onKeyDown = function (e) {
-        if (e.keyCode in this.keysPressed) {
-            this.keysPressed[e.keyCode] = true;
+    MapUI.prototype.onKeyDown = function (keyCode) {
+        if (keyCode in this.keysPressed) {
+            this.keysPressed[keyCode] = true;
 
             // Panning viewport based on keyboard arrows
             if (this.keysPressed[this.KEYS.UP]) {
@@ -178,9 +175,9 @@ var MapUI = (function () {
         }
     };
 
-    MapUI.prototype.onKeyUp = function (e) {
-        if (e.keyCode in this.keysPressed) {
-            this.keysPressed[e.keyCode] = false;
+    MapUI.prototype.onKeyUp = function (keyCode) {
+        if (keyCode in this.keysPressed) {
+            this.keysPressed[keyCode] = false;
         }
     };
 
@@ -295,10 +292,8 @@ var MapUI = (function () {
 
     MapUI.prototype.goToCoords = function (coords) {
         // ith row, jth column, 0 indexed
-        console.log([this.X, this.Y]);
         this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
         this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;
-        console.log([this.X, this.Y]);
         window.requestAnimationFrame(this.render.bind(this));
     };
     return MapUI;
@@ -382,8 +377,13 @@ var Game = (function () {
                         return;
                     }
                 }
+            } else {
+                // Should auto-move AI units here
             }
         }
+
+        // If we made it this far, everybody has moved
+        console.log("Allow user to go to next turn, somehow!");
     };
     return Game;
 })();
@@ -433,6 +433,9 @@ var Units;
 
         BaseUnit.prototype.move = function (direction) {
             // Should be able to make this general enough to handle all units
+            // Handle fight initiation here, if move goes to tile with enemy on it
+            // Decrease "currentMovement", and if it hits 0, go to next step of GameLoop (how? set "moved" to true)
+            // Keep coords synced with map!
             console.log(direction);
         };
         return BaseUnit;
@@ -455,6 +458,7 @@ var Units;
     Units.Warrior = Warrior;
 })(Units || (Units = {}));
 ///<reference path='Random.ts'/>
+///<reference path='Controller.ts'/>
 ///<reference path='ChromeUI.ts'/>
 ///<reference path='MapUI.ts'/>
 ///<reference path='MapMaker.ts'/>

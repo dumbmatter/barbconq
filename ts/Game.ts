@@ -43,7 +43,12 @@ class Game {
                         return;
                     }
                 }
+            } else {
+                // Should auto-move AI units here
             }
         }
+
+        // If we made it this far, everybody has moved
+console.log("Allow user to go to next turn, somehow!")
     }
 }

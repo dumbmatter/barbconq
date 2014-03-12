@@ -7,20 +7,19 @@ GameLoop
   call game.moveUnits, all moved, then do game.newTurn
 
 abstract controller to handle user input
-  panning
-  press "c" to go to active unit (if one exists)
+  panning (done, but is it in the right place?)
+  unit-specific movements, somehow defined in the Unit class? would only apply to the active unit, so maybe somehow keep track of the active unit's path and then route these there
+    press "c" to go to active unit (if one exists)
+    press space to skip to mark active unit as moved and go to next active unit
+    active unit movement
 
 typescript live compile
 
 Create a basic unit, handle its basic actions
 
 core modules
-  Game
-  MapUI
-    should this assume "game" is a global, or pass it as this.game? Will that be pass by reference?
-  ChromeUI
-  MapMaker
-  UnitMaker
+  some kind of controller to route keyboard input?
+  Combat(attacker : Unit, defender : Unit)
 
 Base object types:
   map (only one of these, containing tile properties at each coordinate)
@@ -35,9 +34,11 @@ TypeScript
 
 # Far future notes
 
+Import civ4 maps
+
 2d UI in HTML5
   read about how to do this, in general
-  take inspiration from civ5 2d mode
+  take inspiration from civ5 "strategic view"
   how to make it wrap at sides?
   libraries
     threejs?

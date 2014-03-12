@@ -59,7 +59,11 @@ console.log(this)
 
         move(direction : string) {
             // Should be able to make this general enough to handle all units
-            console.log(direction);
+            // Handle fight initiation here, if move goes to tile with enemy on it
+            // Decrease "currentMovement", and if it hits 0, go to next step of GameLoop (how? set "moved" to true)
+            // Keep coords synced with map!
+
+console.log(direction);
         }
     }
 

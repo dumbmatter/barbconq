@@ -1,4 +1,5 @@
 ///<reference path='Random.ts'/>
+///<reference path='Controller.ts'/>
 ///<reference path='ChromeUI.ts'/>
 ///<reference path='MapUI.ts'/>
 ///<reference path='MapMaker.ts'/>

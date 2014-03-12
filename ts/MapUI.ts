@@ -93,16 +93,6 @@ class MapUI {
             chromeUI.onHoverTile();
         }.bind(this));
 
-        // Handle key presses
-        document.addEventListener("keydown", this.onKeyDown.bind(this));
-        document.addEventListener("keyup", this.onKeyUp.bind(this));
-/*        document.addEventListener("keyup", function (e) {
-            if (e.keyCode in this.keysPressed) {
-                this.keysPressed[e.keyCode] = false;
-                requestAnimationFrame(this.render.bind(this));
-            }
-        }.bind(this));*/
-
         // Handle resize
         window.addEventListener("resize", function () {
             requestAnimationFrame(function () {
@@ -126,9 +116,9 @@ class MapUI {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     }
 
-    onKeyDown(e) {
-        if (e.keyCode in this.keysPressed) {
-            this.keysPressed[e.keyCode] = true;
+    onKeyDown(keyCode : number) {
+        if (keyCode in this.keysPressed) {
+            this.keysPressed[keyCode] = true;
 
             // Panning viewport based on keyboard arrows
             if (this.keysPressed[this.KEYS.UP]) {
@@ -148,9 +138,9 @@ class MapUI {
         }
     }
 
-    onKeyUp(e) {
-        if (e.keyCode in this.keysPressed) {
-            this.keysPressed[e.keyCode] = false;
+    onKeyUp(keyCode : number) {
+        if (keyCode in this.keysPressed) {
+            this.keysPressed[keyCode] = false;
         }
     }
 
