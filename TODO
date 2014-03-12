@@ -1,7 +1,17 @@
-abstract controller to handle user input
-  panning (done, but is it in the right place?)
-  unit-specific movements, somehow defined in the Unit class? would only apply to the active unit, so maybe somehow keep track of the active unit's path and then route these there
+UI
+  bottom chrome
+  overview tiny map
+
+Controller
+  move keycode handling out of MapUI and into Controller
+  more unit shortcuts
     press space to skip to mark active unit as moved and go to next active unit
+    fortify, etc
+
+right click to move
+what does left click do?
+
+stacked unit actions and UI
 
 typescript live compile
 
@@ -13,6 +23,22 @@ combat
     get list of enemies on tile being moved to
     pick enemy with highest defense
 
+Make randomly generated map into a pangaea facsimile
+  how do civ4 maps do it?
+
+fog of war, field of view
+
+PLAN TO GET INITIAL PUBLICITY: BarbarianBattle.com
+  "Barbarian Battle - web-based port of Civ4's combat system"
+  make a mode with just your units and barbarian units and battle
+  scouts, warriors, archers, chariots, axemen, spearmen
+  roads (randomly generate a few)
+  forts
+  "From the makers of Basketball GM, a free single-player basketball simulation game"
+  Help section: explain units, movement, combat
+  Make desktop and cordova versions, put ads in it
+
+---
 
 Base object types:
   map (only one of these, containing tile properties at each coordinate)
@@ -42,3 +68,6 @@ Import civ4 maps
     http://www.reddit.com/r/html5/comments/1zw8yl/canvas_newb_seeking_some_pointers_about_making_a/
     PROBABLY BEST:
       either threejs or raw webgl. try threejs first, looks easier
+
+Allow lots of moddability, game modes
+  look at what's in civ4
