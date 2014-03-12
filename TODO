@@ -7,8 +7,12 @@ typescript live compile
 
 Create a basic unit, handle its basic actions
 
-core modules
-  Combat(attacker : Unit, defender : Unit)
+combat
+  Combat(attacker : Unit, defender : Unit) to handle just the battle itself
+  also need to handle things like...
+    get list of enemies on tile being moved to
+    pick enemy with highest defense
+
 
 Base object types:
   map (only one of these, containing tile properties at each coordinate)
