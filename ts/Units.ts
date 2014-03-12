@@ -59,17 +59,13 @@ module Units {
             this.active = true;
             game.activeUnit = this.stub();
             mapUI.goToCoords(this.coords);
-console.log("activate")
-console.log(this)
         }
 
         move(direction : string) {
             var i, initialCoords, tileUnits;
             // Should be able to make this general enough to handle all units
             // Handle fight initiation here, if move goes to tile with enemy on it
-            // Decrease "currentMovement", and if it hits 0, go to next step of GameLoop (how? set "moved" to true)
-            // Keep coords synced with map!
-console.log(direction);
+
             // Save a copy
             initialCoords = this.coords.slice();
 
@@ -98,7 +94,6 @@ console.log(direction);
 
             // If moved, update shit and render map
             if (this.coords[0] !== initialCoords[0] || this.coords[1] !== initialCoords[1]) {
-console.log("ACTUALLY MOVED")
                 // Delete old unit in map
                 tileUnits = game.getTile(initialCoords).units;
                 for (i = 0; i < tileUnits.length; i++) {
@@ -112,9 +107,21 @@ console.log("ACTUALLY MOVED")
                 game.getTile(this.coords).units.push(this.stub());
 
                 // Keep track of movement
-                this.currentMovement -= 1;
+                this.currentMovement -= 1; // Should depend on terrain/improvements
+                if (this.currentMovement <= 0) {
+                    this.currentMovement = 0;
+                    this.moved = true;
+                    this.active = false;
+                    game.activeUnit = null;
+
+                    // After delay, move to next unit
+                    setTimeout(function () {
+                        game.moveUnits();
+                    }, 1000);
+                }
 
                 mapUI.render();
+
             }
         }
     }

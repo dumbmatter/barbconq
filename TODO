@@ -1,11 +1,3 @@
-GameLoop
-  iterate over game.units, either auto-moving for AI or activating for player
-  call game.moveUnits, activate first unmoved unit
-  wait until some action is taken, then set moved=true and active=false and game.activeUnit=null
-  call game.moveUnits again, activate next unmoved unit
-  ...
-  call game.moveUnits, all moved, then do game.newTurn
-
 abstract controller to handle user input
   panning (done, but is it in the right place?)
   unit-specific movements, somehow defined in the Unit class? would only apply to the active unit, so maybe somehow keep track of the active unit's path and then route these there

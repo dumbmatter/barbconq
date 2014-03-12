@@ -15,4 +15,4 @@ new Units.Warrior(0, [20, 40]);
 new Units.Warrior(1, [10, 40]);
 new Units.Warrior(1, [20, 40]);
 
-game.moveUnits();
+game.newTurn();

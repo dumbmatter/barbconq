@@ -15,7 +15,6 @@ document.addEventListener("keydown", function (e) {
     // Unit stuff
     if (game.activeUnit) {
         activeUnit = game.getUnit(game.activeUnit);
-        console.log("ACTIVE UNIT");
 
         // Unit movement
         if (e.keyCode === 97) {
@@ -371,6 +370,7 @@ var Game = (function () {
     function Game(numPlayers, mapRows, mapCols) {
         this.maxId = 0;
         this.activeUnit = null;
+        this.turn = 0;
         var i;
 
         this.map = MapMaker.generate(mapRows, mapCols);
@@ -396,6 +396,23 @@ var Game = (function () {
         return this.map.tiles[coords[0]][coords[1]];
     };
 
+    Game.prototype.newTurn = function () {
+        var i, j, unit;
+
+        game.turn++;
+        console.log("Start of turn " + game.turn);
+
+        for (i = 0; i < this.units.length; i++) {
+            for (j in this.units[i]) {
+                unit = this.units[i][j];
+                unit.moved = false;
+                unit.currentMovement = unit.movement;
+            }
+        }
+
+        this.moveUnits();
+    };
+
     Game.prototype.moveUnits = function () {
         var i, j, unit;
 
@@ -415,7 +432,7 @@ var Game = (function () {
         }
 
         // If we made it this far, everybody has moved
-        console.log("Allow user to go to next turn, somehow!");
+        this.newTurn();
     };
     return Game;
 })();
@@ -465,8 +482,6 @@ var Units;
             this.active = true;
             game.activeUnit = this.stub();
             mapUI.goToCoords(this.coords);
-            console.log("activate");
-            console.log(this);
         };
 
         BaseUnit.prototype.move = function (direction) {
@@ -474,10 +489,6 @@ var Units;
 
             // Should be able to make this general enough to handle all units
             // Handle fight initiation here, if move goes to tile with enemy on it
-            // Decrease "currentMovement", and if it hits 0, go to next step of GameLoop (how? set "moved" to true)
-            // Keep coords synced with map!
-            console.log(direction);
-
             // Save a copy
             initialCoords = this.coords.slice();
 
@@ -506,8 +517,6 @@ var Units;
 
             // If moved, update shit and render map
             if (this.coords[0] !== initialCoords[0] || this.coords[1] !== initialCoords[1]) {
-                console.log("ACTUALLY MOVED");
-
                 // Delete old unit in map
                 tileUnits = game.getTile(initialCoords).units;
                 for (i = 0; i < tileUnits.length; i++) {
@@ -521,7 +530,18 @@ var Units;
                 game.getTile(this.coords).units.push(this.stub());
 
                 // Keep track of movement
-                this.currentMovement -= 1;
+                this.currentMovement -= 1; // Should depend on terrain/improvements
+                if (this.currentMovement <= 0) {
+                    this.currentMovement = 0;
+                    this.moved = true;
+                    this.active = false;
+                    game.activeUnit = null;
+
+                    // After delay, move to next unit
+                    setTimeout(function () {
+                        game.moveUnits();
+                    }, 1000);
+                }
 
                 mapUI.render();
             }
@@ -561,5 +581,5 @@ new Units.Warrior(0, [20, 40]);
 new Units.Warrior(1, [10, 40]);
 new Units.Warrior(1, [20, 40]);
 
-game.moveUnits();
+game.newTurn();
 //# sourceMappingURL=app.js.map

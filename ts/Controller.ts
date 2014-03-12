@@ -8,7 +8,7 @@ document.addEventListener("keydown", function (e) {
     // Unit stuff
     if (game.activeUnit) {
         activeUnit = game.getUnit(game.activeUnit);
-console.log("ACTIVE UNIT");
+
         // Unit movement
         if (e.keyCode === 97) {
             activeUnit.move("SW");

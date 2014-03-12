@@ -6,6 +6,7 @@ class Game {
     names: string[];
     units : {}[];
     activeUnit : Units.Stub = null;
+    turn : number = 0;
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
         var i;
@@ -35,6 +36,24 @@ class Game {
         return this.map.tiles[coords[0]][coords[1]];
     }
 
+    newTurn() {
+        var i, j, unit;
+
+        game.turn++;
+        console.log("Start of turn " + game.turn)
+
+        // Reset all movement counters
+        for (i = 0; i < this.units.length; i++) {
+            for (j in this.units[i]) {
+                unit = this.units[i][j];
+                unit.moved = false;
+                unit.currentMovement = unit.movement;
+            }
+        }
+
+        this.moveUnits();
+    }
+
     moveUnits() {
         var i, j, unit;
 
@@ -54,6 +73,6 @@ class Game {
         }
 
         // If we made it this far, everybody has moved
-console.log("Allow user to go to next turn, somehow!")
+        this.newTurn();
     }
 }
