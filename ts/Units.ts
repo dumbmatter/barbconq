@@ -37,10 +37,7 @@ module Units {
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.map.tiles[coords[0]][coords[1]].units.push({
-                id: this.id,
-                owner: this.owner
-            });
+            game.map.tiles[coords[0]][coords[1]].units.push(this.stub());
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
@@ -50,21 +47,57 @@ module Units {
             return (<any> inputClass).constructor.name;
         }
 
+        // Used as a lightweight ID for this unit
+        stub() {
+            return {
+                id: this.id,
+                owner: this.owner
+            };
+        }
+
         activate() {
             this.active = true;
-            game.activeUnit = {id: this.id, owner: this.owner};
+            game.activeUnit = this.stub();
             mapUI.goToCoords(this.coords);
 console.log("activate")
 console.log(this)
         }
 
         move(direction : string) {
+            var i, initialCoords, tileUnits;
             // Should be able to make this general enough to handle all units
             // Handle fight initiation here, if move goes to tile with enemy on it
             // Decrease "currentMovement", and if it hits 0, go to next step of GameLoop (how? set "moved" to true)
             // Keep coords synced with map!
-
 console.log(direction);
+            // Save a copy
+            initialCoords = this.coords.slice();
+
+            // Implement movement
+            if (direction === "SW") {
+                this.coords[0] -= 1;
+                this.coords[1] += 1;
+            } else if (direction === "S") {
+                this.coords[0] -= 1;
+            }
+
+            // If moved, update unit in game.map.tiles and render map
+            if (this.coords[0] !== initialCoords[0] || this.coords[1] !== initialCoords[1]) {
+console.log("ACTUALLY MOVED")
+                // Delete old unit in map
+                tileUnits = game.map.tiles[initialCoords[0]][initialCoords[1]].units;
+                for (i = 0; i < tileUnits.length; i++) {
+                    if (tileUnits[i].id === this.id) {
+                        tileUnits.splice(i);
+                        break;
+                    }
+                }
+
+                // Add unit at new tile
+                game.map.tiles[this.coords[0]][this.coords[1]].units.push(this.stub());
+
+                mapUI.render();
+            }
         }
     }
 

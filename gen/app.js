@@ -8,7 +8,34 @@ var Random;
 })(Random || (Random = {}));
 // Handle user input from keyboard and mouse, and route it to the appropriate place based on the state of the game
 document.addEventListener("keydown", function (e) {
+    var activeUnit;
+
     mapUI.onKeyDown(e.keyCode);
+
+    // Unit stuff
+    if (game.activeUnit) {
+        activeUnit = game.getUnit(game.activeUnit);
+        console.log("ACTIVE UNIT");
+
+        // Unit movement
+        if (e.keyCode === 97) {
+            activeUnit.move("SW");
+        } else if (e.keyCode === 98) {
+            activeUnit.move("S");
+        } else if (e.keyCode === 99) {
+            activeUnit.move("SE");
+        } else if (e.keyCode === 100) {
+            activeUnit.move("W");
+        } else if (e.keyCode === 102) {
+            activeUnit.move("E");
+        } else if (e.keyCode === 103) {
+            activeUnit.move("NW");
+        } else if (e.keyCode === 104) {
+            activeUnit.move("N");
+        } else if (e.keyCode === 105) {
+            activeUnit.move("NE");
+        }
+    }
 });
 document.addEventListener("keyup", function (e) {
     mapUI.onKeyUp(e.keyCode);
@@ -343,6 +370,7 @@ var MapMaker;
 var Game = (function () {
     function Game(numPlayers, mapRows, mapCols) {
         this.maxId = 0;
+        this.activeUnit = null;
         var i;
 
         this.map = MapMaker.generate(mapRows, mapCols);
@@ -412,10 +440,7 @@ var Units;
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.map.tiles[coords[0]][coords[1]].units.push({
-                id: this.id,
-                owner: this.owner
-            });
+            game.map.tiles[coords[0]][coords[1]].units.push(this.stub());
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
@@ -424,19 +449,60 @@ var Units;
             return inputClass.constructor.name;
         };
 
+        // Used as a lightweight ID for this unit
+        BaseUnit.prototype.stub = function () {
+            return {
+                id: this.id,
+                owner: this.owner
+            };
+        };
+
         BaseUnit.prototype.activate = function () {
             this.active = true;
+            game.activeUnit = this.stub();
             mapUI.goToCoords(this.coords);
             console.log("activate");
             console.log(this);
         };
 
         BaseUnit.prototype.move = function (direction) {
+            var i, initialCoords, tileUnits;
+
             // Should be able to make this general enough to handle all units
             // Handle fight initiation here, if move goes to tile with enemy on it
             // Decrease "currentMovement", and if it hits 0, go to next step of GameLoop (how? set "moved" to true)
             // Keep coords synced with map!
             console.log(direction);
+
+            // Save a copy
+            initialCoords = this.coords.slice();
+
+            // Implement movement
+            if (direction === "SW") {
+                this.coords[0] -= 1;
+                this.coords[1] += 1;
+            } else if (direction === "S") {
+                this.coords[0] -= 1;
+            }
+
+            // If moved, update unit in game.map.tiles and render map
+            if (this.coords[0] !== initialCoords[0] || this.coords[1] !== initialCoords[1]) {
+                console.log("ACTUALLY MOVED");
+
+                // Delete old unit in map
+                tileUnits = game.map.tiles[initialCoords[0]][initialCoords[1]].units;
+                for (i = 0; i < tileUnits.length; i++) {
+                    if (tileUnits[i].id === this.id) {
+                        tileUnits.splice(i);
+                        break;
+                    }
+                }
+
+                // Add unit at new tile
+                game.map.tiles[this.coords[0]][this.coords[1]].units.push(this.stub());
+
+                mapUI.render();
+            }
         };
         return BaseUnit;
     })();
