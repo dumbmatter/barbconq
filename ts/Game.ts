@@ -31,6 +31,10 @@ class Game {
         return this.units[unitStub.owner][unitStub.id];
     }
 
+    getTile(coords : number[]) {
+        return this.map.tiles[coords[0]][coords[1]];
+    }
+
     moveUnits() {
         var i, j, unit;
 

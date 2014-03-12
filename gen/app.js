@@ -392,6 +392,10 @@ var Game = (function () {
         return this.units[unitStub.owner][unitStub.id];
     };
 
+    Game.prototype.getTile = function (coords) {
+        return this.map.tiles[coords[0]][coords[1]];
+    };
+
     Game.prototype.moveUnits = function () {
         var i, j, unit;
 
@@ -479,10 +483,25 @@ var Units;
 
             // Implement movement
             if (direction === "SW") {
+                this.coords[0] += 1;
+                this.coords[1] -= 1;
+            } else if (direction === "S") {
+                this.coords[0] += 1;
+            } else if (direction === "SE") {
+                this.coords[0] += 1;
+                this.coords[1] += 1;
+            } else if (direction === "W") {
+                this.coords[1] -= 1;
+            } else if (direction === "E") {
+                this.coords[1] += 1;
+            } else if (direction === "NW") {
+                this.coords[0] -= 1;
+                this.coords[1] -= 1;
+            } else if (direction === "N") {
+                this.coords[0] -= 1;
+            } else if (direction === "NE") {
                 this.coords[0] -= 1;
                 this.coords[1] += 1;
-            } else if (direction === "S") {
-                this.coords[0] -= 1;
             }
 
             // If moved, update unit in game.map.tiles and render map
@@ -490,7 +509,7 @@ var Units;
                 console.log("ACTUALLY MOVED");
 
                 // Delete old unit in map
-                tileUnits = game.map.tiles[initialCoords[0]][initialCoords[1]].units;
+                tileUnits = game.getTile(initialCoords).units;
                 for (i = 0; i < tileUnits.length; i++) {
                     if (tileUnits[i].id === this.id) {
                         tileUnits.splice(i);
@@ -499,7 +518,7 @@ var Units;
                 }
 
                 // Add unit at new tile
-                game.map.tiles[this.coords[0]][this.coords[1]].units.push(this.stub());
+                game.getTile(this.coords).units.push(this.stub());
 
                 mapUI.render();
             }
