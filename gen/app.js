@@ -504,7 +504,7 @@ var Units;
                 this.coords[1] += 1;
             }
 
-            // If moved, update unit in game.map.tiles and render map
+            // If moved, update shit and render map
             if (this.coords[0] !== initialCoords[0] || this.coords[1] !== initialCoords[1]) {
                 console.log("ACTUALLY MOVED");
 
@@ -519,6 +519,9 @@ var Units;
 
                 // Add unit at new tile
                 game.getTile(this.coords).units.push(this.stub());
+
+                // Keep track of movement
+                this.currentMovement -= 1;
 
                 mapUI.render();
             }

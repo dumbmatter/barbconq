@@ -1,7 +1,7 @@
 GameLoop
   iterate over game.units, either auto-moving for AI or activating for player
   call game.moveUnits, activate first unmoved unit
-  wait until some action is taken, then set moved=true and active=false
+  wait until some action is taken, then set moved=true and active=false and game.activeUnit=null
   call game.moveUnits again, activate next unmoved unit
   ...
   call game.moveUnits, all moved, then do game.newTurn
