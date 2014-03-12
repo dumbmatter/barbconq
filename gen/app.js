@@ -515,6 +515,20 @@ var Units;
                 this.coords[1] += 1;
             }
 
+            // Don't walk off the map!
+            if (this.coords[0] < 0) {
+                this.coords[0] = 0;
+            }
+            if (this.coords[1] < 0) {
+                this.coords[1] = 0;
+            }
+            if (this.coords[0] >= game.map.height - 1) {
+                this.coords[0] = game.map.height - 1;
+            }
+            if (this.coords[1] >= game.map.width) {
+                this.coords[1] = game.map.width - 1;
+            }
+
             // If moved, update shit and render map
             if (this.coords[0] !== initialCoords[0] || this.coords[1] !== initialCoords[1]) {
                 // Delete old unit in map
@@ -540,7 +554,7 @@ var Units;
                     // After delay, move to next unit
                     setTimeout(function () {
                         game.moveUnits();
-                    }, 1000);
+                    }, 500);
                 }
 
                 mapUI.render();
