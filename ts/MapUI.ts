@@ -26,7 +26,6 @@ class MapUI {
     VIEW_HEIGHT : number;
     VIEW_TILE_WIDTH : number;
     VIEW_TILE_HEIGHT : number;
-    hoveredTile : number[];
 
     constructor() {
         var key;
@@ -69,29 +68,6 @@ class MapUI {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
-
-        // Handle hover
-        this.hoveredTile = [-1, -1];
-        this.canvas.addEventListener("mousemove", function(e) {
-            var i, j, left, top;
-
-            // Top left coordinate in pixels, relative to the whole map
-            top = this.Y - this.VIEW_HEIGHT / 2;
-            left = this.X - this.VIEW_WIDTH / 2;
-
-            // Coordinates in tiles
-            i = Math.floor((top + e.y) / this.TILE_SIZE);
-            j = Math.floor((left + e.x) / this.TILE_SIZE);
-
-            if ((i !== this.hoveredTile[0] || j !== this.hoveredTile[1]) && i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
-                this.hoveredTile = [i, j];
-
-                chromeUI.onHoverTile(game.map.tiles[i][j]);
-            }
-        }.bind(this));
-        this.canvas.addEventListener("mouseout", function(e) {
-            chromeUI.onHoverTile();
-        }.bind(this));
 
         // Handle resize
         window.addEventListener("resize", function () {

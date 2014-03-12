@@ -1,15 +1,19 @@
+bitbucket
+
 UI
   bottom chrome
   overview tiny map
 
 Controller
-  move keycode handling out of MapUI and into Controller
+  move keycode handling out of MapUI and into Controller? probably yes, and keyspressed
   more unit shortcuts
     press space to skip to mark active unit as moved and go to next active unit
     fortify, etc
 
 right click to move
-what does left click do?
+left click
+  if one of your units is on that tile, activate it and DO NOT CENTER THE MAP
+  if one of your units is not on that tile, center the map
 
 stacked unit actions and UI
 

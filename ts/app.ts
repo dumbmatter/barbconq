@@ -9,6 +9,7 @@
 var game = new Game(1, 40, 80);
 var chromeUI = new ChromeUI();
 var mapUI = new MapUI();
+var controller = new Controller();
 
 for (var i = 0; i < 200; i++) {
     new Units.Warrior(0, [Math.floor(40 * Math.random()), Math.floor(80 * Math.random())]);
