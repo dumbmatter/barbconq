@@ -37,7 +37,11 @@ class Game {
     }
 
     getTile(coords : number[]) {
-        return this.map.tiles[coords[0]][coords[1]];
+        if (mapUI.validCoords(coords)) {
+            return this.map.tiles[coords[0]][coords[1]];
+        } else {
+            return null;
+        }
     }
 
     newTurn() {

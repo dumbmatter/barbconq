@@ -4,17 +4,8 @@ class MapUI {
     // Constants
     TILE_SIZE : number = 50;
     WORLD_SIZE : number = 2000;
-    KEYS = {
-        UP: 38,
-        RIGHT: 39,
-        DOWN: 40,
-        LEFT: 37
-    };
     terrainColors: any;
     terrainFontColors: any;
-
-    // Input
-    keysPressed = {};
 
     // Display
     // (X, Y) is the center of the region of the map displayed on the screen.
@@ -28,13 +19,6 @@ class MapUI {
     VIEW_TILE_HEIGHT : number;
 
     constructor() {
-        var key;
-
-        // This is used to track which keys are currently pressed
-        for (key in this.KEYS) {
-            this.keysPressed[this.KEYS[key]] = false;
-        }
-
         // Colors!
         this.terrainColors = {
             peak: "#000",
@@ -90,34 +74,6 @@ class MapUI {
         this.VIEW_HEIGHT = this.canvas.height;
         this.VIEW_TILE_WIDTH = Math.floor(this.VIEW_WIDTH / this.TILE_SIZE) + 2;
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
-    }
-
-    onKeyDown(keyCode : number) {
-        if (keyCode in this.keysPressed) {
-            this.keysPressed[keyCode] = true;
-
-            // Panning viewport based on keyboard arrows
-            if (this.keysPressed[this.KEYS.UP]) {
-                this.Y = this.Y - 20;
-            }
-            if (this.keysPressed[this.KEYS.RIGHT]) {
-                this.X = this.X + 20;
-            }
-            if (this.keysPressed[this.KEYS.DOWN]) {
-                this.Y = this.Y + 20;
-            }
-            if (this.keysPressed[this.KEYS.LEFT]) {
-                this.X = this.X - 20;
-            }
-
-            requestAnimationFrame(this.render.bind(this));
-        }
-    }
-
-    onKeyUp(keyCode : number) {
-        if (keyCode in this.keysPressed) {
-            this.keysPressed[keyCode] = false;
-        }
     }
 
     render() {
@@ -251,10 +207,19 @@ class MapUI {
         ];
 
         // Only return coordinates in map
-        if (coords[0] >= 0 && coords[1] >= 0 && coords[0] < game.map.height && coords[1] < game.map.width) {
+        if (this.validCoords(coords)) {
             return coords;
         } else {
             return null;
         }
+    }
+
+    // Make sure coords are on map
+    validCoords(coords : number []) {
+        if (coords) {
+            return coords[0] >= 0 && coords[1] >= 0 && coords[0] < game.map.height && coords[1] < game.map.width;
+        }
+
+        return false;
     }
 }

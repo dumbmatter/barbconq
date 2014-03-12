@@ -1,6 +1,29 @@
 // Handle user input from keyboard and mouse, and route it to the appropriate place based on the state of the game
 
 class Controller {
+    KEYS = {
+        UP: 38,
+        RIGHT: 39,
+        DOWN: 40,
+        LEFT: 37,
+        NUMPAD_1: 97,
+        NUMPAD_2: 98,
+        NUMPAD_3: 99,
+        NUMPAD_4: 100,
+        NUMPAD_6: 102,
+        NUMPAD_7: 103,
+        NUMPAD_8: 104,
+        NUMPAD_9: 105,
+        C: 67
+    };
+    // Only needed for some keys
+    keysPressed = {
+        38: false,
+        39: false,
+        40: false,
+        37: false
+    };
+
     hoveredTile : number[];
 
     constructor() {
@@ -13,11 +36,31 @@ class Controller {
 
     initMapPanning() {
         document.addEventListener("keydown", function (e) {
-            mapUI.onKeyDown(e.keyCode);
-        });
+            if (e.keyCode in this.keysPressed) {
+                this.keysPressed[e.keyCode] = true;
+
+                // Panning viewport based on keyboard arrows
+                if (this.keysPressed[this.KEYS.UP]) {
+                    mapUI.Y = mapUI.Y - 20;
+                }
+                if (this.keysPressed[this.KEYS.RIGHT]) {
+                    mapUI.X = mapUI.X + 20;
+                }
+                if (this.keysPressed[this.KEYS.DOWN]) {
+                    mapUI.Y = mapUI.Y + 20;
+                }
+                if (this.keysPressed[this.KEYS.LEFT]) {
+                    mapUI.X = mapUI.X - 20;
+                }
+
+                requestAnimationFrame(mapUI.render.bind(mapUI));
+            }
+        }.bind(this));
         document.addEventListener("keyup", function (e) {
-            mapUI.onKeyUp(e.keyCode);
-        });
+            if (e.keyCode in this.keysPressed) {
+                this.keysPressed[e.keyCode] = false;
+            }
+        }.bind(this));
     }
 
     initUnitActions() {
@@ -29,30 +72,30 @@ class Controller {
                 activeUnit = game.getUnit(game.activeUnit);
 
                 // Unit movement
-                if (e.keyCode === 97) { // Numpad 1
+                if (e.keyCode === this.KEYS.NUMPAD_1) {
                     activeUnit.move("SW");
-                } else if (e.keyCode === 98) { // Numpad 2
+                } else if (e.keyCode === this.KEYS.NUMPAD_2) {
                     activeUnit.move("S");
-                } else if (e.keyCode === 99) { // Numpad 3
+                } else if (e.keyCode === this.KEYS.NUMPAD_3) {
                     activeUnit.move("SE");
-                } else if (e.keyCode === 100) { // Numpad 4
+                } else if (e.keyCode === this.KEYS.NUMPAD_4) {
                     activeUnit.move("W");
-                } else if (e.keyCode === 102) { // Numpad 6
+                } else if (e.keyCode === this.KEYS.NUMPAD_6) {
                     activeUnit.move("E");
-                } else if (e.keyCode === 103) { // Numpad 7
+                } else if (e.keyCode === this.KEYS.NUMPAD_7) {
                     activeUnit.move("NW");
-                } else if (e.keyCode === 104) { // Numpad 8
+                } else if (e.keyCode === this.KEYS.NUMPAD_8) {
                     activeUnit.move("N");
-                } else if (e.keyCode === 105) { // Numpad 9
+                } else if (e.keyCode === this.KEYS.NUMPAD_9) {
                     activeUnit.move("NE");
                 }
 
                 // Center on active unit
-                if (e.keyCode === 67) { // c
+                if (e.keyCode === this.KEYS.C) {
                     mapUI.goToCoords(activeUnit.coords)
                 }
             }
-        });
+        }.bind(this));
     }
 
     initHoverTile() {
@@ -90,21 +133,23 @@ class Controller {
 
             coords = mapUI.pixelsToCoords(e.x, e.y);
 
-            units = game.getTile(coords).units;
-            foundUnit = false;
+            if (mapUI.validCoords(coords)) {
+                units = game.getTile(coords).units;
+                foundUnit = false;
 
-            // This should be made smarter (i.e. pick the strongest unit with moves left - easy if units is sorted by strength by default)
-            for (i = 0; i < units.length; i++) {
-                if (units[i].owner === 1) {
-                    game.getUnit(units[i]).activate(false); // Activate, but don't center map!
-                    foundUnit = true;
-                    requestAnimationFrame(mapUI.render.bind(mapUI));
-                    return;
+                // This should be made smarter (i.e. pick the strongest unit with moves left - easy if units is sorted by strength by default)
+                for (i = 0; i < units.length; i++) {
+                    if (units[i].owner === 1) {
+                        game.getUnit(units[i]).activate(false); // Activate, but don't center map!
+                        foundUnit = true;
+                        requestAnimationFrame(mapUI.render.bind(mapUI));
+                        return;
+                    }
                 }
-            }
 
-            // If we made it this far, none of the user's units are on this tile
-            mapUI.goToCoords(coords);
+                // If we made it this far, none of the user's units are on this tile
+                mapUI.goToCoords(coords);
+            }
         });
     }
 }

@@ -9,6 +9,28 @@ var Random;
 // Handle user input from keyboard and mouse, and route it to the appropriate place based on the state of the game
 var Controller = (function () {
     function Controller() {
+        this.KEYS = {
+            UP: 38,
+            RIGHT: 39,
+            DOWN: 40,
+            LEFT: 37,
+            NUMPAD_1: 97,
+            NUMPAD_2: 98,
+            NUMPAD_3: 99,
+            NUMPAD_4: 100,
+            NUMPAD_6: 102,
+            NUMPAD_7: 103,
+            NUMPAD_8: 104,
+            NUMPAD_9: 105,
+            C: 67
+        };
+        // Only needed for some keys
+        this.keysPressed = {
+            38: false,
+            39: false,
+            40: false,
+            37: false
+        };
         // Start listening for various kinds of user input
         this.initMapPanning();
         this.initUnitActions();
@@ -17,11 +39,31 @@ var Controller = (function () {
     }
     Controller.prototype.initMapPanning = function () {
         document.addEventListener("keydown", function (e) {
-            mapUI.onKeyDown(e.keyCode);
-        });
+            if (e.keyCode in this.keysPressed) {
+                this.keysPressed[e.keyCode] = true;
+
+                // Panning viewport based on keyboard arrows
+                if (this.keysPressed[this.KEYS.UP]) {
+                    mapUI.Y = mapUI.Y - 20;
+                }
+                if (this.keysPressed[this.KEYS.RIGHT]) {
+                    mapUI.X = mapUI.X + 20;
+                }
+                if (this.keysPressed[this.KEYS.DOWN]) {
+                    mapUI.Y = mapUI.Y + 20;
+                }
+                if (this.keysPressed[this.KEYS.LEFT]) {
+                    mapUI.X = mapUI.X - 20;
+                }
+
+                requestAnimationFrame(mapUI.render.bind(mapUI));
+            }
+        }.bind(this));
         document.addEventListener("keyup", function (e) {
-            mapUI.onKeyUp(e.keyCode);
-        });
+            if (e.keyCode in this.keysPressed) {
+                this.keysPressed[e.keyCode] = false;
+            }
+        }.bind(this));
     };
 
     Controller.prototype.initUnitActions = function () {
@@ -33,30 +75,30 @@ var Controller = (function () {
                 activeUnit = game.getUnit(game.activeUnit);
 
                 // Unit movement
-                if (e.keyCode === 97) {
+                if (e.keyCode === this.KEYS.NUMPAD_1) {
                     activeUnit.move("SW");
-                } else if (e.keyCode === 98) {
+                } else if (e.keyCode === this.KEYS.NUMPAD_2) {
                     activeUnit.move("S");
-                } else if (e.keyCode === 99) {
+                } else if (e.keyCode === this.KEYS.NUMPAD_3) {
                     activeUnit.move("SE");
-                } else if (e.keyCode === 100) {
+                } else if (e.keyCode === this.KEYS.NUMPAD_4) {
                     activeUnit.move("W");
-                } else if (e.keyCode === 102) {
+                } else if (e.keyCode === this.KEYS.NUMPAD_6) {
                     activeUnit.move("E");
-                } else if (e.keyCode === 103) {
+                } else if (e.keyCode === this.KEYS.NUMPAD_7) {
                     activeUnit.move("NW");
-                } else if (e.keyCode === 104) {
+                } else if (e.keyCode === this.KEYS.NUMPAD_8) {
                     activeUnit.move("N");
-                } else if (e.keyCode === 105) {
+                } else if (e.keyCode === this.KEYS.NUMPAD_9) {
                     activeUnit.move("NE");
                 }
 
                 // Center on active unit
-                if (e.keyCode === 67) {
+                if (e.keyCode === this.KEYS.C) {
                     mapUI.goToCoords(activeUnit.coords);
                 }
             }
-        });
+        }.bind(this));
     };
 
     Controller.prototype.initHoverTile = function () {
@@ -94,20 +136,22 @@ var Controller = (function () {
 
             coords = mapUI.pixelsToCoords(e.x, e.y);
 
-            units = game.getTile(coords).units;
-            foundUnit = false;
+            if (mapUI.validCoords(coords)) {
+                units = game.getTile(coords).units;
+                foundUnit = false;
 
-            for (i = 0; i < units.length; i++) {
-                if (units[i].owner === 1) {
-                    game.getUnit(units[i]).activate(false); // Activate, but don't center map!
-                    foundUnit = true;
-                    requestAnimationFrame(mapUI.render.bind(mapUI));
-                    return;
+                for (i = 0; i < units.length; i++) {
+                    if (units[i].owner === 1) {
+                        game.getUnit(units[i]).activate(false); // Activate, but don't center map!
+                        foundUnit = true;
+                        requestAnimationFrame(mapUI.render.bind(mapUI));
+                        return;
+                    }
                 }
-            }
 
-            // If we made it this far, none of the user's units are on this tile
-            mapUI.goToCoords(coords);
+                // If we made it this far, none of the user's units are on this tile
+                mapUI.goToCoords(coords);
+            }
         });
     };
     return Controller;
@@ -159,20 +203,6 @@ var MapUI = (function () {
         // Constants
         this.TILE_SIZE = 50;
         this.WORLD_SIZE = 2000;
-        this.KEYS = {
-            UP: 38,
-            RIGHT: 39,
-            DOWN: 40,
-            LEFT: 37
-        };
-        // Input
-        this.keysPressed = {};
-        var key;
-
-        for (key in this.KEYS) {
-            this.keysPressed[this.KEYS[key]] = false;
-        }
-
         // Colors!
         this.terrainColors = {
             peak: "#000",
@@ -227,34 +257,6 @@ var MapUI = (function () {
         this.VIEW_HEIGHT = this.canvas.height;
         this.VIEW_TILE_WIDTH = Math.floor(this.VIEW_WIDTH / this.TILE_SIZE) + 2;
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
-    };
-
-    MapUI.prototype.onKeyDown = function (keyCode) {
-        if (keyCode in this.keysPressed) {
-            this.keysPressed[keyCode] = true;
-
-            // Panning viewport based on keyboard arrows
-            if (this.keysPressed[this.KEYS.UP]) {
-                this.Y = this.Y - 20;
-            }
-            if (this.keysPressed[this.KEYS.RIGHT]) {
-                this.X = this.X + 20;
-            }
-            if (this.keysPressed[this.KEYS.DOWN]) {
-                this.Y = this.Y + 20;
-            }
-            if (this.keysPressed[this.KEYS.LEFT]) {
-                this.X = this.X - 20;
-            }
-
-            requestAnimationFrame(this.render.bind(this));
-        }
-    };
-
-    MapUI.prototype.onKeyUp = function (keyCode) {
-        if (keyCode in this.keysPressed) {
-            this.keysPressed[keyCode] = false;
-        }
     };
 
     MapUI.prototype.render = function () {
@@ -388,11 +390,20 @@ var MapUI = (function () {
         ];
 
         // Only return coordinates in map
-        if (coords[0] >= 0 && coords[1] >= 0 && coords[0] < game.map.height && coords[1] < game.map.width) {
+        if (this.validCoords(coords)) {
             return coords;
         } else {
             return null;
         }
+    };
+
+    // Make sure coords are on map
+    MapUI.prototype.validCoords = function (coords) {
+        if (coords) {
+            return coords[0] >= 0 && coords[1] >= 0 && coords[0] < game.map.height && coords[1] < game.map.width;
+        }
+
+        return false;
     };
     return MapUI;
 })();
@@ -469,7 +480,11 @@ var Game = (function () {
     };
 
     Game.prototype.getTile = function (coords) {
-        return this.map.tiles[coords[0]][coords[1]];
+        if (mapUI.validCoords(coords)) {
+            return this.map.tiles[coords[0]][coords[1]];
+        } else {
+            return null;
+        }
     };
 
     Game.prototype.newTurn = function () {
@@ -554,6 +569,7 @@ var Units;
             };
         };
 
+        // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
         BaseUnit.prototype.activate = function (goToCoords) {
             if (typeof goToCoords === "undefined") { goToCoords = true; }
             // Deactivate current active unit, if there is one
