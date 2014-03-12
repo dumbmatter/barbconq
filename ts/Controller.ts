@@ -1,13 +1,28 @@
 // Handle user input from keyboard and mouse, and route it to the appropriate place based on the state of the game
 
 class Controller {
-    hoveredTile : number[] = [-1, -1];
+    hoveredTile : number[];
 
     constructor() {
+        // Start listening for various kinds of user input
+        this.initMapPanning();
+        this.initUnitActions();
+        this.initHoverTile();
+        this.initMapClick();
+    }
+
+    initMapPanning() {
+        document.addEventListener("keydown", function (e) {
+            mapUI.onKeyDown(e.keyCode);
+        });
+        document.addEventListener("keyup", function (e) {
+            mapUI.onKeyUp(e.keyCode);
+        });
+    }
+
+    initUnitActions() {
         document.addEventListener("keydown", function (e) {
             var activeUnit;
-
-            mapUI.onKeyDown(e.keyCode);
 
             // Active unit stuff
             if (game.activeUnit) {
@@ -38,14 +53,46 @@ class Controller {
                 }
             }
         });
-        document.addEventListener("keyup", function (e) {
-            mapUI.onKeyUp(e.keyCode);
-        });
+    }
 
-        // Handle hover
+    initHoverTile() {
+        this.hoveredTile = [-1, -1]; // Dummy value for out of map
+
         mapUI.canvas.addEventListener("mousemove", function(e) {
-            var i, j, left, top;
+            var coords;
 
+            coords = mapUI.pixelsToCoords(e.x, e.y);
+
+            if (coords) {
+                // Over a tile
+                if (coords[0] !== this.hoveredTile[0] || coords[1] !== this.hoveredTile[1]) {
+                    // Only update if new tile
+                    this.hoveredTile = coords;
+                    chromeUI.onHoverTile(game.getTile(this.hoveredTile));
+                }
+            } else {
+                // Not over tile, over some other part of the canvas
+                this.hoveredTile = [-1, -1];
+                chromeUI.onHoverTile();
+            }
+        }.bind(this));
+        mapUI.canvas.addEventListener("mouseout", function(e) {
+            this.hoveredTile = [-1, -1];
+            chromeUI.onHoverTile();
+        }.bind(this));
+    }
+
+    // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
+    // if one of your units is not on the clicked tile, center the map
+    initMapClick() {
+/*        // Handle hover
+        mapUI.canvas.addEventListener("click", function(e) {
+            var activeUnit, i, j, left, top;
+
+            if (game.activeUnit) {
+                activeUnit = game.getUnit(game.activeUnit);
+console.log("active: " + game.activeUnit);
+            }
             // Top left coordinate in pixels, relative to the whole map
             top = mapUI.Y - mapUI.VIEW_HEIGHT / 2;
             left = mapUI.X - mapUI.VIEW_WIDTH / 2;
@@ -54,14 +101,7 @@ class Controller {
             i = Math.floor((top + e.y) / mapUI.TILE_SIZE);
             j = Math.floor((left + e.x) / mapUI.TILE_SIZE);
 
-            if ((i !== this.hoveredTile[0] || j !== this.hoveredTile[1]) && i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
-                this.hoveredTile = [i, j];
-
-                chromeUI.onHoverTile(game.map.tiles[i][j]);
-            }
-        }.bind(this));
-        mapUI.canvas.addEventListener("mouseout", function(e) {
-            chromeUI.onHoverTile();
-        }.bind(this));
+console.log([i, j]);
+        });*/
     }
 }

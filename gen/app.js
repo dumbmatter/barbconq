@@ -9,11 +9,24 @@ var Random;
 // Handle user input from keyboard and mouse, and route it to the appropriate place based on the state of the game
 var Controller = (function () {
     function Controller() {
-        this.hoveredTile = [-1, -1];
+        // Start listening for various kinds of user input
+        this.initMapPanning();
+        this.initUnitActions();
+        this.initHoverTile();
+        this.initMapClick();
+    }
+    Controller.prototype.initMapPanning = function () {
+        document.addEventListener("keydown", function (e) {
+            mapUI.onKeyDown(e.keyCode);
+        });
+        document.addEventListener("keyup", function (e) {
+            mapUI.onKeyUp(e.keyCode);
+        });
+    };
+
+    Controller.prototype.initUnitActions = function () {
         document.addEventListener("keydown", function (e) {
             var activeUnit;
-
-            mapUI.onKeyDown(e.keyCode);
 
             // Active unit stuff
             if (game.activeUnit) {
@@ -44,32 +57,58 @@ var Controller = (function () {
                 }
             }
         });
-        document.addEventListener("keyup", function (e) {
-            mapUI.onKeyUp(e.keyCode);
-        });
+    };
 
-        // Handle hover
+    Controller.prototype.initHoverTile = function () {
+        this.hoveredTile = [-1, -1]; // Dummy value for out of map
+
         mapUI.canvas.addEventListener("mousemove", function (e) {
-            var i, j, left, top;
+            var coords;
 
-            // Top left coordinate in pixels, relative to the whole map
-            top = mapUI.Y - mapUI.VIEW_HEIGHT / 2;
-            left = mapUI.X - mapUI.VIEW_WIDTH / 2;
+            coords = mapUI.pixelsToCoords(e.x, e.y);
 
-            // Coordinates in tiles
-            i = Math.floor((top + e.y) / mapUI.TILE_SIZE);
-            j = Math.floor((left + e.x) / mapUI.TILE_SIZE);
-
-            if ((i !== this.hoveredTile[0] || j !== this.hoveredTile[1]) && i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
-                this.hoveredTile = [i, j];
-
-                chromeUI.onHoverTile(game.map.tiles[i][j]);
+            if (coords) {
+                // Over a tile
+                if (coords[0] !== this.hoveredTile[0] || coords[1] !== this.hoveredTile[1]) {
+                    // Only update if new tile
+                    this.hoveredTile = coords;
+                    chromeUI.onHoverTile(game.getTile(this.hoveredTile));
+                }
+            } else {
+                // Not over tile, over some other part of the canvas
+                this.hoveredTile = [-1, -1];
+                chromeUI.onHoverTile();
             }
+            console.log(this.hoveredTile);
         }.bind(this));
         mapUI.canvas.addEventListener("mouseout", function (e) {
+            this.hoveredTile = [-1, -1];
             chromeUI.onHoverTile();
         }.bind(this));
-    }
+    };
+
+    // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
+    // if one of your units is not on the clicked tile, center the map
+    Controller.prototype.initMapClick = function () {
+        /*        // Handle hover
+        mapUI.canvas.addEventListener("click", function(e) {
+        var activeUnit, i, j, left, top;
+        
+        if (game.activeUnit) {
+        activeUnit = game.getUnit(game.activeUnit);
+        console.log("active: " + game.activeUnit);
+        }
+        // Top left coordinate in pixels, relative to the whole map
+        top = mapUI.Y - mapUI.VIEW_HEIGHT / 2;
+        left = mapUI.X - mapUI.VIEW_WIDTH / 2;
+        
+        // Coordinates in tiles
+        i = Math.floor((top + e.y) / mapUI.TILE_SIZE);
+        j = Math.floor((left + e.x) / mapUI.TILE_SIZE);
+        
+        console.log([i, j]);
+        });*/
+    };
     return Controller;
 })();
 // ChromeUI - Everything related to the display and interactivity of the on-screen chrome (everything not on the map)
@@ -331,6 +370,27 @@ var MapUI = (function () {
         this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
         this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;
         window.requestAnimationFrame(this.render.bind(this));
+    };
+
+    MapUI.prototype.pixelsToCoords = function (x, y) {
+        var coords, left, top;
+
+        // Top left coordinate in pixels, relative to the whole map
+        top = this.Y - this.VIEW_HEIGHT / 2;
+        left = this.X - this.VIEW_WIDTH / 2;
+
+        // Coordinates in tiles
+        coords = [
+            Math.floor((top + y) / this.TILE_SIZE),
+            Math.floor((left + x) / this.TILE_SIZE)
+        ];
+
+        // Only return coordinates in map
+        if (coords[0] >= 0 && coords[1] >= 0 && coords[0] < game.map.height && coords[1] < game.map.width) {
+            return coords;
+        } else {
+            return null;
+        }
     };
     return MapUI;
 })();

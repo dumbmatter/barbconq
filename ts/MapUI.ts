@@ -229,10 +229,31 @@ class MapUI {
         }.bind(this));
     }
 
-    goToCoords(coords) {
+    goToCoords(coords : number[]) {
         // ith row, jth column, 0 indexed
         this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
         this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;
         window.requestAnimationFrame(this.render.bind(this));
+    }
+
+    pixelsToCoords(x : number, y : number) : number[] {
+        var coords, left, top;
+
+        // Top left coordinate in pixels, relative to the whole map
+        top = this.Y - this.VIEW_HEIGHT / 2;
+        left = this.X - this.VIEW_WIDTH / 2;
+
+        // Coordinates in tiles
+        coords = [
+            Math.floor((top + y) / this.TILE_SIZE),
+            Math.floor((left + x) / this.TILE_SIZE)
+        ];
+
+        // Only return coordinates in map
+        if (coords[0] >= 0 && coords[1] >= 0 && coords[0] < game.map.height && coords[1] < game.map.width) {
+            return coords;
+        } else {
+            return null;
+        }
     }
 }
