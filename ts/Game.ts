@@ -5,6 +5,7 @@ class Game {
     maxId : number = 0;
     names: string[];
     units : {}[];
+    activeUnit : Units.Stub;
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
         var i;

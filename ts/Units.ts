@@ -52,6 +52,7 @@ module Units {
 
         activate() {
             this.active = true;
+            game.activeUnit = {id: this.id, owner: this.owner};
             mapUI.goToCoords(this.coords);
 console.log("activate")
 console.log(this)
