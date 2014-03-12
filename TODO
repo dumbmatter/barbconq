@@ -1,16 +1,13 @@
 abstract controller to handle user input
   panning (done, but is it in the right place?)
   unit-specific movements, somehow defined in the Unit class? would only apply to the active unit, so maybe somehow keep track of the active unit's path and then route these there
-    press "c" to go to active unit (if one exists)
     press space to skip to mark active unit as moved and go to next active unit
-    active unit movement
 
 typescript live compile
 
 Create a basic unit, handle its basic actions
 
 core modules
-  some kind of controller to route keyboard input?
   Combat(attacker : Unit, defender : Unit)
 
 Base object types:

@@ -12,7 +12,7 @@ document.addEventListener("keydown", function (e) {
 
     mapUI.onKeyDown(e.keyCode);
 
-    // Unit stuff
+    // Active unit stuff
     if (game.activeUnit) {
         activeUnit = game.getUnit(game.activeUnit);
 
@@ -33,6 +33,11 @@ document.addEventListener("keydown", function (e) {
             activeUnit.move("N");
         } else if (e.keyCode === 105) {
             activeUnit.move("NE");
+        }
+
+        // Center on active unit
+        if (e.keyCode === 67) {
+            mapUI.goToCoords(activeUnit.coords);
         }
     }
 });
