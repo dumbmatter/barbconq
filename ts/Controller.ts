@@ -101,7 +101,7 @@ class Controller {
     initHoverTile() {
         this.hoveredTile = [-1, -1]; // Dummy value for out of map
 
-        mapUI.canvas.addEventListener("mousemove", function(e) {
+        mapUI.canvas.addEventListener("mousemove", function (e) {
             var coords;
 
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
@@ -119,7 +119,7 @@ class Controller {
                 chromeUI.onHoverTile();
             }
         }.bind(this));
-        mapUI.canvas.addEventListener("mouseout", function(e) {
+        mapUI.canvas.addEventListener("mouseout", function (e) {
             this.hoveredTile = [-1, -1];
             chromeUI.onHoverTile();
         }.bind(this));
@@ -128,7 +128,7 @@ class Controller {
     // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
     // if one of your units is not on the clicked tile, center the map
     initMapClick() {
-        mapUI.canvas.addEventListener("click", function(e) {
+        mapUI.canvas.addEventListener("click", function (e) {
             var foundUnit, i, coords, units;
 
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
@@ -152,14 +152,33 @@ class Controller {
             }
         });
 
-        mapUI.miniCanvas.addEventListener("click", function(e) {
-            var coords;
+        mapUI.miniCanvas.addEventListener("mousedown", function (e) {
+            var coords, miniMapPan, miniMapPanStop;
 
             coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
 
             if (mapUI.validCoords(coords)) {
                 mapUI.goToCoords(coords);
             }
+
+            // Pan as click is held and mouse is moved
+            miniMapPan = function (e) {
+                var coords;
+
+                coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
+
+                if (mapUI.validCoords(coords)) {
+                    mapUI.goToCoords(coords);
+                }
+            };
+            mapUI.miniCanvas.addEventListener("mousemove", miniMapPan);
+
+            // Stop panning when mouse click ends
+            miniMapPanStop = function (e) {
+                mapUI.miniCanvas.removeEventListener("mousemove", miniMapPan);
+                document.removeEventListener("mouseup", miniMapPanStop);
+            };
+            document.addEventListener("mouseup", miniMapPanStop);
         });
     }
 }

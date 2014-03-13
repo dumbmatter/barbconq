@@ -154,14 +154,33 @@ var Controller = (function () {
             }
         });
 
-        mapUI.miniCanvas.addEventListener("click", function (e) {
-            var coords;
+        mapUI.miniCanvas.addEventListener("mousedown", function (e) {
+            var coords, miniMapPan, miniMapPanStop;
 
             coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
 
             if (mapUI.validCoords(coords)) {
                 mapUI.goToCoords(coords);
             }
+
+            // Pan as click is held and mouse is moved
+            miniMapPan = function (e) {
+                var coords;
+
+                coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
+
+                if (mapUI.validCoords(coords)) {
+                    mapUI.goToCoords(coords);
+                }
+            };
+            mapUI.miniCanvas.addEventListener("mousemove", miniMapPan);
+
+            // Stop panning when mouse click ends
+            miniMapPanStop = function (e) {
+                mapUI.miniCanvas.removeEventListener("mousemove", miniMapPan);
+                document.removeEventListener("mouseup", miniMapPanStop);
+            };
+            document.addEventListener("mouseup", miniMapPanStop);
         });
     };
     return Controller;
