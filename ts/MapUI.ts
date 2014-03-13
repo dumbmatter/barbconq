@@ -139,6 +139,8 @@ class MapUI {
 
         // Clear canvas and redraw everything in view
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.fillStyle = "#000";
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Loop over all tiles, call cb on each tile in the viewport
         var drawViewport = function (cb) {
@@ -210,6 +212,8 @@ class MapUI {
 
         // Clear canvas and redraw everything
         this.miniContext.clearRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
+        this.miniContext.fillStyle = "#000";
+        this.miniContext.fillRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
 
         // Background
         for (i = 0; i < game.map.height; i++) {

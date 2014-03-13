@@ -1,11 +1,11 @@
 // ChromeUI - Everything related to the display and interactivity of the on-screen chrome (everything not on the map)
 
 class ChromeUI {
-    elInfoBox : HTMLDivElement;
+    elHoverBox : HTMLDivElement;
     elTurnBox : HTMLDivElement;
 
     constructor() {
-        this.elInfoBox = <HTMLDivElement> document.getElementById("info-box");
+        this.elHoverBox = <HTMLDivElement> document.getElementById("hover-box");
         this.elTurnBox = <HTMLDivElement> document.getElementById("turn-box");
     }
 
@@ -35,11 +35,11 @@ class ChromeUI {
             // Show tile terrain and features
             content += tile.features.join("/") + (tile.features.length ? "/" : "") + tile.terrain;
 
-            this.elInfoBox.innerHTML = content;
-            this.elInfoBox.style.display = "block";
+            this.elHoverBox.innerHTML = content;
+            this.elHoverBox.style.display = "block";
         } else {
-            // Hide info box
-            this.elInfoBox.style.display = "none";
+            // Hide hover box
+            this.elHoverBox.style.display = "none";
         }
     }
 

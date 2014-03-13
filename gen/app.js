@@ -169,7 +169,7 @@ var Controller = (function () {
 // ChromeUI - Everything related to the display and interactivity of the on-screen chrome (everything not on the map)
 var ChromeUI = (function () {
     function ChromeUI() {
-        this.elInfoBox = document.getElementById("info-box");
+        this.elHoverBox = document.getElementById("hover-box");
         this.elTurnBox = document.getElementById("turn-box");
     }
     ChromeUI.prototype.onHoverTile = function (tile) {
@@ -199,11 +199,11 @@ var ChromeUI = (function () {
             // Show tile terrain and features
             content += tile.features.join("/") + (tile.features.length ? "/" : "") + tile.terrain;
 
-            this.elInfoBox.innerHTML = content;
-            this.elInfoBox.style.display = "block";
+            this.elHoverBox.innerHTML = content;
+            this.elHoverBox.style.display = "block";
         } else {
-            // Hide info box
-            this.elInfoBox.style.display = "none";
+            // Hide hover box
+            this.elHoverBox.style.display = "none";
         }
     };
 
@@ -333,6 +333,8 @@ var MapUI = (function () {
 
         // Clear canvas and redraw everything in view
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.fillStyle = "#000";
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Loop over all tiles, call cb on each tile in the viewport
         var drawViewport = function (cb) {
@@ -404,6 +406,8 @@ var MapUI = (function () {
 
         // Clear canvas and redraw everything
         this.miniContext.clearRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
+        this.miniContext.fillStyle = "#000";
+        this.miniContext.fillRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
 
         for (i = 0; i < game.map.height; i++) {
             for (j = 0; j < game.map.width; j++) {
