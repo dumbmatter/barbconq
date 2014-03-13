@@ -107,7 +107,7 @@ var Controller = (function () {
         mapUI.canvas.addEventListener("mousemove", function (e) {
             var coords;
 
-            coords = mapUI.pixelsToCoords(e.x, e.y);
+            coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
             if (coords) {
                 // Over a tile
@@ -134,7 +134,7 @@ var Controller = (function () {
         mapUI.canvas.addEventListener("click", function (e) {
             var foundUnit, i, coords, units;
 
-            coords = mapUI.pixelsToCoords(e.x, e.y);
+            coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
             if (mapUI.validCoords(coords)) {
                 units = game.getTile(coords).units;
@@ -158,8 +158,6 @@ var Controller = (function () {
             var coords;
 
             coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
-            console.log([e.layerX, e.layerY]);
-            console.log(coords);
 
             if (mapUI.validCoords(coords)) {
                 mapUI.goToCoords(coords);
@@ -484,8 +482,6 @@ var MapUI = (function () {
             Math.floor(y / this.miniTileSize),
             Math.floor(x / this.miniTileSize)
         ];
-        console.log([x, y]);
-        console.log(coords);
 
         // Only return coordinates in map
         if (this.validCoords(coords)) {

@@ -5,9 +5,6 @@ bottom chrome
 minimap
   drag to pan around
 
-firefox
-  click to activate doesn't work
-
 Controller
   more unit shortcuts
     press space to skip to mark active unit as moved and go to next active unit

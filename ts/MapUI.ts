@@ -290,8 +290,6 @@ class MapUI {
             Math.floor(y / this.miniTileSize),
             Math.floor(x / this.miniTileSize)
         ];
-console.log([x, y])
-console.log(coords);
 
         // Only return coordinates in map
         if (this.validCoords(coords)) {
