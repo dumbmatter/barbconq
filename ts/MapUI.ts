@@ -20,6 +20,7 @@ class MapUI {
     // Minimap
     miniCanvas : HTMLCanvasElement;
     miniContext : CanvasRenderingContext2D;
+    miniTileSize : number;
 
     constructor() {
         // Colors!
@@ -59,6 +60,14 @@ class MapUI {
         // Minimap
         this.miniCanvas = <HTMLCanvasElement> document.getElementById("minimap");
         this.miniContext = this.miniCanvas.getContext("2d");
+        // See whether it's height or width limited based on the aspect ratio
+        if (game.map.width / game.map.height > this.miniCanvas.width / this.miniCanvas.height) {
+            // Bound based on map width
+            this.miniTileSize = this.miniCanvas.width / game.map.width;
+        } else {
+            // Bound based on map height
+            this.miniTileSize = this.miniCanvas.height / game.map.height;
+        }
 
         // Handle resize
         window.addEventListener("resize", function () {
@@ -197,16 +206,7 @@ class MapUI {
     }
 
     renderMiniMap() {
-        var bottom, bottomTile, i, j, k, left, leftTile, right, rightTile, tileSize, top, topTile, unit;
-
-        // See whether it's height or width limited based on the aspect ratio
-        if (game.map.width / game.map.height > this.miniCanvas.width / this.miniCanvas.height) {
-            // Bound based on map width
-            tileSize = this.miniCanvas.width / game.map.width;
-        } else {
-            // Bound based on map height
-            tileSize = this.miniCanvas.height / game.map.height;
-        }
+        var bottom, bottomTile, i, j, k, left, leftTile, right, rightTile, top, topTile, unit;
 
         // Clear canvas and redraw everything
         this.miniContext.clearRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
@@ -216,7 +216,7 @@ class MapUI {
             for (j = 0; j < game.map.width; j++) {
                 // Background
                 this.miniContext.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
-                this.miniContext.fillRect(j * tileSize, i * tileSize, tileSize, tileSize);
+                this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
             }
         }
 
@@ -230,7 +230,7 @@ class MapUI {
 
                         if (unit.active) {
                             this.miniContext.fillStyle = "#f00";
-                            this.miniContext.fillRect(j * tileSize, i * tileSize, tileSize, tileSize);
+                            this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
                             break;
                         }
                     }
@@ -249,7 +249,7 @@ class MapUI {
         leftTile = left / this.TILE_SIZE;
         this.miniContext.strokeStyle = "#f00";
         this.miniContext.lineWidth = 2;
-        this.miniContext.strokeRect(leftTile * tileSize, topTile * tileSize, (rightTile - leftTile) * tileSize, (bottomTile - topTile) * tileSize);
+        this.miniContext.strokeRect(leftTile * this.miniTileSize, topTile * this.miniTileSize, (rightTile - leftTile) * this.miniTileSize, (bottomTile - topTile) * this.miniTileSize);
     }
 
     goToCoords(coords : number[]) {
@@ -272,6 +272,26 @@ class MapUI {
             Math.floor((top + y) / this.TILE_SIZE),
             Math.floor((left + x) / this.TILE_SIZE)
         ];
+
+        // Only return coordinates in map
+        if (this.validCoords(coords)) {
+            return coords;
+        } else {
+            return null;
+        }
+    }
+
+    // Same as above, but for minimap
+    miniPixelsToCoords(x : number, y : number) : number[] {
+        var coords, left, top;
+
+        // Coordinates in tiles
+        coords = [
+            Math.floor(y / this.miniTileSize),
+            Math.floor(x / this.miniTileSize)
+        ];
+console.log([x, y])
+console.log(coords);
 
         // Only return coordinates in map
         if (this.validCoords(coords)) {

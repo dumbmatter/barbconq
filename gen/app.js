@@ -153,6 +153,18 @@ var Controller = (function () {
                 mapUI.goToCoords(coords);
             }
         });
+
+        mapUI.miniCanvas.addEventListener("click", function (e) {
+            var coords;
+
+            coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
+            console.log([e.layerX, e.layerY]);
+            console.log(coords);
+
+            if (mapUI.validCoords(coords)) {
+                mapUI.goToCoords(coords);
+            }
+        });
     };
     return Controller;
 })();
@@ -243,6 +255,15 @@ var MapUI = (function () {
         // Minimap
         this.miniCanvas = document.getElementById("minimap");
         this.miniContext = this.miniCanvas.getContext("2d");
+
+        // See whether it's height or width limited based on the aspect ratio
+        if (game.map.width / game.map.height > this.miniCanvas.width / this.miniCanvas.height) {
+            // Bound based on map width
+            this.miniTileSize = this.miniCanvas.width / game.map.width;
+        } else {
+            // Bound based on map height
+            this.miniTileSize = this.miniCanvas.height / game.map.height;
+        }
 
         // Handle resize
         window.addEventListener("resize", function () {
@@ -381,16 +402,7 @@ var MapUI = (function () {
     };
 
     MapUI.prototype.renderMiniMap = function () {
-        var bottom, bottomTile, i, j, k, left, leftTile, right, rightTile, tileSize, top, topTile, unit;
-
-        // See whether it's height or width limited based on the aspect ratio
-        if (game.map.width / game.map.height > this.miniCanvas.width / this.miniCanvas.height) {
-            // Bound based on map width
-            tileSize = this.miniCanvas.width / game.map.width;
-        } else {
-            // Bound based on map height
-            tileSize = this.miniCanvas.height / game.map.height;
-        }
+        var bottom, bottomTile, i, j, k, left, leftTile, right, rightTile, top, topTile, unit;
 
         // Clear canvas and redraw everything
         this.miniContext.clearRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
@@ -399,7 +411,7 @@ var MapUI = (function () {
             for (j = 0; j < game.map.width; j++) {
                 // Background
                 this.miniContext.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
-                this.miniContext.fillRect(j * tileSize, i * tileSize, tileSize, tileSize);
+                this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
             }
         }
 
@@ -412,7 +424,7 @@ var MapUI = (function () {
 
                         if (unit.active) {
                             this.miniContext.fillStyle = "#f00";
-                            this.miniContext.fillRect(j * tileSize, i * tileSize, tileSize, tileSize);
+                            this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
                             break;
                         }
                     }
@@ -425,13 +437,13 @@ var MapUI = (function () {
         right = this.X + this.VIEW_WIDTH / 2;
         bottom = this.Y + this.VIEW_HEIGHT / 2;
         left = this.X - this.VIEW_WIDTH / 2;
-        topTile = top / this.TILE_SIZE;
+        topTile = top / this.TILE_SIZE; // Don't need to floor these since they're just being used for drawing
         rightTile = right / this.TILE_SIZE;
         bottomTile = bottom / this.TILE_SIZE;
         leftTile = left / this.TILE_SIZE;
         this.miniContext.strokeStyle = "#f00";
         this.miniContext.lineWidth = 2;
-        this.miniContext.strokeRect(leftTile * tileSize, topTile * tileSize, (rightTile - leftTile) * tileSize, (bottomTile - topTile) * tileSize);
+        this.miniContext.strokeRect(leftTile * this.miniTileSize, topTile * this.miniTileSize, (rightTile - leftTile) * this.miniTileSize, (bottomTile - topTile) * this.miniTileSize);
     };
 
     MapUI.prototype.goToCoords = function (coords) {
@@ -454,6 +466,26 @@ var MapUI = (function () {
             Math.floor((top + y) / this.TILE_SIZE),
             Math.floor((left + x) / this.TILE_SIZE)
         ];
+
+        // Only return coordinates in map
+        if (this.validCoords(coords)) {
+            return coords;
+        } else {
+            return null;
+        }
+    };
+
+    // Same as above, but for minimap
+    MapUI.prototype.miniPixelsToCoords = function (x, y) {
+        var coords, left, top;
+
+        // Coordinates in tiles
+        coords = [
+            Math.floor(y / this.miniTileSize),
+            Math.floor(x / this.miniTileSize)
+        ];
+        console.log([x, y]);
+        console.log(coords);
 
         // Only return coordinates in map
         if (this.validCoords(coords)) {

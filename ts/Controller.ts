@@ -151,5 +151,17 @@ class Controller {
                 mapUI.goToCoords(coords);
             }
         });
+
+        mapUI.miniCanvas.addEventListener("click", function(e) {
+            var coords;
+
+            coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
+console.log([e.layerX, e.layerY]);
+console.log(coords);
+
+            if (mapUI.validCoords(coords)) {
+                mapUI.goToCoords(coords);
+            }
+        });
     }
 }
