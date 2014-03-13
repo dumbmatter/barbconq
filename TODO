@@ -5,7 +5,6 @@ UI
   overview tiny map
 
 Controller
-  move keycode handling out of MapUI and into Controller? probably yes, and keyspressed
   more unit shortcuts
     press space to skip to mark active unit as moved and go to next active unit
     fortify, etc
@@ -32,6 +31,7 @@ Make randomly generated map into a pangaea facsimile
 fog of war, field of view
 
 PLAN TO GET INITIAL PUBLICITY: BarbarianBattle.com
+  SEE EMAIL FOR BETTER IDEA
   "Barbarian Battle - web-based port of Civ4's combat system"
   make a mode with just your units and barbarian units and battle
   scouts, warriors, archers, chariots, axemen, spearmen

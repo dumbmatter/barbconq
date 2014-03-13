@@ -3,16 +3,26 @@ html, body { width:100%; height:100%; } /* just to be sure these are full screen
 canvas { display:block; } /* To remove the scrollbars */
 
 #info-box {
-  width: 200px;
   position: absolute;
   left: 10px;
   bottom: 10px;
   background: rgba(0, 0, 0, 0.6);
-  color: #f0f0f0;
+  color: #fff;
   padding: 5px;
   display: none;
   pointer-events: none;
 }
 #info-box .unit-name {
   color: yellow;
+}
+
+#turn-box {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 5px;
+  display: none;
+  pointer-events: none;
 }

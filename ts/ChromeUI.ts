@@ -2,10 +2,16 @@
 
 class ChromeUI {
     elInfoBox : HTMLDivElement;
+    elTurnBox : HTMLDivElement;
 
     constructor() {
         this.elInfoBox = <HTMLDivElement> document.getElementById("info-box");
+        this.elTurnBox = <HTMLDivElement> document.getElementById("turn-box");
+
+        // Always show, once the game is loaded
+        this.elTurnBox.style.display = "block";
     }
+
     onHoverTile(tile : MapMaker.Tile = null) {
         var content, i, unit;
 
@@ -38,5 +44,9 @@ class ChromeUI {
             // Hide info box
             this.elInfoBox.style.display = "none";
         }
+    }
+
+    onNewTurn() {
+        this.elTurnBox.innerHTML = "Turn " + game.turn;
     }
 }

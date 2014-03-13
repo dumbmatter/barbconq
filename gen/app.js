@@ -160,6 +160,10 @@ var Controller = (function () {
 var ChromeUI = (function () {
     function ChromeUI() {
         this.elInfoBox = document.getElementById("info-box");
+        this.elTurnBox = document.getElementById("turn-box");
+
+        // Always show, once the game is loaded
+        this.elTurnBox.style.display = "block";
     }
     ChromeUI.prototype.onHoverTile = function (tile) {
         if (typeof tile === "undefined") { tile = null; }
@@ -194,6 +198,10 @@ var ChromeUI = (function () {
             // Hide info box
             this.elInfoBox.style.display = "none";
         }
+    };
+
+    ChromeUI.prototype.onNewTurn = function () {
+        this.elTurnBox.innerHTML = "Turn " + game.turn;
     };
     return ChromeUI;
 })();
@@ -491,7 +499,7 @@ var Game = (function () {
         var i, j, unit;
 
         game.turn++;
-        console.log("Start of turn " + game.turn);
+        chromeUI.onNewTurn();
 
         for (i = 0; i < this.units.length; i++) {
             for (j in this.units[i]) {

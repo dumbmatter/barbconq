@@ -48,7 +48,7 @@ class Game {
         var i, j, unit;
 
         game.turn++;
-        console.log("Start of turn " + game.turn)
+        chromeUI.onNewTurn();
 
         // Reset all movement counters
         for (i = 0; i < this.units.length; i++) {
