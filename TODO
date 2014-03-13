@@ -10,6 +10,7 @@ Controller
 
 bottom chrome
   actions: show button for each element in unit.actions
+  live updating for all the stuff in ChromeUI - react? knockout?
 
 right click to move
 

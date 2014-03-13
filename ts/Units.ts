@@ -14,6 +14,8 @@ module Units {
         type : string;
 
         // Key attributes
+        level : number = 1;
+        xp : number = 0;
         strength : number;
         currentStrength : number;
         movement : number;
@@ -70,6 +72,8 @@ module Units {
             if (goToCoords) {
                 mapUI.goToCoords(this.coords);
             }
+
+            chromeUI.onUnitActivated();
         }
 
         // Set as moved, because it used up all its moves or because its turn was skipped or something

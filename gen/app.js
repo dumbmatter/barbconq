@@ -191,12 +191,30 @@ var Controller = (function () {
     };
     return Controller;
 })();
-// ChromeUI - Everything related to the display and interactivity of the on-screen chrome (everything not on the map)
+// ChromeUI - Everything related to the display and interactivity of the on-screen chrome (everything not on the map/minimap)
 var ChromeUI = (function () {
     function ChromeUI() {
         this.elHoverBox = document.getElementById("hover-box");
         this.elTurnBox = document.getElementById("turn-box");
+        this.elBottomInfo = document.getElementById("bottom-info");
+        this.elBottomActions = document.getElementById("bottom-actions");
     }
+    ChromeUI.prototype.strengthFraction = function (unit) {
+        if (unit.strength === unit.currentStrength) {
+            return unit.currentStrength + ' S';
+        } else {
+            return unit.currentStrength + '/' + unit.strength + ' S';
+        }
+    };
+
+    ChromeUI.prototype.movementFraction = function (unit) {
+        if (unit.movement === unit.currentMovement) {
+            return unit.currentMovement + ' M';
+        } else {
+            return unit.currentMovement + '/' + unit.movement + ' M';
+        }
+    };
+
     ChromeUI.prototype.onHoverTile = function (tile) {
         if (typeof tile === "undefined") { tile = null; }
         var content, i, unit;
@@ -207,16 +225,8 @@ var ChromeUI = (function () {
             for (i = 0; i < tile.units.length; i++) {
                 unit = game.getUnit(tile.units[i]);
                 content += '<span class="unit-name">' + unit.type + '</span>, ';
-                if (unit.strength === unit.currentStrength) {
-                    content += unit.currentStrength + ' S, ';
-                } else {
-                    content += unit.currentStrength + '/' + unit.strength + ' S, ';
-                }
-                if (unit.movement === unit.currentMovement) {
-                    content += unit.currentMovement + ' M, ';
-                } else {
-                    content += unit.currentMovement + '/' + unit.movement + ' M, ';
-                }
+                content += this.strengthFraction(unit) + ', ';
+                content += this.movementFraction(unit) + ', ';
                 content += game.names[unit.owner];
                 content += '<br>';
             }
@@ -234,6 +244,16 @@ var ChromeUI = (function () {
 
     ChromeUI.prototype.onNewTurn = function () {
         this.elTurnBox.innerHTML = "Turn " + game.turn;
+    };
+
+    ChromeUI.prototype.onUnitActivated = function () {
+        var activeUnit;
+
+        activeUnit = game.getUnit(game.activeUnit);
+
+        // Update bottom-info
+        this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
+        // Update bottom-actions
     };
     return ChromeUI;
 })();
@@ -663,6 +683,9 @@ var Units;
 
     var BaseUnit = (function () {
         function BaseUnit(owner, coords) {
+            // Key attributes
+            this.level = 1;
+            this.xp = 0;
             this.canAttack = true;
             this.canDefend = true;
             // Turn stuff
@@ -707,6 +730,8 @@ var Units;
             if (goToCoords) {
                 mapUI.goToCoords(this.coords);
             }
+
+            chromeUI.onUnitActivated();
         };
 
         // Set as moved, because it used up all its moves or because its turn was skipped or something
@@ -798,7 +823,6 @@ var Units;
 
         // Mark as moved and go to the next active unit
         BaseUnit.prototype.skipTurn = function () {
-            console.log("skipTurn");
             this.setMoved();
             requestAnimationFrame(mapUI.render.bind(mapUI));
         };
