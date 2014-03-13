@@ -7,8 +7,13 @@
     <link rel="stylesheet" href="civ4clone.css">
   </head>
   <body>
-    <div id="hover-box"></div>
     <div id="turn-box">Turn <span data-bind="text: turn"></span></div>
+    <div id="hover-box" data-bind="if: hoveredTile">
+      <!-- ko foreach: hoveredTile().units -->
+        <span class="unit-name" data-bind="text: console.log($data)"></span>aaf<br>
+      <!-- /ko -->
+      <span class="unit-name" data-bind="text: hoveredTile().terrain"></span>
+    </div>
     <div id="bottom-info">Info</div>
     <div id="bottom-actions">Actions</div>
     <div id="bottom-minimap">

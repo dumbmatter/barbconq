@@ -1,5 +1,8 @@
 bitbucket
 
+should unitStubs just be replaced by unit objects? It'll be a reference to them, right?
+  would make knockout easier, since unit list would be actual units
+
 bottom chrome
   actions: show button for each element in unit.actions
   knockout for everything in ChromeUI
@@ -38,8 +41,6 @@ right click to move
 mapUI.goToCoords should be smooth
 
 stacked unit actions and UI
-
-should unitStubs just be replaced by unit objects? It'll be a reference to them, right?
 
 typescript live compile
 

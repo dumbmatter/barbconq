@@ -25,12 +25,12 @@ class Controller {
         37: false
     };
 
-    private _hoveredTile : number[] = null;
+    private _hoveredTile : number[] = null; // Just coords, not actual tile!
 
     // Getters and setters, to make Knockout integration easier
     set hoveredTile(value : number[]) {
         this._hoveredTile = value;
-        vm.hoveredTile(value);
+        vm.hoveredTile(game.getTile(value));
     }
     get hoveredTile() : number[] {
         return this._hoveredTile;
@@ -126,17 +126,14 @@ class Controller {
                 if (coords[0] !== this.hoveredTile[0] || coords[1] !== this.hoveredTile[1]) {
                     // Only update if new tile
                     this.hoveredTile = coords;
-                    chromeUI.onHoverTile(game.getTile(this.hoveredTile));
                 }
             } else {
                 // Not over tile, over some other part of the canvas
                 this.hoveredTile = [-1, -1];
-                chromeUI.onHoverTile();
             }
         }.bind(this));
         mapUI.canvas.addEventListener("mouseout", function (e) {
             this.hoveredTile = [-1, -1];
-            chromeUI.onHoverTile();
         }.bind(this));
     }
 
