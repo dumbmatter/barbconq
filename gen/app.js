@@ -689,7 +689,7 @@ var Units;
             this.canAttack = true;
             this.canDefend = true;
             // Turn stuff
-            this.active = false;
+            this._active = false;
             this.moved = false;
             this.id = game.maxId;
             game.maxId += 1;
@@ -703,6 +703,17 @@ var Units;
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
         }
+        Object.defineProperty(BaseUnit.prototype, "active", {
+            get: function () {
+                return this._active;
+            },
+            set: function (value) {
+                this._active = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         BaseUnit.prototype.getName = function (inputClass) {
             return inputClass.constructor.name;
         };
@@ -721,7 +732,7 @@ var Units;
             // Deactivate current active unit, if there is one
             if (game.activeUnit) {
                 game.getUnit(game.activeUnit).active = false;
-                game.activeUnit = null;
+                //                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
             }
 
             // Activate this unit
@@ -738,8 +749,8 @@ var Units;
         BaseUnit.prototype.setMoved = function () {
             this.moved = true;
             this.active = false;
-            game.activeUnit = null;
 
+            //            game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
             // After delay, move to next unit
             setTimeout(function () {
                 game.moveUnits();

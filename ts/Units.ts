@@ -29,8 +29,16 @@ module Units {
         actions : string[];
 
         // Turn stuff
-        active : boolean = false; // When set, show UI options for this unit
+        private _active : boolean = false; // When set, show UI options for this unit
         moved : boolean = false; // When set, no need to loop through this unit before showing turn is over
+
+        // Getters and setters, to make Knockout integration easier
+        set active(value : boolean) {
+            this._active = value;
+        }
+        get active() : boolean {
+            return this._active;
+        }
 
         constructor(owner : number, coords : number[]) {
             this.id = game.maxId;
@@ -63,7 +71,7 @@ module Units {
             // Deactivate current active unit, if there is one
             if (game.activeUnit) {
                 game.getUnit(game.activeUnit).active = false;
-                game.activeUnit = null;
+//                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
             }
 
             // Activate this unit
@@ -80,7 +88,7 @@ module Units {
         setMoved() {
             this.moved = true;
             this.active = false;
-            game.activeUnit = null;
+//            game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
 
             // After delay, move to next unit
             setTimeout(function () {
