@@ -2,13 +2,11 @@
 
 class ChromeUI {
     elHoverBox : HTMLDivElement;
-    elTurnBox : HTMLDivElement;
     elBottomInfo : HTMLDivElement;
     elBottomActions : HTMLDivElement;
 
     constructor() {
         this.elHoverBox = <HTMLDivElement> document.getElementById("hover-box");
-        this.elTurnBox = <HTMLDivElement> document.getElementById("turn-box");
         this.elBottomInfo = <HTMLDivElement> document.getElementById("bottom-info");
         this.elBottomActions = <HTMLDivElement> document.getElementById("bottom-actions");
     }
@@ -53,10 +51,6 @@ class ChromeUI {
             // Hide hover box
             this.elHoverBox.style.display = "none";
         }
-    }
-
-    onNewTurn() {
-        this.elTurnBox.innerHTML = "Turn " + game.turn;
     }
 
     onUnitActivated() {

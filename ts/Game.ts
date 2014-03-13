@@ -6,7 +6,16 @@ class Game {
     names: string[];
     units : {}[];
     activeUnit : Units.Stub = null;
-    turn : number = 0;
+    private _turn : number = 0;
+
+    // Getters and setters, to make Knockout integration easier
+    set turn(value : number) {
+        this._turn = value;
+        vm.turn(value);
+    }
+    get turn() : number {
+        return this._turn;
+    }
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
         var i;
@@ -48,7 +57,6 @@ class Game {
         var i, j, unit;
 
         game.turn++;
-        chromeUI.onNewTurn();
 
         // Reset all movement counters
         for (i = 0; i < this.units.length; i++) {

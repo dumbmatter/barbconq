@@ -8,13 +8,14 @@
   </head>
   <body>
     <div id="hover-box"></div>
-    <div id="turn-box"></div>
+    <div id="turn-box">Turn <span data-bind="text: turn"></span></div>
     <div id="bottom-info">Info</div>
     <div id="bottom-actions">Actions</div>
     <div id="bottom-minimap">
       <canvas id="minimap"></canvas>
     </div>
     <canvas id="map"></canvas> 
+    <script type="text/javascript" src="js-lib/knockout.js"></script>
     <script type="text/javascript" src="gen/app.js"></script>
   </body>
 </html>
