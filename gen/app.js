@@ -357,7 +357,7 @@ var MapUI = (function () {
             }
         }.bind(this));
 
-        // Second pass: highlight
+        // Second pass: highlight active unit
         drawViewport(function (i, j, x, y) {
             var k, unit;
 
@@ -381,7 +381,7 @@ var MapUI = (function () {
     };
 
     MapUI.prototype.renderMiniMap = function () {
-        var i, j, k, tileSize, unit;
+        var bottom, bottomTile, i, j, k, left, leftTile, right, rightTile, tileSize, top, topTile, unit;
 
         // See whether it's height or width limited based on the aspect ratio
         if (game.map.width / game.map.height > this.miniCanvas.width / this.miniCanvas.height) {
@@ -419,7 +419,19 @@ var MapUI = (function () {
                 }
             }
         }
-        console.log(tileSize);
+
+        // Show box for viewport
+        top = this.Y - this.VIEW_HEIGHT / 2;
+        right = this.X + this.VIEW_WIDTH / 2;
+        bottom = this.Y + this.VIEW_HEIGHT / 2;
+        left = this.X - this.VIEW_WIDTH / 2;
+        topTile = top / this.TILE_SIZE;
+        rightTile = right / this.TILE_SIZE;
+        bottomTile = bottom / this.TILE_SIZE;
+        leftTile = left / this.TILE_SIZE;
+        this.miniContext.strokeStyle = "#f00";
+        this.miniContext.lineWidth = 2;
+        this.miniContext.strokeRect(leftTile * tileSize, topTile * tileSize, (rightTile - leftTile) * tileSize, (bottomTile - topTile) * tileSize);
     };
 
     MapUI.prototype.goToCoords = function (coords) {
