@@ -1,11 +1,15 @@
 bitbucket
 
-bottom chrome
-
 Controller
   more unit shortcuts
+    see if unit has action in this.actions. If so, do it
     press space to skip to mark active unit as moved and go to next active unit
-    fortify, etc
+    fortify
+    sentry
+  enter to end turn, rather than automatically calling newTurn
+
+bottom chrome
+  actions: show button for each element in unit.actions
 
 right click to move
 

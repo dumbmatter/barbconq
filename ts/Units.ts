@@ -24,6 +24,7 @@ module Units {
         landOrSea : string;
         canAttack : boolean = true;
         canDefend : boolean = true;
+        actions : string[];
 
         // Turn stuff
         active : boolean = false; // When set, show UI options for this unit
@@ -69,6 +70,18 @@ module Units {
             if (goToCoords) {
                 mapUI.goToCoords(this.coords);
             }
+        }
+
+        // Set as moved, because it used up all its moves or because its turn was skipped or something
+        setMoved() {
+            this.moved = true;
+            this.active = false;
+            game.activeUnit = null;
+
+            // After delay, move to next unit
+            setTimeout(function () {
+                game.moveUnits();
+            }, 500);
         }
 
         move(direction : string) {
@@ -139,19 +152,17 @@ module Units {
                 this.currentMovement -= 1; // Should depend on terrain/improvements
                 if (this.currentMovement <= 0) {
                     this.currentMovement = 0;
-                    this.moved = true;
-                    this.active = false;
-                    game.activeUnit = null;
-
-                    // After delay, move to next unit
-                    setTimeout(function () {
-                        game.moveUnits();
-                    }, 500);
+                    this.setMoved();
                 }
 
                 requestAnimationFrame(mapUI.render.bind(mapUI));
-
             }
+        }
+
+        // Mark as moved and go to the next active unit
+        skipTurn() {
+            this.setMoved();
+            requestAnimationFrame(mapUI.render.bind(mapUI));
         }
     }
 
@@ -164,5 +175,6 @@ module Units {
         currentMovement = 2;
 
         landOrSea = "land";
+        actions = ["fortify", "skipTurn", "sentry"];
     }
 }

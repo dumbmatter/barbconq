@@ -22,7 +22,8 @@ var Controller = (function () {
             NUMPAD_7: 103,
             NUMPAD_8: 104,
             NUMPAD_9: 105,
-            C: 67
+            C: 67,
+            SPACE_BAR: 32
         };
         // Only needed for some keys
         this.keysPressed = {
@@ -96,6 +97,11 @@ var Controller = (function () {
                 // Center on active unit
                 if (e.keyCode === this.KEYS.C) {
                     mapUI.goToCoords(activeUnit.coords);
+                }
+
+                // Unit-specific actions, might not always apply
+                if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
+                    activeUnit.skipTurn();
                 }
             }
         }.bind(this));
@@ -703,6 +709,18 @@ var Units;
             }
         };
 
+        // Set as moved, because it used up all its moves or because its turn was skipped or something
+        BaseUnit.prototype.setMoved = function () {
+            this.moved = true;
+            this.active = false;
+            game.activeUnit = null;
+
+            // After delay, move to next unit
+            setTimeout(function () {
+                game.moveUnits();
+            }, 500);
+        };
+
         BaseUnit.prototype.move = function (direction) {
             var i, initialCoords, tileUnits;
 
@@ -771,18 +789,18 @@ var Units;
                 this.currentMovement -= 1; // Should depend on terrain/improvements
                 if (this.currentMovement <= 0) {
                     this.currentMovement = 0;
-                    this.moved = true;
-                    this.active = false;
-                    game.activeUnit = null;
-
-                    // After delay, move to next unit
-                    setTimeout(function () {
-                        game.moveUnits();
-                    }, 500);
+                    this.setMoved();
                 }
 
                 requestAnimationFrame(mapUI.render.bind(mapUI));
             }
+        };
+
+        // Mark as moved and go to the next active unit
+        BaseUnit.prototype.skipTurn = function () {
+            console.log("skipTurn");
+            this.setMoved();
+            requestAnimationFrame(mapUI.render.bind(mapUI));
         };
         return BaseUnit;
     })();
@@ -798,6 +816,7 @@ var Units;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
+            this.actions = ["fortify", "skipTurn", "sentry"];
         }
         return Warrior;
     })(BaseUnit);

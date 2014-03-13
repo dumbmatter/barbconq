@@ -14,7 +14,8 @@ class Controller {
         NUMPAD_7: 103,
         NUMPAD_8: 104,
         NUMPAD_9: 105,
-        C: 67
+        C: 67,
+        SPACE_BAR: 32
     };
     // Only needed for some keys
     keysPressed = {
@@ -93,6 +94,11 @@ class Controller {
                 // Center on active unit
                 if (e.keyCode === this.KEYS.C) {
                     mapUI.goToCoords(activeUnit.coords)
+                }
+
+                // Unit-specific actions, might not always apply
+                if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
+                    activeUnit.skipTurn();
                 }
             }
         }.bind(this));
