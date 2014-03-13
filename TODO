@@ -1,8 +1,11 @@
 bitbucket
 
-UI
-  bottom chrome
-  overview tiny map
+bottom chrome
+
+minimap
+  draw box for viewport
+  click to go to
+  drag to pan around
 
 Controller
   more unit shortcuts
@@ -10,6 +13,8 @@ Controller
     fortify, etc
 
 right click to move
+
+mapUI.goToCoords should be smooth
 
 stacked unit actions and UI
 

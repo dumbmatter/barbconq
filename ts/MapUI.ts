@@ -3,7 +3,6 @@
 class MapUI {
     // Constants
     TILE_SIZE : number = 50;
-    WORLD_SIZE : number = 2000;
     terrainColors: any;
     terrainFontColors: any;
 
@@ -17,6 +16,10 @@ class MapUI {
     VIEW_HEIGHT : number;
     VIEW_TILE_WIDTH : number;
     VIEW_TILE_HEIGHT : number;
+
+    // Minimap
+    miniCanvas : HTMLCanvasElement;
+    miniContext : CanvasRenderingContext2D;
 
     constructor() {
         // Colors!
@@ -52,6 +55,10 @@ class MapUI {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
+
+        // Minimap
+        this.miniCanvas = <HTMLCanvasElement> document.getElementById("minimap");
+        this.miniContext = this.miniCanvas.getContext("2d");
 
         // Handle resize
         window.addEventListener("resize", function () {
@@ -179,10 +186,58 @@ class MapUI {
                         this.context.strokeStyle = "#f00";
                         this.context.lineWidth = 4;
                         this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX - 2, y * this.TILE_SIZE - tileOffsetY - 2, this.TILE_SIZE + 2, this.TILE_SIZE + 2);
+                        break;
                     }
                 }
             }
         }.bind(this));
+
+        // Render minimap at the end
+        this.renderMiniMap();
+    }
+
+    renderMiniMap() {
+        var i, j, k, tileSize, unit;
+
+        // See whether it's height or width limited based on the aspect ratio
+        if (game.map.width / game.map.height > this.miniCanvas.width / this.miniCanvas.height) {
+            // Bound based on map width
+            tileSize = this.miniCanvas.width / game.map.width;
+        } else {
+            // Bound based on map height
+            tileSize = this.miniCanvas.height / game.map.height;
+        }
+
+        // Clear canvas and redraw everything
+        this.miniContext.clearRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
+
+        // Background
+        for (i = 0; i < game.map.height; i++) {
+            for (j = 0; j < game.map.width; j++) {
+                // Background
+                this.miniContext.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
+                this.miniContext.fillRect(j * tileSize, i * tileSize, tileSize, tileSize);
+            }
+        }
+
+        // Second pass: highlight
+        for (i = 0; i < game.map.height; i++) {
+            for (j = 0; j < game.map.width; j++) {
+                // Highlight active tile
+                if (game.map.tiles[i][j].units.length > 0) {
+                    for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
+                        unit = game.getUnit(game.map.tiles[i][j].units[k]);
+
+                        if (unit.active) {
+                            this.miniContext.fillStyle = "#f00";
+                            this.miniContext.fillRect(j * tileSize, i * tileSize, tileSize, tileSize);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+console.log(tileSize);
     }
 
     goToCoords(coords : number[]) {

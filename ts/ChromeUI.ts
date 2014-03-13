@@ -7,9 +7,6 @@ class ChromeUI {
     constructor() {
         this.elInfoBox = <HTMLDivElement> document.getElementById("info-box");
         this.elTurnBox = <HTMLDivElement> document.getElementById("turn-box");
-
-        // Always show, once the game is loaded
-        this.elTurnBox.style.display = "block";
     }
 
     onHoverTile(tile : MapMaker.Tile = null) {
