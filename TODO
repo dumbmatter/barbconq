@@ -14,6 +14,7 @@ bottom chrome
     make strengthFraction and movementFraction computed observables
 
 weird stuff happens when two of the user's units are on the same tile - disappearing from map temporarily, missing highlight, etc.
+  move both on same tile. skip turn for first, move second to another tile, original tile looks blank. move back on, and it looks like there is only one unit there, and the first unit doesn't show up as activated on the map at the beginning of next turn
 
 Controller
   more unit shortcuts
@@ -22,6 +23,15 @@ Controller
     fortify
     sentry
   enter to end turn, rather than automatically calling newTurn
+
+fog of war
+  every tile starts with fog=true
+  set fog=false on unit creation and unit movement
+
+field of view
+  before displaying anything
+    set each tile to visible=false
+    loop through all the user's units and set visible=true when appropriate
 
 right click to move
 
@@ -43,8 +53,6 @@ combat
 
 Make randomly generated map into a pangaea facsimile
   how do civ4 maps do it?
-
-fog of war, field of view
 
 PLAN TO GET INITIAL PUBLICITY: BarbarianConquest.com
   SEE EMAIL FOR BETTER IDEA
