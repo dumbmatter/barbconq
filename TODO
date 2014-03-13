@@ -41,6 +41,10 @@ PLAN TO GET INITIAL PUBLICITY: BarbarianBattle.com
   Help section: explain units, movement, combat
   Make desktop and cordova versions, put ads in it
 
+UI POLISH
+  center minimap on its canvas when it is not the correct aspect ratio
+
+
 ---
 
 Base object types:
