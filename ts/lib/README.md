@@ -1,1 +1,1 @@
-knockout.d.ts downloaded from https://github.com/borisyankov/DefinitelyTyped/blob/master/knockout/knockout.d.ts on March 13, 2014
+knockout.d.ts downloaded from https://github.com/borisyankov/DefinitelyTyped/blob/master/knockout/knockout.d.ts on March 13, 2014 but it's too glitchy, so I replaced it.

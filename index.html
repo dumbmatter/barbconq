@@ -8,11 +8,16 @@
   </head>
   <body>
     <div id="turn-box">Turn <span data-bind="text: turn"></span></div>
-    <div id="hover-box" data-bind="if: hoveredTile">
-      <!-- ko foreach: hoveredTile().units -->
-        <span class="unit-name" data-bind="text: console.log($data)"></span>aaf<br>
+    <div id="hover-box" data-bind="visible: hoveredTile">
+      <!-- ko if: hoveredTile -->
+        <!-- ko foreach: hoveredTile().units -->
+          <span class="unit-name" data-bind="text: type"></span>,
+          <span data-bind="strengthFraction: $data"></span>,
+          <span data-bind="movementFraction: $data"></span>,
+          <span data-bind="ownerName: owner"></span><br>
+        <!-- /ko -->
+        <span data-bind="terrainDesc: hoveredTile"></span>
       <!-- /ko -->
-      <span class="unit-name" data-bind="text: hoveredTile().terrain"></span>
     </div>
     <div id="bottom-info">Info</div>
     <div id="bottom-actions">Actions</div>
