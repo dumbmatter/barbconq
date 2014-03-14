@@ -46,7 +46,7 @@ var Controller = (function () {
         // Getters and setters, to make Knockout integration easier
         set: function (value) {
             this._hoveredTile = value;
-            vm.hoveredTile(game.getTile(value));
+            vm.hoveredTile(value);
         },
         enumerable: true,
         configurable: true
@@ -134,14 +134,17 @@ var Controller = (function () {
                 if (coords[0] !== this.hoveredTile[0] || coords[1] !== this.hoveredTile[1]) {
                     // Only update if new tile
                     this.hoveredTile = coords;
+                    chromeUI.onHoverTile(game.getTile(this.hoveredTile));
                 }
             } else {
                 // Not over tile, over some other part of the canvas
                 this.hoveredTile = [-1, -1];
+                chromeUI.onHoverTile();
             }
         }.bind(this));
         mapUI.canvas.addEventListener("mouseout", function (e) {
             this.hoveredTile = [-1, -1];
+            chromeUI.onHoverTile();
         }.bind(this));
     };
 
@@ -906,6 +909,5 @@ new Units.Warrior(1, [1, 0]);
 
 ko.applyBindings(vm);
 
-// Start game
 game.newTurn();
 //# sourceMappingURL=app.js.map

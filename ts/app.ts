@@ -8,7 +8,7 @@
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
 
-var vm : any = {
+var vm = {
     turn: ko.observable(),
     hoveredTile: ko.observable()
 };
@@ -29,7 +29,5 @@ new Units.Warrior(1, [0, 0]);
 new Units.Warrior(1, [1, 0]);
 
 ko.applyBindings(vm);
-
-// Start game
 
 game.newTurn();

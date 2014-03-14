@@ -11,7 +11,7 @@ canvas { display:block; } /* To remove the scrollbars */
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
   padding: 5px;
-/*  display: none;*/
+  display: none;
   pointer-events: none;
   border: 5px solid #ffde00;
 }
