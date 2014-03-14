@@ -13,7 +13,8 @@ canvas { display:block; } /* To remove the scrollbars */
   padding: 5px;
   display: none;
   pointer-events: none;
-  border: 5px solid #ffde00;
+  border: solid #ffde00;
+  border-width: 5px 2px;
 }
 #hover-box .unit-name {
   color: #ffde00;
@@ -27,7 +28,8 @@ canvas { display:block; } /* To remove the scrollbars */
   color: #fff;
   padding: 5px;
   pointer-events: none;
-  border: 5px solid #ffde00;
+  border: solid #ffde00;
+  border-width: 5px 2px;
 }
 
 #bottom-info {
@@ -41,7 +43,7 @@ canvas { display:block; } /* To remove the scrollbars */
   width: 300px;
   height: 150px;
   border-top: 5px solid #ffde00;
-  border-right: 5px solid #ffde00;
+  border-right: 2px solid #ffde00;
 }
 #bottom-info h1 {
   color: #ffde00;
@@ -72,6 +74,7 @@ canvas { display:block; } /* To remove the scrollbars */
   height: 45px;
   margin: 5px;
   border: 2px solid #ffde00;
+  border-radius: 5px;
   float: left;
   text-align: center;
   line-height: 40px;
@@ -88,7 +91,7 @@ canvas { display:block; } /* To remove the scrollbars */
   width: 300px;
   height: 150px;
   border-top: 5px solid #ffde00;
-  border-left: 5px solid #ffde00;
+  border-left: 2px solid #ffde00;
 }
 
 #minimap {
