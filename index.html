@@ -19,17 +19,7 @@
         <span data-bind="terrainDesc: hoveredTile"></span>
       <!-- /ko -->
     </div>
-    <div id="bottom-info">
-      <!-- ko if: activeUnit -->
-        <h1 data-bind="text: activeUnit.type"></h1>
-        <table>
-          <tr><td>Strength:</td><td data-bind="strengthFraction: activeUnit"></td></tr>
-          <tr><td>Movement:</td><td data-bind="movementFraction: activeUnit"></td></tr>
-          <tr><td>Level:</td><td data-bind="text: activeUnit().level"></td></tr>
-          <tr><td>Experience:</td><td data-bind="text: activeUnit().xp"></td></tr>
-        </table>
-      <!-- /ko -->
-    </div>
+    <div id="bottom-info">Info</div>
     <div id="bottom-actions">Actions</div>
     <div id="bottom-minimap">
       <canvas id="minimap"></canvas>
