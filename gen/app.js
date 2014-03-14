@@ -112,6 +112,56 @@ var Controller = (function () {
             }
         }.bind(this));
 
+        // Unit movement with right click
+        mapUI.canvas.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        mapUI.canvas.addEventListener("mousedown", function (e) {
+            var coords, mouseMoveWhileDown, mouseUp;
+
+            if (e.button === 2) {
+                e.preventDefault();
+
+                // Find path to clicked tile
+                coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
+                console.log(coords);
+
+                // If click doesn't start on map, ignore it
+                if (!mapUI.validCoords(coords)) {
+                    return;
+                }
+
+                // Find paths to hovered tile as button remains down
+                mouseMoveWhileDown = function (e) {
+                    var coordsNew;
+
+                    coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
+
+                    if (mapUI.validCoords(coordsNew) && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
+                        coords = coordsNew;
+                        console.log(coords);
+                    }
+                };
+                mapUI.canvas.addEventListener("mousemove", mouseMoveWhileDown);
+
+                // Move unit to the tile hovered over when the button is released
+                mouseUp = function (e) {
+                    var coordsNew;
+
+                    coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
+
+                    if (mapUI.validCoords(coordsNew) && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
+                        coords = coordsNew;
+                        console.log(coords);
+                    }
+
+                    mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
+                    document.removeEventListener("mouseup", mouseUp);
+                };
+                document.addEventListener("mouseup", mouseUp);
+            }
+        });
+
         // Actions bar at the bottom
         chromeUI.elBottomActions.addEventListener("click", function (e) {
             var el;
@@ -175,53 +225,61 @@ var Controller = (function () {
         mapUI.canvas.addEventListener("click", function (e) {
             var foundUnit, i, coords, units;
 
-            coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
+            if (e.button === 0) {
+                e.preventDefault();
 
-            if (mapUI.validCoords(coords)) {
-                units = game.getTile(coords).units;
-                foundUnit = false;
+                coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
-                for (i = 0; i < units.length; i++) {
-                    if (units[i].owner === 1) {
-                        units[i].activate(false); // Activate, but don't center map!
-                        foundUnit = true;
-                        requestAnimationFrame(mapUI.render.bind(mapUI));
-                        return;
+                if (mapUI.validCoords(coords)) {
+                    units = game.getTile(coords).units;
+                    foundUnit = false;
+
+                    for (i = 0; i < units.length; i++) {
+                        if (units[i].owner === 1) {
+                            units[i].activate(false); // Activate, but don't center map!
+                            foundUnit = true;
+                            requestAnimationFrame(mapUI.render.bind(mapUI));
+                            return;
+                        }
                     }
-                }
 
-                // If we made it this far, none of the user's units are on this tile
-                mapUI.goToCoords(coords);
+                    // If we made it this far, none of the user's units are on this tile
+                    mapUI.goToCoords(coords);
+                }
             }
         });
 
         mapUI.miniCanvas.addEventListener("mousedown", function (e) {
             var coords, miniMapPan, miniMapPanStop;
 
-            coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
-
-            if (mapUI.validCoords(coords)) {
-                mapUI.goToCoords(coords);
-            }
-
-            // Pan as click is held and mouse is moved
-            miniMapPan = function (e) {
-                var coords;
+            if (e.button === 0) {
+                e.preventDefault();
 
                 coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
 
                 if (mapUI.validCoords(coords)) {
                     mapUI.goToCoords(coords);
                 }
-            };
-            mapUI.miniCanvas.addEventListener("mousemove", miniMapPan);
 
-            // Stop panning when mouse click ends
-            miniMapPanStop = function (e) {
-                mapUI.miniCanvas.removeEventListener("mousemove", miniMapPan);
-                document.removeEventListener("mouseup", miniMapPanStop);
-            };
-            document.addEventListener("mouseup", miniMapPanStop);
+                // Pan as click is held and mouse is moved
+                miniMapPan = function (e) {
+                    var coords;
+
+                    coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
+
+                    if (mapUI.validCoords(coords)) {
+                        mapUI.goToCoords(coords);
+                    }
+                };
+                mapUI.miniCanvas.addEventListener("mousemove", miniMapPan);
+
+                // Stop panning when mouse click ends
+                miniMapPanStop = function (e) {
+                    mapUI.miniCanvas.removeEventListener("mousemove", miniMapPan);
+                    document.removeEventListener("mouseup", miniMapPanStop);
+                };
+                document.addEventListener("mouseup", miniMapPanStop);
+            }
         });
     };
     return Controller;
@@ -316,6 +374,7 @@ var ChromeUI = (function () {
         // Update bottom-actions
         this.elBottomActions.innerHTML = "";
         for (i = 0; i < activeUnit.actions.length; i++) {
+            // Convert camel case to title case
             actionName = activeUnit.actions[i].replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2"); // http://stackoverflow.com/a/7225474
             actionName = actionName.charAt(0).toUpperCase() + actionName.slice(1); // Fix first character
 

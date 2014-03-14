@@ -26,6 +26,13 @@ fog of war
     in field of vision: visible
 
 right click to move
+  https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent.button
+  onmousedown
+    run some pathfinding algorithm, https://github.com/qiao/PathFinding.js/ or simpler
+      in civ4 this can have unpredictable results if the enemy gets in the way. here, if the path is blocked, just stop
+      so the path can be hardcoded in as an array of tiles, and each turn check if it's blocked. if so, stop
+    paint results by connecting medians of tiles
+      maybe do this in new layer so the map doesn't need to be redrawn, otherwise it'll need to be totally redrawn for each tile dragged over with the mouse down
 
 mapUI.goToCoords should be smooth
 
@@ -44,7 +51,8 @@ combat
 Make randomly generated map into a pangaea facsimile
   how do civ4 maps do it?
 
-fog of war, field of view
+minify assets
+  have a "make barbconq" that puts all the right options in a ready-to-go barbconq folder
 
 PLAN TO GET INITIAL PUBLICITY: BarbarianBattle.com
   SEE EMAIL FOR BETTER IDEA
