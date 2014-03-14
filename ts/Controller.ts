@@ -25,16 +25,7 @@ class Controller {
         37: false
     };
 
-    private _hoveredTile : number[] = null;
-
-    // Getters and setters, to make Knockout integration easier
-    set hoveredTile(value : number[]) {
-        this._hoveredTile = value;
-        vm.hoveredTile(value);
-    }
-    get hoveredTile() : number[] {
-        return this._hoveredTile;
-    }
+    hoveredTile : number[];
 
     constructor() {
         // Start listening for various kinds of user input

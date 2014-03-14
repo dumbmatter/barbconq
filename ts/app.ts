@@ -9,8 +9,7 @@
 ///<reference path='Units.ts'/>
 
 var vm = {
-    turn: ko.observable(),
-    hoveredTile: ko.observable()
+    turn: ko.observable()
 };
 
 var game = new Game(1, 20, 40);

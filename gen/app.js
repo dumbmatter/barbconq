@@ -32,26 +32,12 @@ var Controller = (function () {
             40: false,
             37: false
         };
-        this._hoveredTile = null;
         // Start listening for various kinds of user input
         this.initMapPanning();
         this.initUnitActions();
         this.initHoverTile();
         this.initMapClick();
     }
-    Object.defineProperty(Controller.prototype, "hoveredTile", {
-        get: function () {
-            return this._hoveredTile;
-        },
-        // Getters and setters, to make Knockout integration easier
-        set: function (value) {
-            this._hoveredTile = value;
-            vm.hoveredTile(value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-
     Controller.prototype.initMapPanning = function () {
         document.addEventListener("keydown", function (e) {
             if (e.keyCode in this.keysPressed) {
@@ -888,8 +874,7 @@ var Units;
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
 var vm = {
-    turn: ko.observable(),
-    hoveredTile: ko.observable()
+    turn: ko.observable()
 };
 
 var game = new Game(1, 20, 40);
