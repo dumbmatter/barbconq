@@ -6,16 +6,7 @@ class Game {
     names: string[];
     units : {}[];
     activeUnit : Units.BaseUnit = null;
-    private _turn : number = 0;
-
-    // Getters and setters, to make Knockout integration easier
-    set turn(value : number) {
-        this._turn = value;
-        vm.turn(value);
-    }
-    get turn() : number {
-        return this._turn;
-    }
+    turn : number = 0;
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
         var i;
