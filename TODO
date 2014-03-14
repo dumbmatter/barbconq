@@ -2,18 +2,14 @@ bitbucket
 
 bottom chrome
   actions: show button for each element in unit.actions
-  knockout for everything in ChromeUI
-    nice type annotations for knockout stuff
-      get this working for turn first
-    vm.activeUnit, for hover and info
-      what properties does this need?
-      use getter/setter in BaseUnit to keep in sync
-        when active is set, update everything in VM. when other properties in VM are set, only update individual ones
-    hover
-      use activeUnit, but only if hover coordinates match active unit's coordinates
-    make strengthFraction and movementFraction computed observables
-
-weird stuff happens when two of the user's units are on the same tile - disappearing from map temporarily, missing highlight, etc.
+  live updating for all the stuff in ChromeUI - react? knockout? probably knockout since it'll be more stable and supported
+    we definitely need active unit in viewmodel
+      vm.activeUnit
+        i guess manually keep this in sync?
+          maybe use getter/setter to update unit and vm at once?
+            when active is set, update everything in VM. when other properties in VM are set, only update individual ones
+        make strengthFraction and movementFraction computed observables
+      vm.turn
 
 Controller
   more unit shortcuts
@@ -46,13 +42,13 @@ Make randomly generated map into a pangaea facsimile
 
 fog of war, field of view
 
-PLAN TO GET INITIAL PUBLICITY: BarbarianConquest.com
+PLAN TO GET INITIAL PUBLICITY: BarbarianBattle.com
   SEE EMAIL FOR BETTER IDEA
-  "Barbarian Conquest - web-based port of Civ4's combat system"
+  "Barbarian Battle - web-based port of Civ4's combat system"
   make a mode with just your units and barbarian units and battle
   scouts, warriors, archers, chariots, axemen, spearmen
-  roads (randomly generate a few)?
-  forts?
+  roads (randomly generate a few)
+  forts
   "From the makers of Basketball GM, a free single-player basketball simulation game"
   Help section: explain units, movement, combat
   Make desktop and cordova versions, put ads in it

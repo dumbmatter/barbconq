@@ -195,6 +195,7 @@ var Controller = (function () {
 var ChromeUI = (function () {
     function ChromeUI() {
         this.elHoverBox = document.getElementById("hover-box");
+        this.elTurnBox = document.getElementById("turn-box");
         this.elBottomInfo = document.getElementById("bottom-info");
         this.elBottomActions = document.getElementById("bottom-actions");
     }
@@ -239,6 +240,10 @@ var ChromeUI = (function () {
             // Hide hover box
             this.elHoverBox.style.display = "none";
         }
+    };
+
+    ChromeUI.prototype.onNewTurn = function () {
+        this.elTurnBox.innerHTML = "Turn " + game.turn;
     };
 
     ChromeUI.prototype.onUnitActivated = function () {
@@ -591,7 +596,7 @@ var Game = (function () {
     function Game(numPlayers, mapRows, mapCols) {
         this.maxId = 0;
         this.activeUnit = null;
-        this._turn = 0;
+        this.turn = 0;
         var i;
 
         this.map = MapMaker.generate(mapRows, mapCols);
@@ -609,19 +614,6 @@ var Game = (function () {
             this.units.push({});
         }
     }
-    Object.defineProperty(Game.prototype, "turn", {
-        get: function () {
-            return this._turn;
-        },
-        // Getters and setters, to make Knockout integration easier
-        set: function (value) {
-            this._turn = value;
-            vm.turn(value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-
     Game.prototype.getUnit = function (unitStub) {
         if (unitStub) {
             return this.units[unitStub.owner][unitStub.id];
@@ -642,6 +634,7 @@ var Game = (function () {
         var i, j, unit;
 
         game.turn++;
+        chromeUI.onNewTurn();
 
         for (i = 0; i < this.units.length; i++) {
             for (j in this.units[i]) {
@@ -714,7 +707,6 @@ var Units;
             get: function () {
                 return this._active;
             },
-            // Getters and setters, to make Knockout integration easier
             set: function (value) {
                 this._active = value;
             },
@@ -865,7 +857,6 @@ var Units;
     })(BaseUnit);
     Units.Warrior = Warrior;
 })(Units || (Units = {}));
-///<reference path='lib/knockout.d.ts' />
 ///<reference path='Random.ts'/>
 ///<reference path='Controller.ts'/>
 ///<reference path='ChromeUI.ts'/>
@@ -873,10 +864,6 @@ var Units;
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
-var vm = {
-    turn: ko.observable()
-};
-
 var game = new Game(1, 20, 40);
 var chromeUI = new ChromeUI();
 var mapUI = new MapUI();
@@ -891,8 +878,6 @@ for (var i = 0; i < 1; i++) {
 
 new Units.Warrior(1, [0, 0]);
 new Units.Warrior(1, [1, 0]);
-
-ko.applyBindings(vm);
 
 game.newTurn();
 //# sourceMappingURL=app.js.map
