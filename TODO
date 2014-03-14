@@ -1,5 +1,3 @@
-bitbucket
-
 remove getTile?
 
 weird stuff happens when two of the user's units are on the same tile - disappearing from map temporarily, missing highlight, etc.
@@ -18,14 +16,14 @@ fortify
 
 sentry
 
-fog of war
-  every tile starts with fog=true
-  set fog=false on unit creation and unit movement
+scroll wheel zoom by increasing TILE_SIZE
 
-field of view
-  before displaying anything
-    set each tile to visible=false
-    loop through all the user's units and set visible=true when appropriate
+fog of war
+  states
+    never seen yet: completely black
+    saw before, but not currently in field of vision: terrain+improvements appear as last known, with shadow over it
+      need to somehow cache last viewed tile state for every tile. copy of map, i guess
+    in field of vision: visible
 
 right click to move
 
