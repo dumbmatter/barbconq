@@ -1,7 +1,6 @@
 bitbucket
 
-should unitStubs just be replaced by unit objects? It'll be a reference to them, right?
-  would make knockout easier, since unit list would be actual units
+remove getTile, like i got rid of getUnit?
 
 bottom chrome
   actions: show button for each element in unit.actions

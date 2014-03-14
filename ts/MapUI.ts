@@ -176,7 +176,7 @@ class MapUI {
             // Text - list units
             if (game.map.tiles[i][j].units.length > 0) {
                 // Show first unit, arbitrarily
-                unit = game.getUnit(game.map.tiles[i][j].units[0]);
+                unit = game.map.tiles[i][j].units[0];
 
                 this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
                 this.context.textBaseline = "top";
@@ -191,7 +191,7 @@ class MapUI {
             // Highlight active tile
             if (game.map.tiles[i][j].units.length > 0) {
                 for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
-                    unit = game.getUnit(game.map.tiles[i][j].units[k]);
+                    unit = game.map.tiles[i][j].units[k];
 
                     if (unit.active) {
                         this.context.strokeStyle = "#f00";
@@ -230,7 +230,7 @@ class MapUI {
                 // Highlight active tile
                 if (game.map.tiles[i][j].units.length > 0) {
                     for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
-                        unit = game.getUnit(game.map.tiles[i][j].units[k]);
+                        unit = game.map.tiles[i][j].units[k];
 
                         if (unit.active) {
                             this.miniContext.fillStyle = "#f00";
