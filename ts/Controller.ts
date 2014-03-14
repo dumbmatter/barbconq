@@ -102,6 +102,35 @@ class Controller {
                 }
             }
         }.bind(this));
+
+        // Actions bar at the bottom
+        chromeUI.elBottomActions.addEventListener("click", function (e) {
+            var el;
+
+            el = <HTMLElement> e.target;
+            if (el && el.dataset.action) {
+                e.preventDefault();
+                game.activeUnit[el.dataset.action]();
+            }
+        });
+        chromeUI.elBottomActions.addEventListener("mouseover", function (e) {
+            var el;
+
+            el = <HTMLElement> e.target;
+            if (el && el.dataset.action) {
+                e.preventDefault();
+                chromeUI.onHoverAction(el.dataset.action);
+            }
+        });
+        chromeUI.elBottomActions.addEventListener("mouseout", function (e) {
+            var el;
+
+            el = <HTMLElement> e.target;
+            if (el && el.dataset.action) {
+                e.preventDefault();
+                chromeUI.onHoverAction();
+            }
+        });
     }
 
     initHoverTile() {

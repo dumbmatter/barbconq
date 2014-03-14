@@ -15,9 +15,16 @@ canvas { display:block; } /* To remove the scrollbars */
   pointer-events: none;
   border: solid #ffde00;
   border-width: 5px 2px;
+  width: 290px;
 }
 #hover-box .unit-name {
   color: #ffde00;
+}
+#hover-box .action-name {
+  color: #99e6ff;
+}
+#hover-box .action-shortcut {
+  color: #8eff66;
 }
 
 #turn-box {
@@ -73,7 +80,7 @@ canvas { display:block; } /* To remove the scrollbars */
   width: 45px;
   height: 45px;
   margin: 5px;
-  border: 2px solid #ffde00;
+  border: 2px solid #99e6ff;
   border-radius: 5px;
   float: left;
   text-align: center;

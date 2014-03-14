@@ -162,6 +162,14 @@ module Units {
             this.setMoved();
             requestAnimationFrame(mapUI.render.bind(mapUI));
         }
+
+        fortify() {
+console.log("FORTIFY")
+        }
+
+        sentry() {
+console.log("SENTRY")
+        }
     }
 
     export class Warrior extends BaseUnit {

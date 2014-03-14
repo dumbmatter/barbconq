@@ -59,7 +59,21 @@ class ChromeUI {
             this.elHoverBox.innerHTML = content;
             this.elHoverBox.style.display = "block";
         } else {
-            // Hide hover box
+            this.elHoverBox.style.display = "none";
+        }
+    }
+
+    onHoverAction(action : string = null) {
+        if (action === "fortify") {
+            this.elHoverBox.innerHTML = '<span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span><br>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.';
+            this.elHoverBox.style.display = "block";
+        } else if (action === "skipTurn") {
+            this.elHoverBox.innerHTML = '<span class="action-name">Skip Turn</span> <span class="action-shortcut">&lt;Space Bar&gt;</span><br>The unit does nothing this turn, but will ask for orders again next turn.';
+            this.elHoverBox.style.display = "block";
+        } else if (action === "sentry") {
+            this.elHoverBox.innerHTML = '<span class="action-name">Sentry</span> <span class="action-shortcut">&lt;S&gt;</span><br>The unit remains inactive until it sees an enemy unit.';
+            this.elHoverBox.style.display = "block";
+        } else {
             this.elHoverBox.style.display = "none";
         }
     }
@@ -85,7 +99,7 @@ class ChromeUI {
         // Update bottom-actions
         this.elBottomActions.innerHTML = "";
         for (i = 0; i < activeUnit.actions.length; i++) {
-            this.elBottomActions.innerHTML += '<div class="action">' + activeUnit.actions[i][0].toUpperCase() + activeUnit.actions[i][1] + '</div>'
+            this.elBottomActions.innerHTML += '<div class="action" data-action="' + activeUnit.actions[i] + '">' + activeUnit.actions[i][0].toUpperCase() + activeUnit.actions[i][1] + '</div>'
         }
     }
 }

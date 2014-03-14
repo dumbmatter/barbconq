@@ -2,10 +2,6 @@ bitbucket
 
 remove getTile?
 
-bottom chrome
-  actions: show button for each element in unit.actions
-    hover -> show full description (so need a dict somewhere with info)
-    link to JS?
 
 weird stuff happens when two of the user's units are on the same tile - disappearing from map temporarily, missing highlight, etc.
   move both on same tile. skip turn for first, move second to another tile, original tile looks blank. move back on, and it looks like there is only one unit there, and the first unit doesn't show up as activated on the map at the beginning of next turn
@@ -13,10 +9,15 @@ weird stuff happens when two of the user's units are on the same tile - disappea
 Controller
   more unit shortcuts
     see if unit has action in this.actions. If so, do it
-    press space to skip to mark active unit as moved and go to next active unit
     fortify
     sentry
   enter to end turn, rather than automatically calling newTurn
+
+fortify
+  defensive bonus
+  healing
+
+sentry
 
 fog of war
   every tile starts with fog=true
