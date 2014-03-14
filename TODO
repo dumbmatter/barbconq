@@ -1,15 +1,13 @@
 bitbucket
 
+remove getTile?
+
 bottom chrome
   actions: show button for each element in unit.actions
-  live updating for all the stuff in ChromeUI - react? knockout? probably knockout since it'll be more stable and supported
-    we definitely need active unit in viewmodel
-      vm.activeUnit
-        i guess manually keep this in sync?
-          maybe use getter/setter to update unit and vm at once?
-            when active is set, update everything in VM. when other properties in VM are set, only update individual ones
-        make strengthFraction and movementFraction computed observables
-      vm.turn
+  live updating for all the stuff in ChromeUI - can it be done without rewriting everything? knockout, no. rivets, no. maybe manual is best?
+
+weird stuff happens when two of the user's units are on the same tile - disappearing from map temporarily, missing highlight, etc.
+  move both on same tile. skip turn for first, move second to another tile, original tile looks blank. move back on, and it looks like there is only one unit there, and the first unit doesn't show up as activated on the map at the beginning of next turn
 
 Controller
   more unit shortcuts
@@ -19,13 +17,20 @@ Controller
     sentry
   enter to end turn, rather than automatically calling newTurn
 
+fog of war
+  every tile starts with fog=true
+  set fog=false on unit creation and unit movement
+
+field of view
+  before displaying anything
+    set each tile to visible=false
+    loop through all the user's units and set visible=true when appropriate
+
 right click to move
 
 mapUI.goToCoords should be smooth
 
 stacked unit actions and UI
-
-should unitStubs just be replaced by unit objects? It'll be a reference to them, right?
 
 typescript live compile
 

@@ -1,12 +1,6 @@
 // Units - classes for the various units types
 
 module Units {
-    // This allows a real Unit to be easily found from game.units[owner][id]
-    export interface Stub {
-        id : number;
-        owner : number;
-    }
-
     export class BaseUnit {
         // Identification
         id : number; // Unique, incrementing
@@ -48,7 +42,7 @@ module Units {
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.map.tiles[coords[0]][coords[1]].units.push(this.stub());
+            game.map.tiles[coords[0]][coords[1]].units.push(this);
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
@@ -58,25 +52,17 @@ module Units {
             return (<any> inputClass).constructor.name;
         }
 
-        // Used as a lightweight ID for this unit
-        stub() {
-            return {
-                id: this.id,
-                owner: this.owner
-            };
-        }
-
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
         activate(goToCoords : boolean = true) {
             // Deactivate current active unit, if there is one
             if (game.activeUnit) {
-                game.getUnit(game.activeUnit).active = false;
+                game.activeUnit.active = false;
 //                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
             }
 
             // Activate this unit
             this.active = true;
-            game.activeUnit = this.stub();
+            game.activeUnit = this;
             if (goToCoords) {
                 mapUI.goToCoords(this.coords);
             }
@@ -158,7 +144,7 @@ module Units {
                 }
 
                 // Add unit at new tile
-                game.getTile(this.coords).units.push(this.stub());
+                game.getTile(this.coords).units.push(this);
 
                 // Keep track of movement
                 this.currentMovement -= 1; // Should depend on terrain/improvements

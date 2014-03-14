@@ -73,7 +73,7 @@ var Controller = (function () {
 
             // Active unit stuff
             if (game.activeUnit) {
-                activeUnit = game.getUnit(game.activeUnit);
+                activeUnit = game.activeUnit;
 
                 // Unit movement
                 if (e.keyCode === this.KEYS.NUMPAD_1) {
@@ -148,7 +148,7 @@ var Controller = (function () {
 
                 for (i = 0; i < units.length; i++) {
                     if (units[i].owner === 1) {
-                        game.getUnit(units[i]).activate(false); // Activate, but don't center map!
+                        units[i].activate(false); // Activate, but don't center map!
                         foundUnit = true;
                         requestAnimationFrame(mapUI.render.bind(mapUI));
                         return;
@@ -223,7 +223,7 @@ var ChromeUI = (function () {
             content = "";
 
             for (i = 0; i < tile.units.length; i++) {
-                unit = game.getUnit(tile.units[i]);
+                unit = tile.units[i];
                 content += '<span class="unit-name">' + unit.type + '</span>, ';
                 content += this.strengthFraction(unit) + ', ';
                 content += this.movementFraction(unit) + ', ';
@@ -249,7 +249,7 @@ var ChromeUI = (function () {
     ChromeUI.prototype.onUnitActivated = function () {
         var activeUnit;
 
-        activeUnit = game.getUnit(game.activeUnit);
+        activeUnit = game.activeUnit;
 
         // Update bottom-info
         this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
@@ -415,7 +415,7 @@ var MapUI = (function () {
             // Text - list units
             if (game.map.tiles[i][j].units.length > 0) {
                 // Show first unit, arbitrarily
-                unit = game.getUnit(game.map.tiles[i][j].units[0]);
+                unit = game.map.tiles[i][j].units[0];
 
                 this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
                 this.context.textBaseline = "top";
@@ -430,7 +430,7 @@ var MapUI = (function () {
             // Highlight active tile
             if (game.map.tiles[i][j].units.length > 0) {
                 for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
-                    unit = game.getUnit(game.map.tiles[i][j].units[k]);
+                    unit = game.map.tiles[i][j].units[k];
 
                     if (unit.active) {
                         this.context.strokeStyle = "#f00";
@@ -467,7 +467,7 @@ var MapUI = (function () {
                 // Highlight active tile
                 if (game.map.tiles[i][j].units.length > 0) {
                     for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
-                        unit = game.getUnit(game.map.tiles[i][j].units[k]);
+                        unit = game.map.tiles[i][j].units[k];
 
                         if (unit.active) {
                             this.miniContext.fillStyle = "#f00";
@@ -614,14 +614,6 @@ var Game = (function () {
             this.units.push({});
         }
     }
-    Game.prototype.getUnit = function (unitStub) {
-        if (unitStub) {
-            return this.units[unitStub.owner][unitStub.id];
-        } else {
-            return null;
-        }
-    };
-
     Game.prototype.getTile = function (coords) {
         if (mapUI.validCoords(coords)) {
             return this.map.tiles[coords[0]][coords[1]];
@@ -679,8 +671,6 @@ var __extends = this.__extends || function (d, b) {
 };
 var Units;
 (function (Units) {
-    
-
     var BaseUnit = (function () {
         function BaseUnit(owner, coords) {
             // Key attributes
@@ -698,7 +688,7 @@ var Units;
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.map.tiles[coords[0]][coords[1]].units.push(this.stub());
+            game.map.tiles[coords[0]][coords[1]].units.push(this);
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
@@ -707,6 +697,7 @@ var Units;
             get: function () {
                 return this._active;
             },
+            // Getters and setters, to make Knockout integration easier
             set: function (value) {
                 this._active = value;
             },
@@ -718,26 +709,18 @@ var Units;
             return inputClass.constructor.name;
         };
 
-        // Used as a lightweight ID for this unit
-        BaseUnit.prototype.stub = function () {
-            return {
-                id: this.id,
-                owner: this.owner
-            };
-        };
-
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
         BaseUnit.prototype.activate = function (goToCoords) {
             if (typeof goToCoords === "undefined") { goToCoords = true; }
             // Deactivate current active unit, if there is one
             if (game.activeUnit) {
-                game.getUnit(game.activeUnit).active = false;
+                game.activeUnit.active = false;
                 //                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
             }
 
             // Activate this unit
             this.active = true;
-            game.activeUnit = this.stub();
+            game.activeUnit = this;
             if (goToCoords) {
                 mapUI.goToCoords(this.coords);
             }
@@ -819,7 +802,7 @@ var Units;
                 }
 
                 // Add unit at new tile
-                game.getTile(this.coords).units.push(this.stub());
+                game.getTile(this.coords).units.push(this);
 
                 // Keep track of movement
                 this.currentMovement -= 1; // Should depend on terrain/improvements

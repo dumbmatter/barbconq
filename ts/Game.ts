@@ -5,7 +5,7 @@ class Game {
     maxId : number = 0;
     names: string[];
     units : {}[];
-    activeUnit : Units.Stub = null;
+    activeUnit : Units.BaseUnit = null;
     turn : number = 0;
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
@@ -25,14 +25,6 @@ class Game {
             }
 
             this.units.push({});
-        }
-    }
-
-    getUnit(unitStub : Units.Stub) {
-        if (unitStub) {
-            return this.units[unitStub.owner][unitStub.id];
-        } else {
-            return null;
         }
     }
 

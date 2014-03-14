@@ -70,7 +70,7 @@ class Controller {
 
             // Active unit stuff
             if (game.activeUnit) {
-                activeUnit = game.getUnit(game.activeUnit);
+                activeUnit = game.activeUnit;
 
                 // Unit movement
                 if (e.keyCode === this.KEYS.NUMPAD_1) {
@@ -146,7 +146,7 @@ class Controller {
                 // This should be made smarter (i.e. pick the strongest unit with moves left - easy if units is sorted by strength by default)
                 for (i = 0; i < units.length; i++) {
                     if (units[i].owner === 1) {
-                        game.getUnit(units[i]).activate(false); // Activate, but don't center map!
+                        units[i].activate(false); // Activate, but don't center map!
                         foundUnit = true;
                         requestAnimationFrame(mapUI.render.bind(mapUI));
                         return;

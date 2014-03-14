@@ -4,7 +4,7 @@ module MapMaker {
     export interface Tile {
         terrain : string;
         features : string[];
-        units : Units.Stub[];
+        units : Units.BaseUnit[];
     }
 
     export interface Map {
