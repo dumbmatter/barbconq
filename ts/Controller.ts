@@ -75,35 +75,39 @@ class Controller {
 
     initUnitActions() {
         document.addEventListener("keydown", function (e) {
+            var activeUnit;
+
             // Active unit stuff
             if (game.activeUnit) {
+                activeUnit = game.getUnit(game.activeUnit);
+
                 // Unit movement
                 if (e.keyCode === this.KEYS.NUMPAD_1) {
-                    game.activeUnit.move("SW");
+                    activeUnit.move("SW");
                 } else if (e.keyCode === this.KEYS.NUMPAD_2) {
-                    game.activeUnit.move("S");
+                    activeUnit.move("S");
                 } else if (e.keyCode === this.KEYS.NUMPAD_3) {
-                    game.activeUnit.move("SE");
+                    activeUnit.move("SE");
                 } else if (e.keyCode === this.KEYS.NUMPAD_4) {
-                    game.activeUnit.move("W");
+                    activeUnit.move("W");
                 } else if (e.keyCode === this.KEYS.NUMPAD_6) {
-                    game.activeUnit.move("E");
+                    activeUnit.move("E");
                 } else if (e.keyCode === this.KEYS.NUMPAD_7) {
-                    game.activeUnit.move("NW");
+                    activeUnit.move("NW");
                 } else if (e.keyCode === this.KEYS.NUMPAD_8) {
-                    game.activeUnit.move("N");
+                    activeUnit.move("N");
                 } else if (e.keyCode === this.KEYS.NUMPAD_9) {
-                    game.activeUnit.move("NE");
+                    activeUnit.move("NE");
                 }
 
                 // Center on active unit
                 if (e.keyCode === this.KEYS.C) {
-                    mapUI.goToCoords(game.activeUnit.coords)
+                    mapUI.goToCoords(activeUnit.coords)
                 }
 
                 // Unit-specific actions, might not always apply
-                if (e.keyCode === this.KEYS.SPACE_BAR && game.activeUnit.actions.indexOf("skipTurn") >= 0) {
-                    game.activeUnit.skipTurn();
+                if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
+                    activeUnit.skipTurn();
                 }
             }
         }.bind(this));
@@ -148,7 +152,7 @@ class Controller {
                 // This should be made smarter (i.e. pick the strongest unit with moves left - easy if units is sorted by strength by default)
                 for (i = 0; i < units.length; i++) {
                     if (units[i].owner === 1) {
-                        units[i].activate(false); // Activate, but don't center map!
+                        game.getUnit(units[i]).activate(false); // Activate, but don't center map!
                         foundUnit = true;
                         requestAnimationFrame(mapUI.render.bind(mapUI));
                         return;

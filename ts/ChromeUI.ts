@@ -34,7 +34,7 @@ class ChromeUI {
             content = "";
 
             for (i = 0; i < tile.units.length; i++) {
-                unit = tile.units[i];
+                unit = game.getUnit(tile.units[i]);
                 content += '<span class="unit-name">' + unit.type + '</span>, ';
                 content += this.strengthFraction(unit) + ', ';
                 content += this.movementFraction(unit) + ', ';
@@ -56,7 +56,7 @@ class ChromeUI {
     onUnitActivated() {
         var activeUnit;
 
-        activeUnit = game.activeUnit;
+        activeUnit = game.getUnit(game.activeUnit);
 
         // Update bottom-info
         this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" +

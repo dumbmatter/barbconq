@@ -5,7 +5,7 @@ class Game {
     maxId : number = 0;
     names: string[];
     units : {}[];
-    activeUnit : Units.BaseUnit = null;
+    activeUnit : Units.Stub = null;
     private _turn : number = 0;
 
     // Getters and setters, to make Knockout integration easier
@@ -34,6 +34,14 @@ class Game {
             }
 
             this.units.push({});
+        }
+    }
+
+    getUnit(unitStub : Units.Stub) {
+        if (unitStub) {
+            return this.units[unitStub.owner][unitStub.id];
+        } else {
+            return null;
         }
     }
 
