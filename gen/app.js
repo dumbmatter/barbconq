@@ -224,7 +224,7 @@ var ChromeUI = (function () {
 // Knockout bindings
 ko.bindingHandlers.strengthFraction = {
     update: function (element, valueAccessor) {
-        var unit = valueAccessor();
+        var unit = ko.unwrap(valueAccessor());
         return ko.bindingHandlers.text.update(element, function () {
             if (unit.strength === unit.currentStrength) {
                 return unit.currentStrength + ' S';
@@ -236,7 +236,7 @@ ko.bindingHandlers.strengthFraction = {
 
 ko.bindingHandlers.movementFraction = {
     update: function (element, valueAccessor) {
-        var unit = valueAccessor();
+        var unit = ko.unwrap(valueAccessor());
         return ko.bindingHandlers.text.update(element, function () {
             if (unit.movement === unit.currentMovement) {
                 return unit.currentMovement + ' M';
@@ -248,7 +248,7 @@ ko.bindingHandlers.movementFraction = {
 
 ko.bindingHandlers.ownerName = {
     update: function (element, valueAccessor) {
-        var owner = valueAccessor();
+        var owner = ko.unwrap(valueAccessor());
         return ko.bindingHandlers.text.update(element, function () {
             return game.names[owner];
         });
@@ -718,6 +718,9 @@ var Units;
             // Getters and setters, to make Knockout integration easier
             set: function (value) {
                 this._active = value;
+                if (value) {
+                    vm.activeUnit(this);
+                }
             },
             enumerable: true,
             configurable: true
@@ -868,7 +871,8 @@ var Units;
 ///<reference path='Units.ts'/>
 var vm = {
     turn: ko.observable(),
-    hoveredTile: ko.observable()
+    hoveredTile: ko.observable(),
+    activeUnit: ko.observable()
 };
 
 var game = new Game(1, 20, 40);

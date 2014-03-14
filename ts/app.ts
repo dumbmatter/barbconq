@@ -10,7 +10,8 @@
 
 var vm : any = {
     turn: ko.observable(),
-    hoveredTile: ko.observable()
+    hoveredTile: ko.observable(),
+    activeUnit: ko.observable()
 };
 
 var game = new Game(1, 20, 40);

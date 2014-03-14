@@ -31,7 +31,7 @@ class ChromeUI {
 
 ko.bindingHandlers.strengthFraction = {
     update: function (element, valueAccessor) {
-        var unit = valueAccessor();
+        var unit = ko.unwrap(valueAccessor());
         return ko.bindingHandlers.text.update(element, function () {
             if (unit.strength === unit.currentStrength) {
                 return unit.currentStrength + ' S';
@@ -43,7 +43,7 @@ ko.bindingHandlers.strengthFraction = {
 
 ko.bindingHandlers.movementFraction = {
     update: function (element, valueAccessor) {
-        var unit = valueAccessor();
+        var unit = ko.unwrap(valueAccessor());
         return ko.bindingHandlers.text.update(element, function () {
             if (unit.movement === unit.currentMovement) {
                 return unit.currentMovement + ' M';
@@ -55,7 +55,7 @@ ko.bindingHandlers.movementFraction = {
 
 ko.bindingHandlers.ownerName = {
     update: function (element, valueAccessor) {
-        var owner = valueAccessor();
+        var owner = ko.unwrap(valueAccessor());
         return ko.bindingHandlers.text.update(element, function () {
             return game.names[owner];
         });

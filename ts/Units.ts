@@ -29,6 +29,9 @@ module Units {
         // Getters and setters, to make Knockout integration easier
         set active(value : boolean) {
             this._active = value;
+            if (value) {
+                vm.activeUnit(this);
+            }
         }
         get active() : boolean {
             return this._active;
