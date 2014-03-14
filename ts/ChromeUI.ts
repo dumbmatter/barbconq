@@ -83,7 +83,7 @@ class ChromeUI {
     }
 
     updateActiveUnit() {
-        var activeUnit, i;
+        var activeUnit, actionName, i;
 
         activeUnit = game.activeUnit;
 
@@ -99,7 +99,11 @@ class ChromeUI {
         // Update bottom-actions
         this.elBottomActions.innerHTML = "";
         for (i = 0; i < activeUnit.actions.length; i++) {
-            this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + activeUnit.actions[i][0].toUpperCase() + activeUnit.actions[i][1] + '</button>'
+            // Convert camel case to title case
+            actionName = activeUnit.actions[i].replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2"); // http://stackoverflow.com/a/7225474
+            actionName = actionName.charAt(0).toUpperCase() + actionName.slice(1); // Fix first character
+
+            this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + actionName + '</button>'
         }
     }
 }
