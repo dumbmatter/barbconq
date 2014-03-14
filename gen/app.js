@@ -222,20 +222,6 @@ var ChromeUI = (function () {
 })();
 
 // Knockout bindings
-rivets.formatters.strengthFraction = function (unit) {
-    if (unit.strength === unit.currentStrength) {
-        return unit.currentStrength + ' S';
-    }
-    return unit.currentStrength + '/' + unit.strength + ' S';
-};
-
-rivets.formatters.movementFraction = function (unit) {
-    if (unit.movement === unit.currentMovement) {
-        return unit.currentMovement + ' M';
-    }
-    return unit.currentMovement + '/' + unit.movement + ' S';
-};
-
 ko.bindingHandlers.strengthFraction = {
     update: function (element, valueAccessor) {
         var unit = ko.unwrap(valueAccessor());
@@ -616,7 +602,7 @@ var Game = (function () {
     function Game(numPlayers, mapRows, mapCols) {
         this.maxId = 0;
         this.activeUnit = null;
-        this.turn = 0;
+        this._turn = 0;
         var i;
 
         this.map = MapMaker.generate(mapRows, mapCols);
@@ -634,6 +620,19 @@ var Game = (function () {
             this.units.push({});
         }
     }
+    Object.defineProperty(Game.prototype, "turn", {
+        get: function () {
+            return this._turn;
+        },
+        // Getters and setters, to make Knockout integration easier
+        set: function (value) {
+            this._turn = value;
+            vm.turn(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
+
     Game.prototype.getTile = function (coords) {
         if (mapUI.validCoords(coords)) {
             return this.map.tiles[coords[0]][coords[1]];
@@ -719,13 +718,8 @@ var Units;
             // Getters and setters, to make Knockout integration easier
             set: function (value) {
                 this._active = value;
-                if (this._active) {
-                    if (window.qqq) {
-                        qqq.unbind();
-                    }
-                    window.qqq = rivets.bind(document.getElementById("bottom-info"), {
-                        activeUnit: this
-                    });
+                if (value) {
+                    vm.activeUnit(this);
                 }
             },
             enumerable: true,
@@ -876,7 +870,9 @@ var Units;
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
 var vm = {
-    hoveredTile: ko.observable()
+    turn: ko.observable(),
+    hoveredTile: ko.observable(),
+    activeUnit: ko.observable()
 };
 
 var game = new Game(1, 20, 40);
@@ -894,12 +890,8 @@ for (var i = 0; i < 1; i++) {
 new Units.Warrior(1, [0, 0]);
 new Units.Warrior(1, [1, 0]);
 
-// Init dynamic UI
 ko.applyBindings(vm);
 
-/*rivets.bind(document.body, {
-game: game
-})*/
 // Start game
 game.newTurn();
 //# sourceMappingURL=app.js.map

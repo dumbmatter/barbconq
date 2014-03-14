@@ -11,13 +11,9 @@ bottom chrome
       what properties does this need?
       use getter/setter in BaseUnit to keep in sync
         when active is set, update everything in VM. when other properties in VM are set, only update individual ones
-    unit data binding problem
-      make every unit class filled with observables?
-      or update all in one shot on getter/setter for any relevant property, like with activeUnit?
-      SWITCH TO A POJO DATA BINDING LIBRARY?
-        rivets see #4 http://stackoverflow.com/questions/12868566/how-to-bind-deeper-than-one-level-with-rivets-js
-
-get rid of chrome flicker on first load
+    hover
+      use activeUnit, but only if hover coordinates match active unit's coordinates
+    make strengthFraction and movementFraction computed observables
 
 weird stuff happens when two of the user's units are on the same tile - disappearing from map temporarily, missing highlight, etc.
   move both on same tile. skip turn for first, move second to another tile, original tile looks blank. move back on, and it looks like there is only one unit there, and the first unit doesn't show up as activated on the map at the beginning of next turn

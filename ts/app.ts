@@ -9,7 +9,9 @@
 ///<reference path='Units.ts'/>
 
 var vm : any = {
-    hoveredTile: ko.observable()
+    turn: ko.observable(),
+    hoveredTile: ko.observable(),
+    activeUnit: ko.observable()
 };
 
 var game = new Game(1, 20, 40);
@@ -27,16 +29,7 @@ for (var i = 0; i < 1; i++) {
 new Units.Warrior(1, [0, 0]);
 new Units.Warrior(1, [1, 0]);
 
-// Init dynamic UI
-
 ko.applyBindings(vm);
-
-declare var rivets: any;
-declare var $: any;
-
-/*rivets.bind(document.body, {
-  game: game
-})*/
 
 // Start game
 

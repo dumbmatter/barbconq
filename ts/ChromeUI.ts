@@ -29,20 +29,6 @@ class ChromeUI {
 
 // Knockout bindings
 
-rivets.formatters.strengthFraction = function (unit) {
-    if (unit.strength === unit.currentStrength) {
-        return unit.currentStrength + ' S';
-    }
-    return unit.currentStrength + '/' + unit.strength + ' S';
-}
-
-rivets.formatters.movementFraction = function (unit) {
-    if (unit.movement === unit.currentMovement) {
-        return unit.currentMovement + ' M';
-    }
-    return unit.currentMovement + '/' + unit.movement + ' S';
-}
-
 ko.bindingHandlers.strengthFraction = {
     update: function (element, valueAccessor) {
         var unit = ko.unwrap(valueAccessor());

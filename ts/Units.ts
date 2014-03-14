@@ -29,11 +29,8 @@ module Units {
         // Getters and setters, to make Knockout integration easier
         set active(value : boolean) {
             this._active = value;
-            if (this._active) {
-                if (window.qqq) { window.qqq.unbind(); }
-                window.qqq = rivets.bind(document.getElementById("bottom-info"), {
-                  activeUnit: this
-                })
+            if (value) {
+                vm.activeUnit(this);
             }
         }
         get active() : boolean {

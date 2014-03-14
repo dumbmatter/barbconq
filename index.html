@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="civ4clone.css">
   </head>
   <body>
-    <div id="turn-box">Turn { game.turn }</div>
+    <div id="turn-box">Turn <span data-bind="text: turn"></span></div>
     <div id="hover-box" data-bind="visible: hoveredTile">
       <!-- ko if: hoveredTile -->
         <!-- ko foreach: hoveredTile().units -->
@@ -20,15 +20,15 @@
       <!-- /ko -->
     </div>
     <div id="bottom-info">
-      <div rv-if="activeUnit">
-        <h1>{ activeUnit.type }</h1>
+      <!-- ko if: activeUnit -->
+        <h1 data-bind="text: activeUnit.type"></h1>
         <table>
-          <tr><td>Strength:</td><td>{ activeUnit | strengthFraction }</td></tr>
-          <tr><td>Movement:</td><td>{ activeUnit | movementFraction }</td></tr>
-          <tr><td>Level:</td><td>{ activeUnit.level }</td></tr>
-          <tr><td>Experience:</td><td>{ activeUnit.level }</td></tr>
+          <tr><td>Strength:</td><td data-bind="strengthFraction: activeUnit"></td></tr>
+          <tr><td>Movement:</td><td data-bind="movementFraction: activeUnit"></td></tr>
+          <tr><td>Level:</td><td data-bind="text: activeUnit().level"></td></tr>
+          <tr><td>Experience:</td><td data-bind="text: activeUnit().xp"></td></tr>
         </table>
-      </div>
+      <!-- /ko -->
     </div>
     <div id="bottom-actions">Actions</div>
     <div id="bottom-minimap">
@@ -36,7 +36,6 @@
     </div>
     <canvas id="map"></canvas> 
     <script type="text/javascript" src="js-lib/knockout.js"></script>
-    <script type="text/javascript" src="js-lib/rivets.js"></script>
     <script type="text/javascript" src="gen/app.js"></script>
   </body>
 </html>
