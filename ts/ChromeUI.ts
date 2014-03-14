@@ -69,7 +69,7 @@ class ChromeUI {
     }
 
     updateActiveUnit() {
-        var activeUnit;
+        var activeUnit, i;
 
         activeUnit = game.activeUnit;
 
@@ -83,5 +83,9 @@ class ChromeUI {
             "</table>";
 
         // Update bottom-actions
+        this.elBottomActions.innerHTML = "";
+        for (i = 0; i < activeUnit.actions.length; i++) {
+            this.elBottomActions.innerHTML += '<div class="action">' + activeUnit.actions[i][0].toUpperCase() + activeUnit.actions[i][1] + '</div>'
+        }
     }
 }

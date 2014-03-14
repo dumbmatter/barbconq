@@ -67,6 +67,16 @@ canvas { display:block; } /* To remove the scrollbars */
   height: 125px;
   border-top: 5px solid #ffde00;
 }
+#bottom-actions .action {
+  width: 45px;
+  height: 45px;
+  margin: 5px;
+  border: 2px solid #ffde00;
+  float: left;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+}
 
 #bottom-minimap {
   position: absolute;

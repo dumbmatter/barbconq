@@ -256,13 +256,18 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.updateActiveUnit = function () {
-        var activeUnit;
+        var activeUnit, i;
 
         activeUnit = game.activeUnit;
 
         // Update bottom-info
         this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
+
         // Update bottom-actions
+        this.elBottomActions.innerHTML = "";
+        for (i = 0; i < activeUnit.actions.length; i++) {
+            this.elBottomActions.innerHTML += '<div class="action">' + activeUnit.actions[i][0].toUpperCase() + activeUnit.actions[i][1] + '</div>';
+        }
     };
     return ChromeUI;
 })();
