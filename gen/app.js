@@ -262,15 +262,15 @@ var ChromeUI = (function () {
 
             for (i = 0; i < tile.units.length; i++) {
                 unit = tile.units[i];
-                content += '<span class="unit-name">' + unit.type + '</span>, ';
+                content += '<p><span class="unit-name">' + unit.type + '</span>, ';
                 content += this.strengthFraction(unit) + ', ';
                 content += this.movementFraction(unit) + ', ';
                 content += game.names[unit.owner];
-                content += '<br>';
+                content += '</p>';
             }
 
             // Show tile terrain and features
-            content += tile.features.join("/") + (tile.features.length ? "/" : "") + tile.terrain;
+            content += '<p>' + tile.features.join("/") + (tile.features.length ? "/" : "") + tile.terrain + '</p>';
 
             this.elHoverBox.innerHTML = content;
             this.elHoverBox.style.display = "block";
@@ -282,13 +282,13 @@ var ChromeUI = (function () {
     ChromeUI.prototype.onHoverAction = function (action) {
         if (typeof action === "undefined") { action = null; }
         if (action === "fortify") {
-            this.elHoverBox.innerHTML = '<span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span><br>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.';
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "skipTurn") {
-            this.elHoverBox.innerHTML = '<span class="action-name">Skip Turn</span> <span class="action-shortcut">&lt;Space Bar&gt;</span><br>The unit does nothing this turn, but will ask for orders again next turn.';
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Skip Turn</span> <span class="action-shortcut">&lt;Space Bar&gt;</span></p><p>The unit does nothing this turn, but will ask for orders again next turn.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "sentry") {
-            this.elHoverBox.innerHTML = '<span class="action-name">Sentry</span> <span class="action-shortcut">&lt;S&gt;</span><br>The unit remains inactive until it sees an enemy unit.';
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Sentry</span> <span class="action-shortcut">&lt;S&gt;</span></p><p>The unit remains inactive until it sees an enemy unit.</p>';
             this.elHoverBox.style.display = "block";
         } else {
             this.elHoverBox.style.display = "none";
@@ -310,7 +310,7 @@ var ChromeUI = (function () {
         // Update bottom-actions
         this.elBottomActions.innerHTML = "";
         for (i = 0; i < activeUnit.actions.length; i++) {
-            this.elBottomActions.innerHTML += '<div class="action" data-action="' + activeUnit.actions[i] + '">' + activeUnit.actions[i][0].toUpperCase() + activeUnit.actions[i][1] + '</div>';
+            this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + activeUnit.actions[i][0].toUpperCase() + activeUnit.actions[i][1] + '</button>';
         }
     };
     return ChromeUI;
