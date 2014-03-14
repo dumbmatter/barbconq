@@ -23,6 +23,8 @@ var Controller = (function () {
             NUMPAD_8: 104,
             NUMPAD_9: 105,
             C: 67,
+            F: 70,
+            S: 83,
             SPACE_BAR: 32
         };
         // Only needed for some keys
@@ -100,8 +102,12 @@ var Controller = (function () {
                 }
 
                 // Unit-specific actions, might not always apply
-                if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
+                if (e.keyCode === this.KEYS.F && activeUnit.actions.indexOf("fortify") >= 0) {
+                    activeUnit.fortify();
+                } else if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
                     activeUnit.skipTurn();
+                } else if (e.keyCode === this.KEYS.S && activeUnit.actions.indexOf("sentry") >= 0) {
+                    activeUnit.sentry();
                 }
             }
         }.bind(this));
