@@ -29,6 +29,15 @@ class ChromeUI {
         }
     }
 
+    // Update Chrome that might have changed in render, like unit stuff
+    onMapRender() {
+        this.updateActiveUnit();
+    }
+
+    onUnitActivated() {
+        this.updateActiveUnit();
+    }
+
     onHoverTile(tile : MapMaker.Tile = null) {
         var content, i, unit;
 
@@ -59,7 +68,7 @@ class ChromeUI {
         this.elTurnBox.innerHTML = "Turn " + game.turn;
     }
 
-    onUnitActivated() {
+    updateActiveUnit() {
         var activeUnit;
 
         activeUnit = game.activeUnit;

@@ -215,6 +215,15 @@ var ChromeUI = (function () {
         }
     };
 
+    // Update Chrome that might have changed in render, like unit stuff
+    ChromeUI.prototype.onMapRender = function () {
+        this.updateActiveUnit();
+    };
+
+    ChromeUI.prototype.onUnitActivated = function () {
+        this.updateActiveUnit();
+    };
+
     ChromeUI.prototype.onHoverTile = function (tile) {
         if (typeof tile === "undefined") { tile = null; }
         var content, i, unit;
@@ -246,7 +255,7 @@ var ChromeUI = (function () {
         this.elTurnBox.innerHTML = "Turn " + game.turn;
     };
 
-    ChromeUI.prototype.onUnitActivated = function () {
+    ChromeUI.prototype.updateActiveUnit = function () {
         var activeUnit;
 
         activeUnit = game.activeUnit;
@@ -444,6 +453,9 @@ var MapUI = (function () {
 
         // Render minimap at the end
         this.renderMiniMap();
+
+        // Other UI rendering
+        chromeUI.onMapRender();
     };
 
     MapUI.prototype.renderMiniMap = function () {

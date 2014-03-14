@@ -205,6 +205,9 @@ class MapUI {
 
         // Render minimap at the end
         this.renderMiniMap();
+
+        // Other UI rendering
+        chromeUI.onMapRender();
     }
 
     renderMiniMap() {
