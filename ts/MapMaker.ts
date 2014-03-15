@@ -69,6 +69,24 @@ module MapMaker {
 
             return false;
         }
+
+        // Moves a unit from its current coordinates to coords.
+        // Doesn't call render automatically, since this is often called multiple times before rendering (like for moving a stack)
+        moveUnit(unit : Units.BaseUnit, coords : number[]) {
+            var i, tileUnits;
+
+            // Delete old unit in map
+            tileUnits = game.getTile(unit.coords).units;
+            for (i = 0; i < tileUnits.length; i++) {
+                if (tileUnits[i].id === unit.id) {
+                    tileUnits.splice(i, 1);
+                    break;
+                }
+            }
+
+            // Add unit at new tile
+            game.getTile(coords).units.push(unit);
+        }
     }
 
     export class DefaultMap extends Map {

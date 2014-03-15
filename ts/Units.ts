@@ -104,8 +104,24 @@ module Units {
             }
         }
 
+        // Needs to be defined separately for individual and group
+        moveOnMap(coords : number[]) {}
+
         // Check for valid coords before calling
-        moveToCoords(coords : number[]) {}
+        moveToCoords(coords : number[]) {
+            // Move the unit(s) in the map data structure
+            this.moveOnMap(coords);
+
+            // Keep track of movement locally
+            this.coords = coords;
+            this.currentMovement -= 1; // Should depend on terrain/improvements
+            if (this.currentMovement <= 0) {
+                this.currentMovement = 0;
+                this.setMoved();
+            }
+
+            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+        }
 
         // Sets the unit on a path towards a coordinate on the map
         initiatePath(coords : number[]) {
@@ -217,45 +233,9 @@ console.log("SENTRY")
             game.units[this.owner][this.id] = this;
         }
 
-        // Check for valid coords before calling
-        moveToCoords(coords : number[]) {
-            var i, moveIndividualUnit;
-
-            moveIndividualUnit = function(unit) {
-                var i, tileUnits;
-
-                // Delete old unit in map
-                tileUnits = game.getTile(unit.coords).units;
-                for (i = 0; i < tileUnits.length; i++) {
-                    if (tileUnits[i].id === unit.id) {
-                        tileUnits.splice(i, 1);
-                        break;
-                    }
-                }
-
-                // Add unit at new tile
-                game.getTile(coords).units.push(unit);
-            };
-
-            if (this instanceof UnitGroup) {
-                // It's a unit group!
-                for (i = 0; i < this.units.length; i++) {
-                    moveIndividualUnit(this.units[i]);
-                }
-            } else {
-                // It's an individual unit!
-                moveIndividualUnit(this);
-            }
-
-            // Keep track of movement
-            this.coords = coords;
-            this.currentMovement -= 1; // Should depend on terrain/improvements
-            if (this.currentMovement <= 0) {
-                this.currentMovement = 0;
-                this.setMoved();
-            }
-
-            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+        moveOnMap(coords : number[]) {
+            // It's an individual unit!
+            game.map.moveUnit(this, coords);
         }
     }
 
@@ -266,6 +246,15 @@ console.log("SENTRY")
             super();
 
             this.units = units;
+        }
+
+        moveOnMap(coords : number[]) {
+            var i;
+
+            // It's a unit group!
+            for (i = 0; i < this.units.length; i++) {
+                game.map.moveUnit(this.units[i], coords);
+            }
         }
 
         add() {}
