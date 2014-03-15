@@ -1,5 +1,3 @@
-elBottomText should fade in and out
-
 remove getTile?
 
 use coordsToPixels in MapUI.render

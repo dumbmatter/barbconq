@@ -55,10 +55,22 @@ canvas { display:block; } /* To remove the scrollbars */
   right: 300px;
   bottom: 135px;
   color: #fff;
-  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.2em black;
+  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
   padding: 5px;
   text-align: center;
   display: none;
+  -webkit-animation: blink 2s linear infinite;
+  animation: blink 2s linear infinite;
+}
+@keyframes blink {  
+  20% { opacity: 1; }
+  50% { opacity: 0.1; }
+  80% { opacity: 1; }
+}
+@-webkit-keyframes blink {
+  20% { opacity: 1; }
+  50% { opacity: 0.1; }
+  80% { opacity: 1; }
 }
 
 #bottom-info {
