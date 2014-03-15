@@ -288,7 +288,7 @@ class MapUI {
     goToCoords(coords : number[]) {
         // ith row, jth column, 0 indexed
         this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
-        this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;
+        this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2 + chromeUI.elBottomActions.offsetHeight / 2; // chromeUI.elBottomInfo.offsetHeight is to account for the panels at the bottom when centering vertically
         window.requestAnimationFrame(this.render.bind(this));
     }
 
