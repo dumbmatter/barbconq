@@ -27,10 +27,14 @@ right click to move
 mapUI.goToCoords should be smooth
 
 stacked unit actions and UI
+  make sure UI fits under bottom-text
 
 typescript live compile
 
 Create a basic unit, handle its basic actions
+
+"End turn early" green button and "end turn" red button
+  if end turn early, make sure to move units on path towards targetCoords first!
 
 combat
   Combat(attacker : Unit, defender : Unit) to handle just the battle itself

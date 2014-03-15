@@ -328,9 +328,7 @@ var ChromeUI = (function () {
 
     // Update Chrome that might have changed in render, like unit stuff
     ChromeUI.prototype.onMapRender = function () {
-        if (game.activeUnit) {
-            this.updateActiveUnit();
-        }
+        this.updateActiveUnit();
     };
 
     ChromeUI.prototype.onUnitActivated = function () {
@@ -385,25 +383,30 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.onMovesDone = function () {
-        this.updateBottomText("Press &lt;ENTER&gt; to move to next turn...");
+        this.updateBottomText("Press &lt;ENTER&gt; to begin next turn...");
     };
 
+    // Can be called even if no unit is active, in which case it'll remove all displayed unit info
     ChromeUI.prototype.updateActiveUnit = function () {
         var activeUnit, actionName, i;
 
         activeUnit = game.activeUnit;
 
-        // Update bottom-info
-        this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
-
-        // Update bottom-actions
+        // Reset
         this.elBottomActions.innerHTML = "";
-        for (i = 0; i < activeUnit.actions.length; i++) {
-            // Convert camel case to title case
-            actionName = activeUnit.actions[i].replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2"); // http://stackoverflow.com/a/7225474
-            actionName = actionName.charAt(0).toUpperCase() + actionName.slice(1); // Fix first character
+        this.elBottomInfo.innerHTML = "";
 
-            this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + actionName + '</button>';
+        if (game.activeUnit) {
+            // Update bottom-info
+            this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
+
+            for (i = 0; i < activeUnit.actions.length; i++) {
+                // Convert camel case to title case
+                actionName = activeUnit.actions[i].replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2"); // http://stackoverflow.com/a/7225474
+                actionName = actionName.charAt(0).toUpperCase() + actionName.slice(1); // Fix first character
+
+                this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + actionName + '</button>';
+            }
         }
     };
 

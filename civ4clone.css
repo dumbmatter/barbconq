@@ -131,6 +131,9 @@ canvas { display:block; } /* To remove the scrollbars */
   -ms-user-select: none;
   user-select: none;
 }
+#bottom-actions .action:hover {
+  border-color: #ffde00;
+}
 
 #bottom-minimap {
   position: absolute;
