@@ -1,6 +1,4 @@
 right click to move
-  should be able to "right click move drag" under all the chrome at the bottom
-    minimap
   selecting unit on path that hasn't yet moved shouldn't make it move immediately
   needs to handle enemy units - can't cross
 
