@@ -39,6 +39,11 @@ class Game {
     newTurn() {
         var i, j, unit;
 
+        // See if anything still has to be moved
+        if (this.moveUnits()) {
+            return;
+        }
+
         game.turn++;
         chromeUI.onNewTurn();
 
@@ -54,17 +59,27 @@ class Game {
         this.moveUnits();
     }
 
-    moveUnits() {
+    moveUnits() : boolean {
         var i, j, unit;
 
         for (i = 0; i < this.names.length; i++) {
             // Player 1
             if (i === 1) {
+                // First look for ones not on a path towards targetCoords
+                for (j in this.units[i]) {
+                    unit = this.units[i][j];
+                    if (!unit.moved && !unit.targetCoords) {
+                        unit.activate();
+                        return true;
+                    }
+                }
+
+                // Then process all the targetCoords ones
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
                     if (!unit.moved) {
                         unit.activate();
-                        return;
+                        return true;
                     }
                 }
             } else {
@@ -73,6 +88,7 @@ class Game {
         }
 
         // If we made it this far, everybody has moved
-        this.newTurn();
+console.log("Press ENTER to move to next turn")
+        return false;
     }
 }

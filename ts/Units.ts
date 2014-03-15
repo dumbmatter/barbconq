@@ -61,6 +61,13 @@ module Units {
 //                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
             }
 
+            // If this unit is on a path towards a target, just go along the path instead of activating. If there are still moves left when the target is reached, activate() will be called again.
+            if (this.targetCoords) {
+                setTimeout(function () {
+                    this.moveTowardsTarget();
+                }.bind(this), config.UNIT_MOVEMENT_UI_DELAY);
+            }
+
             // Activate this unit
             this.active = true;
             game.activeUnit = this;
@@ -168,7 +175,6 @@ module Units {
 
         // Use up the player's moves by moving towards its targetCoords
         moveTowardsTarget() {
-console.log('moveTowardsTarget')
             game.map.pathFinding(this, this.targetCoords, function (path : number[][]) {
                 var tryToMove;
 
@@ -191,12 +197,12 @@ console.log('moveTowardsTarget')
                     tryToMove(function () {
                         if (path.length === 0) {
                             // We reached our target!
-                            this.targetCoods = null;
+                            this.targetCoords = null;
                             if (this.currentMovement > 0) {
-                                this.activate();
+                                this.activate(false); // Don't recenter, since unit must already be close to center of screen?
                             }
                         }
-                    });
+                    }.bind(this));
                 } else {
                     // Must be something blocking the way now
                     this.targetCoords = null;

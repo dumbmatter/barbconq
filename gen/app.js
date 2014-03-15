@@ -25,6 +25,7 @@ var Controller = (function () {
             C: 67,
             F: 70,
             S: 83,
+            ENTER: 13,
             SPACE_BAR: 32
         };
         // Only needed for some keys
@@ -39,6 +40,7 @@ var Controller = (function () {
         this.initUnitActions();
         this.initHoverTile();
         this.initMapClick();
+        this.initGameActions();
     }
     Controller.prototype.initMapPanning = function () {
         document.addEventListener("keydown", function (e) {
@@ -288,6 +290,14 @@ var Controller = (function () {
                 document.addEventListener("mouseup", miniMapPanStop);
             }
         });
+    };
+
+    Controller.prototype.initGameActions = function () {
+        document.addEventListener("keydown", function (e) {
+            if (e.keyCode === this.KEYS.ENTER) {
+                game.newTurn();
+            }
+        }.bind(this));
     };
     return Controller;
 })();
@@ -874,6 +884,11 @@ var Game = (function () {
     Game.prototype.newTurn = function () {
         var i, j, unit;
 
+        // See if anything still has to be moved
+        if (this.moveUnits()) {
+            return;
+        }
+
         game.turn++;
         chromeUI.onNewTurn();
 
@@ -896,9 +911,17 @@ var Game = (function () {
             if (i === 1) {
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
+                    if (!unit.moved && !unit.targetCoords) {
+                        unit.activate();
+                        return true;
+                    }
+                }
+
+                for (j in this.units[i]) {
+                    unit = this.units[i][j];
                     if (!unit.moved) {
                         unit.activate();
-                        return;
+                        return true;
                     }
                 }
             } else {
@@ -907,7 +930,8 @@ var Game = (function () {
         }
 
         // If we made it this far, everybody has moved
-        this.newTurn();
+        console.log("Press ENTER to move to next turn");
+        return false;
     };
     return Game;
 })();
@@ -960,6 +984,13 @@ var Units;
             if (game.activeUnit) {
                 game.activeUnit.active = false;
                 //                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
+            }
+
+            // If this unit is on a path towards a target, just go along the path instead of activating. If there are still moves left when the target is reached, activate() will be called again.
+            if (this.targetCoords) {
+                setTimeout(function () {
+                    this.moveTowardsTarget();
+                }.bind(this), config.UNIT_MOVEMENT_UI_DELAY);
             }
 
             // Activate this unit
@@ -1069,7 +1100,6 @@ var Units;
 
         // Use up the player's moves by moving towards its targetCoords
         BaseUnit.prototype.moveTowardsTarget = function () {
-            console.log('moveTowardsTarget');
             game.map.pathFinding(this, this.targetCoords, function (path) {
                 var tryToMove;
 
@@ -1093,12 +1123,12 @@ var Units;
                     tryToMove(function () {
                         if (path.length === 0) {
                             // We reached our target!
-                            this.targetCoods = null;
+                            this.targetCoords = null;
                             if (this.currentMovement > 0) {
-                                this.activate();
+                                this.activate(false); // Don't recenter, since unit must already be close to center of screen?
                             }
                         }
-                    });
+                    }.bind(this));
                 } else {
                     // Must be something blocking the way now
                     this.targetCoords = null;
@@ -1158,14 +1188,13 @@ var mapUI = new MapUI();
 var controller = new Controller();
 
 for (var i = 0; i < 200; i++) {
-    new Units.Warrior(0, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
+    //    new Units.Warrior(0, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
 }
-for (var i = 0; i < 1; i++) {
-    //    new Units.Warrior(1, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
+for (var i = 0; i < 2; i++) {
+    new Units.Warrior(1, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
 }
 
-new Units.Warrior(1, [0, 0]);
-new Units.Warrior(1, [1, 0]);
-
+//new Units.Warrior(1, [0, 0]);
+//new Units.Warrior(1, [1, 0]);
 game.newTurn();
 //# sourceMappingURL=app.js.map

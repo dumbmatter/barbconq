@@ -19,13 +19,13 @@ var mapUI = new MapUI();
 var controller = new Controller();
 
 for (var i = 0; i < 200; i++) {
-    new Units.Warrior(0, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
+//    new Units.Warrior(0, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
 }
-for (var i = 0; i < 1; i++) {
-//    new Units.Warrior(1, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
+for (var i = 0; i < 2; i++) {
+    new Units.Warrior(1, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
 }
 
-new Units.Warrior(1, [0, 0]);
-new Units.Warrior(1, [1, 0]);
+//new Units.Warrior(1, [0, 0]);
+//new Units.Warrior(1, [1, 0]);
 
 game.newTurn();

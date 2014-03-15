@@ -17,6 +17,7 @@ class Controller {
         C: 67,
         F: 70,
         S: 83,
+        ENTER: 13,
         SPACE_BAR: 32
     };
     // Only needed for some keys
@@ -35,6 +36,7 @@ class Controller {
         this.initUnitActions();
         this.initHoverTile();
         this.initMapClick();
+        this.initGameActions();
     }
 
     initMapPanning() {
@@ -286,5 +288,13 @@ class Controller {
                 document.addEventListener("mouseup", miniMapPanStop);
             }
         });
+    }
+
+    initGameActions() {
+        document.addEventListener("keydown", function (e) {
+            if (e.keyCode === this.KEYS.ENTER) {
+                game.newTurn();
+            }
+        }.bind(this));
     }
 }

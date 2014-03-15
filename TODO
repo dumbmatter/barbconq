@@ -24,11 +24,6 @@ fog of war
     in field of vision: visible
 
 right click to move
-  handle stored targetCoords movement
-    shouldn't have "moved" set, but don't activate
-    after all have "moved" except these ones, have them move, but don't show the movement happening
-      unit.moveTowardsTarget
-    when they reach target, clear targetCoords
   if targetCoords are stored and unit is active, show path
   needs to handle enemy units - can't cross
 
