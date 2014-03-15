@@ -92,7 +92,7 @@ class MapUI {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     }
 
-    drawPath(path = []) {
+    drawPath(path : number[][] = []) {
         window.requestAnimationFrame(function () {
             var i : number, pixels : number[];
 

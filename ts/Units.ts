@@ -159,7 +159,7 @@ module Units {
 
         initiatePath(coords : number[]) {
             // See if there is a path to these coordinates
-            game.map.pathFinding(this, coords, function (path) {
+            game.map.pathFinding(this, coords, function (path : number[][]) {
                 if (path) {
 console.log("ACTUALLY SET TARGET " + coords)
 console.log("move to " + path[1])

@@ -13,7 +13,7 @@ module MapMaker {
         tiles : Tile[][];
 
         // Default callback will draw path (or clear path if it's not valid)
-        pathFinding(unit : Units.BaseUnit = null, targetCoords : number[] = null, cb : Function = mapUI.drawPath.bind(mapUI)) {
+        pathFinding(unit : Units.BaseUnit = null, targetCoords : number[] = null, cb : (path? : number[][]) => void = mapUI.drawPath.bind(mapUI)) {
             var grid : number[][], i : number, j : number;
 
             if (!unit || !mapUI.validCoords(unit.coords) || !mapUI.validCoords(targetCoords)) {
