@@ -784,7 +784,7 @@ var MapMaker;
             if (typeof cb === "undefined") { cb = mapUI.drawPath.bind(mapUI); }
             var grid, i, j;
 
-            if (!unit || !mapUI.validCoords(unit.coords) || !mapUI.validCoords(targetCoords)) {
+            if (!unit || !mapUI.validCoords(unit.coords) || !mapUI.validCoords(targetCoords) || (unit.coords[0] === targetCoords[0] && unit.coords[1] === targetCoords[1])) {
                 cb(); // Clear any previous paths
                 return;
             }

@@ -21,7 +21,6 @@ fog of war
     in field of vision: visible
 
 right click to move
-  don't allow self path (i.e. right click+hover on own tile, currently leaves and comes back)
   if targetCoords are stored and unit is active, show path
   needs to handle enemy units - can't cross
 

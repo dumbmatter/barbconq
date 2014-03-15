@@ -16,7 +16,7 @@ module MapMaker {
         pathFinding(unit : Units.BaseUnit = null, targetCoords : number[] = null, cb : (path? : number[][]) => void = mapUI.drawPath.bind(mapUI)) {
             var grid : number[][], i : number, j : number;
 
-            if (!unit || !mapUI.validCoords(unit.coords) || !mapUI.validCoords(targetCoords)) {
+            if (!unit || !mapUI.validCoords(unit.coords) || !mapUI.validCoords(targetCoords) || (unit.coords[0] === targetCoords[0] && unit.coords[1] === targetCoords[1])) {
                 cb(); // Clear any previous paths
                 return;
             }
