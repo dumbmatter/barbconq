@@ -155,12 +155,42 @@ module Units {
             window.requestAnimationFrame(mapUI.render.bind(mapUI));
         }
 
+        // Sets the unit on a path towards a coordinate on the map
         initiatePath(coords : number[]) {
             // See if there is a path to these coordinates
             game.map.pathFinding(this, coords, function (path : number[][]) {
                 if (path) {
                     this.targetCoords = coords;
-console.log("call function to start auto-move towards this.targetCoords")
+                    this.moveTowardsTarget();
+                }
+            }.bind(this));
+        }
+
+        // Use up the player's moves by moving towards its targetCoords
+        moveTowardsTarget() {
+console.log('moveTowardsTarget')
+            game.map.pathFinding(this, this.targetCoords, function (path : number[][]) {
+                var coords;
+
+                if (path) {
+                    path.shift(); // Discard first one, since it's the current tile
+
+                    // Move until moves are used up or target is reached
+                    while (this.currentMovement > 0 && path.length > 0) {
+                        coords = path.shift(); // Get next coords
+                        this.moveToCoords(coords);
+                    }
+
+                    if (path.length === 0) {
+                        // We reached our target!
+                        this.targetCoods = null;
+                        if (this.currentMovement > 0) {
+                            this.activate();
+                        }
+                    }
+                } else {
+                    // Must be something blocking the way now
+                    this.targetCoords = null;
                 }
             }.bind(this));
         }

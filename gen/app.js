@@ -791,7 +791,10 @@ var MapMaker;
                 cb(path);
             });
 
-            easystar.calculate();
+            // Not sure why the setTimeout is necessary (the easystar readme says to do it), but I get weird errors from easystar if it's not like this
+            window.setTimeout(function () {
+                easystar.calculate();
+            });
         };
         return Map;
     })();
@@ -1053,12 +1056,41 @@ var Units;
             window.requestAnimationFrame(mapUI.render.bind(mapUI));
         };
 
+        // Sets the unit on a path towards a coordinate on the map
         BaseUnit.prototype.initiatePath = function (coords) {
             // See if there is a path to these coordinates
             game.map.pathFinding(this, coords, function (path) {
                 if (path) {
                     this.targetCoords = coords;
-                    console.log("call function to start auto-move towards this.targetCoords");
+                    this.moveTowardsTarget();
+                }
+            }.bind(this));
+        };
+
+        // Use up the player's moves by moving towards its targetCoords
+        BaseUnit.prototype.moveTowardsTarget = function () {
+            console.log('moveTowardsTarget');
+            game.map.pathFinding(this, this.targetCoords, function (path) {
+                var coords;
+
+                if (path) {
+                    path.shift(); // Discard first one, since it's the current tile
+
+                    while (this.currentMovement > 0 && path.length > 0) {
+                        coords = path.shift(); // Get next coords
+                        this.moveToCoords(coords);
+                    }
+
+                    if (path.length === 0) {
+                        // We reached our target!
+                        this.targetCoods = null;
+                        if (this.currentMovement > 0) {
+                            this.activate();
+                        }
+                    }
+                } else {
+                    // Must be something blocking the way now
+                    this.targetCoords = null;
                 }
             }.bind(this));
         };

@@ -55,7 +55,10 @@ module MapMaker {
                 cb(path);
             });
 
-            easystar.calculate();
+            // Not sure why the setTimeout is necessary (the easystar readme says to do it), but I get weird errors from easystar if it's not like this
+            window.setTimeout(function () {
+                easystar.calculate();
+            });
         }
     }
 
