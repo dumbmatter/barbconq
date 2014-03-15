@@ -164,7 +164,17 @@ module Units {
             game.map.pathFinding(this, coords, function (path : number[][]) {
                 if (path) {
                     this.targetCoords = coords;
+
+                    // This render is usually redundant if the user is setting a new path by right click, since that path is already on screen.
+                    // But if the path is not set by right click, this is necessary.
+                    // Also, if the path is set by right click but there is an old path and no moves, then mapUI.render would otherwise not be called after this point and the old path would be shown instead from a prior mapUI.render call.
+                    window.requestAnimationFrame(mapUI.render.bind(mapUI));
+
                     this.moveTowardsTarget();
+                } else {
+                    // No path found!
+                    this.targetCoords = null;
+                    window.requestAnimationFrame(mapUI.render.bind(mapUI));
                 }
             }.bind(this));
         }

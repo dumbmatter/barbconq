@@ -164,11 +164,10 @@ var Controller = (function () {
                         game.map.pathFinding(); // Delete currently displayed path
                     } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
-                        //game.activeUnit.pathFinding(coords);
                     }
                     game.activeUnit.initiatePath(coords); // Set unit on path
-                    game.map.pathFinding(); // Delete currently displayed path
 
+                    // Don't need to update map (like by calling game.map.pathFinding) because that'll happen in game.activeUnit.initiatePath
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
                     document.removeEventListener("mouseup", mouseUp);
                 };
@@ -431,7 +430,6 @@ var MapUI = (function () {
     function MapUI() {
         // Constants
         this.TILE_SIZE = 50;
-        this.rendering = false;
         this.pathFindingSearch = false;
         // Colors!
         this.terrainColors = {
@@ -534,12 +532,6 @@ var MapUI = (function () {
 
     MapUI.prototype.render = function () {
         var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile;
-
-        if (this.rendering) {
-            return;
-        }
-
-        this.rendering = true;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -646,6 +638,8 @@ var MapUI = (function () {
 
                         // Draw path if unit is moving to a target
                         if (unit.targetCoords) {
+                            console.log("render " + unit.targetCoords);
+
                             // If there is a pathfinding search occurring (like from the user holding down the right click button), don't draw active path
                             if (!this.pathFindingSearch) {
                                 game.map.pathFinding(unit, unit.targetCoords, function (path) {
@@ -660,8 +654,6 @@ var MapUI = (function () {
                 }
             }
         }.bind(this));
-
-        this.rendering = false;
 
         // Render minimap at the end
         this.renderMiniMap();
@@ -1140,7 +1132,17 @@ var Units;
             game.map.pathFinding(this, coords, function (path) {
                 if (path) {
                     this.targetCoords = coords;
+
+                    // This render is usually redundant if the user is setting a new path by right click, since that path is already on screen.
+                    // But if the path is not set by right click, this is necessary.
+                    // Also, if the path is set by right click but there is an old path and no moves, then mapUI.render would otherwise not be called after this point and the old path would be shown instead from a prior mapUI.render call.
+                    window.requestAnimationFrame(mapUI.render.bind(mapUI));
+
                     this.moveTowardsTarget();
+                } else {
+                    // No path found!
+                    this.targetCoords = null;
+                    window.requestAnimationFrame(mapUI.render.bind(mapUI));
                 }
             }.bind(this));
         };
@@ -1237,7 +1239,7 @@ var controller = new Controller();
 for (var i = 0; i < 200; i++) {
     //    new Units.Warrior(0, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
 }
-for (var i = 0; i < 2; i++) {
+for (var i = 0; i < 1; i++) {
     new Units.Warrior(1, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
 }
 

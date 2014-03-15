@@ -1,7 +1,6 @@
 right click to move
-  when unit is inactive and i set a new path, old one shows up first
+  should be able to "right click move drag" under all the chrome at the bottom
   selecting unit on path that hasn't yet moved shouldn't make it move immediately
-  should cancel path if you raise right click on invalid target (water, off map, self...)
   needs to handle enemy units - can't cross
 
 remove getTile?

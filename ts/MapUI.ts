@@ -16,7 +16,6 @@ class MapUI {
     VIEW_HEIGHT : number;
     VIEW_TILE_WIDTH : number;
     VIEW_TILE_HEIGHT : number;
-    rendering : boolean = false; // When true, render() is working so no need to call it again
     pathFindingSearch : boolean = false; // Set by Controller depending on if the user is searching for a path (like by right click) or not
 
     // Minimap
@@ -125,12 +124,6 @@ class MapUI {
     render() {
         var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile;
 
-        if (this.rendering) {
-            return;
-        }
-
-        this.rendering = true;
-
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
         right = this.X + this.VIEW_WIDTH / 2;
@@ -236,6 +229,7 @@ class MapUI {
 
                         // Draw path if unit is moving to a target
                         if (unit.targetCoords) {
+console.log("render " + unit.targetCoords);
                             // If there is a pathfinding search occurring (like from the user holding down the right click button), don't draw active path
                             if (!this.pathFindingSearch) {
                                 game.map.pathFinding(unit, unit.targetCoords, function (path) {
@@ -250,8 +244,6 @@ class MapUI {
                 }
             }
         }.bind(this));
-
-        this.rendering = false;
 
         // Render minimap at the end
         this.renderMiniMap();

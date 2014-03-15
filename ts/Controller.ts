@@ -161,10 +161,9 @@ class Controller {
                         game.map.pathFinding(); // Delete currently displayed path
                     } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
-//game.activeUnit.pathFinding(coords);
                     }
                     game.activeUnit.initiatePath(coords); // Set unit on path
-                    game.map.pathFinding(); // Delete currently displayed path
+                    // Don't need to update map (like by calling game.map.pathFinding) because that'll happen in game.activeUnit.initiatePath
 
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
                     document.removeEventListener("mouseup", mouseUp);
