@@ -7,7 +7,7 @@ module MapMaker {
         units : Units.BaseUnit[];
     }
 
-    export interface Map {
+    export class Map {
         width : number;
         height : number;
         tiles : Tile[][];

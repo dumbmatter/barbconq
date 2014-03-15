@@ -121,7 +121,8 @@ class Controller {
 
                 // Find path to clicked tile
                 coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
-game.activeUnit.pathFinding(coords);
+                mapUI.pathFinding(game.activeUnit, coords);
+//game.activeUnit.pathFinding(coords);
 
                 // If click doesn't start on map, ignore it
                 if (!mapUI.validCoords(coords)) {
@@ -135,10 +136,10 @@ game.activeUnit.pathFinding(coords);
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
                     if (!coordsNew) {
-                        game.activeUnit.pathFinding(); // Delete currently displayed path
+                        mapUI.pathFinding(); // Delete currently displayed path
                     } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
-game.activeUnit.pathFinding(coords);
+                        mapUI.pathFinding(game.activeUnit, coords);
                     }
                 };
                 mapUI.canvas.addEventListener("mousemove", mouseMoveWhileDown);
@@ -150,11 +151,13 @@ game.activeUnit.pathFinding(coords);
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
                     if (!coordsNew) {
-                        game.activeUnit.pathFinding(); // Delete currently displayed path
+                        mapUI.pathFinding(); // Delete currently displayed path
                     } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
-game.activeUnit.pathFinding(coords);
+//game.activeUnit.pathFinding(coords);
                     }
+console.log("ACTUALLY SET TARGET IF PATHFINDING FOUND A PATH " + coords)
+                    mapUI.pathFinding(); // Delete currently displayed path
 
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
                     document.removeEventListener("mouseup", mouseUp);

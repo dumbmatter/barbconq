@@ -124,8 +124,9 @@ var Controller = (function () {
 
                 // Find path to clicked tile
                 coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
-                game.activeUnit.pathFinding(coords);
+                mapUI.pathFinding(game.activeUnit, coords);
 
+                //game.activeUnit.pathFinding(coords);
                 // If click doesn't start on map, ignore it
                 if (!mapUI.validCoords(coords)) {
                     return;
@@ -138,10 +139,10 @@ var Controller = (function () {
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
                     if (!coordsNew) {
-                        game.activeUnit.pathFinding(); // Delete currently displayed path
+                        mapUI.pathFinding(); // Delete currently displayed path
                     } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
-                        game.activeUnit.pathFinding(coords);
+                        mapUI.pathFinding(game.activeUnit, coords);
                     }
                 };
                 mapUI.canvas.addEventListener("mousemove", mouseMoveWhileDown);
@@ -153,11 +154,13 @@ var Controller = (function () {
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
                     if (!coordsNew) {
-                        game.activeUnit.pathFinding(); // Delete currently displayed path
+                        mapUI.pathFinding(); // Delete currently displayed path
                     } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
-                        game.activeUnit.pathFinding(coords);
+                        //game.activeUnit.pathFinding(coords);
                     }
+                    console.log("ACTUALLY SET TARGET IF PATHFINDING FOUND A PATH " + coords);
+                    mapUI.pathFinding(); // Delete currently displayed path
 
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
                     document.removeEventListener("mouseup", mouseUp);
@@ -461,6 +464,55 @@ var MapUI = (function () {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     };
 
+    MapUI.prototype.pathFinding = function (unit, targetCoords) {
+        if (typeof unit === "undefined") { unit = null; }
+        if (typeof targetCoords === "undefined") { targetCoords = null; }
+        var grid, i, j;
+
+        if (!unit || !this.validCoords(unit.coords) || !this.validCoords(targetCoords)) {
+            window.requestAnimationFrame(this.render.bind(this)); // Clear any previous paths
+            return;
+        }
+
+        grid = [];
+        for (i = 0; i < game.map.tiles.length; i++) {
+            grid[i] = [];
+            for (j = 0; j < game.map.tiles[0].length; j++) {
+                // Two types: two move (2), one move (1), and blocked
+                // But 2 move only matters if unit can move more than once
+                if (game.map.tiles[i][j].features.indexOf("hills") >= 0 || game.map.tiles[i][j].features.indexOf("forest") >= 0 || game.map.tiles[i][j].features.indexOf("jungle") >= 0) {
+                    grid[i][j] = unit.movement > 1 ? 2 : 1;
+                } else if (game.map.tiles[i][j].terrain === "snow" || game.map.tiles[i][j].terrain === "desert" || game.map.tiles[i][j].terrain === "tundra" || game.map.tiles[i][j].terrain === "grassland" || game.map.tiles[i][j].terrain === "plains") {
+                    grid[i][j] = 1;
+                } else {
+                    grid[i][j] = 0;
+                }
+            }
+        }
+
+        easystar.setGrid(grid);
+        easystar.setAcceptableTiles([1, 2]);
+        easystar.enableDiagonals();
+        easystar.setTileCost(2, 2);
+
+        // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
+        easystar.findPath(unit.coords[1], unit.coords[0], targetCoords[1], targetCoords[0], function (path) {
+            var i;
+
+            if (path) {
+                for (i = 0; i < path.length; i++) {
+                    path[i].i = path[i].y;
+                    path[i].j = path[i].x;
+                    delete path[i].y;
+                    delete path[i].x;
+                }
+            }
+            this.drawPath(path);
+        }.bind(this));
+
+        easystar.calculate();
+    };
+
     MapUI.prototype.drawPath = function (path) {
         if (typeof path === "undefined") { path = []; }
         window.requestAnimationFrame(function () {
@@ -468,7 +520,7 @@ var MapUI = (function () {
 
             this.render();
 
-            if (path.length > 1) {
+            if (path && path.length > 1) {
                 // Origin
                 this.context.beginPath();
                 pixels = this.coordsToPixels(path[0].i, path[0].j);
@@ -734,6 +786,13 @@ var MapUI = (function () {
 // MapMaker - map generation module
 var MapMaker;
 (function (MapMaker) {
+    var Map = (function () {
+        function Map() {
+        }
+        return Map;
+    })();
+    MapMaker.Map = Map;
+
     function generate(rows, cols) {
         var i, j, map, types;
 
@@ -994,61 +1053,6 @@ var Units;
 
                 window.requestAnimationFrame(mapUI.render.bind(mapUI));
             }
-        };
-
-        BaseUnit.prototype.pathFinding = function (coords) {
-            if (typeof coords === "undefined") { coords = null; }
-            var grid, i, j;
-
-            if (!mapUI.validCoords(coords)) {
-                window.requestAnimationFrame(mapUI.render.bind(mapUI)); // Clear any previous paths
-                return;
-            }
-
-            grid = [];
-            for (i = 0; i < game.map.tiles.length; i++) {
-                grid[i] = [];
-                for (j = 0; j < game.map.tiles[0].length; j++) {
-                    // Two types: two move (2), one move (1), and blocked
-                    // But 2 move only matters if unit can move more than once
-                    if (game.map.tiles[i][j].features.indexOf("hills") >= 0 || game.map.tiles[i][j].features.indexOf("forest") >= 0 || game.map.tiles[i][j].features.indexOf("jungle") >= 0) {
-                        grid[i][j] = this.movement > 1 ? 2 : 1;
-                    } else if (game.map.tiles[i][j].terrain === "snow" || game.map.tiles[i][j].terrain === "desert" || game.map.tiles[i][j].terrain === "tundra" || game.map.tiles[i][j].terrain === "grassland" || game.map.tiles[i][j].terrain === "plains") {
-                        grid[i][j] = 1;
-                    } else {
-                        grid[i][j] = 0;
-                    }
-                }
-            }
-
-            easystar.setGrid(grid);
-            easystar.setAcceptableTiles([1, 2]);
-            easystar.enableDiagonals();
-            easystar.setTileCost(2, 2);
-
-            console.log(coords);
-
-            // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
-            easystar.findPath(this.coords[1], this.coords[0], coords[1], coords[0], function (path) {
-                var i;
-
-                if (path === null) {
-                    mapUI.drawPath(); // Clear any previous paths
-                    console.log("Path was not found.");
-                } else {
-                    for (i = 0; i < path.length; i++) {
-                        path[i].i = path[i].y;
-                        path[i].j = path[i].x;
-                        delete path[i].y;
-                        delete path[i].x;
-                    }
-
-                    mapUI.drawPath(path);
-                    console.log("Path was found. The first Point is " + path[1].i + " " + path[1].j);
-                }
-            });
-
-            easystar.calculate();
         };
 
         // Mark as moved and go to the next active unit

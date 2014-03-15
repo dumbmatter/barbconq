@@ -157,57 +157,6 @@ module Units {
             }
         }
 
-        pathFinding(coords = null) {
-            var grid : number[][], i : number, j : number;
-
-            if (!mapUI.validCoords(coords)) {
-                window.requestAnimationFrame(mapUI.render.bind(mapUI)); // Clear any previous paths
-                return;
-            }
-
-            grid = [];
-            for (i = 0; i < game.map.tiles.length; i++) {
-                grid[i] = [];
-                for (j = 0; j < game.map.tiles[0].length; j++) {
-                    // Two types: two move (2), one move (1), and blocked
-                    // But 2 move only matters if unit can move more than once
-                    if (game.map.tiles[i][j].features.indexOf("hills") >= 0 || game.map.tiles[i][j].features.indexOf("forest") >= 0 || game.map.tiles[i][j].features.indexOf("jungle") >= 0) {
-                        grid[i][j] = this.movement > 1 ? 2 : 1;
-                    } else if (game.map.tiles[i][j].terrain === "snow" || game.map.tiles[i][j].terrain === "desert" || game.map.tiles[i][j].terrain === "tundra" || game.map.tiles[i][j].terrain === "grassland" || game.map.tiles[i][j].terrain === "plains") {
-                        grid[i][j] = 1;
-                    } else {
-                        grid[i][j] = 0;
-                    }
-                }
-            }
-
-            easystar.setGrid(grid);
-            easystar.setAcceptableTiles([1, 2]);
-            easystar.enableDiagonals();
-            easystar.setTileCost(2, 2);
-
-            // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
-            easystar.findPath(this.coords[1], this.coords[0], coords[1], coords[0], function (path) {
-                var i;
-
-                if (path === null) {
-                    mapUI.drawPath(); // Clear any previous paths
-                } else {
-                    // Fix coord labels
-                    for (i = 0; i < path.length; i++) {
-                        path[i].i = path[i].y;
-                        path[i].j = path[i].x;
-                        delete path[i].y;
-                        delete path[i].x;
-                    }
-
-                    mapUI.drawPath(path);
-                }
-            });
-
-            easystar.calculate();
-        }
-
         // Mark as moved and go to the next active unit
         skipTurn() {
             this.setMoved();
