@@ -8,8 +8,8 @@ module MapMaker {
     }
 
     export class Map {
-        width : number;
-        height : number;
+        rows : number;
+        cols : number;
         tiles : Tile[][];
 
         // Default callback will draw path (or clear path if it's not valid)
@@ -22,9 +22,9 @@ module MapMaker {
             }
 
             grid = [];
-            for (i = 0; i < this.tiles.length; i++) {
+            for (i = 0; i < this.rows; i++) {
                 grid[i] = [];
-                for (j = 0; j < this.tiles[0].length; j++) {
+                for (j = 0; j < this.cols; j++) {
                     // Two types: two move (2), one move (1), and blocked
                     // But 2 move only matters if unit can move more than once
                     if (this.tiles[i][j].features.indexOf("hills") >= 0 || this.tiles[i][j].features.indexOf("forest") >= 0 || this.tiles[i][j].features.indexOf("jungle") >= 0) {
@@ -64,7 +64,7 @@ module MapMaker {
         // Make sure coords are on map
         validCoords(coords : number []) {
             if (coords) {
-                return coords[0] >= 0 && coords[1] >= 0 && coords[0] < this.height && coords[1] < this.width;
+                return coords[0] >= 0 && coords[1] >= 0 && coords[0] < this.rows && coords[1] < this.cols;
             }
 
             return false;
@@ -77,8 +77,8 @@ module MapMaker {
 
             super();
 
-            this.width = cols !== undefined ? cols : 80;
-            this.height = rows !== undefined ? rows : 40;
+            this.cols = cols !== undefined ? cols : 80;
+            this.rows = rows !== undefined ? rows : 40;
 
             types = {
                 peak: [],
@@ -92,9 +92,9 @@ module MapMaker {
             };
 
             this.tiles = [];
-            for (i = 0; i < this.height; i++) {
+            for (i = 0; i < this.rows; i++) {
                 this.tiles[i] = [];
-                for (j = 0; j < this.width; j++) {
+                for (j = 0; j < this.cols; j++) {
                     this.tiles[i][j] = {
                         terrain: Random.choice(Object.keys(types)),
                         features: [],

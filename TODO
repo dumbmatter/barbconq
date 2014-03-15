@@ -19,8 +19,6 @@ keyboard shortcuts
   enter: if not end of turn, cycle through units
     should allow you to let unit continue on path
 
-get rid of height/width params of Map? just use tiles.length?
-
 fog of war
   states
     never seen yet: completely black

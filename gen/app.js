@@ -458,8 +458,8 @@ var MapUI = (function () {
         this.initMapDisplay();
     }
     MapUI.prototype.initMapDisplay = function () {
-        this.X = game.map.width * this.TILE_SIZE / 2;
-        this.Y = game.map.height * this.TILE_SIZE / 2;
+        this.X = game.map.cols * this.TILE_SIZE / 2;
+        this.Y = game.map.rows * this.TILE_SIZE / 2;
 
         this.canvas = document.getElementById("map");
         this.canvas.width = window.innerWidth;
@@ -471,12 +471,12 @@ var MapUI = (function () {
         this.miniContext = this.miniCanvas.getContext("2d");
 
         // See whether it's height or width limited based on the aspect ratio
-        if (game.map.width / game.map.height > this.miniCanvas.width / this.miniCanvas.height) {
+        if (game.map.cols / game.map.rows > this.miniCanvas.width / this.miniCanvas.height) {
             // Bound based on map width
-            this.miniTileSize = this.miniCanvas.width / game.map.width;
+            this.miniTileSize = this.miniCanvas.width / game.map.cols;
         } else {
             // Bound based on map height
-            this.miniTileSize = this.miniCanvas.height / game.map.height;
+            this.miniTileSize = this.miniCanvas.height / game.map.rows;
         }
 
         // Handle resize
@@ -545,11 +545,11 @@ var MapUI = (function () {
         if (top < -this.VIEW_HEIGHT / 2) {
             this.Y = 0;
         }
-        if (right > game.map.width * this.TILE_SIZE + this.VIEW_WIDTH / 2) {
-            this.X = game.map.width * this.TILE_SIZE;
+        if (right > game.map.cols * this.TILE_SIZE + this.VIEW_WIDTH / 2) {
+            this.X = game.map.cols * this.TILE_SIZE;
         }
-        if (bottom > game.map.height * this.TILE_SIZE + this.VIEW_HEIGHT / 2) {
-            this.Y = game.map.height * this.TILE_SIZE;
+        if (bottom > game.map.rows * this.TILE_SIZE + this.VIEW_HEIGHT / 2) {
+            this.Y = game.map.rows * this.TILE_SIZE;
         }
         if (left < -this.VIEW_WIDTH / 2) {
             this.X = 0;
@@ -593,7 +593,7 @@ var MapUI = (function () {
                     j = leftTile + x;
 
                     // Only draw tiles that are on the map
-                    if (i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
+                    if (i >= 0 && j >= 0 && i < game.map.rows && j < game.map.cols) {
                         cb(i, j, x, y);
                     }
                 }
@@ -670,16 +670,16 @@ var MapUI = (function () {
         this.miniContext.fillStyle = "#000";
         this.miniContext.fillRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
 
-        for (i = 0; i < game.map.height; i++) {
-            for (j = 0; j < game.map.width; j++) {
+        for (i = 0; i < game.map.rows; i++) {
+            for (j = 0; j < game.map.cols; j++) {
                 // Background
                 this.miniContext.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
             }
         }
 
-        for (i = 0; i < game.map.height; i++) {
-            for (j = 0; j < game.map.width; j++) {
+        for (i = 0; i < game.map.rows; i++) {
+            for (j = 0; j < game.map.cols; j++) {
                 // Highlight active tile
                 if (game.map.tiles[i][j].units.length > 0) {
                     for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
@@ -803,9 +803,9 @@ var MapMaker;
             }
 
             grid = [];
-            for (i = 0; i < this.tiles.length; i++) {
+            for (i = 0; i < this.rows; i++) {
                 grid[i] = [];
-                for (j = 0; j < this.tiles[0].length; j++) {
+                for (j = 0; j < this.cols; j++) {
                     // Two types: two move (2), one move (1), and blocked
                     // But 2 move only matters if unit can move more than once
                     if (this.tiles[i][j].features.indexOf("hills") >= 0 || this.tiles[i][j].features.indexOf("forest") >= 0 || this.tiles[i][j].features.indexOf("jungle") >= 0) {
@@ -844,7 +844,7 @@ var MapMaker;
         // Make sure coords are on map
         Map.prototype.validCoords = function (coords) {
             if (coords) {
-                return coords[0] >= 0 && coords[1] >= 0 && coords[0] < this.height && coords[1] < this.width;
+                return coords[0] >= 0 && coords[1] >= 0 && coords[0] < this.rows && coords[1] < this.cols;
             }
 
             return false;
@@ -860,8 +860,8 @@ var MapMaker;
 
             _super.call(this);
 
-            this.width = cols !== undefined ? cols : 80;
-            this.height = rows !== undefined ? rows : 40;
+            this.cols = cols !== undefined ? cols : 80;
+            this.rows = rows !== undefined ? rows : 40;
 
             types = {
                 peak: [],
@@ -875,9 +875,9 @@ var MapMaker;
             };
 
             this.tiles = [];
-            for (i = 0; i < this.height; i++) {
+            for (i = 0; i < this.rows; i++) {
                 this.tiles[i] = [];
-                for (j = 0; j < this.width; j++) {
+                for (j = 0; j < this.cols; j++) {
                     this.tiles[i][j] = {
                         terrain: Random.choice(Object.keys(types)),
                         features: [],
@@ -1242,10 +1242,10 @@ var mapUI = new MapUI();
 var controller = new Controller();
 
 for (var i = 0; i < 200; i++) {
-    //    new Units.Warrior(0, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
+    //    new Units.Warrior(0, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
 }
 for (var i = 0; i < 1; i++) {
-    new Units.Warrior(1, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
+    new Units.Warrior(1, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
 }
 
 //new Units.Warrior(1, [0, 0]);

@@ -50,8 +50,8 @@ class MapUI {
     }
 
     initMapDisplay() {
-        this.X = game.map.width * this.TILE_SIZE / 2;
-        this.Y = game.map.height * this.TILE_SIZE / 2;
+        this.X = game.map.cols * this.TILE_SIZE / 2;
+        this.Y = game.map.rows * this.TILE_SIZE / 2;
 
         this.canvas = <HTMLCanvasElement> document.getElementById("map");
         this.canvas.width = window.innerWidth;
@@ -62,12 +62,12 @@ class MapUI {
         this.miniCanvas = <HTMLCanvasElement> document.getElementById("minimap");
         this.miniContext = this.miniCanvas.getContext("2d");
         // See whether it's height or width limited based on the aspect ratio
-        if (game.map.width / game.map.height > this.miniCanvas.width / this.miniCanvas.height) {
+        if (game.map.cols / game.map.rows > this.miniCanvas.width / this.miniCanvas.height) {
             // Bound based on map width
-            this.miniTileSize = this.miniCanvas.width / game.map.width;
+            this.miniTileSize = this.miniCanvas.width / game.map.cols;
         } else {
             // Bound based on map height
-            this.miniTileSize = this.miniCanvas.height / game.map.height;
+            this.miniTileSize = this.miniCanvas.height / game.map.rows;
         }
 
         // Handle resize
@@ -134,11 +134,11 @@ class MapUI {
         if (top < -this.VIEW_HEIGHT / 2) {
             this.Y = 0;
         }
-        if (right > game.map.width * this.TILE_SIZE + this.VIEW_WIDTH / 2) {
-            this.X = game.map.width * this.TILE_SIZE;
+        if (right > game.map.cols * this.TILE_SIZE + this.VIEW_WIDTH / 2) {
+            this.X = game.map.cols * this.TILE_SIZE;
         }
-        if (bottom > game.map.height * this.TILE_SIZE + this.VIEW_HEIGHT / 2) {
-            this.Y = game.map.height * this.TILE_SIZE;
+        if (bottom > game.map.rows * this.TILE_SIZE + this.VIEW_HEIGHT / 2) {
+            this.Y = game.map.rows * this.TILE_SIZE;
         }
         if (left < -this.VIEW_WIDTH / 2) {
             this.X = 0;
@@ -182,7 +182,7 @@ class MapUI {
                     j = leftTile + x;
 
                     // Only draw tiles that are on the map
-                    if (i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
+                    if (i >= 0 && j >= 0 && i < game.map.rows && j < game.map.cols) {
                         cb(i, j, x, y);
                     }
                 }
@@ -260,8 +260,8 @@ class MapUI {
         this.miniContext.fillRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
 
         // Background
-        for (i = 0; i < game.map.height; i++) {
-            for (j = 0; j < game.map.width; j++) {
+        for (i = 0; i < game.map.rows; i++) {
+            for (j = 0; j < game.map.cols; j++) {
                 // Background
                 this.miniContext.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
@@ -269,8 +269,8 @@ class MapUI {
         }
 
         // Second pass: highlight
-        for (i = 0; i < game.map.height; i++) {
-            for (j = 0; j < game.map.width; j++) {
+        for (i = 0; i < game.map.rows; i++) {
+            for (j = 0; j < game.map.cols; j++) {
                 // Highlight active tile
                 if (game.map.tiles[i][j].units.length > 0) {
                     for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
