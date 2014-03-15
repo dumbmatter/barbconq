@@ -21,12 +21,9 @@ fog of war
 right click to move
   https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent.button
   onmousedown
-    run some pathfinding algorithm, https://github.com/qiao/PathFinding.js/ or simpler
-      in civ4 this can have unpredictable results if the enemy gets in the way. here, if the path is blocked, just stop
-        so the path can be hardcoded in as an array of tiles, and each turn check if it's blocked. if so, stop
-      or be like civ4: just store the target and recalculate optimal path each turn. maybe have an option
-    paint results by connecting medians of tiles
+    while mouse is held, paint results by connecting medians of tiles
       maybe do this in new layer so the map doesn't need to be redrawn, otherwise it'll need to be totally redrawn for each tile dragged over with the mouse down
+    when mouse is released, store coords as targetCoords or someothing and write code to go there
 
 mapUI.goToCoords should be smooth
 

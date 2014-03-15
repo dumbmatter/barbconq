@@ -116,12 +116,12 @@ class Controller {
         mapUI.canvas.addEventListener("mousedown", function (e) {
             var coords, mouseMoveWhileDown, mouseUp;
 
-            if (e.button === 2) { // Right click only!
+            if (e.button === 2 && game.activeUnit) { // Right click only! Active unit only!
                 e.preventDefault();
 
                 // Find path to clicked tile
                 coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
-console.log(coords);
+game.activeUnit.pathFinding(coords);
 
                 // If click doesn't start on map, ignore it
                 if (!mapUI.validCoords(coords)) {
@@ -136,7 +136,7 @@ console.log(coords);
 
                     if (mapUI.validCoords(coordsNew) && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
                         coords = coordsNew;
-console.log(coords);
+game.activeUnit.pathFinding(coords);
                     }
                 };
                 mapUI.canvas.addEventListener("mousemove", mouseMoveWhileDown);
@@ -149,7 +149,7 @@ console.log(coords);
 
                     if (mapUI.validCoords(coordsNew) && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
                         coords = coordsNew;
-console.log(coords);
+game.activeUnit.pathFinding(coords);
                     }
 
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);

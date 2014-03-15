@@ -119,12 +119,12 @@ var Controller = (function () {
         mapUI.canvas.addEventListener("mousedown", function (e) {
             var coords, mouseMoveWhileDown, mouseUp;
 
-            if (e.button === 2) {
+            if (e.button === 2 && game.activeUnit) {
                 e.preventDefault();
 
                 // Find path to clicked tile
                 coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
-                console.log(coords);
+                game.activeUnit.pathFinding(coords);
 
                 // If click doesn't start on map, ignore it
                 if (!mapUI.validCoords(coords)) {
@@ -139,7 +139,7 @@ var Controller = (function () {
 
                     if (mapUI.validCoords(coordsNew) && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
                         coords = coordsNew;
-                        console.log(coords);
+                        game.activeUnit.pathFinding(coords);
                     }
                 };
                 mapUI.canvas.addEventListener("mousemove", mouseMoveWhileDown);
@@ -152,7 +152,7 @@ var Controller = (function () {
 
                     if (mapUI.validCoords(coordsNew) && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
                         coords = coordsNew;
-                        console.log(coords);
+                        game.activeUnit.pathFinding(coords);
                     }
 
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
@@ -944,6 +944,44 @@ var Units;
             }
         };
 
+        BaseUnit.prototype.pathFinding = function (coords) {
+            var grid, i, j;
+
+            console.log("pathFinding to " + coords);
+            grid = [];
+            for (i = 0; i < game.map.tiles.length; i++) {
+                grid[i] = [];
+                for (j = 0; j < game.map.tiles[0].length; j++) {
+                    // Two types: two move (2), one move (1), and blocked
+                    // But 2 move only matters if unit can move more than once
+                    if (game.map.tiles[i][j].features.indexOf("hills") >= 0 || game.map.tiles[i][j].features.indexOf("forest") >= 0 || game.map.tiles[i][j].features.indexOf("jungle") >= 0) {
+                        grid[i][j] = this.movement > 1 ? 2 : 1;
+                    } else if (game.map.tiles[i][j].terrain === "snow" || game.map.tiles[i][j].terrain === "desert" || game.map.tiles[i][j].terrain === "tundra" || game.map.tiles[i][j].terrain === "grassland" || game.map.tiles[i][j].terrain === "plains") {
+                        grid[i][j] = 1;
+                    } else {
+                        grid[i][j] = 0;
+                    }
+                }
+            }
+
+            easystar.setGrid(grid);
+            easystar.setAcceptableTiles([1, 2]);
+            easystar.enableDiagonals();
+            easystar.setTileCost(2, 2);
+
+            easystar.findPath(this.coords[1], this.coords[0], coords[1], coords[0], function (path) {
+                if (path === null) {
+                    console.log("Path was not found.");
+                } else {
+                    console.log("Path was found. The first Point is " + path[1].y + " " + path[1].x);
+                }
+            });
+
+            easystar.calculate();
+            easystar.calculate();
+            console.log(grid);
+        };
+
         // Mark as moved and go to the next active unit
         BaseUnit.prototype.skipTurn = function () {
             this.setMoved();
@@ -984,6 +1022,8 @@ var Units;
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
+var easystar = new EasyStar.js();
+
 var game = new Game(1, 20, 40);
 var chromeUI = new ChromeUI();
 var mapUI = new MapUI();

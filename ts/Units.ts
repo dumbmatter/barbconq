@@ -157,6 +157,43 @@ module Units {
             }
         }
 
+        pathFinding(coords) {
+            var grid : number[][], i : number, j : number;
+
+            grid = [];
+            for (i = 0; i < game.map.tiles.length; i++) {
+                grid[i] = [];
+                for (j = 0; j < game.map.tiles[0].length; j++) {
+                    // Two types: two move (2), one move (1), and blocked
+                    // But 2 move only matters if unit can move more than once
+                    if (game.map.tiles[i][j].features.indexOf("hills") >= 0 || game.map.tiles[i][j].features.indexOf("forest") >= 0 || game.map.tiles[i][j].features.indexOf("jungle") >= 0) {
+                        grid[i][j] = this.movement > 1 ? 2 : 1;
+                    } else if (game.map.tiles[i][j].terrain === "snow" || game.map.tiles[i][j].terrain === "desert" || game.map.tiles[i][j].terrain === "tundra" || game.map.tiles[i][j].terrain === "grassland" || game.map.tiles[i][j].terrain === "plains") {
+                        grid[i][j] = 1;
+                    } else {
+                        grid[i][j] = 0;
+                    }
+                }
+            }
+
+            easystar.setGrid(grid);
+            easystar.setAcceptableTiles([1, 2]);
+            easystar.enableDiagonals();
+            easystar.setTileCost(2, 2);
+
+            // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
+            easystar.findPath(this.coords[1], this.coords[0], coords[1], coords[0], function( path ) {
+                if (path === null) {
+console.log("Path was not found.");
+                } else {
+console.log("Path was found. The first Point is " + path[1].y + " " + path[1].x);
+                }
+            });
+
+            easystar.calculate();
+            easystar.calculate();
+        }
+
         // Mark as moved and go to the next active unit
         skipTurn() {
             this.setMoved();
