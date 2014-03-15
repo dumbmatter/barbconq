@@ -1189,6 +1189,10 @@ var Units;
         // Mark as moved and go to the next active unit
         BaseUnit.prototype.skipTurn = function () {
             this.setMoved();
+
+            // Clear any saved path
+            this.targetCoords = null;
+
             requestAnimationFrame(mapUI.render.bind(mapUI));
         };
 

@@ -1,18 +1,11 @@
-right click to move
-  needs to handle enemy units - can't cross
-
-remove getTile?
+keyboard shortcuts
+  enter: if not end of turn, cycle through units
+    should allow you to let unit continue on path
 
 use coordsToPixels in MapUI.render
 
 MapUI.validCoords should be Map.validCoords
   any others wrongly in MapUI?
-
-fortify
-  defensive bonus
-  healing
-
-sentry
 
 fog of war
   states
@@ -38,10 +31,19 @@ combat
     get list of enemies on tile being moved to
     pick enemy with highest defense
 
+right click to move
+  needs to handle enemy units - can't cross
+
 Make randomly generated map into a pangaea facsimile
   how do civ4 maps do it?
 
 barb AI
+
+fortify
+  defensive bonus
+  healing
+
+sentry
 
 minify assets
   have a "make barbconq" that puts all the right options in a ready-to-go barbconq folder

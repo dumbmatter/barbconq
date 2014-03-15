@@ -219,6 +219,10 @@ module Units {
         // Mark as moved and go to the next active unit
         skipTurn() {
             this.setMoved();
+
+            // Clear any saved path
+            this.targetCoords = null;
+
             requestAnimationFrame(mapUI.render.bind(mapUI));
         }
 
