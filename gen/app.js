@@ -383,7 +383,7 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.onMovesDone = function () {
-        this.updateBottomText("Press &lt;ENTER&gt; to begin next turn...");
+        this.updateBottomText("Press &lt;ENTER&gt; to begin the next turn...");
     };
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info

@@ -15,6 +15,7 @@ canvas { display:block; } /* To remove the scrollbars */
   bottom: 160px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
+  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
   padding: 5px;
   display: none;
   pointer-events: none;
@@ -43,6 +44,7 @@ canvas { display:block; } /* To remove the scrollbars */
   top: 10px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
+  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
   padding: 5px;
   pointer-events: none;
   border: solid #ffde00;
