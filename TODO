@@ -1,3 +1,5 @@
+# Major current tasks
+
 stacked unit actions and UI
   backend
     store stack in a new type of object, a UnitGroup
@@ -15,10 +17,6 @@ stacked unit actions and UI
       bottom: health bar
     make sure it fits under bottom-text
 
-keyboard shortcuts
-  enter: if not end of turn, cycle through units
-    should allow you to let unit continue on path
-
 fog of war
   states
     never seen yet: completely black
@@ -26,19 +24,31 @@ fog of war
       need to somehow cache last viewed tile state for every tile. copy of map, i guess
     in field of vision: visible
 
-typescript live compile
-
-Create a basic unit, handle its basic actions
-
-"End turn early" green button and "end turn" red button
-  if end turn early, make sure to move units on path towards targetCoords first!
-  is green/red always in sync with "begin next turn" blinker?
-
 combat
   Combat(attacker : Unit, defender : Unit) to handle just the battle itself
   also need to handle things like...
     get list of enemies on tile being moved to
     pick enemy with highest defense
+    stack attack
+
+basic barb AI
+  is there anyone i can attack with >25% chance of winning? if so, attack
+  is there any move that will bring me closer/further from someone i am stronger/weaker than? if so, make it
+  am i hurt? if so, fortify/rest
+  otherwise, move randomly
+
+# Minor current tasks
+
+keyboard shortcuts
+  enter: if not end of turn, cycle through units
+    should allow you to let unit continue on path
+
+typescript live compile
+
+"End turn early" green button and "end turn" red button, next to minimap
+  if end turn early, make sure to move units on path towards targetCoords first!
+  is green/red always in sync with "begin next turn" blinker?
+  add "shift+enter" shortcut for end turn early
 
 right click to move
   right click on map -> drag off map -> drag back onto edge tile... path doesn't show up until drag onto another tile!
@@ -47,39 +57,89 @@ right click to move
 Make randomly generated map into a pangaea facsimile
   how do civ4 maps do it?
 
-barb AI
+unit actions
+  fortify
+    defensive bonus
+    healing
+  sentry
 
-fortify
-  defensive bonus
-  healing
+unit types, to start with
+  scout
+  warrior
+  archer
+  chariot
+  spearman
+  axeman
 
-sentry
+unit design as weapons
+  club, bow+arrow, spear, axe, horse
+  monotone
+  color represents civ
+  how to do infinite stacking? how do civ 2/3/4/5 do it?
+    show highest strength one on top, and "+ X more" in text below it
+
+tile improvements? maybe roads and forts
 
 minify assets
   have a "make barbconq" that puts all the right options in a ready-to-go barbconq folder
 
-PLAN TO GET INITIAL PUBLICITY: BarbarianBattle.com
-  SEE EMAIL FOR BETTER IDEA
-  "Barbarian Battle - web-based port of Civ4's combat system"
-  make a mode with just your units and barbarian units and battle
-  scouts, warriors, archers, chariots, axemen, spearmen
-  roads (randomly generate a few)
-  forts
-  "From the makers of Basketball GM, a free single-player basketball simulation game"
-  Help section: explain units, movement, combat
-  Make desktop and cordova versions, put ads in it
+modularize css better
+  use one of those newfangled preprocessors?
 
 UI POLISH
   center minimap on its canvas when it is not the correct aspect ratio
   mapUI.goToCoords should be smooth
-  scroll wheel zoom by increasing TILE_SIZE
+    draw a line between current coords and future coords. if it's long enough, discretize it and use setTimeout to move to each point along the way. uneven discretization can make it decelerate smoothly at the end
 
----
+# Barbarian Conquest (barbconq)
 
-Base object types:
-  map (only one of these, containing tile properties at each coordinate)
-  unit (each civ can have many of these, and there are many different types)
-  city (each civ can have many of these)
+Mode with just your units, barbarian units, and one barbarian city
+
+Goal: Find and capture the barbarian capital!
+
+Intro text:
+  You have six types of units
+  (show pictures and strength/movement stats, bonuses)
+  Each turn, every one of your units can move (scouts and chariots get two moves, as long as the first one isn't onto a hill or forest). Move the active unit by right clicking with your mouse or by using the numpad on your keyboard.
+  To fight a barbarian unit, move onto its tile (or wait for it to move onto yours). Each unit has a different base strength, and there are also bonuses depending on the types of units (e.g. spearmen are effective against chariots, archers are good at defending hills, etc.) and the terrain (hills and forests provide defensive bonuses).
+  You can stack your units in the same tile. This provides better defense, since when a stack is attacked, the best defender against the attacking unit is chosen for battle. But if you keep your units together all the time, you won't be able to explore the island and find the barbarian capital quickly. And the barbarians are constantly training new units to fight you, especially in areas out of sight of your troops. So the longer it takes you to find the capital, the better defenses it will have.
+
+somewhere: "From the makers of Basketball GM, a free single-player basketball simulation game"
+
+map with just grassland, hills, and forest
+
+place barb city randomly
+  this forces exploration, which presents a tradeoff: staying together increases your strength, but allows barbs to grow in numbers before you find their city.
+
+core gameplay concept ideas
+  barbarians continually spawn, with increasing rate. goal is to stay alive as long as possible
+    this doesn't work, because user will just stack on forest hill
+  better idea: capture barbarian city
+    keep some barbs fortified there and spawn others too
+    to prevent people from stacking on forest hill to gain XP before attacking, make the goal to minimize the number of turns
+
+easy/medium/hard
+  barb city on hill or not
+  xp you start with
+  number of barbs
+  xp barbs start with
+  intelligence of barbs (like.. likelihood to stack, or go to city)
+
+stats shown at end of game
+  won or lost
+  turns
+  time spent
+  barbs killed, by unit type
+  your units, with promotions and killed/not killed
+  combine to a score, compare user against a famous conqueror (like civ4 does with leaders)
+
+monetization ideas
+  reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ4"
+  Make desktop and cordova versions
+  GCS
+  adsense panel on the side of the screen. put intro/manual content in HTML as divs to hide/show in game, for both SEO and adsense
+
+# Nice to have
 
 Data
   keep it all in memory. write to indexeddb every turn
@@ -87,7 +147,16 @@ Data
 TypeScript
   Reevaluate all uses of "any"
 
-# Far future notes
+# Future
+
+animate unit movement
+  any built-in canvas animation support? like hinted at in http://www.sitepoint.com/html5-canvas-tutorial-introduction/ or maybe http://bdadam.com/blog/panning-and-scrolling-background-images-using-the-canvas-element.html
+  maybe add a transparent canvas on top and use that to animate movement before redrawing map
+
+scroll wheel zoom by increasing TILE_SIZE
+  but this won't scale the contents of the tiles...
+
+# Far future
 
 Import civ4 maps
 
