@@ -5,10 +5,12 @@ class ChromeUI {
     elTurnBox : HTMLDivElement;
     elBottomInfo : HTMLDivElement;
     elBottomActions : HTMLDivElement;
+    elBottomText : HTMLDivElement;
 
     constructor() {
         this.elHoverBox = <HTMLDivElement> document.getElementById("hover-box");
         this.elTurnBox = <HTMLDivElement> document.getElementById("turn-box");
+        this.elBottomText = <HTMLDivElement> document.getElementById("bottom-text");
         this.elBottomInfo = <HTMLDivElement> document.getElementById("bottom-info");
         this.elBottomActions = <HTMLDivElement> document.getElementById("bottom-actions");
     }
@@ -80,6 +82,11 @@ class ChromeUI {
 
     onNewTurn() {
         this.elTurnBox.innerHTML = "Turn " + game.turn;
+        this.updateBottomText();
+    }
+
+    onMovesDone() {
+        this.updateBottomText("Press &lt;ENTER&gt; to move to next turn...");
     }
 
     updateActiveUnit() {
@@ -104,6 +111,15 @@ class ChromeUI {
             actionName = actionName.charAt(0).toUpperCase() + actionName.slice(1); // Fix first character
 
             this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + actionName + '</button>'
+        }
+    }
+
+    updateBottomText(text : string = null) {
+        if (!text) {
+            this.elBottomText.style.display = "none";
+        } else {
+            this.elBottomText.innerHTML = text;
+            this.elBottomText.style.display = "block";
         }
     }
 }

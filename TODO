@@ -1,12 +1,11 @@
+elBottomText should fade in and out
+
 remove getTile?
 
 use coordsToPixels in MapUI.render
 
 MapUI.validCoords should be Map.validCoords
   any others wrongly in MapUI?
-
-Controller
-  enter to end turn, rather than automatically calling newTurn
 
 fortify
   defensive bonus

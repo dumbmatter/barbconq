@@ -88,7 +88,7 @@ class Game {
         }
 
         // If we made it this far, everybody has moved
-console.log("Press ENTER to move to next turn")
+        chromeUI.onMovesDone();
         return false;
     }
 }

@@ -49,6 +49,18 @@ canvas { display:block; } /* To remove the scrollbars */
   border-width: 5px 2px;
 }
 
+#bottom-text {
+  position: absolute;
+  left: 300px;
+  right: 300px;
+  bottom: 135px;
+  color: #fff;
+  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.2em black;
+  padding: 5px;
+  text-align: center;
+  display: none;
+}
+
 #bottom-info {
   position: absolute;
   left: 0px;

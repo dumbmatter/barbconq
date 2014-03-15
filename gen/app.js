@@ -306,6 +306,7 @@ var ChromeUI = (function () {
     function ChromeUI() {
         this.elHoverBox = document.getElementById("hover-box");
         this.elTurnBox = document.getElementById("turn-box");
+        this.elBottomText = document.getElementById("bottom-text");
         this.elBottomInfo = document.getElementById("bottom-info");
         this.elBottomActions = document.getElementById("bottom-actions");
     }
@@ -378,6 +379,11 @@ var ChromeUI = (function () {
 
     ChromeUI.prototype.onNewTurn = function () {
         this.elTurnBox.innerHTML = "Turn " + game.turn;
+        this.updateBottomText();
+    };
+
+    ChromeUI.prototype.onMovesDone = function () {
+        this.updateBottomText("Press &lt;ENTER&gt; to move to next turn...");
     };
 
     ChromeUI.prototype.updateActiveUnit = function () {
@@ -396,6 +402,16 @@ var ChromeUI = (function () {
             actionName = actionName.charAt(0).toUpperCase() + actionName.slice(1); // Fix first character
 
             this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + actionName + '</button>';
+        }
+    };
+
+    ChromeUI.prototype.updateBottomText = function (text) {
+        if (typeof text === "undefined") { text = null; }
+        if (!text) {
+            this.elBottomText.style.display = "none";
+        } else {
+            this.elBottomText.innerHTML = text;
+            this.elBottomText.style.display = "block";
         }
     };
     return ChromeUI;
@@ -930,7 +946,7 @@ var Game = (function () {
         }
 
         // If we made it this far, everybody has moved
-        console.log("Press ENTER to move to next turn");
+        chromeUI.onMovesDone();
         return false;
     };
     return Game;
