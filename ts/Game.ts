@@ -5,7 +5,7 @@ class Game {
     maxId : number = 0;
     names: string[];
     units : {}[];
-    activeUnit : Units.BaseUnit = null;
+    activeUnit : Units.BaseUnitOrGroup = null;
     turn : number = 0;
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {

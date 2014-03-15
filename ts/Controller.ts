@@ -166,7 +166,10 @@ class Controller {
                     if (coordsNew && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
                         coords = coordsNew;
                     }
-                    game.activeUnit.initiatePath(coords); // Set unit on path
+
+                    if (game.activeUnit) {
+                        game.activeUnit.initiatePath(coords); // Set unit on path
+                    }
 
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
                     document.removeEventListener("mouseup", mouseUp);

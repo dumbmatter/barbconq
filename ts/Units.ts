@@ -1,53 +1,26 @@
 // Units - classes for the various units types
 
 module Units {
-    export class BaseUnit {
+    // Things that both individual units and groups of units have in common
+    export class BaseUnitOrGroup {
         // Identification
-        id : number; // Unique, incrementing
         owner : number;
-        type : string;
 
         // Key attributes
-        level : number = 1;
-        xp : number = 0;
-        strength : number;
-        currentStrength : number;
-        movement : number;
+        movement: number;
         currentMovement : number;
         coords : number[];
         targetCoords : number[] = null;
 
         // Special unit properties
         landOrSea : string;
-        canAttack : boolean = true;
-        canDefend : boolean = true;
+        canAttack : boolean;
+        canDefend : boolean;
         actions : string[];
 
         // Turn stuff
-        private _active : boolean = false; // When set, show UI options for this unit
+        active : boolean = false; // When set, show UI options for this unit
         moved : boolean = false; // When set, no need to loop through this unit before showing turn is over
-
-        // Getters and setters, to make Knockout integration easier
-        set active(value : boolean) {
-            this._active = value;
-        }
-        get active() : boolean {
-            return this._active;
-        }
-
-        constructor(owner : number, coords : number[]) {
-            this.id = game.maxId;
-            game.maxId += 1;
-
-            this.owner = owner;
-
-            // Set coordinates of unit and put a reference to the unit in the map
-            this.coords = coords;
-            game.map.tiles[coords[0]][coords[1]].units.push(this);
-
-            // Store reference to unit in game.units
-            game.units[this.owner][this.id] = this;
-        }
 
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
         activate(centerDisplay : boolean = true, autoMoveTowardsTarget : boolean = false) {
@@ -132,31 +105,7 @@ module Units {
         }
 
         // Check for valid coords before calling
-        moveToCoords(coords : number[]) {
-            var i, tileUnits;
-
-            // Delete old unit in map
-            tileUnits = game.getTile(this.coords).units;
-            for (i = 0; i < tileUnits.length; i++) {
-                if (tileUnits[i].id === this.id) {
-                    tileUnits.splice(i, 1);
-                    break;
-                }
-            }
-
-            // Add unit at new tile
-            game.getTile(coords).units.push(this);
-
-            // Keep track of movement
-            this.coords = coords;
-            this.currentMovement -= 1; // Should depend on terrain/improvements
-            if (this.currentMovement <= 0) {
-                this.currentMovement = 0;
-                this.setMoved();
-            }
-
-            window.requestAnimationFrame(mapUI.render.bind(mapUI));
-        }
+        moveToCoords(coords : number[]) {}
 
         // Sets the unit on a path towards a coordinate on the map
         initiatePath(coords : number[]) {
@@ -233,6 +182,81 @@ console.log("FORTIFY")
         sentry() {
 console.log("SENTRY")
         }
+    }
+
+    export class BaseUnit extends BaseUnitOrGroup {
+        // Identification
+        id : number; // Unique, incrementing
+        type : string;
+        unitGroup : UnitGroup;
+
+        // Key attributes
+        level : number = 1;
+        xp : number = 0;
+        strength : number;
+        currentStrength : number;
+
+        // Set some defaults for special unit properties
+        landOrSea = "land";
+        canAttack = true;
+        canDefend = true;
+
+        constructor(owner : number, coords : number[]) {
+            super();
+
+            this.id = game.maxId;
+            game.maxId += 1;
+
+            this.owner = owner;
+
+            // Set coordinates of unit and put a reference to the unit in the map
+            this.coords = coords;
+            game.map.tiles[coords[0]][coords[1]].units.push(this);
+
+            // Store reference to unit in game.units
+            game.units[this.owner][this.id] = this;
+        }
+
+        // Check for valid coords before calling
+        moveToCoords(coords : number[]) {
+            var i, tileUnits;
+
+            // Delete old unit in map
+            tileUnits = game.getTile(this.coords).units;
+            for (i = 0; i < tileUnits.length; i++) {
+                if (tileUnits[i].id === this.id) {
+                    tileUnits.splice(i, 1);
+                    break;
+                }
+            }
+
+            // Add unit at new tile
+            game.getTile(coords).units.push(this);
+
+            // Keep track of movement
+            this.coords = coords;
+            this.currentMovement -= 1; // Should depend on terrain/improvements
+            if (this.currentMovement <= 0) {
+                this.currentMovement = 0;
+                this.setMoved();
+            }
+
+            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+        }
+    }
+
+    export class UnitGroup extends BaseUnitOrGroup {
+        units : BaseUnit[];
+
+        constructor(units : BaseUnit[]) {
+            super();
+
+            this.units = units;
+        }
+
+        add() {}
+
+        remove(id) {}
     }
 
     export class Warrior extends BaseUnit {

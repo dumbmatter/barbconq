@@ -168,7 +168,10 @@ var Controller = (function () {
                     if (coordsNew && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
                         coords = coordsNew;
                     }
-                    game.activeUnit.initiatePath(coords); // Set unit on path
+
+                    if (game.activeUnit) {
+                        game.activeUnit.initiatePath(coords); // Set unit on path
+                    }
 
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
                     document.removeEventListener("mouseup", mouseUp);
@@ -981,43 +984,16 @@ var Game = (function () {
 // Units - classes for the various units types
 var Units;
 (function (Units) {
-    var BaseUnit = (function () {
-        function BaseUnit(owner, coords) {
-            // Key attributes
-            this.level = 1;
-            this.xp = 0;
+    // Things that both individual units and groups of units have in common
+    var BaseUnitOrGroup = (function () {
+        function BaseUnitOrGroup() {
             this.targetCoords = null;
-            this.canAttack = true;
-            this.canDefend = true;
             // Turn stuff
-            this._active = false;
+            this.active = false;
             this.moved = false;
-            this.id = game.maxId;
-            game.maxId += 1;
-
-            this.owner = owner;
-
-            // Set coordinates of unit and put a reference to the unit in the map
-            this.coords = coords;
-            game.map.tiles[coords[0]][coords[1]].units.push(this);
-
-            // Store reference to unit in game.units
-            game.units[this.owner][this.id] = this;
         }
-        Object.defineProperty(BaseUnit.prototype, "active", {
-            get: function () {
-                return this._active;
-            },
-            // Getters and setters, to make Knockout integration easier
-            set: function (value) {
-                this._active = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
-        BaseUnit.prototype.activate = function (centerDisplay, autoMoveTowardsTarget) {
+        BaseUnitOrGroup.prototype.activate = function (centerDisplay, autoMoveTowardsTarget) {
             if (typeof centerDisplay === "undefined") { centerDisplay = true; }
             if (typeof autoMoveTowardsTarget === "undefined") { autoMoveTowardsTarget = false; }
             // Deactivate current active unit, if there is one
@@ -1044,7 +1020,7 @@ var Units;
         };
 
         // Set as moved, because it used up all its moves or because its turn was skipped or something
-        BaseUnit.prototype.setMoved = function () {
+        BaseUnitOrGroup.prototype.setMoved = function () {
             this.moved = true;
             this.active = false;
             game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
@@ -1057,7 +1033,7 @@ var Units;
 
         // Should be able to make this general enough to handle all units
         // Handle fight initiation here, if move goes to tile with enemy on it
-        BaseUnit.prototype.move = function (direction) {
+        BaseUnitOrGroup.prototype.move = function (direction) {
             var newCoords;
 
             // Short circuit if no moves are available
@@ -1101,34 +1077,11 @@ var Units;
         };
 
         // Check for valid coords before calling
-        BaseUnit.prototype.moveToCoords = function (coords) {
-            var i, tileUnits;
-
-            // Delete old unit in map
-            tileUnits = game.getTile(this.coords).units;
-            for (i = 0; i < tileUnits.length; i++) {
-                if (tileUnits[i].id === this.id) {
-                    tileUnits.splice(i, 1);
-                    break;
-                }
-            }
-
-            // Add unit at new tile
-            game.getTile(coords).units.push(this);
-
-            // Keep track of movement
-            this.coords = coords;
-            this.currentMovement -= 1; // Should depend on terrain/improvements
-            if (this.currentMovement <= 0) {
-                this.currentMovement = 0;
-                this.setMoved();
-            }
-
-            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+        BaseUnitOrGroup.prototype.moveToCoords = function (coords) {
         };
 
         // Sets the unit on a path towards a coordinate on the map
-        BaseUnit.prototype.initiatePath = function (coords) {
+        BaseUnitOrGroup.prototype.initiatePath = function (coords) {
             // See if there is a path to these coordinates
             game.map.pathFinding(this, coords, function (path) {
                 if (path) {
@@ -1149,7 +1102,7 @@ var Units;
         };
 
         // Use up the player's moves by moving towards its targetCoords
-        BaseUnit.prototype.moveTowardsTarget = function () {
+        BaseUnitOrGroup.prototype.moveTowardsTarget = function () {
             game.map.pathFinding(this, this.targetCoords, function (path) {
                 var tryToMove;
 
@@ -1187,7 +1140,7 @@ var Units;
         };
 
         // Mark as moved and go to the next active unit
-        BaseUnit.prototype.skipTurn = function () {
+        BaseUnitOrGroup.prototype.skipTurn = function () {
             this.setMoved();
 
             // Clear any saved path
@@ -1196,16 +1149,86 @@ var Units;
             requestAnimationFrame(mapUI.render.bind(mapUI));
         };
 
-        BaseUnit.prototype.fortify = function () {
+        BaseUnitOrGroup.prototype.fortify = function () {
             console.log("FORTIFY");
         };
 
-        BaseUnit.prototype.sentry = function () {
+        BaseUnitOrGroup.prototype.sentry = function () {
             console.log("SENTRY");
         };
-        return BaseUnit;
+        return BaseUnitOrGroup;
     })();
+    Units.BaseUnitOrGroup = BaseUnitOrGroup;
+
+    var BaseUnit = (function (_super) {
+        __extends(BaseUnit, _super);
+        function BaseUnit(owner, coords) {
+            _super.call(this);
+            // Key attributes
+            this.level = 1;
+            this.xp = 0;
+            // Set some defaults for special unit properties
+            this.landOrSea = "land";
+            this.canAttack = true;
+            this.canDefend = true;
+
+            this.id = game.maxId;
+            game.maxId += 1;
+
+            this.owner = owner;
+
+            // Set coordinates of unit and put a reference to the unit in the map
+            this.coords = coords;
+            game.map.tiles[coords[0]][coords[1]].units.push(this);
+
+            // Store reference to unit in game.units
+            game.units[this.owner][this.id] = this;
+        }
+        // Check for valid coords before calling
+        BaseUnit.prototype.moveToCoords = function (coords) {
+            var i, tileUnits;
+
+            // Delete old unit in map
+            tileUnits = game.getTile(this.coords).units;
+            for (i = 0; i < tileUnits.length; i++) {
+                if (tileUnits[i].id === this.id) {
+                    tileUnits.splice(i, 1);
+                    break;
+                }
+            }
+
+            // Add unit at new tile
+            game.getTile(coords).units.push(this);
+
+            // Keep track of movement
+            this.coords = coords;
+            this.currentMovement -= 1; // Should depend on terrain/improvements
+            if (this.currentMovement <= 0) {
+                this.currentMovement = 0;
+                this.setMoved();
+            }
+
+            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+        };
+        return BaseUnit;
+    })(BaseUnitOrGroup);
     Units.BaseUnit = BaseUnit;
+
+    var UnitGroup = (function (_super) {
+        __extends(UnitGroup, _super);
+        function UnitGroup(units) {
+            _super.call(this);
+
+            this.units = units;
+        }
+        UnitGroup.prototype.add = function () {
+        };
+
+        UnitGroup.prototype.remove = function (id) {
+        };
+        return UnitGroup;
+    })(BaseUnitOrGroup);
+    Units.UnitGroup = UnitGroup;
 
     var Warrior = (function (_super) {
         __extends(Warrior, _super);
