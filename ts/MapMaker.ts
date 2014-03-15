@@ -16,20 +16,20 @@ module MapMaker {
         pathFinding(unit : Units.BaseUnit = null, targetCoords : number[] = null, cb : (path? : number[][]) => void = mapUI.drawPath.bind(mapUI)) {
             var grid : number[][], i : number, j : number;
 
-            if (!unit || !mapUI.validCoords(unit.coords) || !mapUI.validCoords(targetCoords) || (unit.coords[0] === targetCoords[0] && unit.coords[1] === targetCoords[1])) {
+            if (!unit || !this.validCoords(unit.coords) || !this.validCoords(targetCoords) || (unit.coords[0] === targetCoords[0] && unit.coords[1] === targetCoords[1])) {
                 cb(); // Clear any previous paths
                 return;
             }
 
             grid = [];
-            for (i = 0; i < game.map.tiles.length; i++) {
+            for (i = 0; i < this.tiles.length; i++) {
                 grid[i] = [];
-                for (j = 0; j < game.map.tiles[0].length; j++) {
+                for (j = 0; j < this.tiles[0].length; j++) {
                     // Two types: two move (2), one move (1), and blocked
                     // But 2 move only matters if unit can move more than once
-                    if (game.map.tiles[i][j].features.indexOf("hills") >= 0 || game.map.tiles[i][j].features.indexOf("forest") >= 0 || game.map.tiles[i][j].features.indexOf("jungle") >= 0) {
+                    if (this.tiles[i][j].features.indexOf("hills") >= 0 || this.tiles[i][j].features.indexOf("forest") >= 0 || this.tiles[i][j].features.indexOf("jungle") >= 0) {
                         grid[i][j] = unit.movement > 1 ? 2 : 1;
-                    } else if (game.map.tiles[i][j].terrain === "snow" || game.map.tiles[i][j].terrain === "desert" || game.map.tiles[i][j].terrain === "tundra" || game.map.tiles[i][j].terrain === "grassland" || game.map.tiles[i][j].terrain === "plains") {
+                    } else if (this.tiles[i][j].terrain === "snow" || this.tiles[i][j].terrain === "desert" || this.tiles[i][j].terrain === "tundra" || this.tiles[i][j].terrain === "grassland" || this.tiles[i][j].terrain === "plains") {
                         grid[i][j] = 1;
                     } else {
                         grid[i][j] = 0;
@@ -59,6 +59,15 @@ module MapMaker {
             window.setTimeout(function () {
                 easystar.calculate();
             });
+        }
+
+        // Make sure coords are on map
+        validCoords(coords : number []) {
+            if (coords) {
+                return coords[0] >= 0 && coords[1] >= 0 && coords[0] < this.height && coords[1] < this.width;
+            }
+
+            return false;
         }
     }
 

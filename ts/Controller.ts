@@ -127,7 +127,7 @@ class Controller {
 //game.activeUnit.pathFinding(coords);
 
                 // If click doesn't start on map, ignore it
-                if (!mapUI.validCoords(coords)) {
+                if (!game.map.validCoords(coords)) {
                     return;
                 }
 
@@ -243,7 +243,7 @@ class Controller {
 
                 coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
-                if (mapUI.validCoords(coords)) {
+                if (game.map.validCoords(coords)) {
                     units = game.getTile(coords).units;
                     foundUnit = false;
 
@@ -271,7 +271,7 @@ class Controller {
 
                 coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
 
-                if (mapUI.validCoords(coords)) {
+                if (game.map.validCoords(coords)) {
                     mapUI.goToCoords(coords);
                 }
 
@@ -281,7 +281,7 @@ class Controller {
 
                     coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
 
-                    if (mapUI.validCoords(coords)) {
+                    if (game.map.validCoords(coords)) {
                         mapUI.goToCoords(coords);
                     }
                 };

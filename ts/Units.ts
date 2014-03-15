@@ -126,7 +126,7 @@ module Units {
             }
 
             // Don't walk off the map!
-            if (mapUI.validCoords(newCoords)) {
+            if (game.map.validCoords(newCoords)) {
                 this.moveToCoords(newCoords);
             }
         }

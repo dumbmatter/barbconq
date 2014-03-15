@@ -29,7 +29,7 @@ class Game {
     }
 
     getTile(coords : number[]) {
-        if (mapUI.validCoords(coords)) {
+        if (this.map.validCoords(coords)) {
             return this.map.tiles[coords[0]][coords[1]];
         } else {
             return null;

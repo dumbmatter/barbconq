@@ -130,7 +130,7 @@ var Controller = (function () {
 
                 //game.activeUnit.pathFinding(coords);
                 // If click doesn't start on map, ignore it
-                if (!mapUI.validCoords(coords)) {
+                if (!game.map.validCoords(coords)) {
                     return;
                 }
 
@@ -245,7 +245,7 @@ var Controller = (function () {
 
                 coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
-                if (mapUI.validCoords(coords)) {
+                if (game.map.validCoords(coords)) {
                     units = game.getTile(coords).units;
                     foundUnit = false;
 
@@ -272,7 +272,7 @@ var Controller = (function () {
 
                 coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
 
-                if (mapUI.validCoords(coords)) {
+                if (game.map.validCoords(coords)) {
                     mapUI.goToCoords(coords);
                 }
 
@@ -282,7 +282,7 @@ var Controller = (function () {
 
                     coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
 
-                    if (mapUI.validCoords(coords)) {
+                    if (game.map.validCoords(coords)) {
                         mapUI.goToCoords(coords);
                     }
                 };
@@ -592,7 +592,7 @@ var MapUI = (function () {
                     i = topTile + y;
                     j = leftTile + x;
 
-                    // The "if" restricts this to only draw tiles that are in view
+                    // Only draw tiles that are on the map
                     if (i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
                         cb(i, j, x, y);
                     }
@@ -731,7 +731,7 @@ var MapUI = (function () {
         ];
 
         // Only return coordinates in map
-        if (this.validCoords(coords)) {
+        if (game.map.validCoords(coords)) {
             return coords;
         } else {
             return null;
@@ -742,7 +742,7 @@ var MapUI = (function () {
     MapUI.prototype.coordsToPixels = function (i, j) {
         var left, pixels, top;
 
-        if (this.validCoords([i, j])) {
+        if (game.map.validCoords([i, j])) {
             // Top left coordinate in pixels, relative to the whole map
             top = this.Y - this.VIEW_HEIGHT / 2;
             left = this.X - this.VIEW_WIDTH / 2;
@@ -770,20 +770,11 @@ var MapUI = (function () {
         ];
 
         // Only return coordinates in map
-        if (this.validCoords(coords)) {
+        if (game.map.validCoords(coords)) {
             return coords;
         } else {
             return null;
         }
-    };
-
-    // Make sure coords are on map
-    MapUI.prototype.validCoords = function (coords) {
-        if (coords) {
-            return coords[0] >= 0 && coords[1] >= 0 && coords[0] < game.map.height && coords[1] < game.map.width;
-        }
-
-        return false;
     };
     return MapUI;
 })();
@@ -806,20 +797,20 @@ var MapMaker;
             if (typeof cb === "undefined") { cb = mapUI.drawPath.bind(mapUI); }
             var grid, i, j;
 
-            if (!unit || !mapUI.validCoords(unit.coords) || !mapUI.validCoords(targetCoords) || (unit.coords[0] === targetCoords[0] && unit.coords[1] === targetCoords[1])) {
+            if (!unit || !this.validCoords(unit.coords) || !this.validCoords(targetCoords) || (unit.coords[0] === targetCoords[0] && unit.coords[1] === targetCoords[1])) {
                 cb(); // Clear any previous paths
                 return;
             }
 
             grid = [];
-            for (i = 0; i < game.map.tiles.length; i++) {
+            for (i = 0; i < this.tiles.length; i++) {
                 grid[i] = [];
-                for (j = 0; j < game.map.tiles[0].length; j++) {
+                for (j = 0; j < this.tiles[0].length; j++) {
                     // Two types: two move (2), one move (1), and blocked
                     // But 2 move only matters if unit can move more than once
-                    if (game.map.tiles[i][j].features.indexOf("hills") >= 0 || game.map.tiles[i][j].features.indexOf("forest") >= 0 || game.map.tiles[i][j].features.indexOf("jungle") >= 0) {
+                    if (this.tiles[i][j].features.indexOf("hills") >= 0 || this.tiles[i][j].features.indexOf("forest") >= 0 || this.tiles[i][j].features.indexOf("jungle") >= 0) {
                         grid[i][j] = unit.movement > 1 ? 2 : 1;
-                    } else if (game.map.tiles[i][j].terrain === "snow" || game.map.tiles[i][j].terrain === "desert" || game.map.tiles[i][j].terrain === "tundra" || game.map.tiles[i][j].terrain === "grassland" || game.map.tiles[i][j].terrain === "plains") {
+                    } else if (this.tiles[i][j].terrain === "snow" || this.tiles[i][j].terrain === "desert" || this.tiles[i][j].terrain === "tundra" || this.tiles[i][j].terrain === "grassland" || this.tiles[i][j].terrain === "plains") {
                         grid[i][j] = 1;
                     } else {
                         grid[i][j] = 0;
@@ -848,6 +839,15 @@ var MapMaker;
             window.setTimeout(function () {
                 easystar.calculate();
             });
+        };
+
+        // Make sure coords are on map
+        Map.prototype.validCoords = function (coords) {
+            if (coords) {
+                return coords[0] >= 0 && coords[1] >= 0 && coords[0] < this.height && coords[1] < this.width;
+            }
+
+            return false;
         };
         return Map;
     })();
@@ -917,7 +917,7 @@ var Game = (function () {
         }
     }
     Game.prototype.getTile = function (coords) {
-        if (mapUI.validCoords(coords)) {
+        if (this.map.validCoords(coords)) {
             return this.map.tiles[coords[0]][coords[1]];
         } else {
             return null;
@@ -1095,7 +1095,7 @@ var Units;
             }
 
             // Don't walk off the map!
-            if (mapUI.validCoords(newCoords)) {
+            if (game.map.validCoords(newCoords)) {
                 this.moveToCoords(newCoords);
             }
         };
@@ -1244,7 +1244,7 @@ var controller = new Controller();
 for (var i = 0; i < 200; i++) {
     //    new Units.Warrior(0, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
 }
-for (var i = 0; i < 2; i++) {
+for (var i = 0; i < 1; i++) {
     new Units.Warrior(1, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
 }
 

@@ -181,7 +181,7 @@ class MapUI {
                     i = topTile + y;
                     j = leftTile + x;
 
-                    // The "if" restricts this to only draw tiles that are in view
+                    // Only draw tiles that are on the map
                     if (i >= 0 && j >= 0 && i < game.map.height && j < game.map.width) {
                         cb(i, j, x, y);
                     }
@@ -322,7 +322,7 @@ class MapUI {
         ];
 
         // Only return coordinates in map
-        if (this.validCoords(coords)) {
+        if (game.map.validCoords(coords)) {
             return coords;
         } else {
             return null;
@@ -333,7 +333,7 @@ class MapUI {
     coordsToPixels(i : number, j : number) : number[] {
         var left, pixels, top;
 
-        if (this.validCoords([i, j])) {
+        if (game.map.validCoords([i, j])) {
             // Top left coordinate in pixels, relative to the whole map
             top = this.Y - this.VIEW_HEIGHT / 2;
             left = this.X - this.VIEW_WIDTH / 2;
@@ -361,19 +361,10 @@ class MapUI {
         ];
 
         // Only return coordinates in map
-        if (this.validCoords(coords)) {
+        if (game.map.validCoords(coords)) {
             return coords;
         } else {
             return null;
         }
-    }
-
-    // Make sure coords are on map
-    validCoords(coords : number []) {
-        if (coords) {
-            return coords[0] >= 0 && coords[1] >= 0 && coords[0] < game.map.height && coords[1] < game.map.width;
-        }
-
-        return false;
     }
 }

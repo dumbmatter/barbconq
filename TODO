@@ -2,7 +2,8 @@ stacked unit actions and UI
   backend
     store stack in a new type of object, a UnitGroup
       contains references to the individual units and exposes the correct properties to the rest of the game (activate, actions, movement, targetCoords, etc)
-      this would also allow for UnitGroup storage in game.unitGroups, which could be treated like game.units. also, BaseUnit should have a "stacked" property. when set, don't activate in the normal game loop, just wait for its UnitGroup to go
+      this would also allow for UnitGroup storage in game.unitGroups, which could be treated like game.units.
+      BaseUnit should have a "unitGroup" property that is null or a reference to a group. when set, don't activate in the normal game loop, just wait for its UnitGroup to go
     make sure...
       show "Unit Stack" in info box
       merge all actions together and show options at bottom
@@ -18,10 +19,7 @@ keyboard shortcuts
   enter: if not end of turn, cycle through units
     should allow you to let unit continue on path
 
-use coordsToPixels in MapUI.render
-
-MapUI.validCoords should be Map.validCoords
-  any others wrongly in MapUI?
+get rid of height/width params of Map? just use tiles.length?
 
 fog of war
   states
@@ -45,6 +43,7 @@ combat
     pick enemy with highest defense
 
 right click to move
+  right click on map -> drag off map -> drag back onto edge tile... path doesn't show up until drag onto another tile!
   needs to handle enemy units - can't cross
 
 Make randomly generated map into a pangaea facsimile
