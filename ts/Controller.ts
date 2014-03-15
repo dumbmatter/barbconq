@@ -134,7 +134,9 @@ game.activeUnit.pathFinding(coords);
 
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
-                    if (mapUI.validCoords(coordsNew) && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
+                    if (!coordsNew) {
+                        game.activeUnit.pathFinding(); // Delete currently displayed path
+                    } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
 game.activeUnit.pathFinding(coords);
                     }
@@ -147,7 +149,9 @@ game.activeUnit.pathFinding(coords);
 
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
-                    if (mapUI.validCoords(coordsNew) && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
+                    if (!coordsNew) {
+                        game.activeUnit.pathFinding(); // Delete currently displayed path
+                    } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
 game.activeUnit.pathFinding(coords);
                     }

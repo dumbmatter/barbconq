@@ -137,7 +137,9 @@ var Controller = (function () {
 
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
-                    if (mapUI.validCoords(coordsNew) && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
+                    if (!coordsNew) {
+                        game.activeUnit.pathFinding(); // Delete currently displayed path
+                    } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
                         game.activeUnit.pathFinding(coords);
                     }
@@ -150,7 +152,9 @@ var Controller = (function () {
 
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
-                    if (mapUI.validCoords(coordsNew) && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
+                    if (!coordsNew) {
+                        game.activeUnit.pathFinding(); // Delete currently displayed path
+                    } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
                         game.activeUnit.pathFinding(coords);
                     }
@@ -457,6 +461,33 @@ var MapUI = (function () {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     };
 
+    MapUI.prototype.drawPath = function (path) {
+        if (typeof path === "undefined") { path = []; }
+        window.requestAnimationFrame(function () {
+            var i, pixels;
+
+            this.render();
+
+            if (path.length > 1) {
+                // Origin
+                this.context.beginPath();
+                pixels = this.coordsToPixels(path[0].i, path[0].j);
+                this.context.moveTo(pixels[0], pixels[1]);
+
+                for (i = 1; i < path.length; i++) {
+                    pixels = this.coordsToPixels(path[i].i, path[i].j);
+                    this.context.lineTo(pixels[0], pixels[1]);
+                }
+
+                this.context.strokeStyle = "#000";
+                this.context.lineWidth = 2;
+                this.context.setLineDash([5]);
+                this.context.stroke();
+                this.context.setLineDash([]); // Reset dash state
+            }
+        }.bind(this));
+    };
+
     MapUI.prototype.render = function () {
         var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile;
 
@@ -646,6 +677,27 @@ var MapUI = (function () {
         // Only return coordinates in map
         if (this.validCoords(coords)) {
             return coords;
+        } else {
+            return null;
+        }
+    };
+
+    // Input: tile coords (row, col) 0 indexed. Output: (x, y) pixels at center of tile in current viewport (can go off screen)
+    MapUI.prototype.coordsToPixels = function (i, j) {
+        var left, pixels, top;
+
+        if (this.validCoords([i, j])) {
+            // Top left coordinate in pixels, relative to the whole map
+            top = this.Y - this.VIEW_HEIGHT / 2;
+            left = this.X - this.VIEW_WIDTH / 2;
+
+            // Pixels at center of tile
+            pixels = [
+                j * this.TILE_SIZE + this.TILE_SIZE / 2 - left,
+                i * this.TILE_SIZE + this.TILE_SIZE / 2 - top
+            ];
+
+            return pixels;
         } else {
             return null;
         }
@@ -940,14 +992,19 @@ var Units;
                     this.setMoved();
                 }
 
-                requestAnimationFrame(mapUI.render.bind(mapUI));
+                window.requestAnimationFrame(mapUI.render.bind(mapUI));
             }
         };
 
         BaseUnit.prototype.pathFinding = function (coords) {
+            if (typeof coords === "undefined") { coords = null; }
             var grid, i, j;
 
-            console.log("pathFinding to " + coords);
+            if (!mapUI.validCoords(coords)) {
+                window.requestAnimationFrame(mapUI.render.bind(mapUI)); // Clear any previous paths
+                return;
+            }
+
             grid = [];
             for (i = 0; i < game.map.tiles.length; i++) {
                 grid[i] = [];
@@ -969,17 +1026,29 @@ var Units;
             easystar.enableDiagonals();
             easystar.setTileCost(2, 2);
 
+            console.log(coords);
+
+            // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
             easystar.findPath(this.coords[1], this.coords[0], coords[1], coords[0], function (path) {
+                var i;
+
                 if (path === null) {
+                    mapUI.drawPath(); // Clear any previous paths
                     console.log("Path was not found.");
                 } else {
-                    console.log("Path was found. The first Point is " + path[1].y + " " + path[1].x);
+                    for (i = 0; i < path.length; i++) {
+                        path[i].i = path[i].y;
+                        path[i].j = path[i].x;
+                        delete path[i].y;
+                        delete path[i].x;
+                    }
+
+                    mapUI.drawPath(path);
+                    console.log("Path was found. The first Point is " + path[1].i + " " + path[1].j);
                 }
             });
 
             easystar.calculate();
-            easystar.calculate();
-            console.log(grid);
         };
 
         // Mark as moved and go to the next active unit

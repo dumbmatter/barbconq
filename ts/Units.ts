@@ -153,12 +153,17 @@ module Units {
                     this.setMoved();
                 }
 
-                requestAnimationFrame(mapUI.render.bind(mapUI));
+                window.requestAnimationFrame(mapUI.render.bind(mapUI));
             }
         }
 
-        pathFinding(coords) {
+        pathFinding(coords = null) {
             var grid : number[][], i : number, j : number;
+
+            if (!mapUI.validCoords(coords)) {
+                window.requestAnimationFrame(mapUI.render.bind(mapUI)); // Clear any previous paths
+                return;
+            }
 
             grid = [];
             for (i = 0; i < game.map.tiles.length; i++) {
@@ -182,15 +187,24 @@ module Units {
             easystar.setTileCost(2, 2);
 
             // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
-            easystar.findPath(this.coords[1], this.coords[0], coords[1], coords[0], function( path ) {
+            easystar.findPath(this.coords[1], this.coords[0], coords[1], coords[0], function (path) {
+                var i;
+
                 if (path === null) {
-console.log("Path was not found.");
+                    mapUI.drawPath(); // Clear any previous paths
                 } else {
-console.log("Path was found. The first Point is " + path[1].y + " " + path[1].x);
+                    // Fix coord labels
+                    for (i = 0; i < path.length; i++) {
+                        path[i].i = path[i].y;
+                        path[i].j = path[i].x;
+                        delete path[i].y;
+                        delete path[i].x;
+                    }
+
+                    mapUI.drawPath(path);
                 }
             });
 
-            easystar.calculate();
             easystar.calculate();
         }
 

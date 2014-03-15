@@ -1,5 +1,7 @@
 remove getTile?
 
+use coordsToPixels in MapUI.render
+
 Controller
   enter to end turn, rather than automatically calling newTurn
 
@@ -19,11 +21,15 @@ fog of war
     in field of vision: visible
 
 right click to move
-  https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent.button
-  onmousedown
-    while mouse is held, paint results by connecting medians of tiles
-      maybe do this in new layer so the map doesn't need to be redrawn, otherwise it'll need to be totally redrawn for each tile dragged over with the mouse down
-    when mouse is released, store coords as targetCoords or someothing and write code to go there
+  when mouse is released
+    store coords as targetCoords or something
+    actually initiate movement
+  handle stored targetCoords movement
+    shouldn't have "moved" set, but don't activate
+    after all have "moved" except these ones, have them move, but don't show the movement happening
+    when they reach target, clear targetCoords
+  if targetCoords are stored and unit is active, show path
+  needs to handle enemy units - can't cross
 
 mapUI.goToCoords should be smooth
 
