@@ -9,6 +9,10 @@
 declare var EasyStar : any;
 var easystar : any = new EasyStar.js();
 
+var config : any = {
+    UNIT_MOVEMENT_UI_DELAY: 500
+};
+
 var game = new Game(1, 20, 40);
 var chromeUI = new ChromeUI();
 var mapUI = new MapUI();

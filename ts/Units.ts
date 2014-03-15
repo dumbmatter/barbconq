@@ -80,7 +80,7 @@ module Units {
             // After delay, move to next unit
             setTimeout(function () {
                 game.moveUnits();
-            }, 500);
+            }, config.UNIT_MOVEMENT_UI_DELAY);
         }
 
         // Should be able to make this general enough to handle all units
@@ -170,24 +170,33 @@ module Units {
         moveTowardsTarget() {
 console.log('moveTowardsTarget')
             game.map.pathFinding(this, this.targetCoords, function (path : number[][]) {
-                var coords;
+                var tryToMove;
 
                 if (path) {
                     path.shift(); // Discard first one, since it's the current tile
 
                     // Move until moves are used up or target is reached
-                    while (this.currentMovement > 0 && path.length > 0) {
-                        coords = path.shift(); // Get next coords
-                        this.moveToCoords(coords);
-                    }
-
-                    if (path.length === 0) {
-                        // We reached our target!
-                        this.targetCoods = null;
-                        if (this.currentMovement > 0) {
-                            this.activate();
+                    tryToMove = function (cb : () => void) {
+                        if (this.currentMovement > 0 && path.length > 0) {
+                            this.moveToCoords(path.shift());
+                            // Delay so that the map can update before the next move
+                            setTimeout(function () {
+                                tryToMove(cb);
+                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                        } else {
+                            cb();
                         }
-                    }
+                    }.bind(this);
+
+                    tryToMove(function () {
+                        if (path.length === 0) {
+                            // We reached our target!
+                            this.targetCoods = null;
+                            if (this.currentMovement > 0) {
+                                this.activate();
+                            }
+                        }
+                    });
                 } else {
                     // Must be something blocking the way now
                     this.targetCoords = null;
