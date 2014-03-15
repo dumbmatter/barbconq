@@ -1,3 +1,5 @@
+should "begin next turn" blinker go away if you activate a unit? check
+
 remove getTile?
 
 use coordsToPixels in MapUI.render
@@ -11,8 +13,6 @@ fortify
 
 sentry
 
-scroll wheel zoom by increasing TILE_SIZE
-
 fog of war
   states
     never seen yet: completely black
@@ -25,8 +25,6 @@ right click to move
   if targetCoords are stored and unit is active, show path
   needs to handle enemy units - can't cross
 
-mapUI.goToCoords should be smooth
-
 stacked unit actions and UI
   make sure UI fits under bottom-text
 
@@ -36,6 +34,7 @@ Create a basic unit, handle its basic actions
 
 "End turn early" green button and "end turn" red button
   if end turn early, make sure to move units on path towards targetCoords first!
+  is green/red always in sync with "begin next turn" blinker?
 
 combat
   Combat(attacker : Unit, defender : Unit) to handle just the battle itself
@@ -45,6 +44,8 @@ combat
 
 Make randomly generated map into a pangaea facsimile
   how do civ4 maps do it?
+
+barb AI
 
 minify assets
   have a "make barbconq" that puts all the right options in a ready-to-go barbconq folder
@@ -62,7 +63,8 @@ PLAN TO GET INITIAL PUBLICITY: BarbarianBattle.com
 
 UI POLISH
   center minimap on its canvas when it is not the correct aspect ratio
-
+  mapUI.goToCoords should be smooth
+  scroll wheel zoom by increasing TILE_SIZE
 
 ---
 
