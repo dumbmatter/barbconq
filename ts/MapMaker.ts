@@ -49,10 +49,7 @@ module MapMaker {
                 if (path) {
                     // Fix coord labels
                     for (i = 0; i < path.length; i++) {
-                        path[i].i = path[i].y;
-                        path[i].j = path[i].x;
-                        delete path[i].y;
-                        delete path[i].x;
+                        path[i] = [path[i].y, path[i].x]; // Swap back rows/cols from easystar
                     }
                 }
                 cb(path);

@@ -101,11 +101,11 @@ class MapUI {
             if (path && path.length > 1) {
                 // Origin
                 this.context.beginPath();
-                pixels = this.coordsToPixels(path[0].i, path[0].j);
+                pixels = this.coordsToPixels(path[0][0], path[0][1]);
                 this.context.moveTo(pixels[0], pixels[1]);
 
                 for (i = 1; i < path.length; i++) { // Skip the last one, since we're connecting points
-                    pixels = this.coordsToPixels(path[i].i, path[i].j);
+                    pixels = this.coordsToPixels(path[i][0], path[i][1]);
                     this.context.lineTo(pixels[0], pixels[1]);
                 }
 

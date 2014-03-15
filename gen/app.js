@@ -474,11 +474,11 @@ var MapUI = (function () {
             if (path && path.length > 1) {
                 // Origin
                 this.context.beginPath();
-                pixels = this.coordsToPixels(path[0].i, path[0].j);
+                pixels = this.coordsToPixels(path[0][0], path[0][1]);
                 this.context.moveTo(pixels[0], pixels[1]);
 
                 for (i = 1; i < path.length; i++) {
-                    pixels = this.coordsToPixels(path[i].i, path[i].j);
+                    pixels = this.coordsToPixels(path[i][0], path[i][1]);
                     this.context.lineTo(pixels[0], pixels[1]);
                 }
 
@@ -785,10 +785,7 @@ var MapMaker;
 
                 if (path) {
                     for (i = 0; i < path.length; i++) {
-                        path[i].i = path[i].y;
-                        path[i].j = path[i].x;
-                        delete path[i].y;
-                        delete path[i].x;
+                        path[i] = [path[i].y, path[i].x]; // Swap back rows/cols from easystar
                     }
                 }
                 cb(path);
