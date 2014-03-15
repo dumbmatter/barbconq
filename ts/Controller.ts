@@ -156,7 +156,7 @@ class Controller {
                         coords = coordsNew;
 //game.activeUnit.pathFinding(coords);
                     }
-console.log("ACTUALLY SET TARGET IF PATHFINDING FOUND A PATH " + coords)
+                    game.activeUnit.initiatePath(coords); // Set unit on path
                     game.map.pathFinding(); // Delete currently displayed path
 
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);

@@ -157,6 +157,12 @@ module Units {
             }
         }
 
+        initiatePath(coords : number[]) {
+            if (mapUI.validCoords(coords)) {
+console.log("ACTUALLY SET TARGET IF PATHFINDING FINDS A PATH " + coords)
+            }
+        }
+
         // Mark as moved and go to the next active unit
         skipTurn() {
             this.setMoved();
