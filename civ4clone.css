@@ -59,6 +59,7 @@ canvas { display:block; } /* To remove the scrollbars */
   color: #fff;
   text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
   padding: 5px;
+  pointer-events: none;
   text-align: center;
   display: none;
   -webkit-animation: blink 2s linear infinite;
@@ -79,14 +80,16 @@ canvas { display:block; } /* To remove the scrollbars */
   position: absolute;
   left: 0px;
   bottom: 0px;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
+  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
   padding: 5px;
   padding-left: 15px;
   width: 300px;
   height: 150px;
   border-top: 5px solid #ffde00;
   border-right: 2px solid #ffde00;
+  pointer-events: none;
 }
 #bottom-info h1 {
   color: #ffde00;
@@ -105,11 +108,13 @@ canvas { display:block; } /* To remove the scrollbars */
   left: 300px;
   right: 300px;
   bottom: 0px;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
+  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
   padding: 5px;
   height: 125px;
   border-top: 5px solid #ffde00;
+  pointer-events: none;
 }
 #bottom-actions .action {
   min-width: 45px;
@@ -122,9 +127,10 @@ canvas { display:block; } /* To remove the scrollbars */
   line-height: 35px;
   cursor: pointer;
 
-  background: none;
+  background: #000;
   color: inherit;
   font-size: inherit;
+  pointer-events: auto;
 
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -143,14 +149,17 @@ canvas { display:block; } /* To remove the scrollbars */
   bottom: 0px;
   background: rgba(0, 0, 0, 0.9);
   color: #fff;
+  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
   padding: 5px;
   width: 300px;
   height: 150px;
   border-top: 5px solid #ffde00;
   border-left: 2px solid #ffde00;
+  pointer-events: none;
 }
 
 #minimap {
   width: 285px;
   height: 135px;
+  pointer-events: auto;
 }

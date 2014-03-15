@@ -229,7 +229,6 @@ class MapUI {
 
                         // Draw path if unit is moving to a target
                         if (unit.targetCoords) {
-console.log("render " + unit.targetCoords);
                             // If there is a pathfinding search occurring (like from the user holding down the right click button), don't draw active path
                             if (!this.pathFindingSearch) {
                                 game.map.pathFinding(unit, unit.targetCoords, function (path) {

@@ -158,16 +158,18 @@ var Controller = (function () {
 
                     mapUI.pathFindingSearch = false;
 
-                    coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
+                    // Only update coordinates if the target is the map (i.e. not minimap, action buttons, etc, which would have different coordinates)
+                    if (e.target === mapUI.canvas) {
+                        coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
+                    }
 
-                    if (!coordsNew) {
-                        game.map.pathFinding(); // Delete currently displayed path
-                    } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
+                    // Don't need to render map here at all (like by calling game.map.pathFinding)
+                    // because that'll happen in game.activeUnit.initiatePath no matter what
+                    if (coordsNew && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
                         coords = coordsNew;
                     }
                     game.activeUnit.initiatePath(coords); // Set unit on path
 
-                    // Don't need to update map (like by calling game.map.pathFinding) because that'll happen in game.activeUnit.initiatePath
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
                     document.removeEventListener("mouseup", mouseUp);
                 };
@@ -638,8 +640,6 @@ var MapUI = (function () {
 
                         // Draw path if unit is moving to a target
                         if (unit.targetCoords) {
-                            console.log("render " + unit.targetCoords);
-
                             // If there is a pathfinding search occurring (like from the user holding down the right click button), don't draw active path
                             if (!this.pathFindingSearch) {
                                 game.map.pathFinding(unit, unit.targetCoords, function (path) {
