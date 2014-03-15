@@ -925,7 +925,7 @@ var Units;
                 tileUnits = game.getTile(initialCoords).units;
                 for (i = 0; i < tileUnits.length; i++) {
                     if (tileUnits[i].id === this.id) {
-                        tileUnits.splice(i);
+                        tileUnits.splice(i, 1);
                         break;
                     }
                 }

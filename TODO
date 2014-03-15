@@ -1,13 +1,6 @@
 remove getTile?
 
-weird stuff happens when two of the user's units are on the same tile - disappearing from map temporarily, missing highlight, etc.
-  move both on same tile. skip turn for first, move second to another tile, original tile looks blank. move back on, and it looks like there is only one unit there, and the first unit doesn't show up as activated on the map at the beginning of next turn
-
 Controller
-  more unit shortcuts
-    see if unit has action in this.actions. If so, do it
-    fortify
-    sentry
   enter to end turn, rather than automatically calling newTurn
 
 fortify
@@ -30,7 +23,8 @@ right click to move
   onmousedown
     run some pathfinding algorithm, https://github.com/qiao/PathFinding.js/ or simpler
       in civ4 this can have unpredictable results if the enemy gets in the way. here, if the path is blocked, just stop
-      so the path can be hardcoded in as an array of tiles, and each turn check if it's blocked. if so, stop
+        so the path can be hardcoded in as an array of tiles, and each turn check if it's blocked. if so, stop
+      or be like civ4: just store the target and recalculate optimal path each turn. maybe have an option
     paint results by connecting medians of tiles
       maybe do this in new layer so the map doesn't need to be redrawn, otherwise it'll need to be totally redrawn for each tile dragged over with the mouse down
 
