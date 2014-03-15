@@ -1,3 +1,19 @@
+stacked unit actions and UI
+  backend
+    store stack in a new type of object, a UnitGroup
+      contains references to the individual units and exposes the correct properties to the rest of the game (activate, actions, movement, targetCoords, etc)
+      this would also allow for UnitGroup storage in game.unitGroups, which could be treated like game.units. also, BaseUnit should have a "stacked" property. when set, don't activate in the normal game loop, just wait for its UnitGroup to go
+    make sure...
+      show "Unit Stack" in info box
+      merge all actions together and show options at bottom
+        clicking applies that action to every unit it can
+      movement (numpad and right click) applies to all
+  bottom UI
+    icons
+      top left: red/yellow/green for no/some/full moves
+      bottom: health bar
+    make sure it fits under bottom-text
+
 keyboard shortcuts
   enter: if not end of turn, cycle through units
     should allow you to let unit continue on path
@@ -13,9 +29,6 @@ fog of war
     saw before, but not currently in field of vision: terrain+improvements appear as last known, with shadow over it
       need to somehow cache last viewed tile state for every tile. copy of map, i guess
     in field of vision: visible
-
-stacked unit actions and UI
-  make sure UI fits under bottom-text
 
 typescript live compile
 
