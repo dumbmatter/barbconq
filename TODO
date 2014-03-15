@@ -1,5 +1,4 @@
 right click to move
-  selecting unit on path that hasn't yet moved shouldn't make it move immediately
   needs to handle enemy units - can't cross
 
 remove getTile?

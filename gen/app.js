@@ -963,7 +963,7 @@ var Game = (function () {
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
                     if (!unit.moved) {
-                        unit.activate();
+                        unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                         return true;
                     }
                 }
@@ -1017,8 +1017,9 @@ var Units;
         });
 
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
-        BaseUnit.prototype.activate = function (goToCoords) {
-            if (typeof goToCoords === "undefined") { goToCoords = true; }
+        BaseUnit.prototype.activate = function (centerDisplay, autoMoveTowardsTarget) {
+            if (typeof centerDisplay === "undefined") { centerDisplay = true; }
+            if (typeof autoMoveTowardsTarget === "undefined") { autoMoveTowardsTarget = false; }
             // Deactivate current active unit, if there is one
             if (game.activeUnit) {
                 game.activeUnit.active = false;
@@ -1026,7 +1027,7 @@ var Units;
             }
 
             // If this unit is on a path towards a target, just go along the path instead of activating. If there are still moves left when the target is reached, activate() will be called again.
-            if (this.targetCoords && this.currentMovement > 0) {
+            if (autoMoveTowardsTarget && this.targetCoords && this.currentMovement > 0) {
                 setTimeout(function () {
                     this.moveTowardsTarget();
                 }.bind(this), config.UNIT_MOVEMENT_UI_DELAY);
@@ -1035,7 +1036,7 @@ var Units;
             // Activate this unit
             this.active = true;
             game.activeUnit = this;
-            if (goToCoords) {
+            if (centerDisplay) {
                 mapUI.goToCoords(this.coords);
             }
 
@@ -1239,7 +1240,7 @@ var controller = new Controller();
 for (var i = 0; i < 200; i++) {
     //    new Units.Warrior(0, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
 }
-for (var i = 0; i < 1; i++) {
+for (var i = 0; i < 2; i++) {
     new Units.Warrior(1, [Math.floor(game.map.height * Math.random()), Math.floor(game.map.width * Math.random())]);
 }
 

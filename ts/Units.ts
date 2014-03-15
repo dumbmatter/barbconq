@@ -50,7 +50,7 @@ module Units {
         }
 
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
-        activate(goToCoords : boolean = true) {
+        activate(centerDisplay : boolean = true, autoMoveTowardsTarget : boolean = false) {
             // Deactivate current active unit, if there is one
             if (game.activeUnit) {
                 game.activeUnit.active = false;
@@ -58,7 +58,7 @@ module Units {
             }
 
             // If this unit is on a path towards a target, just go along the path instead of activating. If there are still moves left when the target is reached, activate() will be called again.
-            if (this.targetCoords && this.currentMovement > 0) {
+            if (autoMoveTowardsTarget && this.targetCoords && this.currentMovement > 0) {
                 setTimeout(function () {
                     this.moveTowardsTarget();
                 }.bind(this), config.UNIT_MOVEMENT_UI_DELAY);
@@ -67,7 +67,7 @@ module Units {
             // Activate this unit
             this.active = true;
             game.activeUnit = this;
-            if (goToCoords) {
+            if (centerDisplay) {
                 mapUI.goToCoords(this.coords);
             }
 

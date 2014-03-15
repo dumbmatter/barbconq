@@ -78,7 +78,7 @@ class Game {
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
                     if (!unit.moved) {
-                        unit.activate();
+                        unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                         return true;
                     }
                 }
