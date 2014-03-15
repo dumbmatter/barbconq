@@ -1,3 +1,9 @@
+right click to move
+  when unit is inactive and i set a new path, old one shows up first
+  selecting unit on path that hasn't yet moved shouldn't make it move immediately
+  should cancel path if you raise right click on invalid target (water, off map, self...)
+  needs to handle enemy units - can't cross
+
 remove getTile?
 
 use coordsToPixels in MapUI.render
@@ -17,9 +23,6 @@ fog of war
     saw before, but not currently in field of vision: terrain+improvements appear as last known, with shadow over it
       need to somehow cache last viewed tile state for every tile. copy of map, i guess
     in field of vision: visible
-
-right click to move
-  needs to handle enemy units - can't cross
 
 stacked unit actions and UI
   make sure UI fits under bottom-text
