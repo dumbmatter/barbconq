@@ -1186,19 +1186,32 @@ var Units;
         }
         // Check for valid coords before calling
         BaseUnit.prototype.moveToCoords = function (coords) {
-            var i, tileUnits;
+            var i, moveIndividualUnit;
 
-            // Delete old unit in map
-            tileUnits = game.getTile(this.coords).units;
-            for (i = 0; i < tileUnits.length; i++) {
-                if (tileUnits[i].id === this.id) {
-                    tileUnits.splice(i, 1);
-                    break;
+            moveIndividualUnit = function (unit) {
+                var i, tileUnits;
+
+                // Delete old unit in map
+                tileUnits = game.getTile(unit.coords).units;
+                for (i = 0; i < tileUnits.length; i++) {
+                    if (tileUnits[i].id === unit.id) {
+                        tileUnits.splice(i, 1);
+                        break;
+                    }
                 }
-            }
 
-            // Add unit at new tile
-            game.getTile(coords).units.push(this);
+                // Add unit at new tile
+                game.getTile(coords).units.push(unit);
+            };
+
+            if (this instanceof UnitGroup) {
+                for (i = 0; i < this.units.length; i++) {
+                    moveIndividualUnit(this.units[i]);
+                }
+            } else {
+                // It's an individual unit!
+                moveIndividualUnit(this);
+            }
 
             // Keep track of movement
             this.coords = coords;
