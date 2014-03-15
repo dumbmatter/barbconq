@@ -19,7 +19,6 @@ fog of war
     in field of vision: visible
 
 right click to move
-  don't call game.map.pathFinding if right click pathfinding searching is happening, otherwise it'll show the current stored path and the right click path
   needs to handle enemy units - can't cross
 
 stacked unit actions and UI

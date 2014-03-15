@@ -131,6 +131,9 @@ class Controller {
                     return;
                 }
 
+                // Let mapUI know that we're searching for paths, so it doesn't draw any others (like current paths)
+                mapUI.pathFindingSearch = true;
+
                 // Find paths to hovered tile as button remains down
                 mouseMoveWhileDown = function (e) {
                     var coordsNew;
@@ -149,6 +152,8 @@ class Controller {
                 // Move unit to the tile hovered over when the button is released
                 mouseUp = function (e) {
                     var coordsNew;
+
+                    mapUI.pathFindingSearch = false;
 
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 

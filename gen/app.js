@@ -134,6 +134,9 @@ var Controller = (function () {
                     return;
                 }
 
+                // Let mapUI know that we're searching for paths, so it doesn't draw any others (like current paths)
+                mapUI.pathFindingSearch = true;
+
                 // Find paths to hovered tile as button remains down
                 mouseMoveWhileDown = function (e) {
                     var coordsNew;
@@ -152,6 +155,8 @@ var Controller = (function () {
                 // Move unit to the tile hovered over when the button is released
                 mouseUp = function (e) {
                     var coordsNew;
+
+                    mapUI.pathFindingSearch = false;
 
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
@@ -427,6 +432,7 @@ var MapUI = (function () {
         // Constants
         this.TILE_SIZE = 50;
         this.rendering = false;
+        this.pathFindingSearch = false;
         // Colors!
         this.terrainColors = {
             peak: "#000",
@@ -625,7 +631,6 @@ var MapUI = (function () {
         }.bind(this));
 
         // Second pass: highlight active unit
-        console.log("Looking for active unit");
         drawViewport(function (i, j, x, y) {
             var k, unit;
 
@@ -635,17 +640,19 @@ var MapUI = (function () {
                     unit = game.map.tiles[i][j].units[k];
 
                     if (unit.active) {
-                        console.log("found!");
                         this.context.strokeStyle = "#f00";
                         this.context.lineWidth = 4;
                         this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX - 2, y * this.TILE_SIZE - tileOffsetY - 2, this.TILE_SIZE + 2, this.TILE_SIZE + 2);
 
                         // Draw path if unit is moving to a target
                         if (unit.targetCoords) {
-                            game.map.pathFinding(unit, unit.targetCoords, function (path) {
-                                // This is to prevent an infinite loop of render() being called
-                                this.drawPath(path, false);
-                            }.bind(this));
+                            // If there is a pathfinding search occurring (like from the user holding down the right click button), don't draw active path
+                            if (!this.pathFindingSearch) {
+                                game.map.pathFinding(unit, unit.targetCoords, function (path) {
+                                    // This is to prevent an infinite loop of render() being called
+                                    this.drawPath(path, false);
+                                }.bind(this));
+                            }
                         }
 
                         break;
