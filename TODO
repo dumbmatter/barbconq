@@ -21,7 +21,8 @@ fog of war
     in field of vision: visible
 
 right click to move
-  move mapUI.pathFinding to MapMaker.map
+  MapMaker.Map.pathFinder
+    needs to handle different outcomes of found path: drawn or saved+moved
   when mouse is released
     store coords as targetCoords or something
       unit.initiatePath(targetCoords)

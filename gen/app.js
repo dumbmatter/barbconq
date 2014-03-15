@@ -124,7 +124,7 @@ var Controller = (function () {
 
                 // Find path to clicked tile
                 coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
-                mapUI.pathFinding(game.activeUnit, coords);
+                game.map.pathFinding(game.activeUnit, coords);
 
                 //game.activeUnit.pathFinding(coords);
                 // If click doesn't start on map, ignore it
@@ -139,10 +139,10 @@ var Controller = (function () {
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
                     if (!coordsNew) {
-                        mapUI.pathFinding(); // Delete currently displayed path
+                        game.map.pathFinding(); // Delete currently displayed path
                     } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
-                        mapUI.pathFinding(game.activeUnit, coords);
+                        game.map.pathFinding(game.activeUnit, coords);
                     }
                 };
                 mapUI.canvas.addEventListener("mousemove", mouseMoveWhileDown);
@@ -154,13 +154,13 @@ var Controller = (function () {
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
                     if (!coordsNew) {
-                        mapUI.pathFinding(); // Delete currently displayed path
+                        game.map.pathFinding(); // Delete currently displayed path
                     } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
                         coords = coordsNew;
                         //game.activeUnit.pathFinding(coords);
                     }
                     console.log("ACTUALLY SET TARGET IF PATHFINDING FOUND A PATH " + coords);
-                    mapUI.pathFinding(); // Delete currently displayed path
+                    game.map.pathFinding(); // Delete currently displayed path
 
                     mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
                     document.removeEventListener("mouseup", mouseUp);
@@ -464,55 +464,6 @@ var MapUI = (function () {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     };
 
-    MapUI.prototype.pathFinding = function (unit, targetCoords) {
-        if (typeof unit === "undefined") { unit = null; }
-        if (typeof targetCoords === "undefined") { targetCoords = null; }
-        var grid, i, j;
-
-        if (!unit || !this.validCoords(unit.coords) || !this.validCoords(targetCoords)) {
-            window.requestAnimationFrame(this.render.bind(this)); // Clear any previous paths
-            return;
-        }
-
-        grid = [];
-        for (i = 0; i < game.map.tiles.length; i++) {
-            grid[i] = [];
-            for (j = 0; j < game.map.tiles[0].length; j++) {
-                // Two types: two move (2), one move (1), and blocked
-                // But 2 move only matters if unit can move more than once
-                if (game.map.tiles[i][j].features.indexOf("hills") >= 0 || game.map.tiles[i][j].features.indexOf("forest") >= 0 || game.map.tiles[i][j].features.indexOf("jungle") >= 0) {
-                    grid[i][j] = unit.movement > 1 ? 2 : 1;
-                } else if (game.map.tiles[i][j].terrain === "snow" || game.map.tiles[i][j].terrain === "desert" || game.map.tiles[i][j].terrain === "tundra" || game.map.tiles[i][j].terrain === "grassland" || game.map.tiles[i][j].terrain === "plains") {
-                    grid[i][j] = 1;
-                } else {
-                    grid[i][j] = 0;
-                }
-            }
-        }
-
-        easystar.setGrid(grid);
-        easystar.setAcceptableTiles([1, 2]);
-        easystar.enableDiagonals();
-        easystar.setTileCost(2, 2);
-
-        // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
-        easystar.findPath(unit.coords[1], unit.coords[0], targetCoords[1], targetCoords[0], function (path) {
-            var i;
-
-            if (path) {
-                for (i = 0; i < path.length; i++) {
-                    path[i].i = path[i].y;
-                    path[i].j = path[i].x;
-                    delete path[i].y;
-                    delete path[i].x;
-                }
-            }
-            this.drawPath(path);
-        }.bind(this));
-
-        easystar.calculate();
-    };
-
     MapUI.prototype.drawPath = function (path) {
         if (typeof path === "undefined") { path = []; }
         window.requestAnimationFrame(function () {
@@ -784,52 +735,108 @@ var MapUI = (function () {
     return MapUI;
 })();
 // MapMaker - map generation module
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 var MapMaker;
 (function (MapMaker) {
     var Map = (function () {
         function Map() {
         }
+        Map.prototype.pathFinding = function (unit, targetCoords) {
+            if (typeof unit === "undefined") { unit = null; }
+            if (typeof targetCoords === "undefined") { targetCoords = null; }
+            var grid, i, j;
+
+            if (!unit || !mapUI.validCoords(unit.coords) || !mapUI.validCoords(targetCoords)) {
+                mapUI.drawPath(); // Clear any previous paths
+                return;
+            }
+
+            grid = [];
+            for (i = 0; i < game.map.tiles.length; i++) {
+                grid[i] = [];
+                for (j = 0; j < game.map.tiles[0].length; j++) {
+                    // Two types: two move (2), one move (1), and blocked
+                    // But 2 move only matters if unit can move more than once
+                    if (game.map.tiles[i][j].features.indexOf("hills") >= 0 || game.map.tiles[i][j].features.indexOf("forest") >= 0 || game.map.tiles[i][j].features.indexOf("jungle") >= 0) {
+                        grid[i][j] = unit.movement > 1 ? 2 : 1;
+                    } else if (game.map.tiles[i][j].terrain === "snow" || game.map.tiles[i][j].terrain === "desert" || game.map.tiles[i][j].terrain === "tundra" || game.map.tiles[i][j].terrain === "grassland" || game.map.tiles[i][j].terrain === "plains") {
+                        grid[i][j] = 1;
+                    } else {
+                        grid[i][j] = 0;
+                    }
+                }
+            }
+
+            easystar.setGrid(grid);
+            easystar.setAcceptableTiles([1, 2]);
+            easystar.enableDiagonals();
+            easystar.setTileCost(2, 2);
+
+            // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
+            easystar.findPath(unit.coords[1], unit.coords[0], targetCoords[1], targetCoords[0], function (path) {
+                var i;
+
+                if (path) {
+                    for (i = 0; i < path.length; i++) {
+                        path[i].i = path[i].y;
+                        path[i].j = path[i].x;
+                        delete path[i].y;
+                        delete path[i].x;
+                    }
+                }
+                mapUI.drawPath(path);
+            });
+
+            easystar.calculate();
+        };
         return Map;
     })();
     MapMaker.Map = Map;
 
-    function generate(rows, cols) {
-        var i, j, map, types;
+    var DefaultMap = (function (_super) {
+        __extends(DefaultMap, _super);
+        function DefaultMap(rows, cols) {
+            var i, j, types;
 
-        map = {};
+            _super.call(this);
 
-        map.width = cols !== undefined ? cols : 80;
-        map.height = rows !== undefined ? rows : 40;
+            this.width = cols !== undefined ? cols : 80;
+            this.height = rows !== undefined ? rows : 40;
 
-        types = {
-            peak: [],
-            snow: ["hills"],
-            desert: ["flood-plains", "hills", "oasis"],
-            tundra: ["forest", "hills"],
-            sea: ["ice"],
-            coast: ["ice"],
-            grassland: ["forest", "hills", "jungle"],
-            plains: ["forest", "hills"]
-        };
+            types = {
+                peak: [],
+                snow: ["hills"],
+                desert: ["flood-plains", "hills", "oasis"],
+                tundra: ["forest", "hills"],
+                sea: ["ice"],
+                coast: ["ice"],
+                grassland: ["forest", "hills", "jungle"],
+                plains: ["forest", "hills"]
+            };
 
-        map.tiles = [];
-        for (i = 0; i < map.height; i++) {
-            map.tiles[i] = [];
-            for (j = 0; j < map.width; j++) {
-                map.tiles[i][j] = {
-                    units: []
-                };
-                map.tiles[i][j].terrain = Random.choice(Object.keys(types));
-                map.tiles[i][j].features = [];
-                if (Math.random() < 0.5 && types[map.tiles[i][j].terrain].length > 0) {
-                    map.tiles[i][j].features.push(Random.choice(types[map.tiles[i][j].terrain]));
+            this.tiles = [];
+            for (i = 0; i < this.height; i++) {
+                this.tiles[i] = [];
+                for (j = 0; j < this.width; j++) {
+                    this.tiles[i][j] = {
+                        terrain: Random.choice(Object.keys(types)),
+                        features: [],
+                        units: []
+                    };
+                    if (Math.random() < 0.5 && types[this.tiles[i][j].terrain].length > 0) {
+                        this.tiles[i][j].features.push(Random.choice(types[this.tiles[i][j].terrain]));
+                    }
                 }
             }
         }
-
-        return map;
-    }
-    MapMaker.generate = generate;
+        return DefaultMap;
+    })(Map);
+    MapMaker.DefaultMap = DefaultMap;
 })(MapMaker || (MapMaker = {}));
 // Game - store the state of the game here, any non-UI stuff that would need for saving/loading a game
 var Game = (function () {
@@ -839,7 +846,7 @@ var Game = (function () {
         this.turn = 0;
         var i;
 
-        this.map = MapMaker.generate(mapRows, mapCols);
+        this.map = new MapMaker.DefaultMap(mapRows, mapCols);
 
         this.names = [];
         this.units = [];
@@ -903,12 +910,6 @@ var Game = (function () {
     return Game;
 })();
 // Units - classes for the various units types
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
 var Units;
 (function (Units) {
     var BaseUnit = (function () {

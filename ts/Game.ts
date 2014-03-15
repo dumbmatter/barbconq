@@ -11,7 +11,7 @@ class Game {
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
         var i;
 
-        this.map = MapMaker.generate(mapRows, mapCols);
+        this.map = new MapMaker.DefaultMap(mapRows, mapCols);
 
         this.names = [];
         this.units = [];
