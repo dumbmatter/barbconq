@@ -12,11 +12,12 @@ module MapMaker {
         height : number;
         tiles : Tile[][];
 
-        pathFinding(unit : Units.BaseUnit = null, targetCoords : number[] = null) {
+        // Default callback will draw path (or clear path if it's not valid)
+        pathFinding(unit : Units.BaseUnit = null, targetCoords : number[] = null, cb : Function = mapUI.drawPath.bind(mapUI)) {
             var grid : number[][], i : number, j : number;
 
             if (!unit || !mapUI.validCoords(unit.coords) || !mapUI.validCoords(targetCoords)) {
-                mapUI.drawPath(); // Clear any previous paths
+                cb(); // Clear any previous paths
                 return;
             }
 
@@ -54,7 +55,7 @@ module MapMaker {
                         delete path[i].x;
                     }
                 }
-                mapUI.drawPath(path);
+                cb(path);
             });
 
             easystar.calculate();

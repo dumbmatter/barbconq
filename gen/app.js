@@ -746,13 +746,15 @@ var MapMaker;
     var Map = (function () {
         function Map() {
         }
-        Map.prototype.pathFinding = function (unit, targetCoords) {
+        // Default callback will draw path (or clear path if it's not valid)
+        Map.prototype.pathFinding = function (unit, targetCoords, cb) {
             if (typeof unit === "undefined") { unit = null; }
             if (typeof targetCoords === "undefined") { targetCoords = null; }
+            if (typeof cb === "undefined") { cb = mapUI.drawPath.bind(mapUI); }
             var grid, i, j;
 
             if (!unit || !mapUI.validCoords(unit.coords) || !mapUI.validCoords(targetCoords)) {
-                mapUI.drawPath(); // Clear any previous paths
+                cb(); // Clear any previous paths
                 return;
             }
 
@@ -789,7 +791,7 @@ var MapMaker;
                         delete path[i].x;
                     }
                 }
-                mapUI.drawPath(path);
+                cb(path);
             });
 
             easystar.calculate();
@@ -1057,9 +1059,13 @@ var Units;
         };
 
         BaseUnit.prototype.initiatePath = function (coords) {
-            if (mapUI.validCoords(coords)) {
-                console.log("ACTUALLY SET TARGET IF PATHFINDING FOUND A PATH " + coords);
-            }
+            // See if there is a path to these coordinates
+            game.map.pathFinding(this, coords, function (path) {
+                if (path) {
+                    console.log("ACTUALLY SET TARGET " + coords);
+                    console.log("move to " + path[1]);
+                }
+            });
         };
 
         // Mark as moved and go to the next active unit

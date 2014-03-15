@@ -158,9 +158,13 @@ module Units {
         }
 
         initiatePath(coords : number[]) {
-            if (mapUI.validCoords(coords)) {
-console.log("ACTUALLY SET TARGET IF PATHFINDING FINDS A PATH " + coords)
-            }
+            // See if there is a path to these coordinates
+            game.map.pathFinding(this, coords, function (path) {
+                if (path) {
+console.log("ACTUALLY SET TARGET " + coords)
+console.log("move to " + path[1])
+                }
+            });
         }
 
         // Mark as moved and go to the next active unit

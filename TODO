@@ -26,6 +26,7 @@ fog of war
 right click to move
   MapMaker.Map.pathFinder
     needs to handle different outcomes of found path: drawn or saved+moved
+    path[i] format - list, not object
   when mouse is released
     store coords as targetCoords or something
       unit.initiatePath(targetCoords)
