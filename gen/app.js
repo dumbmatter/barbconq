@@ -426,6 +426,7 @@ var MapUI = (function () {
     function MapUI() {
         // Constants
         this.TILE_SIZE = 50;
+        this.rendering = false;
         // Colors!
         this.terrainColors = {
             peak: "#000",
@@ -495,12 +496,15 @@ var MapUI = (function () {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     };
 
-    MapUI.prototype.drawPath = function (path) {
+    MapUI.prototype.drawPath = function (path, renderMapFirst) {
         if (typeof path === "undefined") { path = []; }
+        if (typeof renderMapFirst === "undefined") { renderMapFirst = true; }
         window.requestAnimationFrame(function () {
             var i, pixels;
 
-            this.render();
+            if (renderMapFirst) {
+                this.render();
+            }
 
             if (path && path.length > 1) {
                 // Origin
@@ -524,6 +528,12 @@ var MapUI = (function () {
 
     MapUI.prototype.render = function () {
         var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile;
+
+        if (this.rendering) {
+            return;
+        }
+
+        this.rendering = true;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -615,6 +625,7 @@ var MapUI = (function () {
         }.bind(this));
 
         // Second pass: highlight active unit
+        console.log("Looking for active unit");
         drawViewport(function (i, j, x, y) {
             var k, unit;
 
@@ -624,14 +635,26 @@ var MapUI = (function () {
                     unit = game.map.tiles[i][j].units[k];
 
                     if (unit.active) {
+                        console.log("found!");
                         this.context.strokeStyle = "#f00";
                         this.context.lineWidth = 4;
                         this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX - 2, y * this.TILE_SIZE - tileOffsetY - 2, this.TILE_SIZE + 2, this.TILE_SIZE + 2);
+
+                        // Draw path if unit is moving to a target
+                        if (unit.targetCoords) {
+                            game.map.pathFinding(unit, unit.targetCoords, function (path) {
+                                // This is to prevent an infinite loop of render() being called
+                                this.drawPath(path, false);
+                            }.bind(this));
+                        }
+
                         break;
                     }
                 }
             }
         }.bind(this));
+
+        this.rendering = false;
 
         // Render minimap at the end
         this.renderMiniMap();
@@ -994,10 +1017,6 @@ var Units;
             configurable: true
         });
 
-        BaseUnit.prototype.getName = function (inputClass) {
-            return inputClass.constructor.name;
-        };
-
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
         BaseUnit.prototype.activate = function (goToCoords) {
             if (typeof goToCoords === "undefined") { goToCoords = true; }
@@ -1008,7 +1027,7 @@ var Units;
             }
 
             // If this unit is on a path towards a target, just go along the path instead of activating. If there are still moves left when the target is reached, activate() will be called again.
-            if (this.targetCoords) {
+            if (this.targetCoords && this.currentMovement > 0) {
                 setTimeout(function () {
                     this.moveTowardsTarget();
                 }.bind(this), config.UNIT_MOVEMENT_UI_DELAY);

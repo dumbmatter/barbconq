@@ -16,6 +16,7 @@ class MapUI {
     VIEW_HEIGHT : number;
     VIEW_TILE_WIDTH : number;
     VIEW_TILE_HEIGHT : number;
+    rendering : boolean = false; // When true, render() is working so no need to call it again
 
     // Minimap
     miniCanvas : HTMLCanvasElement;
@@ -92,11 +93,13 @@ class MapUI {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     }
 
-    drawPath(path : number[][] = []) {
+    drawPath(path : number[][] = [], renderMapFirst : boolean = true) {
         window.requestAnimationFrame(function () {
             var i : number, pixels : number[];
 
-            this.render();
+            if (renderMapFirst) {
+                this.render();
+            }
 
             if (path && path.length > 1) {
                 // Origin
@@ -120,6 +123,12 @@ class MapUI {
 
     render() {
         var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile;
+
+        if (this.rendering) {
+            return;
+        }
+
+        this.rendering = true;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -211,6 +220,7 @@ class MapUI {
         }.bind(this));
 
         // Second pass: highlight active unit
+console.log("Looking for active unit")
         drawViewport(function (i, j, x, y) {
             var k, unit;
 
@@ -220,14 +230,26 @@ class MapUI {
                     unit = game.map.tiles[i][j].units[k];
 
                     if (unit.active) {
+console.log("found!");
                         this.context.strokeStyle = "#f00";
                         this.context.lineWidth = 4;
                         this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX - 2, y * this.TILE_SIZE - tileOffsetY - 2, this.TILE_SIZE + 2, this.TILE_SIZE + 2);
+
+                        // Draw path if unit is moving to a target
+                        if (unit.targetCoords) {
+                            game.map.pathFinding(unit, unit.targetCoords, function (path) {
+                                // This is to prevent an infinite loop of render() being called
+                                this.drawPath(path, false);
+                            }.bind(this));
+                        }
+
                         break;
                     }
                 }
             }
         }.bind(this));
+
+        this.rendering = false;
 
         // Render minimap at the end
         this.renderMiniMap();

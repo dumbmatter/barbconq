@@ -1,5 +1,3 @@
-should "begin next turn" blinker go away if you activate a unit? check
-
 remove getTile?
 
 use coordsToPixels in MapUI.render
@@ -21,7 +19,7 @@ fog of war
     in field of vision: visible
 
 right click to move
-  if targetCoords are stored and unit is active, show path
+  don't call game.map.pathFinding if right click pathfinding searching is happening, otherwise it'll show the current stored path and the right click path
   needs to handle enemy units - can't cross
 
 stacked unit actions and UI
