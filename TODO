@@ -25,13 +25,13 @@ fog of war
 
 right click to move
   when mouse is released
-    store coords as targetCoords or something
-      unit.initiatePath(targetCoords)
     actually initiate movement
       inside unit.initiatePath
+        unit.moveTowardsTarget
   handle stored targetCoords movement
     shouldn't have "moved" set, but don't activate
     after all have "moved" except these ones, have them move, but don't show the movement happening
+      unit.moveTowardsTarget
     when they reach target, clear targetCoords
   if targetCoords are stored and unit is active, show path
   needs to handle enemy units - can't cross

@@ -15,6 +15,7 @@ module Units {
         movement : number;
         currentMovement : number;
         coords : number[];
+        targetCoords : number[] = null;
 
         // Special unit properties
         landOrSea : string;
@@ -82,89 +83,86 @@ module Units {
             }, 500);
         }
 
+        // Should be able to make this general enough to handle all units
+        // Handle fight initiation here, if move goes to tile with enemy on it
         move(direction : string) {
-            var i, initialCoords, tileUnits;
-            // Should be able to make this general enough to handle all units
-            // Handle fight initiation here, if move goes to tile with enemy on it
+            var newCoords;
 
             // Short circuit if no moves are available
             if (this.currentMovement <= 0) {
                 return;
             }
 
-            // Save a copy
-            initialCoords = this.coords.slice();
+            // Starting point
+            newCoords = this.coords.slice();
 
             // Implement movement
             if (direction === "SW") {
-                this.coords[0] += 1;
-                this.coords[1] -= 1;
+                newCoords[0] += 1;
+                newCoords[1] -= 1;
             } else if (direction === "S") {
-                this.coords[0] += 1;
+                newCoords[0] += 1;
             } else if (direction === "SE") {
-                this.coords[0] += 1;
-                this.coords[1] += 1;
+                newCoords[0] += 1;
+                newCoords[1] += 1;
             } else if (direction === "W") {
-                this.coords[1] -= 1;
+                newCoords[1] -= 1;
             } else if (direction === "E") {
-                this.coords[1] += 1;
+                newCoords[1] += 1;
             } else if (direction === "NW") {
-                this.coords[0] -= 1;
-                this.coords[1] -= 1;
+                newCoords[0] -= 1;
+                newCoords[1] -= 1;
             } else if (direction === "N") {
-                this.coords[0] -= 1;
+                newCoords[0] -= 1;
             } else if (direction === "NE") {
-                this.coords[0] -= 1;
-                this.coords[1] += 1;
+                newCoords[0] -= 1;
+                newCoords[1] += 1;
+            } else {
+                // No move to make
+                return;
             }
 
             // Don't walk off the map!
-            if (this.coords[0] < 0) {
-                this.coords[0] = 0;
+            if (mapUI.validCoords(newCoords)) {
+                this.moveToCoords(newCoords);
             }
-            if (this.coords[1] < 0) {
-                this.coords[1] = 0;
-            }
-            if (this.coords[0] >= game.map.height - 1) {
-                this.coords[0] = game.map.height - 1;
-            }
-            if (this.coords[1] >= game.map.width) {
-                this.coords[1] = game.map.width - 1;
-            }
+        }
 
-            // If moved, update shit and render map
-            if (this.coords[0] !== initialCoords[0] || this.coords[1] !== initialCoords[1]) {
-                // Delete old unit in map
-                tileUnits = game.getTile(initialCoords).units;
-                for (i = 0; i < tileUnits.length; i++) {
-                    if (tileUnits[i].id === this.id) {
-                        tileUnits.splice(i, 1);
-                        break;
-                    }
+        // Check for valid coords before calling
+        moveToCoords(coords : number[]) {
+            var i, tileUnits;
+
+            // Delete old unit in map
+            tileUnits = game.getTile(this.coords).units;
+            for (i = 0; i < tileUnits.length; i++) {
+                if (tileUnits[i].id === this.id) {
+                    tileUnits.splice(i, 1);
+                    break;
                 }
-
-                // Add unit at new tile
-                game.getTile(this.coords).units.push(this);
-
-                // Keep track of movement
-                this.currentMovement -= 1; // Should depend on terrain/improvements
-                if (this.currentMovement <= 0) {
-                    this.currentMovement = 0;
-                    this.setMoved();
-                }
-
-                window.requestAnimationFrame(mapUI.render.bind(mapUI));
             }
+
+            // Add unit at new tile
+            game.getTile(coords).units.push(this);
+
+            // Keep track of movement
+            this.coords = coords;
+            this.currentMovement -= 1; // Should depend on terrain/improvements
+            if (this.currentMovement <= 0) {
+                this.currentMovement = 0;
+                this.setMoved();
+            }
+
+            window.requestAnimationFrame(mapUI.render.bind(mapUI));
         }
 
         initiatePath(coords : number[]) {
             // See if there is a path to these coordinates
             game.map.pathFinding(this, coords, function (path : number[][]) {
                 if (path) {
-console.log("ACTUALLY SET TARGET " + coords)
-console.log("move to " + path[1])
+                    this.targetCoords = coords;
+console.log("call function to start auto-move towards this.targetCoords")
                 }
-            });
+            }.bind(this));
         }
 
         // Mark as moved and go to the next active unit
