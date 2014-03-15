@@ -58,7 +58,7 @@ module Units {
             // Deactivate current active unit, if there is one
             if (game.activeUnit) {
                 game.activeUnit.active = false;
-//                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
+                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
             }
 
             // If this unit is on a path towards a target, just go along the path instead of activating. If there are still moves left when the target is reached, activate() will be called again.
@@ -82,7 +82,7 @@ module Units {
         setMoved() {
             this.moved = true;
             this.active = false;
-//            game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
+            game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
 
             // After delay, move to next unit
             setTimeout(function () {

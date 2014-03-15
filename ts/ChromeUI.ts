@@ -33,7 +33,9 @@ class ChromeUI {
 
     // Update Chrome that might have changed in render, like unit stuff
     onMapRender() {
-        this.updateActiveUnit();
+        if (game.activeUnit) {
+            this.updateActiveUnit();
+        }
     }
 
     onUnitActivated() {

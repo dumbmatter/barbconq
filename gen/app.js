@@ -328,7 +328,9 @@ var ChromeUI = (function () {
 
     // Update Chrome that might have changed in render, like unit stuff
     ChromeUI.prototype.onMapRender = function () {
-        this.updateActiveUnit();
+        if (game.activeUnit) {
+            this.updateActiveUnit();
+        }
     };
 
     ChromeUI.prototype.onUnitActivated = function () {
@@ -900,8 +902,8 @@ var Game = (function () {
     Game.prototype.newTurn = function () {
         var i, j, unit;
 
-        // See if anything still has to be moved
-        if (this.moveUnits()) {
+        // See if anything still has to be moved, after the initial turn
+        if (game.turn > 0 && this.moveUnits()) {
             return;
         }
 
@@ -999,7 +1001,7 @@ var Units;
             // Deactivate current active unit, if there is one
             if (game.activeUnit) {
                 game.activeUnit.active = false;
-                //                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
+                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
             }
 
             // If this unit is on a path towards a target, just go along the path instead of activating. If there are still moves left when the target is reached, activate() will be called again.
@@ -1023,8 +1025,8 @@ var Units;
         BaseUnit.prototype.setMoved = function () {
             this.moved = true;
             this.active = false;
+            game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
 
-            //            game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
             // After delay, move to next unit
             setTimeout(function () {
                 game.moveUnits();

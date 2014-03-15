@@ -39,8 +39,8 @@ class Game {
     newTurn() {
         var i, j, unit;
 
-        // See if anything still has to be moved
-        if (this.moveUnits()) {
+        // See if anything still has to be moved, after the initial turn
+        if (game.turn > 0 && this.moveUnits()) {
             return;
         }
 
