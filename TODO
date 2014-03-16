@@ -2,6 +2,7 @@
 
 stacked unit actions and UI
   bottom UI
+    how do civ2/3 do it?
     shift click
       handle cases of starting a new group, adding/removing from existing group, and disbanding group by shift
     icons
@@ -19,6 +20,7 @@ stacked unit actions and UI
       movement (numpad and right click) applies to all
       unitGroup properties are being correctly updated when a unit with different properties is added/removed from the group
       added units all have the same tile and same owner
+      left click on map doesn't select individual group member
   group action buttons
 
 fog of war

@@ -1540,7 +1540,7 @@ var Units;
 
                 actions = [];
                 for (i = 0; i < this.units.length; i++) {
-                    for (j = 0; j < this.units[j].actions; j++) {
+                    for (j = 0; j < this.units[i].actions.length; j++) {
                         if (actions.indexOf(this.units[i].actions[j]) < 0) {
                             actions.push(this.units[i].actions[j]);
                         }
