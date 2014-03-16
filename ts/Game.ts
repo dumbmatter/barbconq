@@ -36,7 +36,7 @@ class Game {
     }
 
     newTurn() {
-        var i, j, unit;
+        var i, j, unit, unitGroup;
 
         // See if anything still has to be moved, after the initial turn
         if (game.turn > 0 && this.moveUnits()) {
@@ -53,21 +53,46 @@ class Game {
                 unit.moved = false;
                 unit.currentMovement = unit.movement;
             }
+            for (j = 0; j < this.unitGroups[i].length; j++) {
+                unitGroup = this.unitGroups[i][j];
+                unitGroup.moved = false;
+                unitGroup.currentMovement = unitGroup.movement;
+            }
         }
 
         this.moveUnits();
     }
 
     moveUnits() : boolean {
-        var i, j, unit;
+        var i, j, unit, unitGroup;
 
         for (i = 0; i < this.names.length; i++) {
             // Player 1
             if (i === 1) {
+                // UNIT GROUPS
+                // First look for ones not on a path towards targetCoords
+                for (j = 0; j < this.unitGroups[i].length; j++) {
+                    unitGroup = this.unitGroups[i][j];
+                    if (!unitGroup.moved && !unitGroup.targetCoords) {
+                        unitGroup.activate();
+                        return true;
+                    }
+                }
+
+                // Then process all the targetCoords ones
+                for (j = 0; j < this.unitGroups[i].length; j++) {
+                    unitGroup = this.unitGroups[i][j];
+                    if (!unitGroup.moved) {
+                        unitGroup.activate(true, true); // Activate, center screen, and auto-move to targetCoords
+                        return true;
+                    }
+                }
+
+                // INDIVIDUAL UNITS
                 // First look for ones not on a path towards targetCoords
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
-                    if (!unit.moved && !unit.targetCoords) {
+                    if (!unit.moved && !unit.targetCoords && !unit.unitGroup) {
                         unit.activate();
                         return true;
                     }
@@ -76,7 +101,7 @@ class Game {
                 // Then process all the targetCoords ones
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
-                    if (!unit.moved) {
+                    if (!unit.moved && !unit.unitGroup) {
                         unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                         return true;
                     }

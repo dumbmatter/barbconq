@@ -299,9 +299,14 @@ console.log("SENTRY")
         set currentMovement(value : number) {
             var diff, i;
 
-            diff = this._currentMovement - value;
-            for (i = 0; i < this.units.length; i++) {
-                this.units[i].currentMovement -= diff;
+            if (value === this.movement) {
+                // We're resetting the current movement at the start of a new turn
+            } else {
+                // We're moving and need to update
+                diff = this._currentMovement - value;
+                for (i = 0; i < this.units.length; i++) {
+                    this.units[i].currentMovement -= diff;
+                }
             }
             this._currentMovement = value;
         }
@@ -422,6 +427,29 @@ console.log("SENTRY")
         }
 
         remove(id) {}
+
+        disband() {
+            var i, toActivate;
+
+            // Arbitrarily activate the first member of this unit
+            toActivate = this.units[0];
+
+            for (i = 0; i < this.units.length; i++) {
+                this.units[i].unitGroup = null;
+            }
+
+            for (i = 0; i < game.unitGroups[this.owner].length; i++) {
+                if (game.unitGroups[this.owner][i] === this) {
+                    if (this.active) {
+                        game.activeUnit = null;
+                    }
+
+                    game.unitGroups[this.owner].splice(i, 1);
+                }
+            }
+
+            toActivate.activate();
+        }
 
         merge() {}
     }

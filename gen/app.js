@@ -947,7 +947,7 @@ var Game = (function () {
     };
 
     Game.prototype.newTurn = function () {
-        var i, j, unit;
+        var i, j, unit, unitGroup;
 
         // See if anything still has to be moved, after the initial turn
         if (game.turn > 0 && this.moveUnits()) {
@@ -963,20 +963,41 @@ var Game = (function () {
                 unit.moved = false;
                 unit.currentMovement = unit.movement;
             }
+            for (j = 0; j < this.unitGroups[i].length; j++) {
+                unitGroup = this.unitGroups[i][j];
+                unitGroup.moved = false;
+                unitGroup.currentMovement = unitGroup.movement;
+            }
         }
 
         this.moveUnits();
     };
 
     Game.prototype.moveUnits = function () {
-        var i, j, unit;
+        var i, j, unit, unitGroup;
 
         for (i = 0; i < this.names.length; i++) {
             // Player 1
             if (i === 1) {
+                for (j = 0; j < this.unitGroups[i].length; j++) {
+                    unitGroup = this.unitGroups[i][j];
+                    if (!unitGroup.moved && !unitGroup.targetCoords) {
+                        unitGroup.activate();
+                        return true;
+                    }
+                }
+
+                for (j = 0; j < this.unitGroups[i].length; j++) {
+                    unitGroup = this.unitGroups[i][j];
+                    if (!unitGroup.moved) {
+                        unitGroup.activate(true, true); // Activate, center screen, and auto-move to targetCoords
+                        return true;
+                    }
+                }
+
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
-                    if (!unit.moved && !unit.targetCoords) {
+                    if (!unit.moved && !unit.targetCoords && !unit.unitGroup) {
                         unit.activate();
                         return true;
                     }
@@ -984,7 +1005,7 @@ var Game = (function () {
 
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
-                    if (!unit.moved) {
+                    if (!unit.moved && !unit.unitGroup) {
                         unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                         return true;
                     }
@@ -1415,9 +1436,14 @@ var Units;
             set: function (value) {
                 var diff, i;
 
-                diff = this._currentMovement - value;
-                for (i = 0; i < this.units.length; i++) {
-                    this.units[i].currentMovement -= diff;
+                if (value === this.movement) {
+                    // We're resetting the current movement at the start of a new turn
+                } else {
+                    // We're moving and need to update
+                    diff = this._currentMovement - value;
+                    for (i = 0; i < this.units.length; i++) {
+                        this.units[i].currentMovement -= diff;
+                    }
                 }
                 this._currentMovement = value;
             },
@@ -1566,6 +1592,29 @@ var Units;
         };
 
         UnitGroup.prototype.remove = function (id) {
+        };
+
+        UnitGroup.prototype.disband = function () {
+            var i, toActivate;
+
+            toActivate = this.units[0];
+
+            for (i = 0; i < this.units.length; i++) {
+                this.units[i].unitGroup = null;
+            }
+
+            for (i = 0; i < game.unitGroups[this.owner].length; i++) {
+                if (game.unitGroups[this.owner][i] === this) {
+                    if (this.active) {
+                        game.activeUnit = null;
+                    }
+
+                    game.unitGroups[this.owner].splice(i, 1);
+                }
+            }
+
+            console.log(toActivate);
+            toActivate.activate();
         };
 
         UnitGroup.prototype.merge = function () {
