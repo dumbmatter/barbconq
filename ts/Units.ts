@@ -1,4 +1,17 @@
-// Units - classes for the various units types
+/*
+Units - classes for the various units types
+
+Inheritance chart:
+BaseUnitOrGroup - properties and functions that apply to all units and groups of units
+-> BaseUnit - stuff specific to individual units
+   -> All the individual unit classes, like Warrior
+-> UnitGroup - groups of units
+
+The general idea for groups of units is that they should expose the same API as regular units, so
+all the rest of the code can treat them the same. Mainly through the use of getters and setters,
+they take the appropriate action with updating each variable (some things trickle down to individual
+units, like move counting, and others don't).
+*/
 
 module Units {
     // Things that both individual units and groups of units have in common
