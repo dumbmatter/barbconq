@@ -398,6 +398,9 @@ console.log("SENTRY")
             // Initialize private variables
             this.currentMovement = this.currentMovement; // Getters/setters make this make sense, maybe
             this.coords = units[0].coords;
+
+            // Store reference to group in game.unitGroups
+            game.unitGroups[this.owner].push(this);
         }
 
         moveOnMap(coords : number[]) {

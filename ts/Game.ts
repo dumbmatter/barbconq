@@ -3,8 +3,9 @@
 class Game {
     map : MapMaker.Map;
     maxId : number = 0;
-    names: string[];
-    units : {}[];
+    names: string[] = [];
+    units : {}[] = []; // One object in array for each player. Then in object, can use unit ID as key
+    unitGroups : Units.UnitGroup[][] = [];
     activeUnit : Units.BaseUnitOrGroup = null;
     turn : number = 0;
 
@@ -12,9 +13,6 @@ class Game {
         var i;
 
         this.map = new MapMaker.DefaultMap(mapRows, mapCols);
-
-        this.names = [];
-        this.units = [];
 
         // + 1 is for barbarians at index 0
         for (i = 0; i < numPlayers + 1; i++) {
@@ -25,6 +23,7 @@ class Game {
             }
 
             this.units.push({});
+            this.unitGroups.push([]);
         }
     }
 

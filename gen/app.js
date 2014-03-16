@@ -918,14 +918,14 @@ var MapMaker;
 var Game = (function () {
     function Game(numPlayers, mapRows, mapCols) {
         this.maxId = 0;
+        this.names = [];
+        this.units = [];
+        this.unitGroups = [];
         this.activeUnit = null;
         this.turn = 0;
         var i;
 
         this.map = new MapMaker.DefaultMap(mapRows, mapCols);
-
-        this.names = [];
-        this.units = [];
 
         for (i = 0; i < numPlayers + 1; i++) {
             if (i === 0) {
@@ -935,6 +935,7 @@ var Game = (function () {
             }
 
             this.units.push({});
+            this.unitGroups.push([]);
         }
     }
     Game.prototype.getTile = function (coords) {
@@ -1351,6 +1352,9 @@ var Units;
             // Initialize private variables
             this.currentMovement = this.currentMovement; // Getters/setters make this make sense, maybe
             this.coords = units[0].coords;
+
+            // Store reference to group in game.unitGroups
+            game.unitGroups[this.owner].push(this);
         }
 
         Object.defineProperty(UnitGroup.prototype, "owner", {

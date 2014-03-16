@@ -7,6 +7,8 @@ stacked unit actions and UI
       this would also allow for UnitGroup storage in game.unitGroups, which could be treated like game.units.
         update these values when an action is taken or when a unit joins/leaves the group
       BaseUnit should have a "unitGroup" property that is null or a reference to a group. when set, don't activate in the normal game loop, just wait for its UnitGroup to go
+      do I need IDs for UnitGroup, and storage in game.units like in game.unitGroups?
+        if not, can i get rid of the weird game.units[] objects?
     CRAZY IDEA: what if all units are groups, and individuals just have one member? would that help? maybe not.
     make sure...
       show "Unit Stack" in info box
