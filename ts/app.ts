@@ -29,6 +29,7 @@ for (var i = 0; i < 1; i++) {
 
 var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+var u3 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var g = new Units.UnitGroup(config.PLAYER_ID, [u1, u2]);
 
 game.newTurn();

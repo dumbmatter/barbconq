@@ -124,6 +124,7 @@ class ChromeUI {
         // Reset
         this.elBottomActions.innerHTML = "";
         this.elBottomInfo.innerHTML = "";
+        this.elBottomUnits.innerHTML = "";
 
         if (game.activeUnit) {
             // Update bottom-info
@@ -146,7 +147,6 @@ class ChromeUI {
 
             // Update bottom-units
             units = game.getTile(game.activeUnit.coords).units;
-            this.elBottomUnits.innerHTML = ""; // Reset
             for (i = 0; i < units.length; i++) {
                 this.elBottomUnits.appendChild(this.unitIcon(units[i]));
             }

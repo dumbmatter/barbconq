@@ -21,11 +21,13 @@ stacked unit actions and UI
       show "Unit Stack" in info box
       merge all actions together and show options at bottom
         clicking applies that action to every unit it can
-      movement (numpad and right click) applies to all
       unitGroup properties are being correctly updated when a unit with different properties is added/removed from the group
       added units all have the same tile and same owner
       left click on map doesn't select individual group member
   group action buttons
+
+unit tests for stacked units?
+  click actions can be tested by passing fake even object to click handling function
 
 fog of war
   states
@@ -172,6 +174,10 @@ scroll wheel zoom by increasing TILE_SIZE
   but this won't scale the contents of the tiles...
 
 # Far future
+
+Friendly civs
+  big problem: units of multiple civs can be on same tile. need a lot of stuff like this sprinkled throughout:
+    .filter(function (unit) { return unit.owner === config.PLAYER_ID; });
 
 Import civ4 maps
 

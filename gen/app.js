@@ -320,14 +320,21 @@ var Controller = (function () {
             if (el && el.dataset.id) {
                 e.preventDefault();
 
-                // List of all units on the tile
-                units = game.getTile(game.activeUnit.coords).units;
-
                 // Metadata from clicked icon
                 clickedGid = parseInt(el.dataset.gid, 10);
                 clickedId = parseInt(el.dataset.id, 10);
                 clickedOwner = parseInt(el.dataset.owner, 10);
+
+                // Only continue if clicked unit belongs to player
+                if (clickedOwner !== config.PLAYER_ID) {
+                    return;
+                }
+
+                // List of all units on the tile
+                units = game.getTile(game.activeUnit.coords).units;
                 console.log(el.dataset);
+
+                // Handle all the different key modifiers
                 if (e.altKey) {
                     // Disband any current groups on the tile, record all units with currentMovement > 0
                     newUnits = [];
@@ -342,9 +349,7 @@ var Controller = (function () {
 
                     // Make a new group with all units with currentMovement > 0 and activate it
                     newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                    newGroup.activate();
-
-                    console.log('alt');
+                    newGroup.activate(false);
                 } else if (e.ctrlKey && e.shiftKey) {
                     // If a group is currently active, add all units of the clicked type with currentMovement > 0 to that group
                     // If no group is currently active, create one with all of the units of the clicked type with currentMovement > 0
@@ -353,12 +358,19 @@ var Controller = (function () {
                     // Disband any current unit, create a new group from all the units of the clicked type with currentMovement > 0
                     console.log('ctrl');
                 } else if (e.shiftKey) {
-                    // If an individual is active
-                    // - If clicked unit is that active unit, do nothing
-                    // - Else, add active unit to a new group with clicked unit
-                    // If a group is active
-                    // - If clicked unit is in the active group, remove it from that group
-                    // - If clicked unit is not in the active group, add it to that group
+                    if (game.activeUnit instanceof Units.BaseUnit) {
+                        // Individual unit is active
+                        // If clicked unit is not the active unit, add it to a new group with clicked unit
+                        if (game.activeUnit.id !== clickedId) {
+                            console.log("Add two units to new group");
+                            newGroup = new Units.UnitGroup(clickedOwner, [game.activeUnit, game.units[clickedOwner][clickedId]]);
+                            newGroup.activate(false);
+                        }
+                    } else {
+                        // Unit group is active
+                        // - If clicked unit is in the active group, remove it from that group
+                        // - If clicked unit is not in the active group, add it to that group
+                    }
                     console.log('shift');
                 } else {
                     // If part of group that is activated, disband group and activate clicked unit
@@ -510,6 +522,7 @@ var ChromeUI = (function () {
         // Reset
         this.elBottomActions.innerHTML = "";
         this.elBottomInfo.innerHTML = "";
+        this.elBottomUnits.innerHTML = "";
 
         if (game.activeUnit) {
             // Update bottom-info
@@ -525,7 +538,6 @@ var ChromeUI = (function () {
 
             // Update bottom-units
             units = game.getTile(game.activeUnit.coords).units;
-            this.elBottomUnits.innerHTML = ""; // Reset
             for (i = 0; i < units.length; i++) {
                 this.elBottomUnits.appendChild(this.unitIcon(units[i]));
             }
@@ -1800,6 +1812,7 @@ for (var i = 0; i < 1; i++) {
 
 var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+var u3 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var g = new Units.UnitGroup(config.PLAYER_ID, [u1, u2]);
 
 game.newTurn();

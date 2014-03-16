@@ -319,15 +319,22 @@ console.log(e);
             if (el && el.dataset.id) {
                 e.preventDefault();
 
-                // List of all units on the tile
-                units = game.getTile(game.activeUnit.coords).units;
-
                 // Metadata from clicked icon
                 clickedGid = parseInt(el.dataset.gid, 10);
                 clickedId = parseInt(el.dataset.id, 10);
                 clickedOwner = parseInt(el.dataset.owner, 10);
+
+                // Only continue if clicked unit belongs to player
+                if (clickedOwner !== config.PLAYER_ID) {
+                    return;
+                }
+
+                // List of all units on the tile
+                units = game.getTile(game.activeUnit.coords).units;
 console.log(el.dataset);
-                if (e.altKey) {
+
+                // Handle all the different key modifiers
+                if (e.altKey) { // In GNOME, alt+click is captured for window dragging, but alt+ctrl+click works for this
                     // Disband any current groups on the tile, record all units with currentMovement > 0
                     newUnits = [];
                     units.forEach(function (unit) {
@@ -341,7 +348,7 @@ console.log(el.dataset);
 
                     // Make a new group with all units with currentMovement > 0 and activate it
                     newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                    newGroup.activate();
+                    newGroup.activate(false);
                 } else if (e.ctrlKey && e.shiftKey) {
                     // If a group is currently active, add all units of the clicked type with currentMovement > 0 to that group
                     // If no group is currently active, create one with all of the units of the clicked type with currentMovement > 0
@@ -350,12 +357,18 @@ console.log(el.dataset);
                     // Disband any current unit, create a new group from all the units of the clicked type with currentMovement > 0
                     console.log('ctrl');
                 } else if (e.shiftKey) {
-                    // If an individual is active
-                    // - If clicked unit is that active unit, do nothing
-                    // - Else, add active unit to a new group with clicked unit
-                    // If a group is active
-                    // - If clicked unit is in the active group, remove it from that group
-                    // - If clicked unit is not in the active group, add it to that group
+                    if (game.activeUnit instanceof Units.BaseUnit) {
+                        // Individual unit is active
+                        // If clicked unit is not the active unit, add it to a new group with clicked unit
+                        if (game.activeUnit.id !== clickedId) {
+                            newGroup = new Units.UnitGroup(clickedOwner, [game.activeUnit, game.units[clickedOwner][clickedId]]);
+                            newGroup.activate(false);
+                        }
+                    } else {
+                        // Unit group is active
+                        // - If clicked unit is in the active group, remove it from that group
+                        // - If clicked unit is not in the active group, add it to that group
+                    }
                     console.log('shift');
                 } else {
                     // If part of group that is activated, disband group and activate clicked unit
