@@ -444,6 +444,9 @@ var ChromeUI = (function () {
         icon = document.createElement("div");
         icon.classList.add("unit-icon");
         icon.innerHTML = unit.type.slice(0, 2);
+        if (unit.active || (unit.unitGroup && unit.unitGroup.active)) {
+            icon.classList.add("active");
+        }
         console.log(unit);
 
         return icon;
