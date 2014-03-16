@@ -315,9 +315,10 @@ var ChromeUI = (function () {
     function ChromeUI() {
         this.elHoverBox = document.getElementById("hover-box");
         this.elTurnBox = document.getElementById("turn-box");
-        this.elBottomText = document.getElementById("bottom-text");
         this.elBottomInfo = document.getElementById("bottom-info");
         this.elBottomActions = document.getElementById("bottom-actions");
+        this.elBottomText = document.getElementById("bottom-text");
+        this.elBottomUnits = document.getElementById("bottom-units");
     }
     ChromeUI.prototype.strengthFraction = function (unit) {
         if (unit.strength === unit.currentStrength) {
@@ -397,7 +398,7 @@ var ChromeUI = (function () {
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
     ChromeUI.prototype.updateActiveUnit = function () {
-        var activeUnit, actionName, i;
+        var activeUnit, actionName, i, units;
 
         activeUnit = game.activeUnit;
 
@@ -416,6 +417,14 @@ var ChromeUI = (function () {
 
                 this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + actionName + '</button>';
             }
+
+            // Update bottom-units
+            units = game.getTile(game.activeUnit.coords).units;
+            this.elBottomUnits.innerHTML = ""; // Reset
+            for (i = 0; i < units.length; i++) {
+                this.elBottomUnits.appendChild(this.unitIcon(units[i]));
+                console.log(units[i]);
+            }
         }
     };
 
@@ -427,6 +436,17 @@ var ChromeUI = (function () {
             this.elBottomText.innerHTML = text;
             this.elBottomText.style.display = "block";
         }
+    };
+
+    ChromeUI.prototype.unitIcon = function (unit) {
+        var icon;
+
+        icon = document.createElement("div");
+        icon.classList.add("unit-icon");
+        icon.innerHTML = "hi";
+        console.log(unit);
+
+        return icon;
     };
     return ChromeUI;
 })();

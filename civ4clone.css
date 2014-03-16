@@ -173,3 +173,11 @@ canvas { display:block; } /* To remove the scrollbars */
   height: 32px;
   pointer-events: none;
 }
+.unit-icon {
+  float: left;
+  margin-right: 5px;
+  background: #000;
+  height: 32px;
+  width: 32px;
+  pointer-events: auto;
+}

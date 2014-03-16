@@ -6,13 +6,15 @@ class ChromeUI {
     elBottomInfo : HTMLDivElement;
     elBottomActions : HTMLDivElement;
     elBottomText : HTMLDivElement;
+    elBottomUnits : HTMLDivElement;
 
     constructor() {
         this.elHoverBox = <HTMLDivElement> document.getElementById("hover-box");
         this.elTurnBox = <HTMLDivElement> document.getElementById("turn-box");
-        this.elBottomText = <HTMLDivElement> document.getElementById("bottom-text");
         this.elBottomInfo = <HTMLDivElement> document.getElementById("bottom-info");
         this.elBottomActions = <HTMLDivElement> document.getElementById("bottom-actions");
+        this.elBottomText = <HTMLDivElement> document.getElementById("bottom-text");
+        this.elBottomUnits = <HTMLDivElement> document.getElementById("bottom-units");
     }
 
     strengthFraction(unit : Units.BaseUnit) {
@@ -91,7 +93,7 @@ class ChromeUI {
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
     updateActiveUnit() {
-        var activeUnit, actionName, i;
+        var activeUnit, actionName, i, units;
 
         activeUnit = game.activeUnit;
 
@@ -117,6 +119,14 @@ class ChromeUI {
 
                 this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + actionName + '</button>'
             }
+
+            // Update bottom-units
+            units = game.getTile(game.activeUnit.coords).units;
+            this.elBottomUnits.innerHTML = ""; // Reset
+            for (i = 0; i < units.length; i++) {
+                this.elBottomUnits.appendChild(this.unitIcon(units[i]));
+console.log(units[i]);
+            }
         }
     }
 
@@ -127,5 +137,16 @@ class ChromeUI {
             this.elBottomText.innerHTML = text;
             this.elBottomText.style.display = "block";
         }
+    }
+
+    unitIcon(unit : Units.BaseUnit) : HTMLDivElement {
+        var icon;
+
+        icon = document.createElement("div");
+        icon.classList.add("unit-icon");
+        icon.innerHTML = "hi";
+console.log(unit);
+
+        return icon;
     }
 }

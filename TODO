@@ -1,14 +1,15 @@
 # Major current tasks
 
 stacked unit actions and UI
-  bottom UI
-    how do civ2/3 do it?
-    shift click
-      handle cases of starting a new group, adding/removing from existing group, and disbanding group by shift
+  bottom-units
+    get all units on tile
+    32x32 divs, containing first 2 letters of type
     icons
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
-    make sure it fits under bottom-text
+    shift click
+      handle cases of starting a new group, adding/removing from existing group, and disbanding group by shift
+    how to handle overflow?
   backend
     do I need IDs for UnitGroup, and storage in game.units like in game.unitGroups?
       if not, can i get rid of the weird game.units[] objects? and the id numbers? or is there a performance penalty for comparing objects?
