@@ -7,10 +7,6 @@ stacked unit actions and UI
         click
         ctrl+shift+click
         ctrl+click
-      map redrawing in response to clicks?
-        if individual is active, show it
-        if group is active, show highest currentStrength
-        if none is active, show highest currentStrength
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
     shift click

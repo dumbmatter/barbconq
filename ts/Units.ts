@@ -89,6 +89,7 @@ module Units {
             }
 
             chromeUI.onUnitActivated();
+            window.requestAnimationFrame(mapUI.render.bind(mapUI));
         }
 
         // Set as moved, because it used up all its moves or because its turn was skipped or something

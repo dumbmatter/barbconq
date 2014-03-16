@@ -191,7 +191,7 @@ class MapUI {
 
         // First pass: draw tiles and units
         drawViewport(function (i, j, x, y) {
-            var unit;
+            var k, maxStrength, unit, units;
 
             // Background
             this.context.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
@@ -203,9 +203,37 @@ class MapUI {
             this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
             // Text - list units
-            if (game.map.tiles[i][j].units.length > 0) {
-                // Show first unit, arbitrarily
-                unit = game.map.tiles[i][j].units[0];
+            units = game.map.tiles[i][j].units;
+            if (units.length > 0) {
+                // Pick which unit to show on top of tile
+                if (units.length === 1) {
+                    // Only one to show...
+                    unit = units[0];
+                } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
+                    // Active unit/group on this tile
+                    if (game.activeUnit instanceof Units.UnitGroup) {
+                        // Group is active, show highest currentStrength from the group
+                        maxStrength = -Infinity;
+                        for (k = 0; k < units.length; k++) {
+                            if (units[k].currentStrength > maxStrength && (units[k].unitGroup && units[k].unitGroup.id === game.activeUnit.id)) {
+                                unit = units[k];
+                                maxStrength = units[k].currentStrength;
+                            }
+                        }
+                    } else {
+                        // Individual is active, show it
+                        unit = game.activeUnit;
+                    }
+                } else {
+                    // Nothing active here, show highest currentStrength
+                    maxStrength = -Infinity;
+                    for (k = 0; k < units.length; k++) {
+                        if (units[k].currentStrength > maxStrength) {
+                            unit = units[k];
+                            maxStrength = units[k].currentStrength;
+                        }
+                    }
+                }
 
                 this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
                 this.context.textBaseline = "top";

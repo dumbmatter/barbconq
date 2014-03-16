@@ -373,8 +373,9 @@ console.log('ctrl');
                             // If clicked unit is not in the active group, add it to that group
                             game.activeUnit.add([game.units[clickedOwner][clickedId]]);
                         }
-                        // Redraw chrome since activation changed
+                        // Redraw everything, since there is no Unit.activate call here to do that otherwise
                         chromeUI.onUnitActivated();
+                        window.requestAnimationFrame(mapUI.render.bind(mapUI));
 // redraw needed?
                     }
                 } else {

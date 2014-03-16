@@ -78,7 +78,7 @@ class ChromeUI {
         }
     }
 
-    hoverBoxUnitSummary(unit : Units.BaseUnit) {
+    private hoverBoxUnitSummary(unit : Units.BaseUnit) {
         var content;
 
         content = "";
@@ -116,7 +116,7 @@ class ChromeUI {
     }
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
-    updateActiveUnit() {
+    private updateActiveUnit() {
         var activeUnit, actionName, i, units;
 
         activeUnit = game.activeUnit;
@@ -153,7 +153,7 @@ class ChromeUI {
         }
     }
 
-    unitIcon(unit : Units.BaseUnit) : HTMLDivElement {
+    private unitIcon(unit : Units.BaseUnit) : HTMLDivElement {
         var icon;
 
         icon = document.createElement("div");
@@ -171,7 +171,7 @@ class ChromeUI {
         return icon;
     }
 
-    updateBottomText(text : string = null) {
+    private updateBottomText(text : string = null) {
         if (!text) {
             this.elBottomText.style.display = "none";
         } else {
