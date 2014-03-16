@@ -2,9 +2,12 @@
 
 stacked unit actions and UI
   bottom-units
-    get all units on tile
-    32x32 divs, containing first 2 letters of type
     icons
+      click
+        if part of group and already activated, disband group
+        otherwise, activate unit/group
+      hover
+        show info in hover box
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
     shift click

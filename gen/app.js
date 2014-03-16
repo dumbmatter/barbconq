@@ -443,7 +443,7 @@ var ChromeUI = (function () {
 
         icon = document.createElement("div");
         icon.classList.add("unit-icon");
-        icon.innerHTML = "hi";
+        icon.innerHTML = unit.type.slice(0, 2);
         console.log(unit);
 
         return icon;
