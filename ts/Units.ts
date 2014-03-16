@@ -4,23 +4,47 @@ module Units {
     // Things that both individual units and groups of units have in common
     export class BaseUnitOrGroup {
         // Identification
-        owner : number;
+        private _owner : number;
 
         // Key attributes
-        movement: number;
-        currentMovement : number;
-        coords : number[];
-        targetCoords : number[] = null;
+        private _movement: number;
+        private _currentMovement : number;
+        private _coords : number[];
+        private _targetCoords : number[] = null;
 
         // Special unit properties
-        landOrSea : string;
-        canAttack : boolean;
-        canDefend : boolean;
-        actions : string[];
+        private _landOrSea : string;
+        private _canAttack : boolean;
+        private _canDefend : boolean;
+        private _actions : string[];
 
         // Turn stuff
-        active : boolean = false; // When set, show UI options for this unit
-        moved : boolean = false; // When set, no need to loop through this unit before showing turn is over
+        private _active : boolean = false; // When set, show UI options for this unit
+        private _moved : boolean = false; // When set, no need to loop through this unit before showing turn is over
+
+        // Default getters/setters for units
+        set owner(value : number) { this._owner = value; }
+        get owner() : number { return this._owner; }
+        set movement(value : number) { this._movement = value; }
+        get movement() : number { return this._movement; }
+        set currentMovement(value : number) { this._currentMovement = value; }
+        get currentMovement() : number { return this._currentMovement; }
+        set coords(value : number[]) { this._coords = value; }
+        get coords() : number[] { return this._coords; }
+        set targetCoords(value : number[]) { this._targetCoords = value; }
+        get targetCoords() : number[] { return this._targetCoords; }
+        set landOrSea(value : string) { this._landOrSea = value; }
+        get landOrSea() : string { return this._landOrSea; }
+        set canAttack(value : boolean) { this._canAttack = value; }
+        get canAttack() : boolean { return this._canAttack; }
+        set canDefend(value : boolean) { this._canDefend = value; }
+        get canDefend() : boolean { return this._canDefend; }
+        set actions(value : string[]) { this._actions = value; }
+        get actions() : string[] { return this._actions; }
+        set active(value : boolean) { this._active = value; }
+        get active() : boolean { return this._active; }
+        set moved(value : boolean) { this._moved = value; }
+        get moved() : boolean { return this._moved; }
 
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
         activate(centerDisplay : boolean = true, autoMoveTowardsTarget : boolean = false) {
@@ -260,6 +284,8 @@ console.log("SENTRY")
         add() {}
 
         remove(id) {}
+
+        merge() {}
     }
 
     export class Warrior extends BaseUnit {

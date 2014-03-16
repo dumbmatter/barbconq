@@ -1000,16 +1000,130 @@ var Game = (function () {
     return Game;
 })();
 // Units - classes for the various units types
+/*
+*/
 var Units;
 (function (Units) {
     // Things that both individual units and groups of units have in common
     var BaseUnitOrGroup = (function () {
         function BaseUnitOrGroup() {
-            this.targetCoords = null;
+            this._targetCoords = null;
             // Turn stuff
-            this.active = false;
-            this.moved = false;
+            this._active = false;
+            this._moved = false;
         }
+        Object.defineProperty(BaseUnitOrGroup.prototype, "owner", {
+            get: function () {
+                return this._owner;
+            },
+            // Default getters/setters for units
+            set: function (value) {
+                this._owner = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseUnitOrGroup.prototype, "movement", {
+            get: function () {
+                return this._movement;
+            },
+            set: function (value) {
+                this._movement = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseUnitOrGroup.prototype, "currentMovement", {
+            get: function () {
+                return this._currentMovement;
+            },
+            set: function (value) {
+                this._currentMovement = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseUnitOrGroup.prototype, "coords", {
+            get: function () {
+                return this._coords;
+            },
+            set: function (value) {
+                this._coords = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseUnitOrGroup.prototype, "targetCoords", {
+            get: function () {
+                return this._targetCoords;
+            },
+            set: function (value) {
+                this._targetCoords = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseUnitOrGroup.prototype, "landOrSea", {
+            get: function () {
+                return this._landOrSea;
+            },
+            set: function (value) {
+                this._landOrSea = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseUnitOrGroup.prototype, "canAttack", {
+            get: function () {
+                return this._canAttack;
+            },
+            set: function (value) {
+                this._canAttack = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseUnitOrGroup.prototype, "canDefend", {
+            get: function () {
+                return this._canDefend;
+            },
+            set: function (value) {
+                this._canDefend = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseUnitOrGroup.prototype, "actions", {
+            get: function () {
+                return this._actions;
+            },
+            set: function (value) {
+                this._actions = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseUnitOrGroup.prototype, "active", {
+            get: function () {
+                return this._active;
+            },
+            set: function (value) {
+                this._active = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BaseUnitOrGroup.prototype, "moved", {
+            get: function () {
+                return this._moved;
+            },
+            set: function (value) {
+                this._moved = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
         BaseUnitOrGroup.prototype.activate = function (centerDisplay, autoMoveTowardsTarget) {
             if (typeof centerDisplay === "undefined") { centerDisplay = true; }
@@ -1245,6 +1359,9 @@ var Units;
         };
 
         UnitGroup.prototype.remove = function (id) {
+        };
+
+        UnitGroup.prototype.merge = function () {
         };
         return UnitGroup;
     })(BaseUnitOrGroup);

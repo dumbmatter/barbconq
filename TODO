@@ -4,7 +4,19 @@ stacked unit actions and UI
   backend
     store stack in a new type of object, a UnitGroup
       contains references to the individual units and exposes the correct properties to the rest of the game (activate, actions, movement, targetCoords, etc)
-        update all the members of the group when most of these properties are updated. can be done with getter/setter? define the getters and setters in BaseUnit and UnitGroup, define the _properties in BaseUnitOrGroup
+        getters/setters for UnitGroup
+          movement, landOrSea, canAttack, canDefend, actions
+            getter: read from units every time
+            setter: do nothing, since these can't be changed by actions on the group level
+          owner, coords, targetCoords
+            getter: read value from group, since it's the same as all the units
+            setter: set value for group and for every unit
+          currentMovement
+            getter: read from units every time
+            setter: update each unit
+          active, moved
+            getter: read from group, don't care about unit values
+            setter: read from group, don't care about unit values
       this would also allow for UnitGroup storage in game.unitGroups, which could be treated like game.units.
         update these values when an action is taken or when a unit joins/leaves the group
       BaseUnit should have a "unitGroup" property that is null or a reference to a group. when set, don't activate in the normal game loop, just wait for its UnitGroup to go
