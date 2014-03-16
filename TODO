@@ -3,16 +3,19 @@
 stacked unit actions and UI
   bottom-units
     icons
-      click
-        if part of group and already activated, disband group
-        otherwise, activate unit/group
+      clicking actions - see comments in Controller.ts
+        click
+        alt+click
+        ctrl+shift+click
+        ctrl+click
+        shift+click
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
     shift click
       handle cases of starting a new group, adding/removing from existing group, and disbanding group by shift
     how to handle overflow?
   backend
-    should I make UnitGroup.units a list of objects with ID keys, like game.units and game.unitGroups?
+    should I make UnitGroup.units and Tile.units lists of objects with ID keys, like game.units and game.unitGroups?
     CRAZY IDEA: what if all units are groups, and individuals just have one member? would that help? maybe not.
     make sure...
       show "Unit Stack" in info box
@@ -37,6 +40,11 @@ combat
     get list of enemies on tile being moved to
     pick enemy with highest defense
     stack attack
+  what happens when a unit dies?
+    remove it from its group, if group exists
+      group should disband if it's down to 1 unit
+    delete it from game.units
+    delete it from tile.units
 
 basic barb AI
   is there anyone i can attack with >25% chance of winning? if so, attack

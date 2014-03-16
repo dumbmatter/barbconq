@@ -5,7 +5,7 @@ class Game {
     maxId : number = 0;
     names: string[] = [];
     units : {}[] = []; // One object in array for each player. Then in object, can use unit ID as key
-    unitGroups : Units.UnitGroup[][] = [];
+    unitGroups : {}[] = []; // Same as above
     activeUnit : Units.BaseUnitOrGroup = null;
     turn : number = 0;
 
@@ -23,7 +23,7 @@ class Game {
             }
 
             this.units.push({});
-            this.unitGroups.push([]);
+            this.unitGroups.push({});
         }
     }
 

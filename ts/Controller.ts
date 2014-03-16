@@ -312,13 +312,57 @@ class Controller {
     initUnitIcons() {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
-            var el;
+            var clickedGid, clickedId, clickedOwner, el, i, newGroup, newUnits, owner, units;
 
-console.log("CLICK");
+console.log(e);
             el = <HTMLElement> e.target;
             if (el && el.dataset.id) {
                 e.preventDefault();
+
+                // List of all units on the tile
+                units = game.getTile(game.activeUnit.coords).units;
+
+                // Metadata from clicked icon
+                clickedGid = parseInt(el.dataset.gid, 10);
+                clickedId = parseInt(el.dataset.id, 10);
+                clickedOwner = parseInt(el.dataset.owner, 10);
 console.log(el.dataset);
+                if (e.altKey) {
+                    // Disband any current groups on the tile, record all units with currentMovement > 0
+                    newUnits = [];
+                    units.forEach(function (unit) {
+                        if (unit.unitGroup) {
+                            unit.unitGroup.disband(false);
+                        }
+                        if (unit.currentMovement > 0) {
+                            newUnits.push(unit);
+                        }
+                    });
+
+                    // Make a new group with all units with currentMovement > 0 and activate it
+                    newGroup = new Units.UnitGroup(clickedOwner, newUnits);
+                    newGroup.activate();
+                } else if (e.ctrlKey && e.shiftKey) {
+                    // If a group is currently active, add all units of the clicked type with currentMovement > 0 to that group
+                    // If no group is currently active, create one with all of the units of the clicked type with currentMovement > 0
+                    console.log('ctrl+shift');
+                } else if (e.ctrlKey) {
+                    // Disband any current unit, create a new group from all the units of the clicked type with currentMovement > 0
+                    console.log('ctrl');
+                } else if (e.shiftKey) {
+                    // If an individual is active
+                    // - If clicked unit is that active unit, do nothing
+                    // - Else, add active unit to a new group with clicked unit
+                    // If a group is active
+                    // - If clicked unit is in the active group, remove it from that group
+                    // - If clicked unit is not in the active group, add it to that group
+                    console.log('shift');
+                } else {
+                    // If part of group that is activated, disband group and activate clicked unit
+                    // Else if the unit is in a group, activate the group
+                    // Else activate the unit
+                    console.log('normal')
+                }
             }
         });
         chromeUI.elBottomUnits.addEventListener("mouseover", function (e) {

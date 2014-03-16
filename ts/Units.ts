@@ -444,10 +444,10 @@ console.log("SENTRY")
 
         remove(id) {}
 
-        disband() {
+        disband(activateUnitAtEnd : boolean = true) {
             var i, toActivate;
 
-            // Arbitrarily activate the first member of this unit
+            // Save the first member of this unit to arbitrarily activate at the end
             toActivate = this.units[0];
 
             // Remove all units from group
@@ -459,9 +459,12 @@ console.log("SENTRY")
             if (this.active) {
                 game.activeUnit = null;
             }
-            delete game.unitGroups[this.id];
+            delete game.unitGroups[this.owner][this.id];
 
-            toActivate.activate();
+            // If desired, activate one of the members of the disbanded group
+            if (activateUnitAtEnd) {
+                toActivate.activate();
+            }
         }
 
         merge() {}
