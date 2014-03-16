@@ -17,8 +17,6 @@ stacked unit actions and UI
       merge all actions together and show options at bottom
         clicking applies that action to every unit it can
       movement (numpad and right click) applies to all
-      mapUI active stuff works
-        maybe rewrite that code to go from game.activeUnit directly, rather than looping through units
       unitGroup properties are being correctly updated when a unit with different properties is added/removed from the group
       added units all have the same tile and same owner
   group action buttons

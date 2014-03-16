@@ -122,7 +122,7 @@ class MapUI {
     }
 
     render() {
-        var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile;
+        var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -213,36 +213,26 @@ class MapUI {
             }
         }.bind(this));
 
-        // Second pass: highlight active unit
-        drawViewport(function (i, j, x, y) {
-            var k, unit;
+        // Highlight active unit
+        if (game.activeUnit) {
+            x = game.activeUnit.coords[1] - leftTile;
+            y = game.activeUnit.coords[0] - topTile;
 
-            // Highlight active tile
-            if (game.map.tiles[i][j].units.length > 0) {
-                for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
-                    unit = game.map.tiles[i][j].units[k];
+            this.context.strokeStyle = "#f00";
+            this.context.lineWidth = 4;
+            this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX - 2, y * this.TILE_SIZE - tileOffsetY - 2, this.TILE_SIZE + 2, this.TILE_SIZE + 2);
 
-                    if (unit.active) {
-                        this.context.strokeStyle = "#f00";
-                        this.context.lineWidth = 4;
-                        this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX - 2, y * this.TILE_SIZE - tileOffsetY - 2, this.TILE_SIZE + 2, this.TILE_SIZE + 2);
-
-                        // Draw path if unit is moving to a target
-                        if (unit.targetCoords) {
-                            // If there is a pathfinding search occurring (like from the user holding down the right click button), don't draw active path
-                            if (!this.pathFindingSearch) {
-                                game.map.pathFinding(unit, unit.targetCoords, function (path) {
-                                    // This is to prevent an infinite loop of render() being called
-                                    this.drawPath(path, false);
-                                }.bind(this));
-                            }
-                        }
-
-                        break;
-                    }
+            // Draw path if unit is moving to a target
+            if (game.activeUnit.targetCoords) {
+                // If there is a pathfinding search occurring (like from the user holding down the right click button), don't draw active path
+                if (!this.pathFindingSearch) {
+                    game.map.pathFinding(game.activeUnit, game.activeUnit.targetCoords, function (path) {
+                        // This is to prevent an infinite loop of render() being called
+                        this.drawPath(path, false);
+                    }.bind(this));
                 }
             }
-        }.bind(this));
+        }
 
         // Render minimap at the end
         this.renderMiniMap();
