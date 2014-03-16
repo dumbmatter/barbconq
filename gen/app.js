@@ -447,7 +447,11 @@ var ChromeUI = (function () {
         if (unit.active || (unit.unitGroup && unit.unitGroup.active)) {
             icon.classList.add("active");
         }
-        console.log(unit);
+        icon.dataset.owner = unit.owner;
+        icon.dataset.id = unit.id;
+        if (unit.unitGroup) {
+            icon.dataset.gid = unit.unitGroup.id;
+        }
 
         return icon;
     };
@@ -976,7 +980,7 @@ var Game = (function () {
                 unit.moved = false;
                 unit.currentMovement = unit.movement;
             }
-            for (j = 0; j < this.unitGroups[i].length; j++) {
+            for (j in this.unitGroups[i]) {
                 unitGroup = this.unitGroups[i][j];
                 unitGroup.moved = false;
                 unitGroup.currentMovement = unitGroup.movement;
@@ -990,9 +994,9 @@ var Game = (function () {
         var i, j, unit, unitGroup;
 
         for (i = 0; i < this.names.length; i++) {
-            // Player 1
-            if (i === 1) {
-                for (j = 0; j < this.unitGroups[i].length; j++) {
+            // User
+            if (i === config.PLAYER_ID) {
+                for (j in this.unitGroups[i]) {
                     unitGroup = this.unitGroups[i][j];
                     if (!unitGroup.moved && !unitGroup.targetCoords) {
                         unitGroup.activate();
@@ -1000,7 +1004,7 @@ var Game = (function () {
                     }
                 }
 
-                for (j = 0; j < this.unitGroups[i].length; j++) {
+                for (j in this.unitGroups[i]) {
                     unitGroup = this.unitGroups[i][j];
                     if (!unitGroup.moved) {
                         unitGroup.activate(true, true); // Activate, center screen, and auto-move to targetCoords
@@ -1055,6 +1059,9 @@ var Units;
             // Turn stuff
             this._active = false;
             this._moved = false;
+            // Set unique ID for unit or group
+            this.id = game.maxId;
+            game.maxId += 1;
         }
         Object.defineProperty(BaseUnitOrGroup.prototype, "owner", {
             get: function () {
@@ -1364,9 +1371,6 @@ var Units;
             this.canAttack = true;
             this.canDefend = true;
 
-            this.id = game.maxId;
-            game.maxId += 1;
-
             this.owner = owner;
 
             // Set coordinates of unit and put a reference to the unit in the map
@@ -1399,7 +1403,7 @@ var Units;
             this.coords = units[0].coords;
 
             // Store reference to group in game.unitGroups
-            game.unitGroups[this.owner].push(this);
+            game.unitGroups[this.owner][this.id] = this;
         }
 
         Object.defineProperty(UnitGroup.prototype, "owner", {
@@ -1628,15 +1632,11 @@ var Units;
                 this.units[i].unitGroup = null;
             }
 
-            for (i = 0; i < game.unitGroups[this.owner].length; i++) {
-                if (game.unitGroups[this.owner][i] === this) {
-                    if (this.active) {
-                        game.activeUnit = null;
-                    }
-
-                    game.unitGroups[this.owner].splice(i, 1);
-                }
+            // Delete group
+            if (this.active) {
+                game.activeUnit = null;
             }
+            delete game.unitGroups[this.id];
 
             toActivate.activate();
         };
@@ -1673,6 +1673,8 @@ var Units;
 var easystar = new EasyStar.js();
 
 var config = {
+    BARB_ID: 0,
+    PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500
 };
 
@@ -1682,15 +1684,15 @@ var mapUI = new MapUI();
 var controller = new Controller();
 
 for (var i = 0; i < 200; i++) {
-    //    new Units.Warrior(0, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
+    //    new Units.Warrior(config.BARB_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
 }
 for (var i = 0; i < 1; i++) {
-    //    new Units.Warrior(1, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
+    //    new Units.Warrior(config.PLAYER_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
 }
 
-var u1 = new Units.Warrior(1, [10, 20]);
-var u2 = new Units.Warrior(1, [10, 20]);
-var g = new Units.UnitGroup(1, [u1, u2]);
+var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+var g = new Units.UnitGroup(config.PLAYER_ID, [u1, u2]);
 
 game.newTurn();
 //# sourceMappingURL=app.js.map

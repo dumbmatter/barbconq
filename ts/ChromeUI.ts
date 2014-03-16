@@ -148,6 +148,11 @@ console.log(units[i]);
         if (unit.active || (unit.unitGroup && unit.unitGroup.active)) {
             icon.classList.add("active");
         }
+        icon.dataset.owner = unit.owner;
+        icon.dataset.id = unit.id;
+        if (unit.unitGroup) {
+            icon.dataset.gid = unit.unitGroup.id;
+        }
 
         return icon;
     }

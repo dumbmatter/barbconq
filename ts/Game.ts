@@ -53,7 +53,7 @@ class Game {
                 unit.moved = false;
                 unit.currentMovement = unit.movement;
             }
-            for (j = 0; j < this.unitGroups[i].length; j++) {
+            for (j in this.unitGroups[i]) {
                 unitGroup = this.unitGroups[i][j];
                 unitGroup.moved = false;
                 unitGroup.currentMovement = unitGroup.movement;
@@ -67,11 +67,11 @@ class Game {
         var i, j, unit, unitGroup;
 
         for (i = 0; i < this.names.length; i++) {
-            // Player 1
-            if (i === 1) {
+            // User
+            if (i === config.PLAYER_ID) {
                 // UNIT GROUPS
                 // First look for ones not on a path towards targetCoords
-                for (j = 0; j < this.unitGroups[i].length; j++) {
+                for (j in this.unitGroups[i]) {
                     unitGroup = this.unitGroups[i][j];
                     if (!unitGroup.moved && !unitGroup.targetCoords) {
                         unitGroup.activate();
@@ -80,7 +80,7 @@ class Game {
                 }
 
                 // Then process all the targetCoords ones
-                for (j = 0; j < this.unitGroups[i].length; j++) {
+                for (j in this.unitGroups[i]) {
                     unitGroup = this.unitGroups[i][j];
                     if (!unitGroup.moved) {
                         unitGroup.activate(true, true); // Activate, center screen, and auto-move to targetCoords

@@ -14,8 +14,7 @@ stacked unit actions and UI
       handle cases of starting a new group, adding/removing from existing group, and disbanding group by shift
     how to handle overflow?
   backend
-    do I need IDs for UnitGroup, and storage in game.units like in game.unitGroups?
-      if not, can i get rid of the weird game.units[] objects? and the id numbers? or is there a performance penalty for comparing objects?
+    should I make UnitGroup.units a list of objects with ID keys, like game.units and game.unitGroups?
     CRAZY IDEA: what if all units are groups, and individuals just have one member? would that help? maybe not.
     make sure...
       show "Unit Stack" in info box

@@ -17,6 +17,7 @@ module Units {
     // Things that both individual units and groups of units have in common
     export class BaseUnitOrGroup {
         // Identification
+        id : number; // Unique, incrementing
         _owner : number;
 
         // Key attributes
@@ -58,6 +59,12 @@ module Units {
         get active() : boolean { return this._active; }
         set moved(value : boolean) { this._moved = value; }
         get moved() : boolean { return this._moved; }
+
+        constructor() {
+            // Set unique ID for unit or group
+            this.id = game.maxId;
+            game.maxId += 1;
+        }
 
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
         activate(centerDisplay : boolean = true, autoMoveTowardsTarget : boolean = false) {
@@ -239,7 +246,6 @@ console.log("SENTRY")
 
     export class BaseUnit extends BaseUnitOrGroup {
         // Identification
-        id : number; // Unique, incrementing
         type : string;
         unitGroup : UnitGroup;
 
@@ -256,9 +262,6 @@ console.log("SENTRY")
 
         constructor(owner : number, coords : number[]) {
             super();
-
-            this.id = game.maxId;
-            game.maxId += 1;
 
             this.owner = owner;
 
@@ -418,7 +421,7 @@ console.log("SENTRY")
             this.coords = units[0].coords;
 
             // Store reference to group in game.unitGroups
-            game.unitGroups[this.owner].push(this);
+            game.unitGroups[this.owner][this.id] = this;
         }
 
         moveOnMap(coords : number[]) {
@@ -447,19 +450,16 @@ console.log("SENTRY")
             // Arbitrarily activate the first member of this unit
             toActivate = this.units[0];
 
+            // Remove all units from group
             for (i = 0; i < this.units.length; i++) {
                 this.units[i].unitGroup = null;
             }
 
-            for (i = 0; i < game.unitGroups[this.owner].length; i++) {
-                if (game.unitGroups[this.owner][i] === this) {
-                    if (this.active) {
-                        game.activeUnit = null;
-                    }
-
-                    game.unitGroups[this.owner].splice(i, 1);
-                }
+            // Delete group
+            if (this.active) {
+                game.activeUnit = null;
             }
+            delete game.unitGroups[this.id];
 
             toActivate.activate();
         }
