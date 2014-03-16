@@ -4,23 +4,23 @@ module Units {
     // Things that both individual units and groups of units have in common
     export class BaseUnitOrGroup {
         // Identification
-        private _owner : number;
+        _owner : number;
 
         // Key attributes
-        private _movement: number;
-        private _currentMovement : number;
-        private _coords : number[];
-        private _targetCoords : number[] = null;
+        _movement: number;
+        _currentMovement : number;
+        _coords : number[];
+        _targetCoords : number[] = null;
 
         // Special unit properties
-        private _landOrSea : string;
-        private _canAttack : boolean;
-        private _canDefend : boolean;
-        private _actions : string[];
+        _landOrSea : string;
+        _canAttack : boolean;
+        _canDefend : boolean;
+        _actions : string[];
 
         // Turn stuff
-        private _active : boolean = false; // When set, show UI options for this unit
-        private _moved : boolean = false; // When set, no need to loop through this unit before showing turn is over
+        _active : boolean = false; // When set, show UI options for this unit
+        _moved : boolean = false; // When set, no need to loop through this unit before showing turn is over
 
         // Default getters/setters for units
         set owner(value : number) { this._owner = value; }
@@ -264,12 +264,140 @@ console.log("SENTRY")
     }
 
     export class UnitGroup extends BaseUnitOrGroup {
-        units : BaseUnit[];
+        units : BaseUnit[] = [];
 
-        constructor(units : BaseUnit[]) {
+        // Getters/setters for groups
+
+        // Set for group and every group member, like if the entire group is captured
+        set owner(value : number) {
+            var i, min;
+
+            for (i = 0; i < this.units.length; i++) {
+                this.units[i].owner = value;
+            }
+            this._owner = value;
+        }
+        // Read value from group, since they're all the same
+        get owner() : number { return this._owner; }
+
+        // Do nothing, can't be changed at group level
+        set movement(value : number) {}
+        // Find minimum of group members
+        get movement() : number {
+            var i, min;
+
+            min = Infinity;
+            for (i = 0; i < this.units.length; i++) {
+                if (this.units[i].movement < min) {
+                    min = this.units[i].movement;
+                }
+            }
+            return min;
+        }
+
+        // Update each unit in group with difference, and keep track at group level for comparison here
+        set currentMovement(value : number) {
+            var diff, i;
+
+            diff = this._currentMovement - value;
+            for (i = 0; i < this.units.length; i++) {
+                this.units[i].currentMovement -= diff;
+            }
+            this._currentMovement = value;
+        }
+        // Find minimum of group members
+        get currentMovement() : number {
+            var i, min;
+
+            min = Infinity;
+            for (i = 0; i < this.units.length; i++) {
+                if (this.units[i].currentMovement < min) {
+                    min = this.units[i].currentMovement;
+                }
+            }
+            return min;
+        }
+
+        // Set for group and every group member
+        set coords(value : number[]) {
+            var i, min;
+
+            for (i = 0; i < this.units.length; i++) {
+                this.units[i].coords = value;
+            }
+            this._coords = value;
+        }
+        // Read value from group, since they're all the same
+        get coords() : number[] { return this._coords; }
+
+        // Set for group
+        set targetCoords(value : number[]) { this._targetCoords = value; }
+        // Read value from group
+        get targetCoords() : number[] { return this._targetCoords; }
+
+        // Do nothing, can't be changed at group level
+        set landOrSea(value : string) {}
+        // Find from units, all have the same value
+        get landOrSea() : string {
+            return this.units[0].landOrSea;
+        }
+
+        // Do nothing, can't be changed at group level
+        set canAttack(value : boolean) {}
+        get canAttack() : boolean {
+            var i;
+
+            for (i = 0; i < this.units.length; i++) {
+                if (this.units[i].canAttack) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Do nothing, can't be changed at group level
+        set canDefend(value : boolean) {}
+        get canDefend() : boolean {
+            var i;
+
+            for (i = 0; i < this.units.length; i++) {
+                if (this.units[i].canAttack) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Do nothing, can't be changed at group level
+        set actions(value : string[]) {}
+        get actions() : string[] {
+            var actions, i, j;
+
+            actions = [];
+            for (i = 0; i < this.units.length; i++) {
+                for (j = 0; j < this.units[j].actions; j++) {
+                    if (actions.indexOf(this.units[i].actions[j]) < 0) {
+                        actions.push(this.units[i].actions[j]);
+                    }
+                }
+            }
+            return actions;
+        }
+        set active(value : boolean) { this._active = value; }
+        get active() : boolean { return this._active; }
+        set moved(value : boolean) { this._moved = value; }
+        get moved() : boolean { return this._moved; }
+
+        constructor(owner : number, units : BaseUnit[]) {
             super();
 
-            this.units = units;
+            this.owner = owner;
+
+            this.add(units);
+
+            // Initialize private variables
+            this.currentMovement = this.currentMovement; // Getters/setters make this make sense, maybe
+            this.coords = units[0].coords;
         }
 
         moveOnMap(coords : number[]) {
@@ -281,7 +409,14 @@ console.log("SENTRY")
             }
         }
 
-        add() {}
+        add(units : BaseUnit[]) {
+            var i;
+
+            for (i = 0; i < units.length; i++) {
+                this.units.push(units[i]);
+                units[i].unitGroup = this;
+            }
+        }
 
         remove(id) {}
 

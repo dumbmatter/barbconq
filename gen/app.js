@@ -1000,8 +1000,6 @@ var Game = (function () {
     return Game;
 })();
 // Units - classes for the various units types
-/*
-*/
 var Units;
 (function (Units) {
     // Things that both individual units and groups of units have in common
@@ -1342,11 +1340,210 @@ var Units;
 
     var UnitGroup = (function (_super) {
         __extends(UnitGroup, _super);
-        function UnitGroup(units) {
+        function UnitGroup(owner, units) {
             _super.call(this);
+            this.units = [];
 
-            this.units = units;
+            this.owner = owner;
+
+            this.add(units);
+
+            // Initialize private variables
+            this.currentMovement = this.currentMovement; // Getters/setters make this make sense, maybe
+            this.coords = units[0].coords;
         }
+
+        Object.defineProperty(UnitGroup.prototype, "owner", {
+            // Read value from group, since they're all the same
+            get: function () {
+                return this._owner;
+            },
+            // Getters/setters for groups
+            // Set for group and every group member, like if the entire group is captured
+            set: function (value) {
+                var i, min;
+
+                for (i = 0; i < this.units.length; i++) {
+                    this.units[i].owner = value;
+                }
+                this._owner = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(UnitGroup.prototype, "movement", {
+            // Find minimum of group members
+            get: function () {
+                var i, min;
+
+                min = Infinity;
+                for (i = 0; i < this.units.length; i++) {
+                    if (this.units[i].movement < min) {
+                        min = this.units[i].movement;
+                    }
+                }
+                return min;
+            },
+            // Do nothing, can't be changed at group level
+            set: function (value) {
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(UnitGroup.prototype, "currentMovement", {
+            // Find minimum of group members
+            get: function () {
+                var i, min;
+
+                min = Infinity;
+                for (i = 0; i < this.units.length; i++) {
+                    if (this.units[i].currentMovement < min) {
+                        min = this.units[i].currentMovement;
+                    }
+                }
+                return min;
+            },
+            // Update each unit in group with difference, and keep track at group level for comparison here
+            set: function (value) {
+                var diff, i;
+
+                diff = this._currentMovement - value;
+                for (i = 0; i < this.units.length; i++) {
+                    this.units[i].currentMovement -= diff;
+                }
+                this._currentMovement = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(UnitGroup.prototype, "coords", {
+            // Read value from group, since they're all the same
+            get: function () {
+                return this._coords;
+            },
+            // Set for group and every group member
+            set: function (value) {
+                var i, min;
+
+                for (i = 0; i < this.units.length; i++) {
+                    this.units[i].coords = value;
+                }
+                this._coords = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(UnitGroup.prototype, "targetCoords", {
+            // Read value from group
+            get: function () {
+                return this._targetCoords;
+            },
+            // Set for group
+            set: function (value) {
+                this._targetCoords = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+
+        Object.defineProperty(UnitGroup.prototype, "landOrSea", {
+            // Find from units, all have the same value
+            get: function () {
+                return this.units[0].landOrSea;
+            },
+            // Do nothing, can't be changed at group level
+            set: function (value) {
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(UnitGroup.prototype, "canAttack", {
+            get: function () {
+                var i;
+
+                for (i = 0; i < this.units.length; i++) {
+                    if (this.units[i].canAttack) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            // Do nothing, can't be changed at group level
+            set: function (value) {
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(UnitGroup.prototype, "canDefend", {
+            get: function () {
+                var i;
+
+                for (i = 0; i < this.units.length; i++) {
+                    if (this.units[i].canAttack) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            // Do nothing, can't be changed at group level
+            set: function (value) {
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(UnitGroup.prototype, "actions", {
+            get: function () {
+                var actions, i, j;
+
+                actions = [];
+                for (i = 0; i < this.units.length; i++) {
+                    for (j = 0; j < this.units[j].actions; j++) {
+                        if (actions.indexOf(this.units[i].actions[j]) < 0) {
+                            actions.push(this.units[i].actions[j]);
+                        }
+                    }
+                }
+                return actions;
+            },
+            // Do nothing, can't be changed at group level
+            set: function (value) {
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(UnitGroup.prototype, "active", {
+            get: function () {
+                return this._active;
+            },
+            set: function (value) {
+                this._active = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(UnitGroup.prototype, "moved", {
+            get: function () {
+                return this._moved;
+            },
+            set: function (value) {
+                this._moved = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         UnitGroup.prototype.moveOnMap = function (coords) {
             var i;
 
@@ -1355,7 +1552,13 @@ var Units;
             }
         };
 
-        UnitGroup.prototype.add = function () {
+        UnitGroup.prototype.add = function (units) {
+            var i;
+
+            for (i = 0; i < units.length; i++) {
+                this.units.push(units[i]);
+                units[i].unitGroup = this;
+            }
         };
 
         UnitGroup.prototype.remove = function (id) {
@@ -1405,10 +1608,12 @@ for (var i = 0; i < 200; i++) {
     //    new Units.Warrior(0, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
 }
 for (var i = 0; i < 1; i++) {
-    new Units.Warrior(1, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
+    //    new Units.Warrior(1, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
 }
 
-//new Units.Warrior(1, [0, 0]);
-//new Units.Warrior(1, [1, 0]);
+var u1 = new Units.Warrior(1, [10, 20]);
+var u2 = new Units.Warrior(1, [10, 20]);
+var g = new Units.UnitGroup(1, [u1, u2]);
+
 game.newTurn();
 //# sourceMappingURL=app.js.map
