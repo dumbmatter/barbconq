@@ -6,8 +6,6 @@ stacked unit actions and UI
       click
         if part of group and already activated, disband group
         otherwise, activate unit/group
-      hover
-        show info in hover box
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
     shift click

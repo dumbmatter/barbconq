@@ -43,18 +43,13 @@ class ChromeUI {
     }
 
     onHoverTile(tile : MapMaker.Tile = null) {
-        var content, i, unit;
+        var content, i;
 
         if (tile) {
             content = "";
 
             for (i = 0; i < tile.units.length; i++) {
-                unit = tile.units[i];
-                content += '<p><span class="unit-name">' + unit.type + '</span>, ';
-                content += this.strengthFraction(unit) + ', ';
-                content += this.movementFraction(unit) + ', ';
-                content += game.names[unit.owner];
-                content += '</p>';
+                content += this.hoverBoxUnitSummary(tile.units[i]);
             }
 
             // Show tile terrain and features
@@ -65,6 +60,35 @@ class ChromeUI {
         } else {
             this.elHoverBox.style.display = "none";
         }
+    }
+
+    onHoverUnitIcon(owner : number = null, id: number = null) {
+        var content;
+
+        if (owner !== null && id !== null) {
+            content = "";
+            content += this.hoverBoxUnitSummary(game.units[owner][id]);
+            content += '<p>(&lt;CTRL+CLICK&gt; to select all ' + game.units[owner][id].type + ' units)</p>';
+            content += '<p>(&lt;ALT+CLICK&gt; to select all units)</p>';
+
+            this.elHoverBox.innerHTML = content;
+            this.elHoverBox.style.display = "block";
+        } else {
+            this.elHoverBox.style.display = "none";
+        }
+    }
+
+    hoverBoxUnitSummary(unit : Units.BaseUnit) {
+        var content;
+
+        content = "";
+        content += '<p><span class="unit-name">' + unit.type + '</span>, ';
+        content += this.strengthFraction(unit) + ', ';
+        content += this.movementFraction(unit) + ', ';
+        content += game.names[unit.owner];
+        content += '</p>';
+
+        return content;
     }
 
     onHoverAction(action : string = null) {
@@ -125,17 +149,7 @@ class ChromeUI {
             this.elBottomUnits.innerHTML = ""; // Reset
             for (i = 0; i < units.length; i++) {
                 this.elBottomUnits.appendChild(this.unitIcon(units[i]));
-console.log(units[i]);
             }
-        }
-    }
-
-    updateBottomText(text : string = null) {
-        if (!text) {
-            this.elBottomText.style.display = "none";
-        } else {
-            this.elBottomText.innerHTML = text;
-            this.elBottomText.style.display = "block";
         }
     }
 
@@ -155,5 +169,14 @@ console.log(units[i]);
         }
 
         return icon;
+    }
+
+    updateBottomText(text : string = null) {
+        if (!text) {
+            this.elBottomText.style.display = "none";
+        } else {
+            this.elBottomText.innerHTML = text;
+            this.elBottomText.style.display = "block";
+        }
     }
 }

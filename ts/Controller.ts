@@ -34,6 +34,7 @@ class Controller {
         // Start listening for various kinds of user input
         this.initMapPanning();
         this.initUnitActions();
+        this.initUnitIcons();
         this.initHoverTile();
         this.initMapClick();
         this.initGameActions();
@@ -306,5 +307,37 @@ class Controller {
                 game.newTurn();
             }
         }.bind(this));
+    }
+
+    initUnitIcons() {
+        // Unit icons at the bottom
+        chromeUI.elBottomUnits.addEventListener("click", function (e) {
+            var el;
+
+console.log("CLICK");
+            el = <HTMLElement> e.target;
+            if (el && el.dataset.id) {
+                e.preventDefault();
+console.log(el.dataset);
+            }
+        });
+        chromeUI.elBottomUnits.addEventListener("mouseover", function (e) {
+            var el;
+
+            el = <HTMLElement> e.target;
+            if (el && el.dataset.id) {
+                e.preventDefault();
+                chromeUI.onHoverUnitIcon(parseInt(el.dataset.owner, 10), parseInt(el.dataset.id, 10));
+            }
+        });
+        chromeUI.elBottomUnits.addEventListener("mouseout", function (e) {
+            var el;
+
+            el = <HTMLElement> e.target;
+            if (el && el.dataset.id) {
+                e.preventDefault();
+                chromeUI.onHoverUnitIcon();
+            }
+        });
     }
 }

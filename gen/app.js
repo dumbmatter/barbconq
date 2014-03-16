@@ -38,6 +38,7 @@ var Controller = (function () {
         // Start listening for various kinds of user input
         this.initMapPanning();
         this.initUnitActions();
+        this.initUnitIcons();
         this.initHoverTile();
         this.initMapClick();
         this.initGameActions();
@@ -308,6 +309,38 @@ var Controller = (function () {
             }
         }.bind(this));
     };
+
+    Controller.prototype.initUnitIcons = function () {
+        // Unit icons at the bottom
+        chromeUI.elBottomUnits.addEventListener("click", function (e) {
+            var el;
+
+            console.log("CLICK");
+            el = e.target;
+            if (el && el.dataset.id) {
+                e.preventDefault();
+                console.log(el.dataset);
+            }
+        });
+        chromeUI.elBottomUnits.addEventListener("mouseover", function (e) {
+            var el;
+
+            el = e.target;
+            if (el && el.dataset.id) {
+                e.preventDefault();
+                chromeUI.onHoverUnitIcon(parseInt(el.dataset.owner, 10), parseInt(el.dataset.id, 10));
+            }
+        });
+        chromeUI.elBottomUnits.addEventListener("mouseout", function (e) {
+            var el;
+
+            el = e.target;
+            if (el && el.dataset.id) {
+                e.preventDefault();
+                chromeUI.onHoverUnitIcon();
+            }
+        });
+    };
     return Controller;
 })();
 // ChromeUI - Everything related to the display and interactivity of the on-screen chrome (everything not on the map/minimap)
@@ -347,18 +380,13 @@ var ChromeUI = (function () {
 
     ChromeUI.prototype.onHoverTile = function (tile) {
         if (typeof tile === "undefined") { tile = null; }
-        var content, i, unit;
+        var content, i;
 
         if (tile) {
             content = "";
 
             for (i = 0; i < tile.units.length; i++) {
-                unit = tile.units[i];
-                content += '<p><span class="unit-name">' + unit.type + '</span>, ';
-                content += this.strengthFraction(unit) + ', ';
-                content += this.movementFraction(unit) + ', ';
-                content += game.names[unit.owner];
-                content += '</p>';
+                content += this.hoverBoxUnitSummary(tile.units[i]);
             }
 
             // Show tile terrain and features
@@ -369,6 +397,37 @@ var ChromeUI = (function () {
         } else {
             this.elHoverBox.style.display = "none";
         }
+    };
+
+    ChromeUI.prototype.onHoverUnitIcon = function (owner, id) {
+        if (typeof owner === "undefined") { owner = null; }
+        if (typeof id === "undefined") { id = null; }
+        var content;
+
+        if (owner !== null && id !== null) {
+            content = "";
+            content += this.hoverBoxUnitSummary(game.units[owner][id]);
+            content += '<p>(&lt;CTRL+CLICK&gt; to select all ' + game.units[owner][id].type + ' units)</p>';
+            content += '<p>(&lt;ALT+CLICK&gt; to select all units)</p>';
+
+            this.elHoverBox.innerHTML = content;
+            this.elHoverBox.style.display = "block";
+        } else {
+            this.elHoverBox.style.display = "none";
+        }
+    };
+
+    ChromeUI.prototype.hoverBoxUnitSummary = function (unit) {
+        var content;
+
+        content = "";
+        content += '<p><span class="unit-name">' + unit.type + '</span>, ';
+        content += this.strengthFraction(unit) + ', ';
+        content += this.movementFraction(unit) + ', ';
+        content += game.names[unit.owner];
+        content += '</p>';
+
+        return content;
     };
 
     ChromeUI.prototype.onHoverAction = function (action) {
@@ -423,18 +482,7 @@ var ChromeUI = (function () {
             this.elBottomUnits.innerHTML = ""; // Reset
             for (i = 0; i < units.length; i++) {
                 this.elBottomUnits.appendChild(this.unitIcon(units[i]));
-                console.log(units[i]);
             }
-        }
-    };
-
-    ChromeUI.prototype.updateBottomText = function (text) {
-        if (typeof text === "undefined") { text = null; }
-        if (!text) {
-            this.elBottomText.style.display = "none";
-        } else {
-            this.elBottomText.innerHTML = text;
-            this.elBottomText.style.display = "block";
         }
     };
 
@@ -454,6 +502,16 @@ var ChromeUI = (function () {
         }
 
         return icon;
+    };
+
+    ChromeUI.prototype.updateBottomText = function (text) {
+        if (typeof text === "undefined") { text = null; }
+        if (!text) {
+            this.elBottomText.style.display = "none";
+        } else {
+            this.elBottomText.innerHTML = text;
+            this.elBottomText.style.display = "block";
+        }
     };
     return ChromeUI;
 })();
