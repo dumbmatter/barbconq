@@ -313,7 +313,7 @@ var Controller = (function () {
     Controller.prototype.initUnitIcons = function () {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
-            var clickedGid, clickedId, clickedOwner, el, i, newGroup, newUnits, owner, units;
+            var clickedGid, clickedId, clickedOwner, el, i, newGroup, newUnits, units;
 
             console.log(e);
             el = e.target;
@@ -360,18 +360,25 @@ var Controller = (function () {
                 } else if (e.shiftKey) {
                     if (game.activeUnit instanceof Units.BaseUnit) {
                         // Individual unit is active
-                        // If clicked unit is not the active unit, add it to a new group with clicked unit
                         if (game.activeUnit.id !== clickedId) {
-                            console.log("Add two units to new group");
+                            // If clicked unit is not the active unit, add it to a new group with clicked unit
                             newGroup = new Units.UnitGroup(clickedOwner, [game.activeUnit, game.units[clickedOwner][clickedId]]);
                             newGroup.activate(false);
                         }
-                    } else {
+                    } else if (game.activeUnit instanceof Units.UnitGroup) {
                         // Unit group is active
-                        // - If clicked unit is in the active group, remove it from that group
-                        // - If clicked unit is not in the active group, add it to that group
+                        if (game.activeUnit === game.units[clickedOwner][clickedId].unitGroup) {
+                            // If clicked unit is in the active group, remove it from that group
+                            game.activeUnit.remove(clickedId);
+                            console.log("REMOVE");
+                        } else {
+                            // If clicked unit is not in the active group, add it to that group
+                            game.activeUnit.add([game.units[clickedOwner][clickedId]]);
+                            console.log("ADD");
+                        }
+                        chromeUI.onUnitActivated();
+                        // redraw needed?
                     }
-                    console.log('shift');
                 } else {
                     // If part of group that is activated, disband group and activate clicked unit
                     // Else if the unit is in a group, activate the group
@@ -1471,6 +1478,16 @@ var Units;
         BaseUnitOrGroup.prototype.sentry = function () {
             console.log("SENTRY");
         };
+
+        // These stubs were added so individual units and groups and be more easily used
+        // interchangeably. They should never be called, since they only apply to groups and
+        // UnitGroup overwrites them.
+        BaseUnitOrGroup.prototype.add = function (units) {
+            console.log("BaseUnit.add should not be called");
+        };
+        BaseUnitOrGroup.prototype.remove = function (id) {
+            console.log("BaseUnit.remove should not be called");
+        };
         return BaseUnitOrGroup;
     })();
     Units.BaseUnitOrGroup = BaseUnitOrGroup;
@@ -1736,6 +1753,20 @@ var Units;
         };
 
         UnitGroup.prototype.remove = function (id) {
+            var i;
+
+            for (i = 0; i < this.units.length; i++) {
+                if (this.units[i].id === id) {
+                    this.units[i].unitGroup = null;
+                    this.units.splice(i, 1);
+                    break;
+                }
+            }
+
+            // Don't keep a unit of 1 around
+            if (this.units.length === 1) {
+                this.disband();
+            }
         };
 
         UnitGroup.prototype.disband = function (activateUnitAtEnd) {

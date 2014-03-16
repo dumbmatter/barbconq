@@ -242,6 +242,12 @@ console.log("FORTIFY")
         sentry() {
 console.log("SENTRY")
         }
+
+        // These stubs were added so individual units and groups and be more easily used
+        // interchangeably. They should never be called, since they only apply to groups and
+        // UnitGroup overwrites them.
+        add(units: BaseUnit[]) { console.log("BaseUnit.add should not be called"); }
+        remove(id : number) { console.log("BaseUnit.remove should not be called"); }
     }
 
     export class BaseUnit extends BaseUnitOrGroup {
@@ -442,7 +448,22 @@ console.log("SENTRY")
             }
         }
 
-        remove(id) {}
+        remove(id) {
+            var i;
+
+            for (i = 0; i < this.units.length; i++) {
+                if (this.units[i].id === id) {
+                    this.units[i].unitGroup = null;
+                    this.units.splice(i, 1);
+                    break;
+                }
+            }
+
+            // Don't keep a unit of 1 around
+            if (this.units.length === 1) {
+                this.disband();
+            }
+        }
 
         disband(activateUnitAtEnd : boolean = true) {
             var i, toActivate;
@@ -475,8 +496,8 @@ console.log("SENTRY")
 
         strength = 2;
         currentStrength = 2;
-        movement = 2;
-        currentMovement = 2;
+        movement = 1;
+        currentMovement = 1;
 
         landOrSea = "land";
         actions = ["fortify", "skipTurn", "sentry"];

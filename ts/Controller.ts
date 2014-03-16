@@ -312,7 +312,7 @@ class Controller {
     initUnitIcons() {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
-            var clickedGid, clickedId, clickedOwner, el, i, newGroup, newUnits, owner, units;
+            var clickedGid : number, clickedId : number, clickedOwner : number, el : any, i : number, newGroup : Units.UnitGroup, newUnits : Units.BaseUnit[], units : Units.BaseUnit[];
 
 console.log(e);
             el = <HTMLElement> e.target;
@@ -352,29 +352,36 @@ console.log(el.dataset);
                 } else if (e.ctrlKey && e.shiftKey) {
                     // If a group is currently active, add all units of the clicked type with currentMovement > 0 to that group
                     // If no group is currently active, create one with all of the units of the clicked type with currentMovement > 0
-                    console.log('ctrl+shift');
+console.log('ctrl+shift');
                 } else if (e.ctrlKey) {
                     // Disband any current unit, create a new group from all the units of the clicked type with currentMovement > 0
-                    console.log('ctrl');
+console.log('ctrl');
                 } else if (e.shiftKey) {
                     if (game.activeUnit instanceof Units.BaseUnit) {
                         // Individual unit is active
-                        // If clicked unit is not the active unit, add it to a new group with clicked unit
                         if (game.activeUnit.id !== clickedId) {
+                            // If clicked unit is not the active unit, add it to a new group with clicked unit
                             newGroup = new Units.UnitGroup(clickedOwner, [game.activeUnit, game.units[clickedOwner][clickedId]]);
                             newGroup.activate(false);
                         }
-                    } else {
+                    } else if (game.activeUnit instanceof Units.UnitGroup) {
                         // Unit group is active
-                        // - If clicked unit is in the active group, remove it from that group
-                        // - If clicked unit is not in the active group, add it to that group
+                        if (game.activeUnit === game.units[clickedOwner][clickedId].unitGroup) {
+                            // If clicked unit is in the active group, remove it from that group
+                            game.activeUnit.remove(clickedId);
+                        } else {
+                            // If clicked unit is not in the active group, add it to that group
+                            game.activeUnit.add([game.units[clickedOwner][clickedId]]);
+                        }
+                        // Redraw chrome since activation changed
+                        chromeUI.onUnitActivated();
+// redraw needed?
                     }
-                    console.log('shift');
                 } else {
                     // If part of group that is activated, disband group and activate clicked unit
                     // Else if the unit is in a group, activate the group
                     // Else activate the unit
-                    console.log('normal')
+console.log('normal')
                 }
             }
         });

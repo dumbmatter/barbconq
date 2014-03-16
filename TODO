@@ -5,10 +5,8 @@ stacked unit actions and UI
     icons
       clicking actions - see comments in Controller.ts
         click
-        alt+click
         ctrl+shift+click
         ctrl+click
-        shift+click
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
     shift click
