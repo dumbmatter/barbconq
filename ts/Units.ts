@@ -502,4 +502,16 @@ console.log("SENTRY")
         landOrSea = "land";
         actions = ["fortify", "skipTurn", "sentry"];
     }
+
+    export class Chariot extends BaseUnit {
+        type = "Chariot";
+
+        strength = 4;
+        currentStrength = 4;
+        movement = 2;
+        currentMovement = 2;
+
+        landOrSea = "land";
+        actions = ["fortify", "skipTurn", "sentry"];
+    }
 }

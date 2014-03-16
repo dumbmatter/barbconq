@@ -370,12 +370,12 @@ var Controller = (function () {
                         if (game.activeUnit === game.units[clickedOwner][clickedId].unitGroup) {
                             // If clicked unit is in the active group, remove it from that group
                             game.activeUnit.remove(clickedId);
-                            console.log("REMOVE");
                         } else {
                             // If clicked unit is not in the active group, add it to that group
                             game.activeUnit.add([game.units[clickedOwner][clickedId]]);
-                            console.log("ADD");
                         }
+
+                        // Redraw chrome since activation changed
                         chromeUI.onUnitActivated();
                         // redraw needed?
                     }
@@ -1805,14 +1805,30 @@ var Units;
             this.type = "Warrior";
             this.strength = 2;
             this.currentStrength = 2;
-            this.movement = 2;
-            this.currentMovement = 2;
+            this.movement = 1;
+            this.currentMovement = 1;
             this.landOrSea = "land";
             this.actions = ["fortify", "skipTurn", "sentry"];
         }
         return Warrior;
     })(BaseUnit);
     Units.Warrior = Warrior;
+
+    var Chariot = (function (_super) {
+        __extends(Chariot, _super);
+        function Chariot() {
+            _super.apply(this, arguments);
+            this.type = "Chariot";
+            this.strength = 4;
+            this.currentStrength = 4;
+            this.movement = 2;
+            this.currentMovement = 2;
+            this.landOrSea = "land";
+            this.actions = ["fortify", "skipTurn", "sentry"];
+        }
+        return Chariot;
+    })(BaseUnit);
+    Units.Chariot = Chariot;
 })(Units || (Units = {}));
 ///<reference path='Random.ts'/>
 ///<reference path='Controller.ts'/>
@@ -1843,7 +1859,7 @@ for (var i = 0; i < 1; i++) {
 
 var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
-var u3 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 var g = new Units.UnitGroup(config.PLAYER_ID, [u1, u2]);
 
 game.newTurn();
