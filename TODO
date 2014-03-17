@@ -1,9 +1,6 @@
 # Major current tasks
 
 rename "stacks" back to "groups"? the concept of "stacks" refers to any units on the same tile, regardless of grouping
-BaseUnit should be Unit
-skippedTurn
-  can this be reversed any way?
 
 unit tests for stacked units?
   click actions can be tested by passing fake even object to click handling function

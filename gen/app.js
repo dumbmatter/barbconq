@@ -1554,6 +1554,9 @@ var Units;
             // Move the unit(s) in the map data structure
             this.moveOnMap(coords);
 
+            // Reset skippedTurn status
+            this.skippedTurn = false;
+
             // Keep track of movement locally
             this.coords = coords;
             this.currentMovement -= 1; // Should depend on terrain/improvements
