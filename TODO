@@ -4,7 +4,6 @@ stacked unit actions and UI
   bottom-units
     icons
       clicking actions - see comments in Controller.ts
-        click
         ctrl+shift+click
         ctrl+click
       top left: red/yellow/green for no/some/full moves

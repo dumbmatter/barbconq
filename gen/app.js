@@ -313,7 +313,7 @@ var Controller = (function () {
     Controller.prototype.initUnitIcons = function () {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
-            var clickedGid, clickedId, clickedOwner, el, i, newGroup, newUnits, units;
+            var clickedGid, clickedId, clickedOwner, el, i, newGroup, newUnits, units, type;
 
             console.log(e);
             el = e.target;
@@ -321,7 +321,7 @@ var Controller = (function () {
                 e.preventDefault();
 
                 // Metadata from clicked icon
-                clickedGid = parseInt(el.dataset.gid, 10);
+                clickedGid = el.dataset.gid !== undefined ? parseInt(el.dataset.gid, 10) : null;
                 clickedId = parseInt(el.dataset.id, 10);
                 clickedOwner = parseInt(el.dataset.owner, 10);
 
@@ -355,7 +355,11 @@ var Controller = (function () {
                     // If no group is currently active, create one with all of the units of the clicked type with currentMovement > 0
                     console.log('ctrl+shift');
                 } else if (e.ctrlKey) {
-                    // Disband any current unit, create a new group from all the units of the clicked type with currentMovement > 0
+                    type = game.units[clickedOwner][clickedId].type;
+                    console.log(type);
+
+                    // Disband any current groups involving this type
+                    // Create a new group from all the units of the clicked type with currentMovement > 0
                     console.log('ctrl');
                 } else if (e.shiftKey) {
                     if (game.activeUnit instanceof Units.BaseUnit) {
@@ -368,23 +372,32 @@ var Controller = (function () {
                     } else if (game.activeUnit instanceof Units.UnitGroup) {
                         // Unit group is active
                         if (game.activeUnit === game.units[clickedOwner][clickedId].unitGroup) {
-                            // If clicked unit is in the active group, remove it from that group
+                            // Clicked unit is in the active group, remove it from that group
                             game.activeUnit.remove(clickedId);
                         } else {
-                            // If clicked unit is not in the active group, add it to that group
+                            // Clicked unit is not in the active group, add it to that group
                             game.activeUnit.add([game.units[clickedOwner][clickedId]]);
                         }
 
                         // Redraw everything, since there is no Unit.activate call here to do that otherwise
                         chromeUI.onUnitActivated();
                         window.requestAnimationFrame(mapUI.render.bind(mapUI));
-                        // redraw needed?
                     }
                 } else {
-                    // If part of group that is activated, disband group and activate clicked unit
-                    // Else if the unit is in a group, activate the group
-                    // Else activate the unit
-                    console.log('normal');
+                    if (clickedGid !== null) {
+                        // Clicked unit is in a group
+                        if (game.activeUnit.id === clickedGid) {
+                            // Clicked unit is member of active group, so disband it and activate clicked unit
+                            game.unitGroups[clickedOwner][clickedGid].disband(false);
+                            game.units[clickedOwner][clickedId].activate(false);
+                        } else {
+                            // Clicked unit is in an inactive group, so activate the group
+                            game.unitGroups[clickedOwner][clickedGid].activate(false);
+                        }
+                    } else {
+                        // Clicked unit is not in group, so just activate it
+                        game.units[clickedOwner][clickedId].activate(false);
+                    }
                 }
             }
         });
