@@ -313,16 +313,16 @@ var Controller = (function () {
     Controller.prototype.initUnitIcons = function () {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
-            var activeUnit, activeStack, clickedGid, clickedId, clickedOwner, el, i, newStack, newUnits, units, type;
+            var activeUnit, activeStack, clickedId, clickedOwner, clickedSid, el, i, newStack, newUnits, units, type;
 
             el = e.target;
             if (el && el.dataset.id) {
                 e.preventDefault();
 
                 // Metadata from clicked icon
-                clickedGid = el.dataset.gid !== undefined ? parseInt(el.dataset.gid, 10) : null;
                 clickedId = parseInt(el.dataset.id, 10);
                 clickedOwner = parseInt(el.dataset.owner, 10);
+                clickedSid = el.dataset.gid !== undefined ? parseInt(el.dataset.gid, 10) : null;
 
                 // Only continue if clicked unit belongs to player
                 if (clickedOwner !== config.PLAYER_ID) {
@@ -339,7 +339,7 @@ var Controller = (function () {
 
                 // Handle all the different key modifiers
                 if (e.altKey) {
-                    // separate any current stacks on the tile
+                    // Separate any current stacks on the tile
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.stack) {
@@ -358,41 +358,56 @@ var Controller = (function () {
                 } else if (e.ctrlKey && e.shiftKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    // Separate any current stacks on this tile involving this type
-                    newUnits = [];
-                    units.forEach(function (unit) {
-                        if (unit.currentMovement > 0 && unit.type === type) {
-                            if (unit.stack) {
-                                unit.stack.separate(false);
-                            }
-                            newUnits.push(unit);
-                        }
-                    });
+                    if (game.activeUnit instanceof Units.BaseUnit) {
+                        // Individual unit is active
+                        // Create a stack with the active unit and all units of the clicked type with currentMovement > 0
+                        activeUnit = game.activeUnit; // So TypeScript knows it's not a stack
 
-                    if (newUnits.length > 0) {
-                        if (game.activeUnit instanceof Units.BaseUnit) {
-                            // Individual unit is active
-                            // Create a stack with the active unit and all units of the clicked type with currentMovement > 0
-                            activeUnit = game.activeUnit; // So TypeScript knows it's not a stack
-                            if (activeUnit.type !== type) {
-                                newUnits.push(activeUnit);
+                        // Find all units of type
+                        newUnits = [activeUnit];
+                        units.forEach(function (unit) {
+                            if (unit.currentMovement > 0 && unit.type === type && unit.id !== activeUnit.id) {
+                                newUnits.push(unit);
+
+                                // Remove from current stack, if it exists
+                                if (unit.stack) {
+                                    unit.stack.remove(unit.id, false);
+                                }
                             }
-                            newStack = new Units.Stack(clickedOwner, newUnits);
-                            newStack.activate(false);
-                        } else if (game.activeUnit instanceof Units.Stack) {
-                            // Unit stack is active
-                            // Add all units of the clicked type with currentMovement > 0 to that stack
-                            activeStack = game.activeUnit; // So TypeScript knows it's not an individual unit
+                        });
+
+                        // New stack with units of type and activeUnit
+                        newStack = new Units.Stack(clickedOwner, newUnits);
+                        newStack.activate(false);
+                    } else if (game.activeUnit instanceof Units.Stack) {
+                        // Unit stack is active
+                        // Add all units of the clicked type with currentMovement > 0 to that stack
+                        activeStack = game.activeUnit; // So TypeScript knows it's not an individual unit
+
+                        // Find units of type that aren't already in stack
+                        newUnits = [];
+                        units.forEach(function (unit) {
+                            if (unit.currentMovement > 0 && unit.type === type && (!unit.stack || unit.stack.id !== activeStack.id)) {
+                                newUnits.push(unit);
+
+                                // Remove from current stack, if it exists
+                                if (unit.stack) {
+                                    unit.stack.remove(unit.id, false);
+                                }
+                            }
+                        });
+
+                        if (newUnits.length > 0) {
                             activeStack.add(newUnits);
 
                             // Redraw everything, since there is no Unit.activate call here to do that otherwise
                             chromeUI.onUnitActivated();
                             window.requestAnimationFrame(mapUI.render.bind(mapUI));
-                        } else {
-                            // No unit active (like if they all got separateed above)
-                            newStack = new Units.Stack(clickedOwner, newUnits);
-                            newStack.activate(false);
                         }
+                    } else {
+                        // No unit active (like if they all got separateed above)
+                        newStack = new Units.Stack(clickedOwner, newUnits);
+                        newStack.activate(false);
                     }
                 } else if (e.ctrlKey) {
                     type = game.units[clickedOwner][clickedId].type;
@@ -438,15 +453,15 @@ var Controller = (function () {
                         window.requestAnimationFrame(mapUI.render.bind(mapUI));
                     }
                 } else {
-                    if (clickedGid !== null) {
+                    if (clickedSid !== null) {
                         // Clicked unit is in a stack
-                        if (game.activeUnit.id === clickedGid) {
+                        if (game.activeUnit.id === clickedSid) {
                             // Clicked unit is member of active stack, so separate it and activate clicked unit
-                            game.stacks[clickedOwner][clickedGid].separate(false);
+                            game.stacks[clickedOwner][clickedSid].separate(false);
                             game.units[clickedOwner][clickedId].activate(false);
                         } else {
                             // Clicked unit is in an inactive stack, so activate the stack
-                            game.stacks[clickedOwner][clickedGid].activate(false);
+                            game.stacks[clickedOwner][clickedSid].activate(false);
                         }
                     } else {
                         // Clicked unit is not in stack, so just activate it
@@ -1875,7 +1890,8 @@ var Units;
             }
         };
 
-        Stack.prototype.remove = function (id) {
+        Stack.prototype.remove = function (id, activateUnitIfSeparate) {
+            if (typeof activateUnitIfSeparate === "undefined") { activateUnitIfSeparate = true; }
             var i;
 
             for (i = 0; i < this.units.length; i++) {
@@ -1888,7 +1904,7 @@ var Units;
 
             // Don't keep a unit of 1 around
             if (this.units.length === 1) {
-                this.separate();
+                this.separate(activateUnitIfSeparate);
             }
         };
 
@@ -1982,9 +1998,9 @@ for (var i = 0; i < 1; i++) {
 
 var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
-var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
-var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
-var g = new Units.Stack(config.PLAYER_ID, [u1, u2, u3]);
+new Units.Stack(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
+[new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])];
+new Units.Stack(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
 
 game.newTurn();
 //# sourceMappingURL=app.js.map

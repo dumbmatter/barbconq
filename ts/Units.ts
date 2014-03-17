@@ -445,7 +445,7 @@ console.log("SENTRY")
             }
         }
 
-        remove(id) {
+        remove(id : number, activateUnitIfSeparate : boolean = true) {
             var i;
 
             for (i = 0; i < this.units.length; i++) {
@@ -458,7 +458,7 @@ console.log("SENTRY")
 
             // Don't keep a unit of 1 around
             if (this.units.length === 1) {
-                this.separate();
+                this.separate(activateUnitIfSeparate);
             }
         }
 
