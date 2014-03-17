@@ -6,8 +6,6 @@ stacked unit actions and UI
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
     how to handle overflow? scroll left/right?
-  TEST TEST TEST
-    select all units into one group. ctrl+shift+click on one of the types -> unit is disbanded somehow but UI is not updated??
   should I make UnitGroup.units and Tile.units lists of objects with ID keys, like game.units and game.unitGroups?
   show "Unit Stack" in info box
   make sure unitGroup properties are being correctly updated when a unit with different properties is added/removed from the group

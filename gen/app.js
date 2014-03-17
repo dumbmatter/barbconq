@@ -336,7 +336,6 @@ var Controller = (function () {
 
                 // List of all units on the tile
                 units = game.getTile(game.activeUnit.coords).units;
-                console.log(el.dataset);
 
                 // Handle all the different key modifiers
                 if (e.altKey) {
@@ -389,6 +388,10 @@ var Controller = (function () {
                             // Redraw everything, since there is no Unit.activate call here to do that otherwise
                             chromeUI.onUnitActivated();
                             window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                        } else {
+                            // No unit active (like if they all got disbanded above)
+                            newGroup = new Units.UnitGroup(clickedOwner, newUnits);
+                            newGroup.activate(false);
                         }
                     }
                 } else if (e.ctrlKey) {
