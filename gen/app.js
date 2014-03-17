@@ -129,7 +129,6 @@ var Controller = (function () {
                 coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
                 game.map.pathFinding(game.activeUnit, coords);
 
-                //game.activeUnit.pathFinding(coords);
                 // If click doesn't start on map, ignore it
                 if (!game.map.validCoords(coords)) {
                     return;
@@ -242,7 +241,7 @@ var Controller = (function () {
     // if one of your units is not on the clicked tile, center the map
     Controller.prototype.initMapClick = function () {
         mapUI.canvas.addEventListener("click", function (e) {
-            var foundUnit, i, coords, units;
+            var i, coords, currentMetric, maxMetric, unit, units;
 
             if (e.button === 0) {
                 e.preventDefault();
@@ -251,19 +250,36 @@ var Controller = (function () {
 
                 if (game.map.validCoords(coords)) {
                     units = game.getTile(coords).units;
-                    foundUnit = false;
 
+                    // Find the strongest unit with moves left
+                    maxMetric = -Infinity;
                     for (i = 0; i < units.length; i++) {
-                        if (units[i].owner === 1) {
-                            units[i].activate(false); // Activate, but don't center map!
-                            foundUnit = true;
-                            requestAnimationFrame(mapUI.render.bind(mapUI));
-                            return;
+                        // Sort by criteria: 1. if active already; 2. if currentMovement > 0; 3. currentStrength
+                        currentMetric = units[i].currentStrength;
+                        if (units[i].currentMovement > 0) {
+                            currentMetric += 100;
+                        }
+                        if (units[i].active || (units[i].stack && units[i].stack.active)) {
+                            currentMetric += 1000;
+                        }
+
+                        if (currentMetric > maxMetric) {
+                            unit = units[i];
+                            maxMetric = currentMetric;
                         }
                     }
 
-                    // If we made it this far, none of the user's units are on this tile
-                    mapUI.goToCoords(coords);
+                    if (unit) {
+                        if (unit.stack) {
+                            unit.stack.activate(false);
+                        } else {
+                            unit.activate(false);
+                        }
+                        requestAnimationFrame(mapUI.render.bind(mapUI));
+                    } else {
+                        // None of the user's units are on this tile, so pan to it
+                        mapUI.goToCoords(coords);
+                    }
                 }
             }
         });
