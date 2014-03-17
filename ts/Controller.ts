@@ -435,7 +435,7 @@ class Controller {
                         // Individual unit is active
                         if (game.activeUnit.id !== clickedId) {
                             // If clicked unit is not the active unit, add it to a new stack with clicked unit
-                            newStack = new Units.Stack(clickedOwner, [game.activeUnit, game.units[clickedOwner][clickedId]]);
+                            newStack = new Units.Stack(clickedOwner, [<Units.BaseUnit> game.activeUnit, game.units[clickedOwner][clickedId]]);
                             newStack.activate(false);
                         }
                     } else if (game.activeUnit instanceof Units.Stack) {
