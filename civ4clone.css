@@ -69,13 +69,17 @@ canvas { display:block; } /* To remove the scrollbars */
 #bottom-info h1 {
   color: #ffde00;
   font-size: 24px;
-  margin: 5px 0;
+  margin: 5px 0 0 0;
 }
 #bottom-info table {
   border-spacing: 0;
 }
 #bottom-info td {
   padding: 5px 10px 0 0;
+}
+#bottom-info .stack-types {
+  height: 70px;
+  overflow-y: auto;
 }
 
 #bottom-actions {
@@ -175,7 +179,7 @@ canvas { display:block; } /* To remove the scrollbars */
 }
 #bottom-units .unit-icon {
   float: left;
-  margin-right: 5px;
+  margin-right: 2px;
   background: #000;
   color: #ffde00;
   font-size: 12px;

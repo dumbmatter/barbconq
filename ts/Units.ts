@@ -403,6 +403,9 @@ console.log("SENTRY")
                     }
                 }
             }
+
+            actions.push("disband");
+
             return actions;
         }
         set active(value : boolean) { this._active = value; }

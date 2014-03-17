@@ -574,6 +574,9 @@ var ChromeUI = (function () {
         } else if (action === "sentry") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Sentry</span> <span class="action-shortcut">&lt;S&gt;</span></p><p>The unit remains inactive until it sees an enemy unit.</p>';
             this.elHoverBox.style.display = "block";
+        } else if (action === "disband") {
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Disband</span></p><p>Separates the group so you can move each unit individually.</p>';
+            this.elHoverBox.style.display = "block";
         } else {
             this.elHoverBox.style.display = "none";
         }
@@ -590,9 +593,9 @@ var ChromeUI = (function () {
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
     ChromeUI.prototype.updateActiveUnit = function () {
-        var activeUnit, actionName, i, units;
+        var activeUnit, actionName, addCommas, content, counts, i, units, type;
 
-        activeUnit = game.activeUnit;
+        activeUnit = game.activeUnit; // Really should have separate variables for unit and group, like in unit icon click handling
 
         // Reset
         this.elBottomActions.innerHTML = "";
@@ -601,7 +604,38 @@ var ChromeUI = (function () {
 
         if (game.activeUnit) {
             // Update bottom-info
-            this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
+            if (activeUnit instanceof Units.BaseUnit) {
+                this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
+            } else if (activeUnit instanceof Units.UnitGroup) {
+                content = "<h1>Unit Stack (" + activeUnit.units.length + ")</h1>" + "<table>" + "<tr><td>Movement: " + this.movementFraction(activeUnit) + "</td></tr>" + '<tr><td><div class="stack-types">Units: ';
+
+                // List individual unit types in stack
+                counts = {};
+                for (i = 0; i < activeUnit.units.length; i++) {
+                    if (activeUnit.units[i].type in counts) {
+                        counts[activeUnit.units[i].type] += 1;
+                    } else {
+                        counts[activeUnit.units[i].type] = 1;
+                    }
+                }
+                addCommas = false;
+                for (type in counts) {
+                    if (!addCommas) {
+                        addCommas = true;
+                    } else {
+                        content += ", ";
+                    }
+
+                    if (counts[type] > 1) {
+                        content += type + " (" + counts[type] + ")";
+                    } else {
+                        content += type;
+                    }
+                }
+                content += "</div></td></tr></table>";
+
+                this.elBottomInfo.innerHTML = content;
+            }
 
             for (i = 0; i < activeUnit.actions.length; i++) {
                 // Convert camel case to title case
@@ -1792,6 +1826,9 @@ var Units;
                         }
                     }
                 }
+
+                actions.push("disband");
+
                 return actions;
             },
             // Do nothing, can't be changed at group level
@@ -1947,7 +1984,7 @@ var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
-var g = new Units.UnitGroup(config.PLAYER_ID, [u1, u2]);
+var g = new Units.UnitGroup(config.PLAYER_ID, [u1, u2, u3]);
 
 game.newTurn();
 //# sourceMappingURL=app.js.map

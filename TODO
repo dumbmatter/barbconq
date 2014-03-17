@@ -1,13 +1,13 @@
 # Major current tasks
 
+s/group/stack/ (damn i'm stupid)
+s/disband/separate/
 stacked unit actions and UI
   bottom-units
     icons
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
     how to handle overflow? scroll left/right?
-  should I make UnitGroup.units and Tile.units lists of objects with ID keys, like game.units and game.unitGroups?
-  show "Unit Stack" in info box
   make sure unitGroup properties are being correctly updated when a unit with different properties is added/removed from the group
   left click on map
     if top unit is in group, select that. otherwise, just select top unit.
@@ -148,6 +148,8 @@ monetization ideas
   adsense panel on the side of the screen. put intro/manual content in HTML as divs to hide/show in game, for both SEO and adsense
 
 # Nice to have
+
+should I make UnitGroup.units and Tile.units lists of objects with ID keys, like game.units and game.unitGroups?
 
 Data
   keep it all in memory. write to indexeddb every turn
