@@ -312,7 +312,7 @@ class Controller {
     initUnitIcons() {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
-            var clickedGid : number, clickedId : number, clickedOwner : number, el : any, i : number, newGroup : Units.UnitGroup, newUnits : Units.BaseUnit[], units : Units.BaseUnit[], type : string;
+            var activeUnit : Units.BaseUnit, activeUnitGroup : Units.UnitGroup, clickedGid : number, clickedId : number, clickedOwner : number, el : any, i : number, newGroup : Units.UnitGroup, newUnits : Units.BaseUnit[], units : Units.BaseUnit[], type : string;
 
             el = <HTMLElement> e.target;
             if (el && el.dataset.id) {
@@ -356,9 +356,40 @@ console.log(el.dataset);
                         newGroup.activate(false);
                     }
                 } else if (e.ctrlKey && e.shiftKey) {
-                    // If a group is currently active, add all units of the clicked type with currentMovement > 0 to that group
-                    // If no group is currently active, create one with all of the units of the clicked type with currentMovement > 0
-console.log('ctrl+shift');
+                    type = game.units[clickedOwner][clickedId].type;
+
+                    // Disband any current groups on this tile involving this type
+                    newUnits = [];
+                    units.forEach(function (unit) {
+                        if (unit.currentMovement > 0 && unit.type === type) {
+                            if (unit.unitGroup) {
+                                unit.unitGroup.disband(false);
+                            }
+                            newUnits.push(unit);
+                        }
+                    });
+
+                    if (newUnits.length > 0) {
+                        if (game.activeUnit instanceof Units.BaseUnit) {
+                            // Individual unit is active
+                            // Create a group with the active unit and all units of the clicked type with currentMovement > 0
+                            activeUnit = <Units.BaseUnit> game.activeUnit; // So TypeScript knows it's not a group
+                            if (activeUnit.type !== type) {
+                                newUnits.push(activeUnit);
+                            }
+                            newGroup = new Units.UnitGroup(clickedOwner, newUnits);
+                            newGroup.activate(false);
+                        } else if (game.activeUnit instanceof Units.UnitGroup) {
+                            // Unit group is active
+                            // Add all units of the clicked type with currentMovement > 0 to that group
+                            activeUnitGroup = <Units.UnitGroup> game.activeUnit; // So TypeScript knows it's not an individual unit
+                            activeUnitGroup.add(newUnits);
+
+                            // Redraw everything, since there is no Unit.activate call here to do that otherwise
+                            chromeUI.onUnitActivated();
+                            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                        }
+                    }
                 } else if (e.ctrlKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
@@ -387,13 +418,14 @@ console.log('ctrl+shift');
                             newGroup.activate(false);
                         }
                     } else if (game.activeUnit instanceof Units.UnitGroup) {
+                        activeUnitGroup = <Units.UnitGroup> game.activeUnit; // So TypeScript knows it's not an individual unit
                         // Unit group is active
-                        if (game.activeUnit === game.units[clickedOwner][clickedId].unitGroup) {
+                        if (activeUnitGroup === game.units[clickedOwner][clickedId].unitGroup) {
                             // Clicked unit is in the active group, remove it from that group
-                            game.activeUnit.remove(clickedId);
+                            activeUnitGroup.remove(clickedId);
                         } else {
                             // Clicked unit is not in the active group, add it to that group
-                            game.activeUnit.add([game.units[clickedOwner][clickedId]]);
+                            activeUnitGroup.add([game.units[clickedOwner][clickedId]]);
                         }
                         // Redraw everything, since there is no Unit.activate call here to do that otherwise
                         chromeUI.onUnitActivated();

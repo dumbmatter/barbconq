@@ -3,12 +3,11 @@
 stacked unit actions and UI
   bottom-units
     icons
-      clicking actions - see comments in Controller.ts
-        ctrl+shift+click
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
     how to handle overflow? scroll left/right?
   TEST TEST TEST
+    select all units into one group. ctrl+shift+click on one of the types -> unit is disbanded somehow but UI is not updated??
   should I make UnitGroup.units and Tile.units lists of objects with ID keys, like game.units and game.unitGroups?
   show "Unit Stack" in info box
   make sure unitGroup properties are being correctly updated when a unit with different properties is added/removed from the group
@@ -57,6 +56,7 @@ typescript live compile
 
 "End turn early" green button and "end turn" red button, next to minimap
   if end turn early, make sure to move units on path towards targetCoords first!
+    i have the same problem is i have a warrior/chariot group move towards target, have the "End" text flashing, disband so the chariot can still move, and then press enter
   is green/red always in sync with "begin next turn" blinker?
   add "shift+enter" shortcut for end turn early
 

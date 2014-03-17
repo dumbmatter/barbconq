@@ -243,12 +243,6 @@ console.log("FORTIFY")
         sentry() {
 console.log("SENTRY")
         }
-
-        // These stubs were added so individual units and groups and be more easily used
-        // interchangeably. They should never be called, since they only apply to groups and
-        // UnitGroup overwrites them.
-        add(units: BaseUnit[]) { console.log("BaseUnit.add should not be called"); }
-        remove(id : number) { console.log("BaseUnit.remove should not be called"); }
     }
 
     export class BaseUnit extends BaseUnitOrGroup {
