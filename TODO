@@ -4,6 +4,9 @@ unit tests for grouped units?
   karma/mocha/chai
   install all with npm
     need karma-mocha and karma-chai?
+  source maps for karma output
+    https://github.com/karma-runner/karma/issues/594
+      need to run tsc in preprocessor?
 
 fog of war
   states
