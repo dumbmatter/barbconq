@@ -235,6 +235,9 @@ canvas { display:block; } /* To remove the scrollbars */
   height: 8px;
   border-radius: 4px;
 }
+#bottom-units .movement-moved {
+  background-color: #f0f0f0;
+}
 #bottom-units .movement-all {
   background-color: green;
 }

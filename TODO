@@ -30,6 +30,10 @@ basic barb AI
 
 # Minor current tasks
 
+terrain effects
+  movement
+  defensive bonuses
+
 keyboard shortcuts
   enter: if not end of turn, cycle through units
     should allow you to let unit continue on path
@@ -53,7 +57,9 @@ unit actions
   fortify
     defensive bonus
     healing
+    top right indicator in unit icon
   sentry
+  sleep/fortify difference?
 
 unit types, to start with
   scout

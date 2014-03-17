@@ -698,12 +698,14 @@ var ChromeUI = (function () {
         // Movement indicator
         movementIndicator = document.createElement("div");
         movementIndicator.classList.add("movement-indicator");
-        if (unit.currentMovement === unit.movement) {
+        if (unit.currentMovement === 0) {
+            movementIndicator.classList.add("movement-none");
+        } else if (unit.moved) {
+            movementIndicator.classList.add("movement-moved");
+        } else if (unit.currentMovement === unit.movement) {
             movementIndicator.classList.add("movement-all");
         } else if (unit.currentMovement > 0) {
             movementIndicator.classList.add("movement-some");
-        } else {
-            movementIndicator.classList.add("movement-none");
         }
 
         iconWrapper.appendChild(icon);
@@ -1879,6 +1881,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
+
         Object.defineProperty(Stack.prototype, "active", {
             get: function () {
                 return this._active;
@@ -1889,11 +1892,18 @@ var Units;
             enumerable: true,
             configurable: true
         });
+
         Object.defineProperty(Stack.prototype, "moved", {
             get: function () {
                 return this._moved;
             },
+            // Set for stack and every stack member
             set: function (value) {
+                var i;
+
+                for (i = 0; i < this.units.length; i++) {
+                    this.units[i].moved = value;
+                }
                 this._moved = value;
             },
             enumerable: true,

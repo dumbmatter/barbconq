@@ -408,9 +408,19 @@ console.log("SENTRY")
 
             return actions;
         }
+
         set active(value : boolean) { this._active = value; }
         get active() : boolean { return this._active; }
-        set moved(value : boolean) { this._moved = value; }
+
+        // Set for stack and every stack member
+        set moved(value : boolean) {
+            var i : number;
+
+            for (i = 0; i < this.units.length; i++) {
+                this.units[i].moved = value;
+            }
+            this._moved = value;
+        }
         get moved() : boolean { return this._moved; }
 
         constructor(owner : number, units : BaseUnit[]) {
