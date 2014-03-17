@@ -315,7 +315,6 @@ var Controller = (function () {
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
             var clickedGid, clickedId, clickedOwner, el, i, newGroup, newUnits, units, type;
 
-            console.log(e);
             el = e.target;
             if (el && el.dataset.id) {
                 e.preventDefault();
@@ -330,13 +329,18 @@ var Controller = (function () {
                     return;
                 }
 
+                // Sanity check, could happen due to fast clicking
+                if (!game.activeUnit) {
+                    return;
+                }
+
                 // List of all units on the tile
                 units = game.getTile(game.activeUnit.coords).units;
                 console.log(el.dataset);
 
                 // Handle all the different key modifiers
                 if (e.altKey) {
-                    // Disband any current groups on the tile, record all units with currentMovement > 0
+                    // Disband any current groups on the tile
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.unitGroup) {
@@ -347,20 +351,36 @@ var Controller = (function () {
                         }
                     });
 
-                    // Make a new group with all units with currentMovement > 0 and activate it
-                    newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                    newGroup.activate(false);
+                    console.log(newUnits);
+                    if (newUnits.length > 0) {
+                        // Make a new group with all units with currentMovement > 0 and activate it
+                        newGroup = new Units.UnitGroup(clickedOwner, newUnits);
+                        newGroup.activate(false);
+                    }
                 } else if (e.ctrlKey && e.shiftKey) {
                     // If a group is currently active, add all units of the clicked type with currentMovement > 0 to that group
                     // If no group is currently active, create one with all of the units of the clicked type with currentMovement > 0
                     console.log('ctrl+shift');
                 } else if (e.ctrlKey) {
                     type = game.units[clickedOwner][clickedId].type;
-                    console.log(type);
 
-                    // Disband any current groups involving this type
-                    // Create a new group from all the units of the clicked type with currentMovement > 0
-                    console.log('ctrl');
+                    // Disband any current groups on this tile involving this type
+                    newUnits = [];
+                    units.forEach(function (unit) {
+                        if (unit.currentMovement > 0 && unit.type === type) {
+                            if (unit.unitGroup) {
+                                unit.unitGroup.disband(false);
+                            }
+                            newUnits.push(unit);
+                        }
+                    });
+
+                    console.log(newUnits);
+                    if (newUnits.length > 0) {
+                        // Make a new group from all the units of the clicked type with currentMovement > 0
+                        newGroup = new Units.UnitGroup(clickedOwner, newUnits);
+                        newGroup.activate(false);
+                    }
                 } else if (e.shiftKey) {
                     if (game.activeUnit instanceof Units.BaseUnit) {
                         // Individual unit is active
@@ -1903,6 +1923,7 @@ for (var i = 0; i < 1; i++) {
 var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 var g = new Units.UnitGroup(config.PLAYER_ID, [u1, u2]);
 
 game.newTurn();
