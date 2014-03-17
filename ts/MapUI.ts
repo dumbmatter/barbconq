@@ -210,12 +210,12 @@ class MapUI {
                     // Only one to show...
                     unit = units[0];
                 } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
-                    // Active unit/stack on this tile
-                    if (game.activeUnit instanceof Units.Stack) {
-                        // Stack is active, show highest currentStrength from the stack
+                    // Active unit/group on this tile
+                    if (game.activeUnit instanceof Units.Group) {
+                        // Group is active, show highest currentStrength from the group
                         maxStrength = -Infinity;
                         for (k = 0; k < units.length; k++) {
-                            if (units[k].currentStrength > maxStrength && (units[k].stack && units[k].stack.id === game.activeUnit.id)) {
+                            if (units[k].currentStrength > maxStrength && (units[k].group && units[k].group.id === game.activeUnit.id)) {
                                 unit = units[k];
                                 maxStrength = units[k].currentStrength;
                             }

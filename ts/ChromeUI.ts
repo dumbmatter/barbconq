@@ -102,7 +102,7 @@ class ChromeUI {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Sentry</span> <span class="action-shortcut">&lt;S&gt;</span></p><p>The unit remains inactive until it sees an enemy unit.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "separate") {
-            this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the stack so you can move each unit individually.</p>';
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the group so you can move each unit individually.</p>';
             this.elHoverBox.style.display = "block";
         } else {
             this.elHoverBox.style.display = "none";
@@ -122,7 +122,7 @@ class ChromeUI {
     private updateActiveUnit() {
         var activeUnit, actionName : string, addCommas : boolean, content : string, counts : {[type: string]: number}, i : number, units : Units.Unit[], type : string;
 
-        activeUnit = game.activeUnit; // Really should have separate variables for unit and stack, like in unit icon click handling
+        activeUnit = game.activeUnit; // Really should have separate variables for unit and group, like in unit icon click handling
 
         // Reset
         this.elBottomActions.innerHTML = "";
@@ -139,13 +139,13 @@ class ChromeUI {
                     "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" +
                     "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" +
                     "</table>";
-            } else if (activeUnit instanceof Units.Stack) {
-                content = "<h1>Unit Stack (" + activeUnit.units.length + ")</h1>" +
+            } else if (activeUnit instanceof Units.Group) {
+                content = "<h1>Unit Group (" + activeUnit.units.length + ")</h1>" +
                     "<table>" +
                     "<tr><td>Movement: " + this.movementFraction(activeUnit) + "</td></tr>" +
-                    '<tr><td><div class="stack-types">Units: ';
+                    '<tr><td><div class="group-types">Units: ';
 
-                // List individual unit types in stack
+                // List individual unit types in group
                 counts = {};
                 for (i = 0; i < activeUnit.units.length; i++) {
                     if (activeUnit.units[i].type in counts) {
@@ -197,15 +197,15 @@ class ChromeUI {
         iconWrapper.classList.add("unit-icon-wrapper");
         iconWrapper.dataset.owner = unit.owner;
         iconWrapper.dataset.id = unit.id;
-        if (unit.stack) {
-            iconWrapper.dataset.gid = unit.stack.id;
+        if (unit.group) {
+            iconWrapper.dataset.gid = unit.group.id;
         }
 
         // Unit icon
         icon = document.createElement("div");
         icon.classList.add("unit-icon");
         icon.innerHTML = unit.type.slice(0, 2);
-        if (unit.active || (unit.stack && unit.stack.active)) {
+        if (unit.active || (unit.group && unit.group.active)) {
             icon.classList.add("active");
         }
 

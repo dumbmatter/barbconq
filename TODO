@@ -1,8 +1,6 @@
 # Major current tasks
 
-rename "stacks" back to "groups"? the concept of "stacks" refers to any units on the same tile, regardless of grouping
-
-unit tests for stacked units?
+unit tests for grouped units?
   click actions can be tested by passing fake even object to click handling function
 
 fog of war
@@ -17,10 +15,9 @@ combat
   also need to handle things like...
     get list of enemies on tile being moved to
     pick enemy with highest defense
-    stack attack
+    group attack
   what happens when a unit dies?
-    remove it from its stack, if stack exists
-      stack should separate if it's down to 1 unit
+    remove it from its group, if group exists
     delete it from game.units
     delete it from tile.units
 
@@ -44,7 +41,7 @@ typescript live compile
 
 "End turn early" green button and "end turn" red button, next to minimap
   if end turn early, make sure to move units on path towards targetCoords first!
-    i have the same problem is i have a warrior/chariot stack move towards target, have the "End" text flashing, separate so the chariot can still move, and then press enter
+    i have the same problem is i have a warrior/chariot group move towards target, have the "End" text flashing, separate so the chariot can still move, and then press enter
   is green/red always in sync with "begin next turn" blinker?
   add "shift+enter" shortcut for end turn early
 
@@ -141,7 +138,7 @@ monetization ideas
 
 # Nice to have
 
-should I make UnitStack.units and Tile.units lists of objects with ID keys, like game.units and game.unitStacks?
+should I make Units.Group.units and Tile.units lists of objects with ID keys, like game.units and game.groups?
 
 Data
   keep it all in memory. write to indexeddb every turn

@@ -2,20 +2,20 @@
 Units - classes for the various units types
 
 Inheritance chart:
-UnitOrStack - properties and functions that apply to all units and stacks of units
+UnitOrGroup - properties and functions that apply to all units and groups of units
 -> Unit - stuff specific to individual units
    -> All the individual unit classes, like Warrior
--> Stack - stacks of units
+-> Group - groups of units
 
-The general idea for stacks of units is that they should expose the same API as regular units, so
+The general idea for groups of units is that they should expose the same API as regular units, so
 all the rest of the code can treat them the same. Mainly through the use of getters and setters,
 they take the appropriate action with updating each variable (some things trickle down to individual
 units, like move counting, and others don't).
 */
 
 module Units {
-    // Things that both individual units and stacks of units have in common
-    export class UnitOrStack {
+    // Things that both individual units and groups of units have in common
+    export class UnitOrGroup {
         // Identification
         id : number; // Unique, incrementing
         _owner : number;
@@ -61,7 +61,7 @@ module Units {
         get skippedTurn() : boolean { return this._skippedTurn; }
 
         constructor() {
-            // Set unique ID for unit or stack
+            // Set unique ID for unit or group
             this.id = game.maxId;
             game.maxId += 1;
         }
@@ -137,7 +137,7 @@ module Units {
             }
         }
 
-        // Needs to be defined separately for individual and stack
+        // Needs to be defined separately for individual and group
         moveOnMap(coords : number[]) {}
 
         // Check for valid coords before calling
@@ -250,10 +250,10 @@ console.log("SENTRY")
         }
     }
 
-    export class Unit extends UnitOrStack {
+    export class Unit extends UnitOrGroup {
         // Identification
         type : string;
-        stack : Stack;
+        group : Group;
 
         // Key attributes
         level : number = 1;
@@ -285,12 +285,12 @@ console.log("SENTRY")
         }
     }
 
-    export class Stack extends UnitOrStack {
+    export class Group extends UnitOrGroup {
         units : Unit[] = [];
 
-        // Getters/setters for stacks
+        // Getters/setters for groups
 
-        // Set for stack and every stack member, like if the entire stack is captured
+        // Set for group and every group member, like if the entire group is captured
         set owner(value : number) {
             var i : number, min : number;
 
@@ -299,12 +299,12 @@ console.log("SENTRY")
             }
             this._owner = value;
         }
-        // Read value from stack, since they're all the same
+        // Read value from group, since they're all the same
         get owner() : number { return this._owner; }
 
-        // Do nothing, can't be changed at stack level
+        // Do nothing, can't be changed at group level
         set movement(value : number) {}
-        // Find minimum of stack members
+        // Find minimum of group members
         get movement() : number {
             var i : number, min : number;
 
@@ -317,7 +317,7 @@ console.log("SENTRY")
             return min;
         }
 
-        // Update each unit in stack with difference, and keep track at stack level for comparison here
+        // Update each unit in group with difference, and keep track at group level for comparison here
         set currentMovement(value : number) {
             var diff : number, i : number;
 
@@ -332,7 +332,7 @@ console.log("SENTRY")
             }
             this._currentMovement = value;
         }
-        // Find minimum of stack members
+        // Find minimum of group members
         get currentMovement() : number {
             var i : number, min : number;
 
@@ -345,7 +345,7 @@ console.log("SENTRY")
             return min;
         }
 
-        // Set for stack and every stack member
+        // Set for group and every group member
         set coords(value : number[]) {
             var i : number;
 
@@ -354,22 +354,22 @@ console.log("SENTRY")
             }
             this._coords = value;
         }
-        // Read value from stack, since they're all the same
+        // Read value from group, since they're all the same
         get coords() : number[] { return this._coords; }
 
-        // Set for stack
+        // Set for group
         set targetCoords(value : number[]) { this._targetCoords = value; }
-        // Read value from stack
+        // Read value from group
         get targetCoords() : number[] { return this._targetCoords; }
 
-        // Do nothing, can't be changed at stack level
+        // Do nothing, can't be changed at group level
         set landOrSea(value : string) {}
         // Find from units, all have the same value
         get landOrSea() : string {
             return this.units[0].landOrSea;
         }
 
-        // Do nothing, can't be changed at stack level
+        // Do nothing, can't be changed at group level
         set canAttack(value : boolean) {}
         get canAttack() : boolean {
             var i : number;
@@ -382,7 +382,7 @@ console.log("SENTRY")
             return false;
         }
 
-        // Do nothing, can't be changed at stack level
+        // Do nothing, can't be changed at group level
         set canDefend(value : boolean) {}
         get canDefend() : boolean {
             var i : number;
@@ -395,7 +395,7 @@ console.log("SENTRY")
             return false;
         }
 
-        // Do nothing, can't be changed at stack level
+        // Do nothing, can't be changed at group level
         set actions(value : string[]) {}
         get actions() : string[] {
             var actions : string[], i : number, j : number;
@@ -417,7 +417,7 @@ console.log("SENTRY")
         set active(value : boolean) { this._active = value; }
         get active() : boolean { return this._active; }
 
-        // Set for stack and every stack member
+        // Set for group and every group member
         set skippedTurn(value : boolean) {
             var i : number;
 
@@ -438,14 +438,14 @@ console.log("SENTRY")
             // Initialize private variables
             this.coords = units[0].coords;
 
-            // Store reference to stack in game.stacks
-            game.stacks[this.owner][this.id] = this;
+            // Store reference to group in game.groups
+            game.groups[this.owner][this.id] = this;
         }
 
         moveOnMap(coords : number[]) {
             var i : number;
 
-            // It's a unit stack!
+            // It's a unit group!
             for (i = 0; i < this.units.length; i++) {
                 game.map.moveUnit(this.units[i], coords);
             }
@@ -456,7 +456,7 @@ console.log("SENTRY")
 
             for (i = 0; i < units.length; i++) {
                 this.units.push(units[i]);
-                units[i].stack = this;
+                units[i].group = this;
             }
         }
 
@@ -465,7 +465,7 @@ console.log("SENTRY")
 
             for (i = 0; i < this.units.length; i++) {
                 if (this.units[i].id === id) {
-                    this.units[i].stack = null;
+                    this.units[i].group = null;
                     this.units.splice(i, 1);
                     break;
                 }
@@ -483,18 +483,18 @@ console.log("SENTRY")
             // Save the first member of this unit to arbitrarily activate at the end
             toActivate = this.units[0];
 
-            // Remove all units from stack
+            // Remove all units from group
             for (i = 0; i < this.units.length; i++) {
-                this.units[i].stack = null;
+                this.units[i].group = null;
             }
 
-            // Delete stack
+            // Delete group
             if (this.active) {
                 game.activeUnit = null;
             }
-            delete game.stacks[this.owner][this.id];
+            delete game.groups[this.owner][this.id];
 
-            // If desired, activate one of the members of the separateed stack
+            // If desired, activate one of the members of the separateed group
             if (activateUnitAtEnd) {
                 toActivate.activate();
             }
@@ -530,14 +530,14 @@ console.log("SENTRY")
     // Functions for working with units or groups of units
 
     // Like alt+click
-    export function addUnitsToNewStack(owner : number, units : Unit[]) {
-        var newUnits : Unit[], newStack : Stack;
+    export function addUnitsToNewGroup(owner : number, units : Unit[]) {
+        var newUnits : Unit[], newGroup : Group;
 
-        // Separate any current stacks on the tile
+        // Separate any current groups on the tile
         newUnits = [];
         units.forEach(function (unit) {
-            if (unit.stack) {
-                unit.stack.separate(false);
+            if (unit.group) {
+                unit.group.separate(false);
             }
             if (unit.currentMovement > 0) {
                 newUnits.push(unit);
@@ -545,31 +545,31 @@ console.log("SENTRY")
         });
 
         if (newUnits.length > 0) {
-            // Make a new stack with all units with currentMovement > 0 and activate it
-            newStack = new Units.Stack(owner, newUnits);
-            newStack.activate(false);
+            // Make a new group with all units with currentMovement > 0 and activate it
+            newGroup = new Units.Group(owner, newUnits);
+            newGroup.activate(false);
         }
     }
 
     // Like ctrl+click
-    export function addUnitsWithTypeToNewStack(owner : number, units : Unit[], type : string) {
-        var newUnits : Unit[], newStack : Stack;
+    export function addUnitsWithTypeToNewGroup(owner : number, units : Unit[], type : string) {
+        var newUnits : Unit[], newGroup : Group;
 
-        // Separate any current stacks on this tile involving this type
+        // Separate any current groups on this tile involving this type
         newUnits = [];
         units.forEach(function (unit) {
             if (unit.currentMovement > 0 && unit.type === type) {
-                if (unit.stack) {
-                    unit.stack.separate(false);
+                if (unit.group) {
+                    unit.group.separate(false);
                 }
                 newUnits.push(unit);
             }
         });
 
         if (newUnits.length > 0) {
-            // Make a new stack from all the units of the clicked type with currentMovement > 0
-            newStack = new Units.Stack(owner, newUnits);
-            newStack.activate(false);
+            // Make a new group from all the units of the clicked type with currentMovement > 0
+            newGroup = new Units.Group(owner, newUnits);
+            newGroup.activate(false);
         }
     }
 }
