@@ -351,7 +351,6 @@ var Controller = (function () {
                         }
                     });
 
-                    console.log(newUnits);
                     if (newUnits.length > 0) {
                         // Make a new group with all units with currentMovement > 0 and activate it
                         newGroup = new Units.UnitGroup(clickedOwner, newUnits);
@@ -375,7 +374,6 @@ var Controller = (function () {
                         }
                     });
 
-                    console.log(newUnits);
                     if (newUnits.length > 0) {
                         // Make a new group from all the units of the clicked type with currentMovement > 0
                         newGroup = new Units.UnitGroup(clickedOwner, newUnits);
@@ -1595,7 +1593,6 @@ var Units;
             this.add(units);
 
             // Initialize private variables
-            this.currentMovement = this.currentMovement; // Getters/setters make this make sense, maybe
             this.coords = units[0].coords;
 
             // Store reference to group in game.unitGroups
@@ -1664,7 +1661,7 @@ var Units;
                     // We're resetting the current movement at the start of a new turn
                 } else {
                     // We're moving and need to update
-                    diff = this._currentMovement - value;
+                    diff = this.currentMovement - value;
                     for (i = 0; i < this.units.length; i++) {
                         this.units[i].currentMovement -= diff;
                     }

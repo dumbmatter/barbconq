@@ -7,12 +7,8 @@ stacked unit actions and UI
         ctrl+shift+click
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
-    shift click
-      handle cases of starting a new group, adding/removing from existing group, and disbanding group by shift
-    how to handle overflow?
+    how to handle overflow? scroll left/right?
   TEST TEST TEST
-    move 2 chariots to a tile, so they have 1/2 moves. ctrl + click. their currentMovement becomes NaN
-  backend
   should I make UnitGroup.units and Tile.units lists of objects with ID keys, like game.units and game.unitGroups?
   show "Unit Stack" in info box
   make sure unitGroup properties are being correctly updated when a unit with different properties is added/removed from the group

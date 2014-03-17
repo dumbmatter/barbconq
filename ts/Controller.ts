@@ -350,7 +350,6 @@ console.log(el.dataset);
                         }
                     });
 
-console.log(newUnits);
                     if (newUnits.length > 0) {
                         // Make a new group with all units with currentMovement > 0 and activate it
                         newGroup = new Units.UnitGroup(clickedOwner, newUnits);
@@ -374,7 +373,6 @@ console.log('ctrl+shift');
                         }
                     });
 
-console.log(newUnits);
                     if (newUnits.length > 0) {
                         // Make a new group from all the units of the clicked type with currentMovement > 0
                         newGroup = new Units.UnitGroup(clickedOwner, newUnits);

@@ -326,7 +326,7 @@ console.log("SENTRY")
                 // We're resetting the current movement at the start of a new turn
             } else {
                 // We're moving and need to update
-                diff = this._currentMovement - value;
+                diff = this.currentMovement - value;
                 for (i = 0; i < this.units.length; i++) {
                     this.units[i].currentMovement -= diff;
                 }
@@ -424,7 +424,6 @@ console.log("SENTRY")
             this.add(units);
 
             // Initialize private variables
-            this.currentMovement = this.currentMovement; // Getters/setters make this make sense, maybe
             this.coords = units[0].coords;
 
             // Store reference to group in game.unitGroups
