@@ -1,10 +1,5 @@
 # Major current tasks
 
-stacked unit actions and UI
-  left click on map (Controller.initMapClick)
-    +ctrl: select all of top type
-    +alt: select all units
-
 unit tests for stacked units?
   click actions can be tested by passing fake even object to click handling function
 

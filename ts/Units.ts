@@ -511,4 +511,50 @@ console.log("SENTRY")
         landOrSea = "land";
         actions = ["fortify", "skipTurn", "sentry"];
     }
+
+    // Functions for working with units or groups of units
+
+    // Like alt+click
+    export function addUnitsToNewStack(owner : number, units : BaseUnit[]) {
+        var newUnits : BaseUnit[], newStack : Stack;
+
+        // Separate any current stacks on the tile
+        newUnits = [];
+        units.forEach(function (unit) {
+            if (unit.stack) {
+                unit.stack.separate(false);
+            }
+            if (unit.currentMovement > 0) {
+                newUnits.push(unit);
+            }
+        });
+
+        if (newUnits.length > 0) {
+            // Make a new stack with all units with currentMovement > 0 and activate it
+            newStack = new Units.Stack(owner, newUnits);
+            newStack.activate(false);
+        }
+    }
+
+    // Like ctrl+click
+    export function addUnitsWithTypeToNewStack(owner : number, units : BaseUnit[], type : string) {
+        var newUnits : BaseUnit[], newStack : Stack;
+
+        // Separate any current stacks on this tile involving this type
+        newUnits = [];
+        units.forEach(function (unit) {
+            if (unit.currentMovement > 0 && unit.type === type) {
+                if (unit.stack) {
+                    unit.stack.separate(false);
+                }
+                newUnits.push(unit);
+            }
+        });
+
+        if (newUnits.length > 0) {
+            // Make a new stack from all the units of the clicked type with currentMovement > 0
+            newStack = new Units.Stack(owner, newUnits);
+            newStack.activate(false);
+        }
+    }
 }

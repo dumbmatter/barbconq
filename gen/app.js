@@ -270,12 +270,20 @@ var Controller = (function () {
                     }
 
                     if (unit) {
-                        if (unit.stack) {
-                            unit.stack.activate(false);
+                        if (e.altKey) {
+                            // Create stack of all units on tile with moves and activate it
+                            Units.addUnitsToNewStack(config.PLAYER_ID, units);
+                        } else if (e.ctrlKey) {
+                            // Create stack of all units on tile with moves and same type as top unit and activate it
+                            Units.addUnitsWithTypeToNewStack(config.PLAYER_ID, units, unit.type);
                         } else {
-                            unit.activate(false);
+                            // Normal left click: select top unit or stack
+                            if (unit.stack) {
+                                unit.stack.activate(false);
+                            } else {
+                                unit.activate(false);
+                            }
                         }
-                        requestAnimationFrame(mapUI.render.bind(mapUI));
                     } else {
                         // None of the user's units are on this tile, so pan to it
                         mapUI.goToCoords(coords);
@@ -356,22 +364,7 @@ var Controller = (function () {
 
                 // Handle all the different key modifiers
                 if (e.altKey) {
-                    // Separate any current stacks on the tile
-                    newUnits = [];
-                    units.forEach(function (unit) {
-                        if (unit.stack) {
-                            unit.stack.separate(false);
-                        }
-                        if (unit.currentMovement > 0) {
-                            newUnits.push(unit);
-                        }
-                    });
-
-                    if (newUnits.length > 0) {
-                        // Make a new stack with all units with currentMovement > 0 and activate it
-                        newStack = new Units.Stack(clickedOwner, newUnits);
-                        newStack.activate(false);
-                    }
+                    Units.addUnitsToNewStack(clickedOwner, units);
                 } else if (e.ctrlKey && e.shiftKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
@@ -427,24 +420,7 @@ var Controller = (function () {
                         newStack.activate(false);
                     }
                 } else if (e.ctrlKey) {
-                    type = game.units[clickedOwner][clickedId].type;
-
-                    // Separate any current stacks on this tile involving this type
-                    newUnits = [];
-                    units.forEach(function (unit) {
-                        if (unit.currentMovement > 0 && unit.type === type) {
-                            if (unit.stack) {
-                                unit.stack.separate(false);
-                            }
-                            newUnits.push(unit);
-                        }
-                    });
-
-                    if (newUnits.length > 0) {
-                        // Make a new stack from all the units of the clicked type with currentMovement > 0
-                        newStack = new Units.Stack(clickedOwner, newUnits);
-                        newStack.activate(false);
-                    }
+                    Units.addUnitsWithTypeToNewStack(clickedOwner, units, game.units[clickedOwner][clickedId].type);
                 } else if (e.shiftKey) {
                     if (game.activeUnit instanceof Units.BaseUnit) {
                         // Individual unit is active
@@ -2019,6 +1995,53 @@ var Units;
         return Chariot;
     })(BaseUnit);
     Units.Chariot = Chariot;
+
+    // Functions for working with units or groups of units
+    // Like alt+click
+    function addUnitsToNewStack(owner, units) {
+        var newUnits, newStack;
+
+        // Separate any current stacks on the tile
+        newUnits = [];
+        units.forEach(function (unit) {
+            if (unit.stack) {
+                unit.stack.separate(false);
+            }
+            if (unit.currentMovement > 0) {
+                newUnits.push(unit);
+            }
+        });
+
+        if (newUnits.length > 0) {
+            // Make a new stack with all units with currentMovement > 0 and activate it
+            newStack = new Units.Stack(owner, newUnits);
+            newStack.activate(false);
+        }
+    }
+    Units.addUnitsToNewStack = addUnitsToNewStack;
+
+    // Like ctrl+click
+    function addUnitsWithTypeToNewStack(owner, units, type) {
+        var newUnits, newStack;
+
+        // Separate any current stacks on this tile involving this type
+        newUnits = [];
+        units.forEach(function (unit) {
+            if (unit.currentMovement > 0 && unit.type === type) {
+                if (unit.stack) {
+                    unit.stack.separate(false);
+                }
+                newUnits.push(unit);
+            }
+        });
+
+        if (newUnits.length > 0) {
+            // Make a new stack from all the units of the clicked type with currentMovement > 0
+            newStack = new Units.Stack(owner, newUnits);
+            newStack.activate(false);
+        }
+    }
+    Units.addUnitsWithTypeToNewStack = addUnitsWithTypeToNewStack;
 })(Units || (Units = {}));
 ///<reference path='Random.ts'/>
 ///<reference path='Controller.ts'/>
