@@ -7,6 +7,8 @@ unit tests for grouped units?
   source maps for karma output
     https://github.com/karma-runner/karma/issues/594
       need to run tsc in preprocessor?
+      or https://github.com/demerzel3/karma-sourcemap-loader
+        tried it, but doesn't seem to work
 
 fog of war
   states
