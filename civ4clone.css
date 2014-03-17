@@ -146,7 +146,7 @@ canvas { display:block; } /* To remove the scrollbars */
 #bottom-text {
   position: absolute;
   width: 100%;
-  bottom: 175px;
+  bottom: 174px;
   color: #fff;
   text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
   padding: 5px;
@@ -178,6 +178,7 @@ canvas { display:block; } /* To remove the scrollbars */
 }
 #bottom-units .unit-icon-wrapper {
   float: left;
+  position: relative;
   margin: 1px;
   background: #000;
   height: 32px;
@@ -224,5 +225,22 @@ canvas { display:block; } /* To remove the scrollbars */
   background-color: yellow;
 }
 #bottom-units .health-bad {
+  background-color: red;
+}
+#bottom-units .movement-indicator {
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+}
+#bottom-units .movement-all {
+  background-color: green;
+}
+#bottom-units .movement-some {
+  background-color: yellow;
+}
+#bottom-units .movement-none {
   background-color: red;
 }

@@ -1,9 +1,6 @@
 # Major current tasks
 
 stacked unit actions and UI
-  bottom-units
-    icons
-      top left: red/yellow/green for no/some/full moves
   left click on map
     if top unit is in stack, select that. otherwise, just select top unit.
       generalize "top unit" from mapUI.render where it picks which to display

@@ -191,8 +191,7 @@ class ChromeUI {
     }
 
     private unitIcon(unit : Units.BaseUnit) : HTMLDivElement {
-        var healthPct : number, healthBar, icon, iconWrapper;
-
+        var healthPct : number, healthBar, icon, iconWrapper, movementIndicator;
 
         iconWrapper = document.createElement("div");
         iconWrapper.classList.add("unit-icon-wrapper");
@@ -223,8 +222,20 @@ class ChromeUI {
             healthBar.classList.add("health-bad");
         }
 
+        // Movement indicator
+        movementIndicator = document.createElement("div");
+        movementIndicator.classList.add("movement-indicator");
+        if (unit.currentMovement === unit.movement) {
+            movementIndicator.classList.add("movement-all");
+        } else if (unit.currentMovement > 0) {
+            movementIndicator.classList.add("movement-some");
+        } else {
+            movementIndicator.classList.add("movement-none");
+        }
+
         iconWrapper.appendChild(icon);
         iconWrapper.appendChild(healthBar);
+        iconWrapper.appendChild(movementIndicator);
 
         return iconWrapper;
     }
