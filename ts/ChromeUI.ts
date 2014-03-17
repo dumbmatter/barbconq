@@ -43,7 +43,7 @@ class ChromeUI {
     }
 
     onHoverTile(tile : MapMaker.Tile = null) {
-        var content, i;
+        var content : string, i : number;
 
         if (tile) {
             content = "";
@@ -63,7 +63,7 @@ class ChromeUI {
     }
 
     onHoverUnitIcon(owner : number = null, id: number = null) {
-        var content;
+        var content : string;
 
         if (owner !== null && id !== null) {
             content = "";
@@ -79,7 +79,7 @@ class ChromeUI {
     }
 
     private hoverBoxUnitSummary(unit : Units.BaseUnit) {
-        var content;
+        var content : string;
 
         content = "";
         content += '<p><span class="unit-name">' + unit.type + '</span>, ';
@@ -120,7 +120,7 @@ class ChromeUI {
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
     private updateActiveUnit() {
-        var activeUnit, actionName, addCommas, content, counts, i, units, type;
+        var activeUnit, actionName : string, addCommas : boolean, content : string, counts : {[type: string]: number}, i : number, units : Units.BaseUnit[], type : string;
 
         activeUnit = game.activeUnit; // Really should have separate variables for unit and stack, like in unit icon click handling
 

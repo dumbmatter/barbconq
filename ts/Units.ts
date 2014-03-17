@@ -107,7 +107,7 @@ module Units {
         // Should be able to make this general enough to handle all units
         // Handle fight initiation here, if move goes to tile with enemy on it
         move(direction : string) {
-            var newCoords;
+            var newCoords : number[];
 
             // Short circuit if no moves are available
             if (this.currentMovement <= 0) {
@@ -287,7 +287,7 @@ console.log("SENTRY")
 
         // Set for stack and every stack member, like if the entire stack is captured
         set owner(value : number) {
-            var i, min;
+            var i : number, min : number;
 
             for (i = 0; i < this.units.length; i++) {
                 this.units[i].owner = value;
@@ -301,7 +301,7 @@ console.log("SENTRY")
         set movement(value : number) {}
         // Find minimum of stack members
         get movement() : number {
-            var i, min;
+            var i : number, min : number;
 
             min = Infinity;
             for (i = 0; i < this.units.length; i++) {
@@ -314,7 +314,7 @@ console.log("SENTRY")
 
         // Update each unit in stack with difference, and keep track at stack level for comparison here
         set currentMovement(value : number) {
-            var diff, i;
+            var diff : number, i : number;
 
             if (value === this.movement) {
                 // We're resetting the current movement at the start of a new turn
@@ -329,7 +329,7 @@ console.log("SENTRY")
         }
         // Find minimum of stack members
         get currentMovement() : number {
-            var i, min;
+            var i : number, min : number;
 
             min = Infinity;
             for (i = 0; i < this.units.length; i++) {
@@ -342,7 +342,7 @@ console.log("SENTRY")
 
         // Set for stack and every stack member
         set coords(value : number[]) {
-            var i, min;
+            var i : number;
 
             for (i = 0; i < this.units.length; i++) {
                 this.units[i].coords = value;
@@ -367,7 +367,7 @@ console.log("SENTRY")
         // Do nothing, can't be changed at stack level
         set canAttack(value : boolean) {}
         get canAttack() : boolean {
-            var i;
+            var i : number;
 
             for (i = 0; i < this.units.length; i++) {
                 if (this.units[i].canAttack) {
@@ -380,7 +380,7 @@ console.log("SENTRY")
         // Do nothing, can't be changed at stack level
         set canDefend(value : boolean) {}
         get canDefend() : boolean {
-            var i;
+            var i : number;
 
             for (i = 0; i < this.units.length; i++) {
                 if (this.units[i].canAttack) {
@@ -393,7 +393,7 @@ console.log("SENTRY")
         // Do nothing, can't be changed at stack level
         set actions(value : string[]) {}
         get actions() : string[] {
-            var actions, i, j;
+            var actions : string[], i : number, j : number;
 
             actions = [];
             for (i = 0; i < this.units.length; i++) {
@@ -428,7 +428,7 @@ console.log("SENTRY")
         }
 
         moveOnMap(coords : number[]) {
-            var i;
+            var i : number;
 
             // It's a unit stack!
             for (i = 0; i < this.units.length; i++) {
@@ -437,7 +437,7 @@ console.log("SENTRY")
         }
 
         add(units : BaseUnit[]) {
-            var i;
+            var i : number;
 
             for (i = 0; i < units.length; i++) {
                 this.units.push(units[i]);
@@ -446,7 +446,7 @@ console.log("SENTRY")
         }
 
         remove(id : number, activateUnitIfSeparate : boolean = true) {
-            var i;
+            var i : number;
 
             for (i = 0; i < this.units.length; i++) {
                 if (this.units[i].id === id) {
@@ -463,7 +463,7 @@ console.log("SENTRY")
         }
 
         separate(activateUnitAtEnd : boolean = true) {
-            var i, toActivate;
+            var i : number, toActivate : BaseUnit;
 
             // Save the first member of this unit to arbitrarily activate at the end
             toActivate = this.units[0];

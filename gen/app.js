@@ -1755,7 +1755,7 @@ var Units;
             },
             // Set for stack and every stack member
             set: function (value) {
-                var i, min;
+                var i;
 
                 for (i = 0; i < this.units.length; i++) {
                     this.units[i].coords = value;

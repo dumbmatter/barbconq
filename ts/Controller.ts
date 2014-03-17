@@ -71,7 +71,7 @@ class Controller {
 
     initUnitActions() {
         document.addEventListener("keydown", function (e) {
-            var activeUnit;
+            var activeUnit : Units.BaseUnitOrStack;
 
             // Active unit stuff
             if (game.activeUnit) {
@@ -117,7 +117,7 @@ class Controller {
             e.preventDefault();
         });
         mapUI.canvas.addEventListener("mousedown", function (e) {
-            var coords, mouseMoveWhileDown, mouseUp;
+            var coords : number[], mouseMoveWhileDown, mouseUp;
 
             if (e.button === 2 && game.activeUnit) { // Right click only! Active unit only!
                 e.preventDefault();
@@ -137,7 +137,7 @@ class Controller {
 
                 // Find paths to hovered tile as button remains down
                 mouseMoveWhileDown = function (e) {
-                    var coordsNew;
+                    var coordsNew : number[];
 
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
@@ -152,7 +152,7 @@ class Controller {
 
                 // Move unit to the tile hovered over when the button is released
                 mouseUp = function (e) {
-                    var coordsNew;
+                    var coordsNew : number[];
 
                     mapUI.pathFindingSearch = false;
 
@@ -213,7 +213,7 @@ class Controller {
         this.hoveredTile = [-1, -1]; // Dummy value for out of map
 
         mapUI.canvas.addEventListener("mousemove", function (e) {
-            var coords;
+            var coords : number[];
 
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
@@ -240,7 +240,7 @@ class Controller {
     // if one of your units is not on the clicked tile, center the map
     initMapClick() {
         mapUI.canvas.addEventListener("click", function (e) {
-            var foundUnit, i, coords, units;
+            var foundUnit : boolean, i : number, coords : number[], units : Units.BaseUnit[];
 
             if (e.button === 0) { // Left click only!
                 e.preventDefault();
@@ -268,7 +268,7 @@ class Controller {
         });
 
         mapUI.miniCanvas.addEventListener("mousedown", function (e) {
-            var coords, miniMapPan, miniMapPanStop;
+            var coords : number[], miniMapPan, miniMapPanStop;
 
             if (e.button === 0) { // Left click only!
                 e.preventDefault();
@@ -281,7 +281,7 @@ class Controller {
 
                 // Pan as click is held and mouse is moved
                 miniMapPan = function (e) {
-                    var coords;
+                    var coords : number[];
 
                     coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
 

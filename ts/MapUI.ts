@@ -270,7 +270,7 @@ class MapUI {
     }
 
     renderMiniMap() {
-        var bottom, bottomTile, i, j, k, left, leftTile, right, rightTile, top, topTile, unit;
+        var bottom : number, bottomTile : number, i : number, j : number, k : number, left : number, leftTile : number, right : number, rightTile : number, top : number, topTile : number, unit : Units.BaseUnit;
 
         // Clear canvas and redraw everything
         this.miniContext.clearRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
@@ -327,7 +327,7 @@ class MapUI {
 
     // Input: pixel coordinates from canvas events like "click" and "mousemove". Output: tile coordinates (row, col) 0 indexed
     pixelsToCoords(x : number, y : number) : number[] {
-        var coords, left, top;
+        var coords : number[], left : number, top : number;
 
         // Top left coordinate in pixels, relative to the whole map
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -349,7 +349,7 @@ class MapUI {
 
     // Input: tile coords (row, col) 0 indexed. Output: (x, y) pixels at center of tile in current viewport (can go off screen)
     coordsToPixels(i : number, j : number) : number[] {
-        var left, pixels, top;
+        var left : number, pixels : number[], top : number;
 
         if (game.map.validCoords([i, j])) {
             // Top left coordinate in pixels, relative to the whole map
@@ -370,7 +370,7 @@ class MapUI {
 
     // Same as above, but for minimap
     miniPixelsToCoords(x : number, y : number) : number[] {
-        var coords, left, top;
+        var coords : number[], left : number, top : number;
 
         // Coordinates in tiles
         coords = [

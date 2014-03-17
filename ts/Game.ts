@@ -4,8 +4,8 @@ class Game {
     map : MapMaker.Map;
     maxId : number = 0;
     names: string[] = [];
-    units : {[n: number]: Units.BaseUnit}[] = []; // One object in array for each player. Then in object, can use unit ID as key
-    stacks : {[n: number]: Units.Stack}[] = []; // Same as above
+    units : {[id : number] : Units.BaseUnit}[] = []; // One object in array for each player. Then in object, can use unit ID as key
+    stacks : {[id : number] : Units.Stack}[] = []; // Same as above
     activeUnit : Units.BaseUnitOrStack = null;
     turn : number = 0;
 

@@ -44,7 +44,7 @@ module MapMaker {
 
             // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
             easystar.findPath(unit.coords[1], unit.coords[0], targetCoords[1], targetCoords[0], function (path) {
-                var i;
+                var i : number;
 
                 if (path) {
                     // Fix coord labels
@@ -73,7 +73,7 @@ module MapMaker {
         // Moves a unit from its current coordinates to coords.
         // Doesn't call render automatically, since this is often called multiple times before rendering (like for moving a stack)
         moveUnit(unit : Units.BaseUnit, coords : number[]) {
-            var i, tileUnits;
+            var i : number, tileUnits : Units.BaseUnit[];
 
             // Delete old unit in map
             tileUnits = game.getTile(unit.coords).units;
@@ -91,7 +91,7 @@ module MapMaker {
 
     export class DefaultMap extends Map {
         constructor(rows : number, cols : number) {
-            var i, j, types;
+            var i : number, j : number, types: {[terrain : string] : string[]};
 
             super();
 
