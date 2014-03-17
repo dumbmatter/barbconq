@@ -4,14 +4,11 @@ stacked unit actions and UI
   bottom-units
     icons
       top left: red/yellow/green for no/some/full moves
-      bottom: health bar
-  make sure unitStack properties are being correctly updated when a unit with different properties is added/removed from the stack
   left click on map
     if top unit is in stack, select that. otherwise, just select top unit.
       generalize "top unit" from mapUI.render where it picks which to display
     +ctrl
     +alt
-  CRAZY IDEA: what if all units are stacks, and individuals just have one member? would that help? maybe not.
 
 unit tests for stacked units?
   click actions can be tested by passing fake even object to click handling function

@@ -176,19 +176,31 @@ canvas { display:block; } /* To remove the scrollbars */
   margin: 10px;
   pointer-events: none;
 }
-#bottom-units .unit-icon {
+#bottom-units .unit-icon-wrapper {
   float: left;
   margin: 1px;
   background: #000;
-  color: #ffde00;
-  font-size: 12px;
-  line-height: 26px;
   height: 32px;
   width: 32px;
   pointer-events: auto;
-  text-align: center;
   cursor: pointer;
-  border: 2px solid #000;
+/*  border: 2px solid #000;*/
+  
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+#bottom-units .unit-icon {
+  color: #ffde00;
+  font-size: 12px;
+  line-height: 30px;
+  height: 28px;
+  width: 32px;
+  text-align: center;
+/*  border: 2px solid #000;*/
   
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -198,5 +210,19 @@ canvas { display:block; } /* To remove the scrollbars */
   user-select: none;
 }
 #bottom-units .active {
+  line-height: 26px;
   border: 2px solid red;
+  border-bottom: 0;
+}
+#bottom-units .health-bar {
+  height: 4px;
+}
+#bottom-units .health-good {
+  background-color: green;
+}
+#bottom-units .health-medium {
+  background-color: yellow;
+}
+#bottom-units .health-bad {
+  background-color: red;
 }

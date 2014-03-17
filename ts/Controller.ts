@@ -315,6 +315,7 @@ class Controller {
             var activeUnit : Units.BaseUnit, activeStack : Units.Stack, clickedId : number, clickedOwner : number, clickedSid : number, el : any, i : number, newStack : Units.Stack, newUnits : Units.BaseUnit[], units : Units.BaseUnit[], type : string;
 
             el = <HTMLElement> e.target;
+            el = <any> el.parentNode;
             if (el && el.dataset.id) {
                 e.preventDefault();
 
@@ -474,6 +475,7 @@ class Controller {
             var el;
 
             el = <HTMLElement> e.target;
+            el = <any> el.parentNode;
             if (el && el.dataset.id) {
                 e.preventDefault();
                 chromeUI.onHoverUnitIcon(parseInt(el.dataset.owner, 10), parseInt(el.dataset.id, 10));
@@ -483,6 +485,7 @@ class Controller {
             var el;
 
             el = <HTMLElement> e.target;
+            el = <any> el.parentNode;
             if (el && el.dataset.id) {
                 e.preventDefault();
                 chromeUI.onHoverUnitIcon();

@@ -191,21 +191,42 @@ class ChromeUI {
     }
 
     private unitIcon(unit : Units.BaseUnit) : HTMLDivElement {
-        var icon;
+        var healthPct : number, healthBar, icon, iconWrapper;
 
+
+        iconWrapper = document.createElement("div");
+        iconWrapper.classList.add("unit-icon-wrapper");
+        iconWrapper.dataset.owner = unit.owner;
+        iconWrapper.dataset.id = unit.id;
+        if (unit.stack) {
+            iconWrapper.dataset.gid = unit.stack.id;
+        }
+
+        // Unit icon
         icon = document.createElement("div");
         icon.classList.add("unit-icon");
         icon.innerHTML = unit.type.slice(0, 2);
         if (unit.active || (unit.stack && unit.stack.active)) {
             icon.classList.add("active");
         }
-        icon.dataset.owner = unit.owner;
-        icon.dataset.id = unit.id;
-        if (unit.stack) {
-            icon.dataset.gid = unit.stack.id;
+
+        // Health bar
+        healthBar = document.createElement("div");
+        healthBar.classList.add("health-bar");
+        healthPct = Math.round(unit.currentStrength / unit.strength * 100); // 0 to 100
+        healthBar.style.width = healthPct + "%";
+        if (healthPct >= 67) {
+            healthBar.classList.add("health-good");
+        } else if (healthPct >= 33) {
+            healthBar.classList.add("health-medium");
+        } else {
+            healthBar.classList.add("health-bad");
         }
 
-        return icon;
+        iconWrapper.appendChild(icon);
+        iconWrapper.appendChild(healthBar);
+
+        return iconWrapper;
     }
 
     private updateBottomText(text : string = null) {
