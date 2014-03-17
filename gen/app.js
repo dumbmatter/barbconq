@@ -313,7 +313,7 @@ var Controller = (function () {
     Controller.prototype.initUnitIcons = function () {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
-            var activeUnit, activeUnitGroup, clickedGid, clickedId, clickedOwner, el, i, newGroup, newUnits, units, type;
+            var activeUnit, activeStack, clickedGid, clickedId, clickedOwner, el, i, newStack, newUnits, units, type;
 
             el = e.target;
             if (el && el.dataset.id) {
@@ -339,11 +339,11 @@ var Controller = (function () {
 
                 // Handle all the different key modifiers
                 if (e.altKey) {
-                    // separate any current groups on the tile
+                    // separate any current stacks on the tile
                     newUnits = [];
                     units.forEach(function (unit) {
-                        if (unit.unitGroup) {
-                            unit.unitGroup.separate(false);
+                        if (unit.stack) {
+                            unit.stack.separate(false);
                         }
                         if (unit.currentMovement > 0) {
                             newUnits.push(unit);
@@ -351,19 +351,19 @@ var Controller = (function () {
                     });
 
                     if (newUnits.length > 0) {
-                        // Make a new group with all units with currentMovement > 0 and activate it
-                        newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                        newGroup.activate(false);
+                        // Make a new stack with all units with currentMovement > 0 and activate it
+                        newStack = new Units.Stack(clickedOwner, newUnits);
+                        newStack.activate(false);
                     }
                 } else if (e.ctrlKey && e.shiftKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    // Separate any current groups on this tile involving this type
+                    // Separate any current stacks on this tile involving this type
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.currentMovement > 0 && unit.type === type) {
-                            if (unit.unitGroup) {
-                                unit.unitGroup.separate(false);
+                            if (unit.stack) {
+                                unit.stack.separate(false);
                             }
                             newUnits.push(unit);
                         }
@@ -372,65 +372,65 @@ var Controller = (function () {
                     if (newUnits.length > 0) {
                         if (game.activeUnit instanceof Units.BaseUnit) {
                             // Individual unit is active
-                            // Create a group with the active unit and all units of the clicked type with currentMovement > 0
-                            activeUnit = game.activeUnit; // So TypeScript knows it's not a group
+                            // Create a stack with the active unit and all units of the clicked type with currentMovement > 0
+                            activeUnit = game.activeUnit; // So TypeScript knows it's not a stack
                             if (activeUnit.type !== type) {
                                 newUnits.push(activeUnit);
                             }
-                            newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                            newGroup.activate(false);
-                        } else if (game.activeUnit instanceof Units.UnitGroup) {
-                            // Unit group is active
-                            // Add all units of the clicked type with currentMovement > 0 to that group
-                            activeUnitGroup = game.activeUnit; // So TypeScript knows it's not an individual unit
-                            activeUnitGroup.add(newUnits);
+                            newStack = new Units.Stack(clickedOwner, newUnits);
+                            newStack.activate(false);
+                        } else if (game.activeUnit instanceof Units.Stack) {
+                            // Unit stack is active
+                            // Add all units of the clicked type with currentMovement > 0 to that stack
+                            activeStack = game.activeUnit; // So TypeScript knows it's not an individual unit
+                            activeStack.add(newUnits);
 
                             // Redraw everything, since there is no Unit.activate call here to do that otherwise
                             chromeUI.onUnitActivated();
                             window.requestAnimationFrame(mapUI.render.bind(mapUI));
                         } else {
                             // No unit active (like if they all got separateed above)
-                            newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                            newGroup.activate(false);
+                            newStack = new Units.Stack(clickedOwner, newUnits);
+                            newStack.activate(false);
                         }
                     }
                 } else if (e.ctrlKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    // Separate any current groups on this tile involving this type
+                    // Separate any current stacks on this tile involving this type
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.currentMovement > 0 && unit.type === type) {
-                            if (unit.unitGroup) {
-                                unit.unitGroup.separate(false);
+                            if (unit.stack) {
+                                unit.stack.separate(false);
                             }
                             newUnits.push(unit);
                         }
                     });
 
                     if (newUnits.length > 0) {
-                        // Make a new group from all the units of the clicked type with currentMovement > 0
-                        newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                        newGroup.activate(false);
+                        // Make a new stack from all the units of the clicked type with currentMovement > 0
+                        newStack = new Units.Stack(clickedOwner, newUnits);
+                        newStack.activate(false);
                     }
                 } else if (e.shiftKey) {
                     if (game.activeUnit instanceof Units.BaseUnit) {
                         // Individual unit is active
                         if (game.activeUnit.id !== clickedId) {
-                            // If clicked unit is not the active unit, add it to a new group with clicked unit
-                            newGroup = new Units.UnitGroup(clickedOwner, [game.activeUnit, game.units[clickedOwner][clickedId]]);
-                            newGroup.activate(false);
+                            // If clicked unit is not the active unit, add it to a new stack with clicked unit
+                            newStack = new Units.Stack(clickedOwner, [game.activeUnit, game.units[clickedOwner][clickedId]]);
+                            newStack.activate(false);
                         }
-                    } else if (game.activeUnit instanceof Units.UnitGroup) {
-                        activeUnitGroup = game.activeUnit; // So TypeScript knows it's not an individual unit
+                    } else if (game.activeUnit instanceof Units.Stack) {
+                        activeStack = game.activeUnit; // So TypeScript knows it's not an individual unit
 
-                        // Unit group is active
-                        if (activeUnitGroup === game.units[clickedOwner][clickedId].unitGroup) {
-                            // Clicked unit is in the active group, remove it from that group
-                            activeUnitGroup.remove(clickedId);
+                        // Unit stack is active
+                        if (activeStack === game.units[clickedOwner][clickedId].stack) {
+                            // Clicked unit is in the active stack, remove it from that stack
+                            activeStack.remove(clickedId);
                         } else {
-                            // Clicked unit is not in the active group, add it to that group
-                            activeUnitGroup.add([game.units[clickedOwner][clickedId]]);
+                            // Clicked unit is not in the active stack, add it to that stack
+                            activeStack.add([game.units[clickedOwner][clickedId]]);
                         }
 
                         // Redraw everything, since there is no Unit.activate call here to do that otherwise
@@ -439,17 +439,17 @@ var Controller = (function () {
                     }
                 } else {
                     if (clickedGid !== null) {
-                        // Clicked unit is in a group
+                        // Clicked unit is in a stack
                         if (game.activeUnit.id === clickedGid) {
-                            // Clicked unit is member of active group, so separate it and activate clicked unit
-                            game.unitGroups[clickedOwner][clickedGid].separate(false);
+                            // Clicked unit is member of active stack, so separate it and activate clicked unit
+                            game.stacks[clickedOwner][clickedGid].separate(false);
                             game.units[clickedOwner][clickedId].activate(false);
                         } else {
-                            // Clicked unit is in an inactive group, so activate the group
-                            game.unitGroups[clickedOwner][clickedGid].activate(false);
+                            // Clicked unit is in an inactive stack, so activate the stack
+                            game.stacks[clickedOwner][clickedGid].activate(false);
                         }
                     } else {
-                        // Clicked unit is not in group, so just activate it
+                        // Clicked unit is not in stack, so just activate it
                         game.units[clickedOwner][clickedId].activate(false);
                     }
                 }
@@ -575,7 +575,7 @@ var ChromeUI = (function () {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Sentry</span> <span class="action-shortcut">&lt;S&gt;</span></p><p>The unit remains inactive until it sees an enemy unit.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "separate") {
-            this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the group so you can move each unit individually.</p>';
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the stack so you can move each unit individually.</p>';
             this.elHoverBox.style.display = "block";
         } else {
             this.elHoverBox.style.display = "none";
@@ -595,7 +595,7 @@ var ChromeUI = (function () {
     ChromeUI.prototype.updateActiveUnit = function () {
         var activeUnit, actionName, addCommas, content, counts, i, units, type;
 
-        activeUnit = game.activeUnit; // Really should have separate variables for unit and group, like in unit icon click handling
+        activeUnit = game.activeUnit; // Really should have separate variables for unit and stack, like in unit icon click handling
 
         // Reset
         this.elBottomActions.innerHTML = "";
@@ -606,7 +606,7 @@ var ChromeUI = (function () {
             // Update bottom-info
             if (activeUnit instanceof Units.BaseUnit) {
                 this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
-            } else if (activeUnit instanceof Units.UnitGroup) {
+            } else if (activeUnit instanceof Units.Stack) {
                 content = "<h1>Unit Stack (" + activeUnit.units.length + ")</h1>" + "<table>" + "<tr><td>Movement: " + this.movementFraction(activeUnit) + "</td></tr>" + '<tr><td><div class="stack-types">Units: ';
 
                 // List individual unit types in stack
@@ -659,13 +659,13 @@ var ChromeUI = (function () {
         icon = document.createElement("div");
         icon.classList.add("unit-icon");
         icon.innerHTML = unit.type.slice(0, 2);
-        if (unit.active || (unit.unitGroup && unit.unitGroup.active)) {
+        if (unit.active || (unit.stack && unit.stack.active)) {
             icon.classList.add("active");
         }
         icon.dataset.owner = unit.owner;
         icon.dataset.id = unit.id;
-        if (unit.unitGroup) {
-            icon.dataset.gid = unit.unitGroup.id;
+        if (unit.stack) {
+            icon.dataset.gid = unit.stack.id;
         }
 
         return icon;
@@ -876,12 +876,12 @@ var MapUI = (function () {
                     // Only one to show...
                     unit = units[0];
                 } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
-                    // Active unit/group on this tile
-                    if (game.activeUnit instanceof Units.UnitGroup) {
-                        // Group is active, show highest currentStrength from the group
+                    // Active unit/stack on this tile
+                    if (game.activeUnit instanceof Units.Stack) {
+                        // Stack is active, show highest currentStrength from the stack
                         maxStrength = -Infinity;
                         for (k = 0; k < units.length; k++) {
-                            if (units[k].currentStrength > maxStrength && (units[k].unitGroup && units[k].unitGroup.id === game.activeUnit.id)) {
+                            if (units[k].currentStrength > maxStrength && (units[k].stack && units[k].stack.id === game.activeUnit.id)) {
                                 unit = units[k];
                                 maxStrength = units[k].currentStrength;
                             }
@@ -1190,7 +1190,7 @@ var Game = (function () {
         this.maxId = 0;
         this.names = [];
         this.units = [];
-        this.unitGroups = [];
+        this.stacks = [];
         this.activeUnit = null;
         this.turn = 0;
         var i;
@@ -1205,7 +1205,7 @@ var Game = (function () {
             }
 
             this.units.push({});
-            this.unitGroups.push({});
+            this.stacks.push({});
         }
     }
     Game.prototype.getTile = function (coords) {
@@ -1217,7 +1217,7 @@ var Game = (function () {
     };
 
     Game.prototype.newTurn = function () {
-        var i, j, unit, unitGroup;
+        var i, j, unit, stack;
 
         // See if anything still has to be moved, after the initial turn
         if (game.turn > 0 && this.moveUnits()) {
@@ -1233,10 +1233,10 @@ var Game = (function () {
                 unit.moved = false;
                 unit.currentMovement = unit.movement;
             }
-            for (j in this.unitGroups[i]) {
-                unitGroup = this.unitGroups[i][j];
-                unitGroup.moved = false;
-                unitGroup.currentMovement = unitGroup.movement;
+            for (j in this.stacks[i]) {
+                stack = this.stacks[i][j];
+                stack.moved = false;
+                stack.currentMovement = stack.movement;
             }
         }
 
@@ -1244,30 +1244,30 @@ var Game = (function () {
     };
 
     Game.prototype.moveUnits = function () {
-        var i, j, unit, unitGroup;
+        var i, j, unit, stack;
 
         for (i = 0; i < this.names.length; i++) {
             // User
             if (i === config.PLAYER_ID) {
-                for (j in this.unitGroups[i]) {
-                    unitGroup = this.unitGroups[i][j];
-                    if (!unitGroup.moved && !unitGroup.targetCoords) {
-                        unitGroup.activate();
+                for (j in this.stacks[i]) {
+                    stack = this.stacks[i][j];
+                    if (!stack.moved && !stack.targetCoords) {
+                        stack.activate();
                         return true;
                     }
                 }
 
-                for (j in this.unitGroups[i]) {
-                    unitGroup = this.unitGroups[i][j];
-                    if (!unitGroup.moved) {
-                        unitGroup.activate(true, true); // Activate, center screen, and auto-move to targetCoords
+                for (j in this.stacks[i]) {
+                    stack = this.stacks[i][j];
+                    if (!stack.moved) {
+                        stack.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                         return true;
                     }
                 }
 
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
-                    if (!unit.moved && !unit.targetCoords && !unit.unitGroup) {
+                    if (!unit.moved && !unit.targetCoords && !unit.stack) {
                         unit.activate();
                         return true;
                     }
@@ -1275,7 +1275,7 @@ var Game = (function () {
 
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
-                    if (!unit.moved && !unit.unitGroup) {
+                    if (!unit.moved && !unit.stack) {
                         unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                         return true;
                     }
@@ -1294,29 +1294,29 @@ var Game = (function () {
 /*
 Units - classes for the various units types
 Inheritance chart:
-BaseUnitOrGroup - properties and functions that apply to all units and groups of units
+BaseUnitOrStack - properties and functions that apply to all units and stacks of units
 -> BaseUnit - stuff specific to individual units
 -> All the individual unit classes, like Warrior
--> UnitGroup - groups of units
-The general idea for groups of units is that they should expose the same API as regular units, so
+-> Stack - stacks of units
+The general idea for stacks of units is that they should expose the same API as regular units, so
 all the rest of the code can treat them the same. Mainly through the use of getters and setters,
 they take the appropriate action with updating each variable (some things trickle down to individual
 units, like move counting, and others don't).
 */
 var Units;
 (function (Units) {
-    // Things that both individual units and groups of units have in common
-    var BaseUnitOrGroup = (function () {
-        function BaseUnitOrGroup() {
+    // Things that both individual units and stacks of units have in common
+    var BaseUnitOrStack = (function () {
+        function BaseUnitOrStack() {
             this._targetCoords = null;
             // Turn stuff
             this._active = false;
             this._moved = false;
-            // Set unique ID for unit or group
+            // Set unique ID for unit or stack
             this.id = game.maxId;
             game.maxId += 1;
         }
-        Object.defineProperty(BaseUnitOrGroup.prototype, "owner", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "owner", {
             get: function () {
                 return this._owner;
             },
@@ -1327,7 +1327,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrGroup.prototype, "movement", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "movement", {
             get: function () {
                 return this._movement;
             },
@@ -1337,7 +1337,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrGroup.prototype, "currentMovement", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "currentMovement", {
             get: function () {
                 return this._currentMovement;
             },
@@ -1347,7 +1347,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrGroup.prototype, "coords", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "coords", {
             get: function () {
                 return this._coords;
             },
@@ -1357,7 +1357,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrGroup.prototype, "targetCoords", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "targetCoords", {
             get: function () {
                 return this._targetCoords;
             },
@@ -1367,7 +1367,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrGroup.prototype, "landOrSea", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "landOrSea", {
             get: function () {
                 return this._landOrSea;
             },
@@ -1377,7 +1377,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrGroup.prototype, "canAttack", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "canAttack", {
             get: function () {
                 return this._canAttack;
             },
@@ -1387,7 +1387,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrGroup.prototype, "canDefend", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "canDefend", {
             get: function () {
                 return this._canDefend;
             },
@@ -1397,7 +1397,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrGroup.prototype, "actions", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "actions", {
             get: function () {
                 return this._actions;
             },
@@ -1407,7 +1407,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrGroup.prototype, "active", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "active", {
             get: function () {
                 return this._active;
             },
@@ -1417,7 +1417,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrGroup.prototype, "moved", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "moved", {
             get: function () {
                 return this._moved;
             },
@@ -1429,7 +1429,7 @@ var Units;
         });
 
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
-        BaseUnitOrGroup.prototype.activate = function (centerDisplay, autoMoveTowardsTarget) {
+        BaseUnitOrStack.prototype.activate = function (centerDisplay, autoMoveTowardsTarget) {
             if (typeof centerDisplay === "undefined") { centerDisplay = true; }
             if (typeof autoMoveTowardsTarget === "undefined") { autoMoveTowardsTarget = false; }
             // Deactivate current active unit, if there is one
@@ -1457,7 +1457,7 @@ var Units;
         };
 
         // Set as moved, because it used up all its moves or because its turn was skipped or something
-        BaseUnitOrGroup.prototype.setMoved = function () {
+        BaseUnitOrStack.prototype.setMoved = function () {
             this.moved = true;
             this.active = false;
             game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
@@ -1470,7 +1470,7 @@ var Units;
 
         // Should be able to make this general enough to handle all units
         // Handle fight initiation here, if move goes to tile with enemy on it
-        BaseUnitOrGroup.prototype.move = function (direction) {
+        BaseUnitOrStack.prototype.move = function (direction) {
             var newCoords;
 
             // Short circuit if no moves are available
@@ -1513,12 +1513,12 @@ var Units;
             }
         };
 
-        // Needs to be defined separately for individual and group
-        BaseUnitOrGroup.prototype.moveOnMap = function (coords) {
+        // Needs to be defined separately for individual and stack
+        BaseUnitOrStack.prototype.moveOnMap = function (coords) {
         };
 
         // Check for valid coords before calling
-        BaseUnitOrGroup.prototype.moveToCoords = function (coords) {
+        BaseUnitOrStack.prototype.moveToCoords = function (coords) {
             // Move the unit(s) in the map data structure
             this.moveOnMap(coords);
 
@@ -1534,7 +1534,7 @@ var Units;
         };
 
         // Sets the unit on a path towards a coordinate on the map
-        BaseUnitOrGroup.prototype.initiatePath = function (coords) {
+        BaseUnitOrStack.prototype.initiatePath = function (coords) {
             // See if there is a path to these coordinates
             game.map.pathFinding(this, coords, function (path) {
                 if (path) {
@@ -1555,7 +1555,7 @@ var Units;
         };
 
         // Use up the player's moves by moving towards its targetCoords
-        BaseUnitOrGroup.prototype.moveTowardsTarget = function () {
+        BaseUnitOrStack.prototype.moveTowardsTarget = function () {
             game.map.pathFinding(this, this.targetCoords, function (path) {
                 var tryToMove;
 
@@ -1593,7 +1593,7 @@ var Units;
         };
 
         // Mark as moved and go to the next active unit
-        BaseUnitOrGroup.prototype.skipTurn = function () {
+        BaseUnitOrStack.prototype.skipTurn = function () {
             this.setMoved();
 
             // Clear any saved path
@@ -1602,16 +1602,16 @@ var Units;
             requestAnimationFrame(mapUI.render.bind(mapUI));
         };
 
-        BaseUnitOrGroup.prototype.fortify = function () {
+        BaseUnitOrStack.prototype.fortify = function () {
             console.log("FORTIFY");
         };
 
-        BaseUnitOrGroup.prototype.sentry = function () {
+        BaseUnitOrStack.prototype.sentry = function () {
             console.log("SENTRY");
         };
-        return BaseUnitOrGroup;
+        return BaseUnitOrStack;
     })();
-    Units.BaseUnitOrGroup = BaseUnitOrGroup;
+    Units.BaseUnitOrStack = BaseUnitOrStack;
 
     var BaseUnit = (function (_super) {
         __extends(BaseUnit, _super);
@@ -1639,12 +1639,12 @@ var Units;
             game.map.moveUnit(this, coords);
         };
         return BaseUnit;
-    })(BaseUnitOrGroup);
+    })(BaseUnitOrStack);
     Units.BaseUnit = BaseUnit;
 
-    var UnitGroup = (function (_super) {
-        __extends(UnitGroup, _super);
-        function UnitGroup(owner, units) {
+    var Stack = (function (_super) {
+        __extends(Stack, _super);
+        function Stack(owner, units) {
             _super.call(this);
             this.units = [];
 
@@ -1655,17 +1655,17 @@ var Units;
             // Initialize private variables
             this.coords = units[0].coords;
 
-            // Store reference to group in game.unitGroups
-            game.unitGroups[this.owner][this.id] = this;
+            // Store reference to stack in game.stacks
+            game.stacks[this.owner][this.id] = this;
         }
 
-        Object.defineProperty(UnitGroup.prototype, "owner", {
-            // Read value from group, since they're all the same
+        Object.defineProperty(Stack.prototype, "owner", {
+            // Read value from stack, since they're all the same
             get: function () {
                 return this._owner;
             },
-            // Getters/setters for groups
-            // Set for group and every group member, like if the entire group is captured
+            // Getters/setters for stacks
+            // Set for stack and every stack member, like if the entire stack is captured
             set: function (value) {
                 var i, min;
 
@@ -1679,8 +1679,8 @@ var Units;
         });
 
 
-        Object.defineProperty(UnitGroup.prototype, "movement", {
-            // Find minimum of group members
+        Object.defineProperty(Stack.prototype, "movement", {
+            // Find minimum of stack members
             get: function () {
                 var i, min;
 
@@ -1692,7 +1692,7 @@ var Units;
                 }
                 return min;
             },
-            // Do nothing, can't be changed at group level
+            // Do nothing, can't be changed at stack level
             set: function (value) {
             },
             enumerable: true,
@@ -1700,8 +1700,8 @@ var Units;
         });
 
 
-        Object.defineProperty(UnitGroup.prototype, "currentMovement", {
-            // Find minimum of group members
+        Object.defineProperty(Stack.prototype, "currentMovement", {
+            // Find minimum of stack members
             get: function () {
                 var i, min;
 
@@ -1713,7 +1713,7 @@ var Units;
                 }
                 return min;
             },
-            // Update each unit in group with difference, and keep track at group level for comparison here
+            // Update each unit in stack with difference, and keep track at stack level for comparison here
             set: function (value) {
                 var diff, i;
 
@@ -1733,12 +1733,12 @@ var Units;
         });
 
 
-        Object.defineProperty(UnitGroup.prototype, "coords", {
-            // Read value from group, since they're all the same
+        Object.defineProperty(Stack.prototype, "coords", {
+            // Read value from stack, since they're all the same
             get: function () {
                 return this._coords;
             },
-            // Set for group and every group member
+            // Set for stack and every stack member
             set: function (value) {
                 var i, min;
 
@@ -1752,12 +1752,12 @@ var Units;
         });
 
 
-        Object.defineProperty(UnitGroup.prototype, "targetCoords", {
-            // Read value from group
+        Object.defineProperty(Stack.prototype, "targetCoords", {
+            // Read value from stack
             get: function () {
                 return this._targetCoords;
             },
-            // Set for group
+            // Set for stack
             set: function (value) {
                 this._targetCoords = value;
             },
@@ -1766,19 +1766,19 @@ var Units;
         });
 
 
-        Object.defineProperty(UnitGroup.prototype, "landOrSea", {
+        Object.defineProperty(Stack.prototype, "landOrSea", {
             // Find from units, all have the same value
             get: function () {
                 return this.units[0].landOrSea;
             },
-            // Do nothing, can't be changed at group level
+            // Do nothing, can't be changed at stack level
             set: function (value) {
             },
             enumerable: true,
             configurable: true
         });
 
-        Object.defineProperty(UnitGroup.prototype, "canAttack", {
+        Object.defineProperty(Stack.prototype, "canAttack", {
             get: function () {
                 var i;
 
@@ -1789,14 +1789,14 @@ var Units;
                 }
                 return false;
             },
-            // Do nothing, can't be changed at group level
+            // Do nothing, can't be changed at stack level
             set: function (value) {
             },
             enumerable: true,
             configurable: true
         });
 
-        Object.defineProperty(UnitGroup.prototype, "canDefend", {
+        Object.defineProperty(Stack.prototype, "canDefend", {
             get: function () {
                 var i;
 
@@ -1807,14 +1807,14 @@ var Units;
                 }
                 return false;
             },
-            // Do nothing, can't be changed at group level
+            // Do nothing, can't be changed at stack level
             set: function (value) {
             },
             enumerable: true,
             configurable: true
         });
 
-        Object.defineProperty(UnitGroup.prototype, "actions", {
+        Object.defineProperty(Stack.prototype, "actions", {
             get: function () {
                 var actions, i, j;
 
@@ -1831,13 +1831,13 @@ var Units;
 
                 return actions;
             },
-            // Do nothing, can't be changed at group level
+            // Do nothing, can't be changed at stack level
             set: function (value) {
             },
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(UnitGroup.prototype, "active", {
+        Object.defineProperty(Stack.prototype, "active", {
             get: function () {
                 return this._active;
             },
@@ -1847,7 +1847,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(UnitGroup.prototype, "moved", {
+        Object.defineProperty(Stack.prototype, "moved", {
             get: function () {
                 return this._moved;
             },
@@ -1858,7 +1858,7 @@ var Units;
             configurable: true
         });
 
-        UnitGroup.prototype.moveOnMap = function (coords) {
+        Stack.prototype.moveOnMap = function (coords) {
             var i;
 
             for (i = 0; i < this.units.length; i++) {
@@ -1866,21 +1866,21 @@ var Units;
             }
         };
 
-        UnitGroup.prototype.add = function (units) {
+        Stack.prototype.add = function (units) {
             var i;
 
             for (i = 0; i < units.length; i++) {
                 this.units.push(units[i]);
-                units[i].unitGroup = this;
+                units[i].stack = this;
             }
         };
 
-        UnitGroup.prototype.remove = function (id) {
+        Stack.prototype.remove = function (id) {
             var i;
 
             for (i = 0; i < this.units.length; i++) {
                 if (this.units[i].id === id) {
-                    this.units[i].unitGroup = null;
+                    this.units[i].stack = null;
                     this.units.splice(i, 1);
                     break;
                 }
@@ -1892,7 +1892,7 @@ var Units;
             }
         };
 
-        UnitGroup.prototype.separate = function (activateUnitAtEnd) {
+        Stack.prototype.separate = function (activateUnitAtEnd) {
             if (typeof activateUnitAtEnd === "undefined") { activateUnitAtEnd = true; }
             var i, toActivate;
 
@@ -1900,26 +1900,26 @@ var Units;
             toActivate = this.units[0];
 
             for (i = 0; i < this.units.length; i++) {
-                this.units[i].unitGroup = null;
+                this.units[i].stack = null;
             }
 
-            // Delete group
+            // Delete stack
             if (this.active) {
                 game.activeUnit = null;
             }
-            delete game.unitGroups[this.owner][this.id];
+            delete game.stacks[this.owner][this.id];
 
-            // If desired, activate one of the members of the separateed group
+            // If desired, activate one of the members of the separateed stack
             if (activateUnitAtEnd) {
                 toActivate.activate();
             }
         };
 
-        UnitGroup.prototype.merge = function () {
+        Stack.prototype.merge = function () {
         };
-        return UnitGroup;
-    })(BaseUnitOrGroup);
-    Units.UnitGroup = UnitGroup;
+        return Stack;
+    })(BaseUnitOrStack);
+    Units.Stack = Stack;
 
     var Warrior = (function (_super) {
         __extends(Warrior, _super);
@@ -1984,7 +1984,7 @@ var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
-var g = new Units.UnitGroup(config.PLAYER_ID, [u1, u2, u3]);
+var g = new Units.Stack(config.PLAYER_ID, [u1, u2, u3]);
 
 game.newTurn();
 //# sourceMappingURL=app.js.map

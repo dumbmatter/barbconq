@@ -2,20 +2,20 @@
 Units - classes for the various units types
 
 Inheritance chart:
-BaseUnitOrGroup - properties and functions that apply to all units and groups of units
+BaseUnitOrStack - properties and functions that apply to all units and stacks of units
 -> BaseUnit - stuff specific to individual units
    -> All the individual unit classes, like Warrior
--> UnitGroup - groups of units
+-> Stack - stacks of units
 
-The general idea for groups of units is that they should expose the same API as regular units, so
+The general idea for stacks of units is that they should expose the same API as regular units, so
 all the rest of the code can treat them the same. Mainly through the use of getters and setters,
 they take the appropriate action with updating each variable (some things trickle down to individual
 units, like move counting, and others don't).
 */
 
 module Units {
-    // Things that both individual units and groups of units have in common
-    export class BaseUnitOrGroup {
+    // Things that both individual units and stacks of units have in common
+    export class BaseUnitOrStack {
         // Identification
         id : number; // Unique, incrementing
         _owner : number;
@@ -61,7 +61,7 @@ module Units {
         get moved() : boolean { return this._moved; }
 
         constructor() {
-            // Set unique ID for unit or group
+            // Set unique ID for unit or stack
             this.id = game.maxId;
             game.maxId += 1;
         }
@@ -149,7 +149,7 @@ module Units {
             }
         }
 
-        // Needs to be defined separately for individual and group
+        // Needs to be defined separately for individual and stack
         moveOnMap(coords : number[]) {}
 
         // Check for valid coords before calling
@@ -245,10 +245,10 @@ console.log("SENTRY")
         }
     }
 
-    export class BaseUnit extends BaseUnitOrGroup {
+    export class BaseUnit extends BaseUnitOrStack {
         // Identification
         type : string;
-        unitGroup : UnitGroup;
+        stack : Stack;
 
         // Key attributes
         level : number = 1;
@@ -280,12 +280,12 @@ console.log("SENTRY")
         }
     }
 
-    export class UnitGroup extends BaseUnitOrGroup {
+    export class Stack extends BaseUnitOrStack {
         units : BaseUnit[] = [];
 
-        // Getters/setters for groups
+        // Getters/setters for stacks
 
-        // Set for group and every group member, like if the entire group is captured
+        // Set for stack and every stack member, like if the entire stack is captured
         set owner(value : number) {
             var i, min;
 
@@ -294,12 +294,12 @@ console.log("SENTRY")
             }
             this._owner = value;
         }
-        // Read value from group, since they're all the same
+        // Read value from stack, since they're all the same
         get owner() : number { return this._owner; }
 
-        // Do nothing, can't be changed at group level
+        // Do nothing, can't be changed at stack level
         set movement(value : number) {}
-        // Find minimum of group members
+        // Find minimum of stack members
         get movement() : number {
             var i, min;
 
@@ -312,7 +312,7 @@ console.log("SENTRY")
             return min;
         }
 
-        // Update each unit in group with difference, and keep track at group level for comparison here
+        // Update each unit in stack with difference, and keep track at stack level for comparison here
         set currentMovement(value : number) {
             var diff, i;
 
@@ -327,7 +327,7 @@ console.log("SENTRY")
             }
             this._currentMovement = value;
         }
-        // Find minimum of group members
+        // Find minimum of stack members
         get currentMovement() : number {
             var i, min;
 
@@ -340,7 +340,7 @@ console.log("SENTRY")
             return min;
         }
 
-        // Set for group and every group member
+        // Set for stack and every stack member
         set coords(value : number[]) {
             var i, min;
 
@@ -349,22 +349,22 @@ console.log("SENTRY")
             }
             this._coords = value;
         }
-        // Read value from group, since they're all the same
+        // Read value from stack, since they're all the same
         get coords() : number[] { return this._coords; }
 
-        // Set for group
+        // Set for stack
         set targetCoords(value : number[]) { this._targetCoords = value; }
-        // Read value from group
+        // Read value from stack
         get targetCoords() : number[] { return this._targetCoords; }
 
-        // Do nothing, can't be changed at group level
+        // Do nothing, can't be changed at stack level
         set landOrSea(value : string) {}
         // Find from units, all have the same value
         get landOrSea() : string {
             return this.units[0].landOrSea;
         }
 
-        // Do nothing, can't be changed at group level
+        // Do nothing, can't be changed at stack level
         set canAttack(value : boolean) {}
         get canAttack() : boolean {
             var i;
@@ -377,7 +377,7 @@ console.log("SENTRY")
             return false;
         }
 
-        // Do nothing, can't be changed at group level
+        // Do nothing, can't be changed at stack level
         set canDefend(value : boolean) {}
         get canDefend() : boolean {
             var i;
@@ -390,7 +390,7 @@ console.log("SENTRY")
             return false;
         }
 
-        // Do nothing, can't be changed at group level
+        // Do nothing, can't be changed at stack level
         set actions(value : string[]) {}
         get actions() : string[] {
             var actions, i, j;
@@ -423,14 +423,14 @@ console.log("SENTRY")
             // Initialize private variables
             this.coords = units[0].coords;
 
-            // Store reference to group in game.unitGroups
-            game.unitGroups[this.owner][this.id] = this;
+            // Store reference to stack in game.stacks
+            game.stacks[this.owner][this.id] = this;
         }
 
         moveOnMap(coords : number[]) {
             var i;
 
-            // It's a unit group!
+            // It's a unit stack!
             for (i = 0; i < this.units.length; i++) {
                 game.map.moveUnit(this.units[i], coords);
             }
@@ -441,7 +441,7 @@ console.log("SENTRY")
 
             for (i = 0; i < units.length; i++) {
                 this.units.push(units[i]);
-                units[i].unitGroup = this;
+                units[i].stack = this;
             }
         }
 
@@ -450,7 +450,7 @@ console.log("SENTRY")
 
             for (i = 0; i < this.units.length; i++) {
                 if (this.units[i].id === id) {
-                    this.units[i].unitGroup = null;
+                    this.units[i].stack = null;
                     this.units.splice(i, 1);
                     break;
                 }
@@ -468,18 +468,18 @@ console.log("SENTRY")
             // Save the first member of this unit to arbitrarily activate at the end
             toActivate = this.units[0];
 
-            // Remove all units from group
+            // Remove all units from stack
             for (i = 0; i < this.units.length; i++) {
-                this.units[i].unitGroup = null;
+                this.units[i].stack = null;
             }
 
-            // Delete group
+            // Delete stack
             if (this.active) {
                 game.activeUnit = null;
             }
-            delete game.unitGroups[this.owner][this.id];
+            delete game.stacks[this.owner][this.id];
 
-            // If desired, activate one of the members of the separateed group
+            // If desired, activate one of the members of the separateed stack
             if (activateUnitAtEnd) {
                 toActivate.activate();
             }

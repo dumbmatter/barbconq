@@ -102,7 +102,7 @@ class ChromeUI {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Sentry</span> <span class="action-shortcut">&lt;S&gt;</span></p><p>The unit remains inactive until it sees an enemy unit.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "separate") {
-            this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the group so you can move each unit individually.</p>';
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the stack so you can move each unit individually.</p>';
             this.elHoverBox.style.display = "block";
         } else {
             this.elHoverBox.style.display = "none";
@@ -122,7 +122,7 @@ class ChromeUI {
     private updateActiveUnit() {
         var activeUnit, actionName, addCommas, content, counts, i, units, type;
 
-        activeUnit = game.activeUnit; // Really should have separate variables for unit and group, like in unit icon click handling
+        activeUnit = game.activeUnit; // Really should have separate variables for unit and stack, like in unit icon click handling
 
         // Reset
         this.elBottomActions.innerHTML = "";
@@ -139,7 +139,7 @@ class ChromeUI {
                     "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" +
                     "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" +
                     "</table>";
-            } else if (activeUnit instanceof Units.UnitGroup) {
+            } else if (activeUnit instanceof Units.Stack) {
                 content = "<h1>Unit Stack (" + activeUnit.units.length + ")</h1>" +
                     "<table>" +
                     "<tr><td>Movement: " + this.movementFraction(activeUnit) + "</td></tr>" +
@@ -196,13 +196,13 @@ class ChromeUI {
         icon = document.createElement("div");
         icon.classList.add("unit-icon");
         icon.innerHTML = unit.type.slice(0, 2);
-        if (unit.active || (unit.unitGroup && unit.unitGroup.active)) {
+        if (unit.active || (unit.stack && unit.stack.active)) {
             icon.classList.add("active");
         }
         icon.dataset.owner = unit.owner;
         icon.dataset.id = unit.id;
-        if (unit.unitGroup) {
-            icon.dataset.gid = unit.unitGroup.id;
+        if (unit.stack) {
+            icon.dataset.gid = unit.stack.id;
         }
 
         return icon;

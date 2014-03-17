@@ -31,6 +31,6 @@ var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
-var g = new Units.UnitGroup(config.PLAYER_ID, [u1, u2, u3]);
+var g = new Units.Stack(config.PLAYER_ID, [u1, u2, u3]);
 
 game.newTurn();

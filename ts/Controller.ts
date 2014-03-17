@@ -312,7 +312,7 @@ class Controller {
     initUnitIcons() {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
-            var activeUnit : Units.BaseUnit, activeUnitGroup : Units.UnitGroup, clickedGid : number, clickedId : number, clickedOwner : number, el : any, i : number, newGroup : Units.UnitGroup, newUnits : Units.BaseUnit[], units : Units.BaseUnit[], type : string;
+            var activeUnit : Units.BaseUnit, activeStack : Units.Stack, clickedGid : number, clickedId : number, clickedOwner : number, el : any, i : number, newStack : Units.Stack, newUnits : Units.BaseUnit[], units : Units.BaseUnit[], type : string;
 
             el = <HTMLElement> e.target;
             if (el && el.dataset.id) {
@@ -338,11 +338,11 @@ class Controller {
 
                 // Handle all the different key modifiers
                 if (e.altKey) { // In GNOME, alt+click is captured for window dragging, but alt+ctrl+click works for this
-                    // separate any current groups on the tile
+                    // separate any current stacks on the tile
                     newUnits = [];
                     units.forEach(function (unit) {
-                        if (unit.unitGroup) {
-                            unit.unitGroup.separate(false);
+                        if (unit.stack) {
+                            unit.stack.separate(false);
                         }
                         if (unit.currentMovement > 0) {
                             newUnits.push(unit);
@@ -350,19 +350,19 @@ class Controller {
                     });
 
                     if (newUnits.length > 0) {
-                        // Make a new group with all units with currentMovement > 0 and activate it
-                        newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                        newGroup.activate(false);
+                        // Make a new stack with all units with currentMovement > 0 and activate it
+                        newStack = new Units.Stack(clickedOwner, newUnits);
+                        newStack.activate(false);
                     }
                 } else if (e.ctrlKey && e.shiftKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    // Separate any current groups on this tile involving this type
+                    // Separate any current stacks on this tile involving this type
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.currentMovement > 0 && unit.type === type) {
-                            if (unit.unitGroup) {
-                                unit.unitGroup.separate(false);
+                            if (unit.stack) {
+                                unit.stack.separate(false);
                             }
                             newUnits.push(unit);
                         }
@@ -371,64 +371,64 @@ class Controller {
                     if (newUnits.length > 0) {
                         if (game.activeUnit instanceof Units.BaseUnit) {
                             // Individual unit is active
-                            // Create a group with the active unit and all units of the clicked type with currentMovement > 0
-                            activeUnit = <Units.BaseUnit> game.activeUnit; // So TypeScript knows it's not a group
+                            // Create a stack with the active unit and all units of the clicked type with currentMovement > 0
+                            activeUnit = <Units.BaseUnit> game.activeUnit; // So TypeScript knows it's not a stack
                             if (activeUnit.type !== type) {
                                 newUnits.push(activeUnit);
                             }
-                            newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                            newGroup.activate(false);
-                        } else if (game.activeUnit instanceof Units.UnitGroup) {
-                            // Unit group is active
-                            // Add all units of the clicked type with currentMovement > 0 to that group
-                            activeUnitGroup = <Units.UnitGroup> game.activeUnit; // So TypeScript knows it's not an individual unit
-                            activeUnitGroup.add(newUnits);
+                            newStack = new Units.Stack(clickedOwner, newUnits);
+                            newStack.activate(false);
+                        } else if (game.activeUnit instanceof Units.Stack) {
+                            // Unit stack is active
+                            // Add all units of the clicked type with currentMovement > 0 to that stack
+                            activeStack = <Units.Stack> game.activeUnit; // So TypeScript knows it's not an individual unit
+                            activeStack.add(newUnits);
 
                             // Redraw everything, since there is no Unit.activate call here to do that otherwise
                             chromeUI.onUnitActivated();
                             window.requestAnimationFrame(mapUI.render.bind(mapUI));
                         } else {
                             // No unit active (like if they all got separateed above)
-                            newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                            newGroup.activate(false);
+                            newStack = new Units.Stack(clickedOwner, newUnits);
+                            newStack.activate(false);
                         }
                     }
                 } else if (e.ctrlKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    // Separate any current groups on this tile involving this type
+                    // Separate any current stacks on this tile involving this type
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.currentMovement > 0 && unit.type === type) {
-                            if (unit.unitGroup) {
-                                unit.unitGroup.separate(false);
+                            if (unit.stack) {
+                                unit.stack.separate(false);
                             }
                             newUnits.push(unit);
                         }
                     });
 
                     if (newUnits.length > 0) {
-                        // Make a new group from all the units of the clicked type with currentMovement > 0
-                        newGroup = new Units.UnitGroup(clickedOwner, newUnits);
-                        newGroup.activate(false);
+                        // Make a new stack from all the units of the clicked type with currentMovement > 0
+                        newStack = new Units.Stack(clickedOwner, newUnits);
+                        newStack.activate(false);
                     }
                 } else if (e.shiftKey) {
                     if (game.activeUnit instanceof Units.BaseUnit) {
                         // Individual unit is active
                         if (game.activeUnit.id !== clickedId) {
-                            // If clicked unit is not the active unit, add it to a new group with clicked unit
-                            newGroup = new Units.UnitGroup(clickedOwner, [game.activeUnit, game.units[clickedOwner][clickedId]]);
-                            newGroup.activate(false);
+                            // If clicked unit is not the active unit, add it to a new stack with clicked unit
+                            newStack = new Units.Stack(clickedOwner, [game.activeUnit, game.units[clickedOwner][clickedId]]);
+                            newStack.activate(false);
                         }
-                    } else if (game.activeUnit instanceof Units.UnitGroup) {
-                        activeUnitGroup = <Units.UnitGroup> game.activeUnit; // So TypeScript knows it's not an individual unit
-                        // Unit group is active
-                        if (activeUnitGroup === game.units[clickedOwner][clickedId].unitGroup) {
-                            // Clicked unit is in the active group, remove it from that group
-                            activeUnitGroup.remove(clickedId);
+                    } else if (game.activeUnit instanceof Units.Stack) {
+                        activeStack = <Units.Stack> game.activeUnit; // So TypeScript knows it's not an individual unit
+                        // Unit stack is active
+                        if (activeStack === game.units[clickedOwner][clickedId].stack) {
+                            // Clicked unit is in the active stack, remove it from that stack
+                            activeStack.remove(clickedId);
                         } else {
-                            // Clicked unit is not in the active group, add it to that group
-                            activeUnitGroup.add([game.units[clickedOwner][clickedId]]);
+                            // Clicked unit is not in the active stack, add it to that stack
+                            activeStack.add([game.units[clickedOwner][clickedId]]);
                         }
                         // Redraw everything, since there is no Unit.activate call here to do that otherwise
                         chromeUI.onUnitActivated();
@@ -436,17 +436,17 @@ class Controller {
                     }
                 } else {
                     if (clickedGid !== null) {
-                        // Clicked unit is in a group
+                        // Clicked unit is in a stack
                         if (game.activeUnit.id === clickedGid) {
-                            // Clicked unit is member of active group, so separate it and activate clicked unit
-                            game.unitGroups[clickedOwner][clickedGid].separate(false);
+                            // Clicked unit is member of active stack, so separate it and activate clicked unit
+                            game.stacks[clickedOwner][clickedGid].separate(false);
                             game.units[clickedOwner][clickedId].activate(false);
                         } else {
-                            // Clicked unit is in an inactive group, so activate the group
-                            game.unitGroups[clickedOwner][clickedGid].activate(false);
+                            // Clicked unit is in an inactive stack, so activate the stack
+                            game.stacks[clickedOwner][clickedGid].activate(false);
                         }
                     } else {
-                        // Clicked unit is not in group, so just activate it
+                        // Clicked unit is not in stack, so just activate it
                         game.units[clickedOwner][clickedId].activate(false);
                     }
                 }
