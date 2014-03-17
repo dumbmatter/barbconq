@@ -5,7 +5,6 @@ stacked unit actions and UI
     icons
       top left: red/yellow/green for no/some/full moves
       bottom: health bar
-    how to handle overflow? scroll left/right?
   make sure unitStack properties are being correctly updated when a unit with different properties is added/removed from the stack
   left click on map
     if top unit is in stack, select that. otherwise, just select top unit.

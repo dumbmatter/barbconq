@@ -29,6 +29,10 @@ for (var i = 0; i < 1; i++) {
 
 var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+for (i = 0; i < 10; i++) {
+    var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+}
 new Units.Stack(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
 [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
 new Units.Stack(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
