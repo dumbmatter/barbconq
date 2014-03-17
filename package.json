@@ -1,23 +1,27 @@
 {
-    "name": "c4c",
-    "version": "0.0.1",
-    "homepage": "https://bitbucket.org/dumbmatter/c4c/",
-    "bugs": {
-        "email": "jdscheff@gmail.com"
-    },
-    "author": "Jeremy Scheff <jdscheff@gmail.com> (http://jeremyscheff.com/)",
-    "repository": {
-        "type" : "git",
-        "url" : "https://bitbucket.org/dumbmatter/c4c.git"
-    },
-    "dependencies": {
-        "easystarjs": "~0.1.6"
-    },
-    "devDependencies": {
-        "chai": "~1.9.0",
-        "mocha": "~1.18.0",
-        "karma": "~0.12.0"
-    },
-    "bundledDependencies": ["easystar"],
-    "private": true
+  "name": "c4c",
+  "version": "0.0.1",
+  "homepage": "https://bitbucket.org/dumbmatter/c4c/",
+  "bugs": {
+    "email": "jdscheff@gmail.com"
+  },
+  "author": "Jeremy Scheff <jdscheff@gmail.com> (http://jeremyscheff.com/)",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/dumbmatter/c4c.git"
+  },
+  "dependencies": {
+    "easystarjs": "~0.1.6"
+  },
+  "devDependencies": {
+    "chai": "~1.9.0",
+    "mocha": "~1.18.0",
+    "karma": "~0.12.0",
+    "karma-chai": "~0.1.0",
+    "karma-mocha": "~0.1.3"
+  },
+  "bundledDependencies": [
+    "easystar"
+  ],
+  "private": true
 }
