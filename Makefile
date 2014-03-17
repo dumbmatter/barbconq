@@ -1,6 +1,9 @@
 # target: all - Default target. Currently just compiles the TypeScript files into JavaScript.
 all: clean build-js
 
+# target: install-npm-deps - Install npm dependencies to node_modules
+install-npm-deps:
+	sudo npm install # Not sure why sudo is needed, but it is on my computer
 
 
 ### Targets below here are generally just called from the targets above.

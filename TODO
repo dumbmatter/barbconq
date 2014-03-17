@@ -3,10 +3,7 @@
 unit tests for grouped units?
   karma/mocha/chai
   install all with npm
-    http://karma-runner.github.io/0.12/intro/installation.html
-    https://coderwall.com/p/isrcca
-    http://stackoverflow.com/questions/14469515/how-to-npm-install-to-a-specified-directory
-  install easystar with npm
+    need karma-mocha and karma-chai?
 
 fog of war
   states
