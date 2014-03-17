@@ -1,7 +1,6 @@
 # Major current tasks
 
 s/group/stack/ (damn i'm stupid)
-s/disband/separate/
 stacked unit actions and UI
   bottom-units
     icons
@@ -34,7 +33,7 @@ combat
     stack attack
   what happens when a unit dies?
     remove it from its group, if group exists
-      group should disband if it's down to 1 unit
+      group should separate if it's down to 1 unit
     delete it from game.units
     delete it from tile.units
 
@@ -54,7 +53,7 @@ typescript live compile
 
 "End turn early" green button and "end turn" red button, next to minimap
   if end turn early, make sure to move units on path towards targetCoords first!
-    i have the same problem is i have a warrior/chariot group move towards target, have the "End" text flashing, disband so the chariot can still move, and then press enter
+    i have the same problem is i have a warrior/chariot group move towards target, have the "End" text flashing, separate so the chariot can still move, and then press enter
   is green/red always in sync with "begin next turn" blinker?
   add "shift+enter" shortcut for end turn early
 

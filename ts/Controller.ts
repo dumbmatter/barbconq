@@ -338,11 +338,11 @@ class Controller {
 
                 // Handle all the different key modifiers
                 if (e.altKey) { // In GNOME, alt+click is captured for window dragging, but alt+ctrl+click works for this
-                    // Disband any current groups on the tile
+                    // separate any current groups on the tile
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.unitGroup) {
-                            unit.unitGroup.disband(false);
+                            unit.unitGroup.separate(false);
                         }
                         if (unit.currentMovement > 0) {
                             newUnits.push(unit);
@@ -357,12 +357,12 @@ class Controller {
                 } else if (e.ctrlKey && e.shiftKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    // Disband any current groups on this tile involving this type
+                    // Separate any current groups on this tile involving this type
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.currentMovement > 0 && unit.type === type) {
                             if (unit.unitGroup) {
-                                unit.unitGroup.disband(false);
+                                unit.unitGroup.separate(false);
                             }
                             newUnits.push(unit);
                         }
@@ -388,7 +388,7 @@ class Controller {
                             chromeUI.onUnitActivated();
                             window.requestAnimationFrame(mapUI.render.bind(mapUI));
                         } else {
-                            // No unit active (like if they all got disbanded above)
+                            // No unit active (like if they all got separateed above)
                             newGroup = new Units.UnitGroup(clickedOwner, newUnits);
                             newGroup.activate(false);
                         }
@@ -396,12 +396,12 @@ class Controller {
                 } else if (e.ctrlKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    // Disband any current groups on this tile involving this type
+                    // Separate any current groups on this tile involving this type
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.currentMovement > 0 && unit.type === type) {
                             if (unit.unitGroup) {
-                                unit.unitGroup.disband(false);
+                                unit.unitGroup.separate(false);
                             }
                             newUnits.push(unit);
                         }
@@ -438,8 +438,8 @@ class Controller {
                     if (clickedGid !== null) {
                         // Clicked unit is in a group
                         if (game.activeUnit.id === clickedGid) {
-                            // Clicked unit is member of active group, so disband it and activate clicked unit
-                            game.unitGroups[clickedOwner][clickedGid].disband(false);
+                            // Clicked unit is member of active group, so separate it and activate clicked unit
+                            game.unitGroups[clickedOwner][clickedGid].separate(false);
                             game.units[clickedOwner][clickedId].activate(false);
                         } else {
                             // Clicked unit is in an inactive group, so activate the group

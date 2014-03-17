@@ -404,7 +404,7 @@ console.log("SENTRY")
                 }
             }
 
-            actions.push("disband");
+            actions.push("separate");
 
             return actions;
         }
@@ -458,11 +458,11 @@ console.log("SENTRY")
 
             // Don't keep a unit of 1 around
             if (this.units.length === 1) {
-                this.disband();
+                this.separate();
             }
         }
 
-        disband(activateUnitAtEnd : boolean = true) {
+        separate(activateUnitAtEnd : boolean = true) {
             var i, toActivate;
 
             // Save the first member of this unit to arbitrarily activate at the end
@@ -479,7 +479,7 @@ console.log("SENTRY")
             }
             delete game.unitGroups[this.owner][this.id];
 
-            // If desired, activate one of the members of the disbanded group
+            // If desired, activate one of the members of the separateed group
             if (activateUnitAtEnd) {
                 toActivate.activate();
             }

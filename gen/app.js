@@ -339,11 +339,11 @@ var Controller = (function () {
 
                 // Handle all the different key modifiers
                 if (e.altKey) {
-                    // Disband any current groups on the tile
+                    // separate any current groups on the tile
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.unitGroup) {
-                            unit.unitGroup.disband(false);
+                            unit.unitGroup.separate(false);
                         }
                         if (unit.currentMovement > 0) {
                             newUnits.push(unit);
@@ -358,12 +358,12 @@ var Controller = (function () {
                 } else if (e.ctrlKey && e.shiftKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    // Disband any current groups on this tile involving this type
+                    // Separate any current groups on this tile involving this type
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.currentMovement > 0 && unit.type === type) {
                             if (unit.unitGroup) {
-                                unit.unitGroup.disband(false);
+                                unit.unitGroup.separate(false);
                             }
                             newUnits.push(unit);
                         }
@@ -389,7 +389,7 @@ var Controller = (function () {
                             chromeUI.onUnitActivated();
                             window.requestAnimationFrame(mapUI.render.bind(mapUI));
                         } else {
-                            // No unit active (like if they all got disbanded above)
+                            // No unit active (like if they all got separateed above)
                             newGroup = new Units.UnitGroup(clickedOwner, newUnits);
                             newGroup.activate(false);
                         }
@@ -397,12 +397,12 @@ var Controller = (function () {
                 } else if (e.ctrlKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    // Disband any current groups on this tile involving this type
+                    // Separate any current groups on this tile involving this type
                     newUnits = [];
                     units.forEach(function (unit) {
                         if (unit.currentMovement > 0 && unit.type === type) {
                             if (unit.unitGroup) {
-                                unit.unitGroup.disband(false);
+                                unit.unitGroup.separate(false);
                             }
                             newUnits.push(unit);
                         }
@@ -441,8 +441,8 @@ var Controller = (function () {
                     if (clickedGid !== null) {
                         // Clicked unit is in a group
                         if (game.activeUnit.id === clickedGid) {
-                            // Clicked unit is member of active group, so disband it and activate clicked unit
-                            game.unitGroups[clickedOwner][clickedGid].disband(false);
+                            // Clicked unit is member of active group, so separate it and activate clicked unit
+                            game.unitGroups[clickedOwner][clickedGid].separate(false);
                             game.units[clickedOwner][clickedId].activate(false);
                         } else {
                             // Clicked unit is in an inactive group, so activate the group
@@ -574,8 +574,8 @@ var ChromeUI = (function () {
         } else if (action === "sentry") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Sentry</span> <span class="action-shortcut">&lt;S&gt;</span></p><p>The unit remains inactive until it sees an enemy unit.</p>';
             this.elHoverBox.style.display = "block";
-        } else if (action === "disband") {
-            this.elHoverBox.innerHTML = '<p><span class="action-name">Disband</span></p><p>Separates the group so you can move each unit individually.</p>';
+        } else if (action === "separate") {
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the group so you can move each unit individually.</p>';
             this.elHoverBox.style.display = "block";
         } else {
             this.elHoverBox.style.display = "none";
@@ -1827,7 +1827,7 @@ var Units;
                     }
                 }
 
-                actions.push("disband");
+                actions.push("separate");
 
                 return actions;
             },
@@ -1888,11 +1888,11 @@ var Units;
 
             // Don't keep a unit of 1 around
             if (this.units.length === 1) {
-                this.disband();
+                this.separate();
             }
         };
 
-        UnitGroup.prototype.disband = function (activateUnitAtEnd) {
+        UnitGroup.prototype.separate = function (activateUnitAtEnd) {
             if (typeof activateUnitAtEnd === "undefined") { activateUnitAtEnd = true; }
             var i, toActivate;
 
@@ -1909,7 +1909,7 @@ var Units;
             }
             delete game.unitGroups[this.owner][this.id];
 
-            // If desired, activate one of the members of the disbanded group
+            // If desired, activate one of the members of the separateed group
             if (activateUnitAtEnd) {
                 toActivate.activate();
             }
