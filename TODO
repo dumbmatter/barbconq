@@ -9,6 +9,8 @@ unit tests for grouped units?
       need to run tsc in preprocessor?
       or https://github.com/demerzel3/karma-sourcemap-loader
         tried it, but doesn't seem to work
+        problem seems to be in source-map package. works with version 0.1.32, but not 0.1.33
+          https://github.com/mozilla/source-map/issues/106
 
 fog of war
   states
