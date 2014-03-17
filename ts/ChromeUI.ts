@@ -225,14 +225,14 @@ class ChromeUI {
         // Movement indicator
         movementIndicator = document.createElement("div");
         movementIndicator.classList.add("movement-indicator");
-        if (unit.currentMovement === 0) {
-            movementIndicator.classList.add("movement-none");
-        } else if (unit.moved) {
-            movementIndicator.classList.add("movement-moved");
+        if (unit.skippedTurn) {
+            movementIndicator.classList.add("movement-skipped");
         } else if (unit.currentMovement === unit.movement) {
             movementIndicator.classList.add("movement-all");
         } else if (unit.currentMovement > 0) {
             movementIndicator.classList.add("movement-some");
+        } else if (unit.currentMovement === 0) {
+            movementIndicator.classList.add("movement-none");
         }
 
         iconWrapper.appendChild(icon);

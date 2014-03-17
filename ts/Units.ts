@@ -34,7 +34,7 @@ module Units {
 
         // Turn stuff
         _active : boolean = false; // When set, show UI options for this unit
-        _moved : boolean = false; // When set, no need to loop through this unit before showing turn is over
+        _skippedTurn : boolean = false; // When set, no need to loop through this unit before showing turn is over
 
         // Default getters/setters for units
         set owner(value : number) { this._owner = value; }
@@ -57,8 +57,8 @@ module Units {
         get actions() : string[] { return this._actions; }
         set active(value : boolean) { this._active = value; }
         get active() : boolean { return this._active; }
-        set moved(value : boolean) { this._moved = value; }
-        get moved() : boolean { return this._moved; }
+        set skippedTurn(value : boolean) { this._skippedTurn = value; }
+        get skippedTurn() : boolean { return this._skippedTurn; }
 
         constructor() {
             // Set unique ID for unit or stack
@@ -90,18 +90,6 @@ module Units {
 
             chromeUI.onUnitActivated();
             window.requestAnimationFrame(mapUI.render.bind(mapUI));
-        }
-
-        // Set as moved, because it used up all its moves or because its turn was skipped or something
-        setMoved() {
-            this.moved = true;
-            this.active = false;
-            game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
-
-            // After delay, move to next unit
-            setTimeout(function () {
-                game.moveUnits();
-            }, config.UNIT_MOVEMENT_UI_DELAY);
         }
 
         // Should be able to make this general enough to handle all units
@@ -162,7 +150,14 @@ module Units {
             this.currentMovement -= 1; // Should depend on terrain/improvements
             if (this.currentMovement <= 0) {
                 this.currentMovement = 0;
-                this.setMoved();
+
+                this.active = false;
+
+                // After delay, move to next unit
+                setTimeout(function () {
+                    game.activeUnit = null;
+                    game.moveUnits();
+                }, config.UNIT_MOVEMENT_UI_DELAY);
             }
 
             window.requestAnimationFrame(mapUI.render.bind(mapUI));
@@ -226,9 +221,16 @@ module Units {
             }.bind(this));
         }
 
-        // Mark as moved and go to the next active unit
+        // Mark skippedTurn and go to the next active unit
         skipTurn() {
-            this.setMoved();
+            this.skippedTurn = true;
+            this.active = false;
+
+            // After delay, move to next unit
+            setTimeout(function () {
+                game.activeUnit = null;
+                game.moveUnits();
+            }, config.UNIT_MOVEMENT_UI_DELAY);
 
             // Clear any saved path
             this.targetCoords = null;
@@ -413,15 +415,15 @@ console.log("SENTRY")
         get active() : boolean { return this._active; }
 
         // Set for stack and every stack member
-        set moved(value : boolean) {
+        set skippedTurn(value : boolean) {
             var i : number;
 
             for (i = 0; i < this.units.length; i++) {
-                this.units[i].moved = value;
+                this.units[i].skippedTurn = value;
             }
-            this._moved = value;
+            this._skippedTurn = value;
         }
-        get moved() : boolean { return this._moved; }
+        get skippedTurn() : boolean { return this._skippedTurn; }
 
         constructor(owner : number, units : BaseUnit[]) {
             super();

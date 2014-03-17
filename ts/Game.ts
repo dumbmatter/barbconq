@@ -50,12 +50,12 @@ class Game {
         for (i = 0; i < this.units.length; i++) {
             for (j in this.units[i]) {
                 unit = this.units[i][j];
-                unit.moved = false;
+                unit.skippedTurn = false;
                 unit.currentMovement = unit.movement;
             }
             for (j in this.stacks[i]) {
                 stack = this.stacks[i][j];
-                stack.moved = false;
+                stack.skippedTurn = false;
                 stack.currentMovement = stack.movement;
             }
         }
@@ -73,7 +73,7 @@ class Game {
                 // First look for ones not on a path towards targetCoords
                 for (j in this.stacks[i]) {
                     stack = this.stacks[i][j];
-                    if (!stack.moved && !stack.targetCoords) {
+                    if (stack.currentMovement > 0 && !stack.skippedTurn && !stack.targetCoords) {
                         stack.activate();
                         return true;
                     }
@@ -82,7 +82,7 @@ class Game {
                 // Then process all the targetCoords ones
                 for (j in this.stacks[i]) {
                     stack = this.stacks[i][j];
-                    if (!stack.moved) {
+                    if (stack.currentMovement > 0 && !stack.skippedTurn) {
                         stack.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                         return true;
                     }
@@ -92,7 +92,7 @@ class Game {
                 // First look for ones not on a path towards targetCoords
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
-                    if (!unit.moved && !unit.targetCoords && !unit.stack) {
+                    if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.targetCoords && !unit.stack) {
                         unit.activate();
                         return true;
                     }
@@ -101,7 +101,7 @@ class Game {
                 // Then process all the targetCoords ones
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
-                    if (!unit.moved && !unit.stack) {
+                    if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.stack) {
                         unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                         return true;
                     }

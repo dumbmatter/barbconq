@@ -698,14 +698,14 @@ var ChromeUI = (function () {
         // Movement indicator
         movementIndicator = document.createElement("div");
         movementIndicator.classList.add("movement-indicator");
-        if (unit.currentMovement === 0) {
-            movementIndicator.classList.add("movement-none");
-        } else if (unit.moved) {
-            movementIndicator.classList.add("movement-moved");
+        if (unit.skippedTurn) {
+            movementIndicator.classList.add("movement-skipped");
         } else if (unit.currentMovement === unit.movement) {
             movementIndicator.classList.add("movement-all");
         } else if (unit.currentMovement > 0) {
             movementIndicator.classList.add("movement-some");
+        } else if (unit.currentMovement === 0) {
+            movementIndicator.classList.add("movement-none");
         }
 
         iconWrapper.appendChild(icon);
@@ -1274,12 +1274,12 @@ var Game = (function () {
         for (i = 0; i < this.units.length; i++) {
             for (j in this.units[i]) {
                 unit = this.units[i][j];
-                unit.moved = false;
+                unit.skippedTurn = false;
                 unit.currentMovement = unit.movement;
             }
             for (j in this.stacks[i]) {
                 stack = this.stacks[i][j];
-                stack.moved = false;
+                stack.skippedTurn = false;
                 stack.currentMovement = stack.movement;
             }
         }
@@ -1295,7 +1295,7 @@ var Game = (function () {
             if (i === config.PLAYER_ID) {
                 for (j in this.stacks[i]) {
                     stack = this.stacks[i][j];
-                    if (!stack.moved && !stack.targetCoords) {
+                    if (stack.currentMovement > 0 && !stack.skippedTurn && !stack.targetCoords) {
                         stack.activate();
                         return true;
                     }
@@ -1303,7 +1303,7 @@ var Game = (function () {
 
                 for (j in this.stacks[i]) {
                     stack = this.stacks[i][j];
-                    if (!stack.moved) {
+                    if (stack.currentMovement > 0 && !stack.skippedTurn) {
                         stack.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                         return true;
                     }
@@ -1311,7 +1311,7 @@ var Game = (function () {
 
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
-                    if (!unit.moved && !unit.targetCoords && !unit.stack) {
+                    if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.targetCoords && !unit.stack) {
                         unit.activate();
                         return true;
                     }
@@ -1319,7 +1319,7 @@ var Game = (function () {
 
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
-                    if (!unit.moved && !unit.stack) {
+                    if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.stack) {
                         unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                         return true;
                     }
@@ -1355,7 +1355,7 @@ var Units;
             this._targetCoords = null;
             // Turn stuff
             this._active = false;
-            this._moved = false;
+            this._skippedTurn = false;
             // Set unique ID for unit or stack
             this.id = game.maxId;
             game.maxId += 1;
@@ -1461,12 +1461,12 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "moved", {
+        Object.defineProperty(BaseUnitOrStack.prototype, "skippedTurn", {
             get: function () {
-                return this._moved;
+                return this._skippedTurn;
             },
             set: function (value) {
-                this._moved = value;
+                this._skippedTurn = value;
             },
             enumerable: true,
             configurable: true
@@ -1498,18 +1498,6 @@ var Units;
 
             chromeUI.onUnitActivated();
             window.requestAnimationFrame(mapUI.render.bind(mapUI));
-        };
-
-        // Set as moved, because it used up all its moves or because its turn was skipped or something
-        BaseUnitOrStack.prototype.setMoved = function () {
-            this.moved = true;
-            this.active = false;
-            game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
-
-            // After delay, move to next unit
-            setTimeout(function () {
-                game.moveUnits();
-            }, config.UNIT_MOVEMENT_UI_DELAY);
         };
 
         // Should be able to make this general enough to handle all units
@@ -1571,7 +1559,14 @@ var Units;
             this.currentMovement -= 1; // Should depend on terrain/improvements
             if (this.currentMovement <= 0) {
                 this.currentMovement = 0;
-                this.setMoved();
+
+                this.active = false;
+
+                // After delay, move to next unit
+                setTimeout(function () {
+                    game.activeUnit = null;
+                    game.moveUnits();
+                }, config.UNIT_MOVEMENT_UI_DELAY);
             }
 
             window.requestAnimationFrame(mapUI.render.bind(mapUI));
@@ -1636,9 +1631,16 @@ var Units;
             }.bind(this));
         };
 
-        // Mark as moved and go to the next active unit
+        // Mark skippedTurn and go to the next active unit
         BaseUnitOrStack.prototype.skipTurn = function () {
-            this.setMoved();
+            this.skippedTurn = true;
+            this.active = false;
+
+            // After delay, move to next unit
+            setTimeout(function () {
+                game.activeUnit = null;
+                game.moveUnits();
+            }, config.UNIT_MOVEMENT_UI_DELAY);
 
             // Clear any saved path
             this.targetCoords = null;
@@ -1893,18 +1895,18 @@ var Units;
             configurable: true
         });
 
-        Object.defineProperty(Stack.prototype, "moved", {
+        Object.defineProperty(Stack.prototype, "skippedTurn", {
             get: function () {
-                return this._moved;
+                return this._skippedTurn;
             },
             // Set for stack and every stack member
             set: function (value) {
                 var i;
 
                 for (i = 0; i < this.units.length; i++) {
-                    this.units[i].moved = value;
+                    this.units[i].skippedTurn = value;
                 }
-                this._moved = value;
+                this._skippedTurn = value;
             },
             enumerable: true,
             configurable: true
