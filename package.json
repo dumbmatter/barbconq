@@ -1,0 +1,24 @@
+{
+    "name": "c4c",
+    "version": "0.0.1",
+    "homepage": "https://bitbucket.org/dumbmatter/c4c/",
+    "bugs": {
+        "email": "jdscheff@gmail.com"
+    },
+    "author": "Jeremy Scheff <jdscheff@gmail.com> (http://jeremyscheff.com/)",
+    "repository": {
+        "type" : "git",
+        "url" : "https://bitbucket.org/dumbmatter/c4c.git"
+    },
+    "dependencies": {
+        "easystar": ">=0.1.6"
+    },
+    "devDependencies": {
+        "typescript": ">=0.9.7",
+        "chai": ">=1.9.0",
+        "mocha": ">=1.18.0",
+        "karma": ">=0.12.0"
+    },
+    "bundledDependencies": ["easystar"],
+    "private": true
+}

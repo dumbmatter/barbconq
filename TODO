@@ -1,7 +1,12 @@
 # Major current tasks
 
 unit tests for grouped units?
-  click actions can be tested by passing fake even object to click handling function
+  karma/mocha/chai
+  install all with npm
+    http://karma-runner.github.io/0.12/intro/installation.html
+    https://coderwall.com/p/isrcca
+    http://stackoverflow.com/questions/14469515/how-to-npm-install-to-a-specified-directory
+  install easystar with npm
 
 fog of war
   states
