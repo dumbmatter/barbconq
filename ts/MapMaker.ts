@@ -4,7 +4,7 @@ module MapMaker {
     export interface Tile {
         terrain : string;
         features : string[];
-        units : Units.BaseUnit[];
+        units : Units.Unit[];
     }
 
     export class Map {
@@ -13,7 +13,7 @@ module MapMaker {
         tiles : Tile[][];
 
         // Default callback will draw path (or clear path if it's not valid)
-        pathFinding(unit : Units.BaseUnitOrStack = null, targetCoords : number[] = null, cb : (path? : number[][]) => void = mapUI.drawPath.bind(mapUI)) {
+        pathFinding(unit : Units.UnitOrStack = null, targetCoords : number[] = null, cb : (path? : number[][]) => void = mapUI.drawPath.bind(mapUI)) {
             var grid : number[][], i : number, j : number;
 
             if (!unit || !this.validCoords(unit.coords) || !this.validCoords(targetCoords) || (unit.coords[0] === targetCoords[0] && unit.coords[1] === targetCoords[1])) {
@@ -72,8 +72,8 @@ module MapMaker {
 
         // Moves a unit from its current coordinates to coords.
         // Doesn't call render automatically, since this is often called multiple times before rendering (like for moving a stack)
-        moveUnit(unit : Units.BaseUnit, coords : number[]) {
-            var i : number, tileUnits : Units.BaseUnit[];
+        moveUnit(unit : Units.Unit, coords : number[]) {
+            var i : number, tileUnits : Units.Unit[];
 
             // Delete old unit in map
             tileUnits = game.getTile(unit.coords).units;

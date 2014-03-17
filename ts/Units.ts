@@ -2,8 +2,8 @@
 Units - classes for the various units types
 
 Inheritance chart:
-BaseUnitOrStack - properties and functions that apply to all units and stacks of units
--> BaseUnit - stuff specific to individual units
+UnitOrStack - properties and functions that apply to all units and stacks of units
+-> Unit - stuff specific to individual units
    -> All the individual unit classes, like Warrior
 -> Stack - stacks of units
 
@@ -15,7 +15,7 @@ units, like move counting, and others don't).
 
 module Units {
     // Things that both individual units and stacks of units have in common
-    export class BaseUnitOrStack {
+    export class UnitOrStack {
         // Identification
         id : number; // Unique, incrementing
         _owner : number;
@@ -247,7 +247,7 @@ console.log("SENTRY")
         }
     }
 
-    export class BaseUnit extends BaseUnitOrStack {
+    export class Unit extends UnitOrStack {
         // Identification
         type : string;
         stack : Stack;
@@ -282,8 +282,8 @@ console.log("SENTRY")
         }
     }
 
-    export class Stack extends BaseUnitOrStack {
-        units : BaseUnit[] = [];
+    export class Stack extends UnitOrStack {
+        units : Unit[] = [];
 
         // Getters/setters for stacks
 
@@ -425,7 +425,7 @@ console.log("SENTRY")
         }
         get skippedTurn() : boolean { return this._skippedTurn; }
 
-        constructor(owner : number, units : BaseUnit[]) {
+        constructor(owner : number, units : Unit[]) {
             super();
 
             this.owner = owner;
@@ -448,7 +448,7 @@ console.log("SENTRY")
             }
         }
 
-        add(units : BaseUnit[]) {
+        add(units : Unit[]) {
             var i : number;
 
             for (i = 0; i < units.length; i++) {
@@ -475,7 +475,7 @@ console.log("SENTRY")
         }
 
         separate(activateUnitAtEnd : boolean = true) {
-            var i : number, toActivate : BaseUnit;
+            var i : number, toActivate : Unit;
 
             // Save the first member of this unit to arbitrarily activate at the end
             toActivate = this.units[0];
@@ -500,7 +500,7 @@ console.log("SENTRY")
         merge() {}
     }
 
-    export class Warrior extends BaseUnit {
+    export class Warrior extends Unit {
         type = "Warrior";
 
         strength = 2;
@@ -512,7 +512,7 @@ console.log("SENTRY")
         actions = ["fortify", "skipTurn", "sentry"];
     }
 
-    export class Chariot extends BaseUnit {
+    export class Chariot extends Unit {
         type = "Chariot";
 
         strength = 4;
@@ -527,8 +527,8 @@ console.log("SENTRY")
     // Functions for working with units or groups of units
 
     // Like alt+click
-    export function addUnitsToNewStack(owner : number, units : BaseUnit[]) {
-        var newUnits : BaseUnit[], newStack : Stack;
+    export function addUnitsToNewStack(owner : number, units : Unit[]) {
+        var newUnits : Unit[], newStack : Stack;
 
         // Separate any current stacks on the tile
         newUnits = [];
@@ -549,8 +549,8 @@ console.log("SENTRY")
     }
 
     // Like ctrl+click
-    export function addUnitsWithTypeToNewStack(owner : number, units : BaseUnit[], type : string) {
-        var newUnits : BaseUnit[], newStack : Stack;
+    export function addUnitsWithTypeToNewStack(owner : number, units : Unit[], type : string) {
+        var newUnits : Unit[], newStack : Stack;
 
         // Separate any current stacks on this tile involving this type
         newUnits = [];

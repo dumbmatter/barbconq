@@ -71,7 +71,7 @@ class Controller {
 
     initUnitActions() {
         document.addEventListener("keydown", function (e) {
-            var activeUnit : Units.BaseUnitOrStack;
+            var activeUnit : Units.UnitOrStack;
 
             // Active unit stuff
             if (game.activeUnit) {
@@ -239,7 +239,7 @@ class Controller {
     // if one of your units is not on the clicked tile, center the map
     initMapClick() {
         mapUI.canvas.addEventListener("click", function (e) {
-            var i : number, coords : number[], currentMetric : number, maxMetric : number, unit, units : Units.BaseUnit[];
+            var i : number, coords : number[], currentMetric : number, maxMetric : number, unit, units : Units.Unit[];
 
             if (e.button === 0) { // Left click only!
                 e.preventDefault();
@@ -331,7 +331,7 @@ class Controller {
     initUnitIcons() {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
-            var activeUnit : Units.BaseUnit, activeStack : Units.Stack, clickedId : number, clickedOwner : number, clickedSid : number, el : any, i : number, newStack : Units.Stack, newUnits : Units.BaseUnit[], units : Units.BaseUnit[], type : string;
+            var activeUnit : Units.Unit, activeStack : Units.Stack, clickedId : number, clickedOwner : number, clickedSid : number, el : any, i : number, newStack : Units.Stack, newUnits : Units.Unit[], units : Units.Unit[], type : string;
 
             el = <HTMLElement> e.target;
             el = <any> el.parentNode;
@@ -362,11 +362,11 @@ class Controller {
                 } else if (e.ctrlKey && e.shiftKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    if (game.activeUnit instanceof Units.BaseUnit) {
+                    if (game.activeUnit instanceof Units.Unit) {
                         // Individual unit is active
                         // Create a stack with the active unit and all units of the clicked type with currentMovement > 0
 
-                        activeUnit = <Units.BaseUnit> game.activeUnit; // So TypeScript knows it's not a stack
+                        activeUnit = <Units.Unit> game.activeUnit; // So TypeScript knows it's not a stack
 
 
                         // Find all units of type
@@ -419,11 +419,11 @@ class Controller {
                 } else if (e.ctrlKey) {
                     Units.addUnitsWithTypeToNewStack(clickedOwner, units, game.units[clickedOwner][clickedId].type);
                 } else if (e.shiftKey) {
-                    if (game.activeUnit instanceof Units.BaseUnit) {
+                    if (game.activeUnit instanceof Units.Unit) {
                         // Individual unit is active
                         if (game.activeUnit.id !== clickedId) {
                             // If clicked unit is not the active unit, add it to a new stack with clicked unit
-                            newStack = new Units.Stack(clickedOwner, [<Units.BaseUnit> game.activeUnit, game.units[clickedOwner][clickedId]]);
+                            newStack = new Units.Stack(clickedOwner, [<Units.Unit> game.activeUnit, game.units[clickedOwner][clickedId]]);
                             newStack.activate(false);
                         }
                     } else if (game.activeUnit instanceof Units.Stack) {

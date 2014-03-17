@@ -4,9 +4,9 @@ class Game {
     map : MapMaker.Map;
     maxId : number = 0;
     names: string[] = [];
-    units : {[id : number] : Units.BaseUnit}[] = []; // One object in array for each player. Then in object, can use unit ID as key
+    units : {[id : number] : Units.Unit}[] = []; // One object in array for each player. Then in object, can use unit ID as key
     stacks : {[id : number] : Units.Stack}[] = []; // Same as above
-    activeUnit : Units.BaseUnitOrStack = null;
+    activeUnit : Units.UnitOrStack = null;
     turn : number = 0;
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
@@ -36,7 +36,7 @@ class Game {
     }
 
     newTurn() {
-        var i : number, j : string, unit : Units.BaseUnit, stack : Units.Stack;
+        var i : number, j : string, unit : Units.Unit, stack : Units.Stack;
 
         // See if anything still has to be moved, after the initial turn
         if (game.turn > 0 && this.moveUnits()) {
@@ -64,7 +64,7 @@ class Game {
     }
 
     moveUnits() : boolean {
-        var i : number, j : string, unit : Units.BaseUnit, stack : Units.Stack;
+        var i : number, j : string, unit : Units.Unit, stack : Units.Stack;
 
         for (i = 0; i < this.names.length; i++) {
             // User

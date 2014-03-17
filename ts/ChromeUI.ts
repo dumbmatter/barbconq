@@ -17,7 +17,7 @@ class ChromeUI {
         this.elBottomUnits = <HTMLDivElement> document.getElementById("bottom-units");
     }
 
-    strengthFraction(unit : Units.BaseUnit) {
+    strengthFraction(unit : Units.Unit) {
         if (unit.strength === unit.currentStrength) {
             return unit.currentStrength + ' S';
         } else {
@@ -25,7 +25,7 @@ class ChromeUI {
         }
     }
 
-    movementFraction(unit : Units.BaseUnit) {
+    movementFraction(unit : Units.Unit) {
         if (unit.movement === unit.currentMovement) {
             return unit.currentMovement + ' M';
         } else {
@@ -78,7 +78,7 @@ class ChromeUI {
         }
     }
 
-    private hoverBoxUnitSummary(unit : Units.BaseUnit) {
+    private hoverBoxUnitSummary(unit : Units.Unit) {
         var content : string;
 
         content = "";
@@ -120,7 +120,7 @@ class ChromeUI {
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
     private updateActiveUnit() {
-        var activeUnit, actionName : string, addCommas : boolean, content : string, counts : {[type: string]: number}, i : number, units : Units.BaseUnit[], type : string;
+        var activeUnit, actionName : string, addCommas : boolean, content : string, counts : {[type: string]: number}, i : number, units : Units.Unit[], type : string;
 
         activeUnit = game.activeUnit; // Really should have separate variables for unit and stack, like in unit icon click handling
 
@@ -131,7 +131,7 @@ class ChromeUI {
 
         if (game.activeUnit) {
             // Update bottom-info
-            if (activeUnit instanceof Units.BaseUnit) {
+            if (activeUnit instanceof Units.Unit) {
                 this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" +
                     "<table>" +
                     "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" +
@@ -190,7 +190,7 @@ class ChromeUI {
         }
     }
 
-    private unitIcon(unit : Units.BaseUnit) : HTMLDivElement {
+    private unitIcon(unit : Units.Unit) : HTMLDivElement {
         var healthPct : number, healthBar, icon, iconWrapper, movementIndicator;
 
         iconWrapper = document.createElement("div");

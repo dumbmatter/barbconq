@@ -368,7 +368,7 @@ var Controller = (function () {
                 } else if (e.ctrlKey && e.shiftKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
-                    if (game.activeUnit instanceof Units.BaseUnit) {
+                    if (game.activeUnit instanceof Units.Unit) {
                         // Individual unit is active
                         // Create a stack with the active unit and all units of the clicked type with currentMovement > 0
                         activeUnit = game.activeUnit; // So TypeScript knows it's not a stack
@@ -422,7 +422,7 @@ var Controller = (function () {
                 } else if (e.ctrlKey) {
                     Units.addUnitsWithTypeToNewStack(clickedOwner, units, game.units[clickedOwner][clickedId].type);
                 } else if (e.shiftKey) {
-                    if (game.activeUnit instanceof Units.BaseUnit) {
+                    if (game.activeUnit instanceof Units.Unit) {
                         // Individual unit is active
                         if (game.activeUnit.id !== clickedId) {
                             // If clicked unit is not the active unit, add it to a new stack with clicked unit
@@ -614,7 +614,7 @@ var ChromeUI = (function () {
 
         if (game.activeUnit) {
             // Update bottom-info
-            if (activeUnit instanceof Units.BaseUnit) {
+            if (activeUnit instanceof Units.Unit) {
                 this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
             } else if (activeUnit instanceof Units.Stack) {
                 content = "<h1>Unit Stack (" + activeUnit.units.length + ")</h1>" + "<table>" + "<tr><td>Movement: " + this.movementFraction(activeUnit) + "</td></tr>" + '<tr><td><div class="stack-types">Units: ';
@@ -1338,8 +1338,8 @@ var Game = (function () {
 /*
 Units - classes for the various units types
 Inheritance chart:
-BaseUnitOrStack - properties and functions that apply to all units and stacks of units
--> BaseUnit - stuff specific to individual units
+UnitOrStack - properties and functions that apply to all units and stacks of units
+-> Unit - stuff specific to individual units
 -> All the individual unit classes, like Warrior
 -> Stack - stacks of units
 The general idea for stacks of units is that they should expose the same API as regular units, so
@@ -1350,8 +1350,8 @@ units, like move counting, and others don't).
 var Units;
 (function (Units) {
     // Things that both individual units and stacks of units have in common
-    var BaseUnitOrStack = (function () {
-        function BaseUnitOrStack() {
+    var UnitOrStack = (function () {
+        function UnitOrStack() {
             this._targetCoords = null;
             // Turn stuff
             this._active = false;
@@ -1360,7 +1360,7 @@ var Units;
             this.id = game.maxId;
             game.maxId += 1;
         }
-        Object.defineProperty(BaseUnitOrStack.prototype, "owner", {
+        Object.defineProperty(UnitOrStack.prototype, "owner", {
             get: function () {
                 return this._owner;
             },
@@ -1371,7 +1371,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "movement", {
+        Object.defineProperty(UnitOrStack.prototype, "movement", {
             get: function () {
                 return this._movement;
             },
@@ -1381,7 +1381,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "currentMovement", {
+        Object.defineProperty(UnitOrStack.prototype, "currentMovement", {
             get: function () {
                 return this._currentMovement;
             },
@@ -1391,7 +1391,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "coords", {
+        Object.defineProperty(UnitOrStack.prototype, "coords", {
             get: function () {
                 return this._coords;
             },
@@ -1401,7 +1401,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "targetCoords", {
+        Object.defineProperty(UnitOrStack.prototype, "targetCoords", {
             get: function () {
                 return this._targetCoords;
             },
@@ -1411,7 +1411,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "landOrSea", {
+        Object.defineProperty(UnitOrStack.prototype, "landOrSea", {
             get: function () {
                 return this._landOrSea;
             },
@@ -1421,7 +1421,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "canAttack", {
+        Object.defineProperty(UnitOrStack.prototype, "canAttack", {
             get: function () {
                 return this._canAttack;
             },
@@ -1431,7 +1431,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "canDefend", {
+        Object.defineProperty(UnitOrStack.prototype, "canDefend", {
             get: function () {
                 return this._canDefend;
             },
@@ -1441,7 +1441,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "actions", {
+        Object.defineProperty(UnitOrStack.prototype, "actions", {
             get: function () {
                 return this._actions;
             },
@@ -1451,7 +1451,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "active", {
+        Object.defineProperty(UnitOrStack.prototype, "active", {
             get: function () {
                 return this._active;
             },
@@ -1461,7 +1461,7 @@ var Units;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(BaseUnitOrStack.prototype, "skippedTurn", {
+        Object.defineProperty(UnitOrStack.prototype, "skippedTurn", {
             get: function () {
                 return this._skippedTurn;
             },
@@ -1473,7 +1473,7 @@ var Units;
         });
 
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
-        BaseUnitOrStack.prototype.activate = function (centerDisplay, autoMoveTowardsTarget) {
+        UnitOrStack.prototype.activate = function (centerDisplay, autoMoveTowardsTarget) {
             if (typeof centerDisplay === "undefined") { centerDisplay = true; }
             if (typeof autoMoveTowardsTarget === "undefined") { autoMoveTowardsTarget = false; }
             // Deactivate current active unit, if there is one
@@ -1502,7 +1502,7 @@ var Units;
 
         // Should be able to make this general enough to handle all units
         // Handle fight initiation here, if move goes to tile with enemy on it
-        BaseUnitOrStack.prototype.move = function (direction) {
+        UnitOrStack.prototype.move = function (direction) {
             var newCoords;
 
             // Short circuit if no moves are available
@@ -1546,11 +1546,11 @@ var Units;
         };
 
         // Needs to be defined separately for individual and stack
-        BaseUnitOrStack.prototype.moveOnMap = function (coords) {
+        UnitOrStack.prototype.moveOnMap = function (coords) {
         };
 
         // Check for valid coords before calling
-        BaseUnitOrStack.prototype.moveToCoords = function (coords) {
+        UnitOrStack.prototype.moveToCoords = function (coords) {
             // Move the unit(s) in the map data structure
             this.moveOnMap(coords);
 
@@ -1573,7 +1573,7 @@ var Units;
         };
 
         // Sets the unit on a path towards a coordinate on the map
-        BaseUnitOrStack.prototype.initiatePath = function (coords) {
+        UnitOrStack.prototype.initiatePath = function (coords) {
             // See if there is a path to these coordinates
             game.map.pathFinding(this, coords, function (path) {
                 if (path) {
@@ -1594,7 +1594,7 @@ var Units;
         };
 
         // Use up the player's moves by moving towards its targetCoords
-        BaseUnitOrStack.prototype.moveTowardsTarget = function () {
+        UnitOrStack.prototype.moveTowardsTarget = function () {
             game.map.pathFinding(this, this.targetCoords, function (path) {
                 var tryToMove;
 
@@ -1632,7 +1632,7 @@ var Units;
         };
 
         // Mark skippedTurn and go to the next active unit
-        BaseUnitOrStack.prototype.skipTurn = function () {
+        UnitOrStack.prototype.skipTurn = function () {
             this.skippedTurn = true;
             this.active = false;
 
@@ -1648,20 +1648,20 @@ var Units;
             requestAnimationFrame(mapUI.render.bind(mapUI));
         };
 
-        BaseUnitOrStack.prototype.fortify = function () {
+        UnitOrStack.prototype.fortify = function () {
             console.log("FORTIFY");
         };
 
-        BaseUnitOrStack.prototype.sentry = function () {
+        UnitOrStack.prototype.sentry = function () {
             console.log("SENTRY");
         };
-        return BaseUnitOrStack;
+        return UnitOrStack;
     })();
-    Units.BaseUnitOrStack = BaseUnitOrStack;
+    Units.UnitOrStack = UnitOrStack;
 
-    var BaseUnit = (function (_super) {
-        __extends(BaseUnit, _super);
-        function BaseUnit(owner, coords) {
+    var Unit = (function (_super) {
+        __extends(Unit, _super);
+        function Unit(owner, coords) {
             _super.call(this);
             // Key attributes
             this.level = 1;
@@ -1680,13 +1680,13 @@ var Units;
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
         }
-        BaseUnit.prototype.moveOnMap = function (coords) {
+        Unit.prototype.moveOnMap = function (coords) {
             // It's an individual unit!
             game.map.moveUnit(this, coords);
         };
-        return BaseUnit;
-    })(BaseUnitOrStack);
-    Units.BaseUnit = BaseUnit;
+        return Unit;
+    })(UnitOrStack);
+    Units.Unit = Unit;
 
     var Stack = (function (_super) {
         __extends(Stack, _super);
@@ -1973,7 +1973,7 @@ var Units;
         Stack.prototype.merge = function () {
         };
         return Stack;
-    })(BaseUnitOrStack);
+    })(UnitOrStack);
     Units.Stack = Stack;
 
     var Warrior = (function (_super) {
@@ -1989,7 +1989,7 @@ var Units;
             this.actions = ["fortify", "skipTurn", "sentry"];
         }
         return Warrior;
-    })(BaseUnit);
+    })(Unit);
     Units.Warrior = Warrior;
 
     var Chariot = (function (_super) {
@@ -2005,7 +2005,7 @@ var Units;
             this.actions = ["fortify", "skipTurn", "sentry"];
         }
         return Chariot;
-    })(BaseUnit);
+    })(Unit);
     Units.Chariot = Chariot;
 
     // Functions for working with units or groups of units

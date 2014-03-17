@@ -270,7 +270,7 @@ class MapUI {
     }
 
     renderMiniMap() {
-        var bottom : number, bottomTile : number, i : number, j : number, k : number, left : number, leftTile : number, right : number, rightTile : number, top : number, topTile : number, unit : Units.BaseUnit;
+        var bottom : number, bottomTile : number, i : number, j : number, k : number, left : number, leftTile : number, right : number, rightTile : number, top : number, topTile : number, unit : Units.Unit;
 
         // Clear canvas and redraw everything
         this.miniContext.clearRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
