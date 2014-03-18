@@ -1,5 +1,24 @@
 # Major current tasks
 
+combat
+  Combat(attacker : Unit, defender : Unit) to handle just the battle itself
+  also need to handle things like...
+    get list of enemies on tile being moved to
+    pick enemy with highest defense
+    group attack
+  what happens when a unit dies?
+    remove it from its group, if group exists
+    delete it from game.units
+    delete it from tile.units
+  http://www.civfanatics.com/civ4/strategy/combat_explained.php
+  http://home.comcast.net/~proc/civ4/combat_calc.htm
+  unit strength modifiers
+    include in modifiedStrength formula
+  first strikes
+  retreat
+  collateral damage
+  experience points
+
 unit tests for grouped units?
   karma/mocha/chai
   install all with npm
@@ -18,17 +37,6 @@ fog of war
     saw before, but not currently in field of vision: terrain+improvements appear as last known, with shadow over it
       need to somehow cache last viewed tile state for every tile. copy of map, i guess
     in field of vision: visible
-
-combat
-  Combat(attacker : Unit, defender : Unit) to handle just the battle itself
-  also need to handle things like...
-    get list of enemies on tile being moved to
-    pick enemy with highest defense
-    group attack
-  what happens when a unit dies?
-    remove it from its group, if group exists
-    delete it from game.units
-    delete it from tile.units
 
 basic barb AI
   is there anyone i can attack with >25% chance of winning? if so, attack

@@ -5,6 +5,7 @@
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
+///<reference path='Combat.ts'/>
 
 declare var EasyStar : any;
 var easystar : any = new EasyStar.js();
@@ -27,7 +28,7 @@ for (var i = 0; i < 1; i++) {
 //    new Units.Warrior(config.PLAYER_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
 }
 
-var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+/*var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 for (i = 0; i < 10; i++) {
@@ -35,6 +36,12 @@ for (i = 0; i < 10; i++) {
 }
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
 [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
-new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
+new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
+
+var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+var u2 = new Units.Warrior(config.BARB_ID, [10, 21]);
+
+var c = new Combat.Battle(u1, u2);
+c.fight();
 
 game.newTurn();

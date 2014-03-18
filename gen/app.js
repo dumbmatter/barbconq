@@ -2058,6 +2058,90 @@ var Units;
     }
     Units.addUnitsWithTypeToNewGroup = addUnitsWithTypeToNewGroup;
 })(Units || (Units = {}));
+// Combat - battle between two units
+var Combat;
+(function (Combat) {
+    var Battle = (function () {
+        function Battle(attacker, defender) {
+            this.hps = [null, null];
+            this.damagePerHit = [null, null];
+            this.names = [null, null];
+            this.log = [];
+            // 0: attacker, 1: defender
+            this.winner = null;
+            this.loser = null;
+            this.units = [attacker, defender];
+
+            // Hit points
+            this.hps[0] = Math.round(attacker.strength / attacker.currentStrength * 100);
+            this.hps[1] = Math.round(defender.strength / defender.currentStrength * 100);
+
+            // Attacker's modified strength
+            this.A = attacker.strength * (this.hps[0] / 100);
+
+            // Defender's modified strength
+            this.D = defender.strength * (this.hps[1] / 100);
+
+            // Damage per hit
+            this.damagePerHit[0] = this.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
+            this.damagePerHit[1] = this.bound(Math.floor(20 * (3 * this.D + this.A) / (3 * this.A + this.D)), 6, 60);
+
+            // Names
+            this.names[0] = game.names[this.units[0].owner] + "'s " + this.units[0].type;
+            this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
+        }
+        // Bound x between min and max
+        Battle.prototype.bound = function (x, min, max) {
+            if (x > max) {
+                return max;
+            }
+            if (x < min) {
+                return min;
+            }
+            return x;
+        };
+
+        Battle.prototype.round = function (value, precision) {
+            if (typeof precision === "undefined") { precision = 0; }
+            return value.toFixed(precision);
+        };
+
+        Battle.prototype.oddsAttackerWinsFight = function () {
+            return this.A / (this.A + this.D);
+        };
+
+        Battle.prototype.attackerWinsRound = function () {
+            return Math.random() < this.A / (this.A + this.D);
+        };
+
+        Battle.prototype.fight = function () {
+            var i, j;
+
+            this.log.push(this.names[0] + " (" + this.round(this.A, 2) + ") attacked " + this.names[1] + " (" + this.round(this.D, 2) + ")");
+            this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
+
+            while (this.hps[0] > 0 && this.hps[1] > 0) {
+                if (this.attackerWinsRound()) {
+                    i = 0; // Winner
+                    j = 1; // Loser
+                } else {
+                    i = 1; // Winner
+                    j = 0; // Loser
+                }
+                this.hps[j] = this.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
+                this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
+            }
+
+            this.log.push(this.names[i] + " defeated " + this.names[j] + "!");
+
+            this.winner = i;
+            this.loser = j;
+            console.log(this.log);
+        };
+        return Battle;
+    })();
+    Combat.Battle = Battle;
+})(Combat || (Combat = {}));
 ///<reference path='Random.ts'/>
 ///<reference path='Controller.ts'/>
 ///<reference path='ChromeUI.ts'/>
@@ -2065,6 +2149,7 @@ var Units;
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
+///<reference path='Combat.ts'/>
 var easystar = new EasyStar.js();
 
 var config = {
@@ -2085,15 +2170,20 @@ for (var i = 0; i < 1; i++) {
     //    new Units.Warrior(config.PLAYER_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
 }
 
-var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+/*var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 for (i = 0; i < 10; i++) {
-    var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 }
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
-[new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])];
-new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
+[new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
+new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
+var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+var u2 = new Units.Warrior(config.BARB_ID, [10, 21]);
+
+var c = new Combat.Battle(u1, u2);
+c.fight();
 
 game.newTurn();
 //# sourceMappingURL=app.js.map
