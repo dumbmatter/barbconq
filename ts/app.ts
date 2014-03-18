@@ -45,6 +45,10 @@ new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Warrior(config.BARB_ID, [10, 21]);
 new Units.Warrior(config.BARB_ID, [10, 21]);
+new Units.Chariot(config.BARB_ID, [10, 21]);
+new Units.Warrior(config.BARB_ID, [10, 21]);
+new Units.Warrior(config.BARB_ID, [10, 21]);
+new Units.Warrior(config.BARB_ID, [10, 21]);
 
 //var c = new Combat.Battle(u1, u2);
 //c.fight();

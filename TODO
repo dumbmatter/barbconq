@@ -23,6 +23,7 @@ Combat
     retreat
     collateral damage
     experience points
+  after right click attack, should update enemy hover box
 
 unit tests for grouped units?
   karma/mocha/chai

@@ -18,14 +18,14 @@ module Combat {
             this.units = [attacker, defender];
 
             // Hit points
-            this.hps[0] = Math.round(attacker.strength / attacker.currentStrength * 100);
-            this.hps[1] = Math.round(defender.strength / defender.currentStrength * 100);
+            this.hps[0] = Math.round(attacker.currentStrength / attacker.strength * 100);
+            this.hps[1] = Math.round(defender.currentStrength / defender.strength * 100);
 
             // Attacker's modified strength
-            this.A = attacker.strength * (this.hps[0] / 100);
+            this.A = attacker.currentStrength * (this.hps[0] / 100);
 
             // Defender's modified strength
-            this.D = defender.strength * (this.hps[1] / 100);
+            this.D = defender.currentStrength * (this.hps[1] / 100);
 
             // Damage per hit
             this.damagePerHit[0] = this.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
@@ -55,7 +55,7 @@ module Combat {
             return this.A / (this.A + this.D);
         }
 
-        attackerWinsRound() : number {
+        attackerWinsRound() : boolean {
             return Math.random() < this.A / (this.A + this.D);
         }
 
@@ -82,9 +82,14 @@ module Combat {
 console.log(this.log);
 
             // Process results
-            this.units[j].delete();
             this.winner = i === 0 ? "attacker" : "defender";
             this.loser = j === 0 ? "attacker" : "defender";
+
+            // Loser gets deleted
+            this.units[j].delete();
+
+            // Winner gets damaged
+            this.units[i].currentStrength *= this.hps[i] / 100;
         }
     }
 
