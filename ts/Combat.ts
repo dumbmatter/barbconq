@@ -51,11 +51,11 @@ module Combat {
             return value.toFixed(precision);
         }
 
-        oddsAttackerWinsFight() {
+        oddsAttackerWinsFight() : number {
             return this.A / (this.A + this.D);
         }
 
-        attackerWinsRound() {
+        attackerWinsRound() : number {
             return Math.random() < this.A / (this.A + this.D);
         }
 
@@ -89,7 +89,7 @@ console.log(this.log);
     }
 
     // If tile has enemy unit on it, initiate combat and return true. Otherwise, do nothing and return false.
-    export function fightIfTileHasEnemy(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) {
+    export function fightIfTileHasEnemy(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : boolean {
         var attacker : Units.Unit, battle : Battle, defender : Units.Unit, maxStrength : number, newTileUnits : Units.Unit[];
 
         // Delete path
@@ -123,12 +123,9 @@ console.log(this.log);
                 } else {
 // render?
                 }
-console.log(newTileUnits);
             } else {
-// game.moveUnits()?                    
+// game.moveUnits()? 
             }
-// Do battle
-// See if there are more enemies on tile. If so, move. If not, 
             return true;
         }
 

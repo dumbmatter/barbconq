@@ -2216,16 +2216,11 @@ var Combat;
                     // No enemies left on tile, take it.
                     attackerUnitOrGroup.moveToCoords(coords);
                 } else {
-                    // decrease movement (or can this be done before this function is called?).
                     // render?
                 }
-                console.log(newTileUnits);
             } else {
                 // game.moveUnits()?
             }
-
-            // Do battle
-            // See if there are more enemies on tile. If so, move. If not,
             return true;
         }
 
@@ -2270,6 +2265,7 @@ var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
 [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
+new Units.Warrior(config.PLAYER_ID, [10, 20]);
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
