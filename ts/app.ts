@@ -38,6 +38,7 @@ new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20])
 [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
 
+new Units.Warrior(config.PLAYER_ID, [10, 19]);
 var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.BARB_ID, [10, 21]);
 

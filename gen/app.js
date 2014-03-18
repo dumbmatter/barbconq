@@ -1678,7 +1678,7 @@ var Units;
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.map.tiles[coords[0]][coords[1]].units.push(this);
+            game.getTile(coords).units.push(this);
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
@@ -1686,6 +1686,34 @@ var Units;
         Unit.prototype.moveOnMap = function (coords) {
             // It's an individual unit!
             game.map.moveUnit(this, coords);
+        };
+
+        Unit.prototype.delete = function () {
+            var i, tileUnits;
+
+            // Remove from group
+            if (this.group) {
+                this.group.remove(this.id, false);
+            }
+
+            // Remove from map
+            tileUnits = game.getTile(this.coords).units;
+            for (i = 0; i < tileUnits.length; i++) {
+                if (tileUnits[i].id === this.id) {
+                    tileUnits.splice(i, 1);
+                    break;
+                }
+            }
+
+            // Remove from game
+            delete game.units[this.owner][this.id];
+
+            // Remove from active
+            if (this.active) {
+                game.activeUnit = null;
+                game.moveUnits(); // Might render map, but might not
+            }
+            window.requestAnimationFrame(mapUI.render.bind(mapUI));
         };
         return Unit;
     })(UnitOrGroup);
@@ -2133,10 +2161,12 @@ var Combat;
             }
 
             this.log.push(this.names[i] + " defeated " + this.names[j] + "!");
+            console.log(this.log);
 
+            // Process results
+            this.units[j].delete();
             this.winner = i;
             this.loser = j;
-            console.log(this.log);
         };
         return Battle;
     })();
@@ -2179,6 +2209,7 @@ var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
 [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
+new Units.Warrior(config.PLAYER_ID, [10, 19]);
 var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.BARB_ID, [10, 21]);
 

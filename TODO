@@ -1,23 +1,29 @@
 # Major current tasks
 
-combat
-  Combat(attacker : Unit, defender : Unit) to handle just the battle itself
+Combat
   also need to handle things like...
     get list of enemies on tile being moved to
     pick enemy with highest defense
     group attack
-  what happens when a unit dies?
-    remove it from its group, if group exists
-    delete it from game.units
-    delete it from tile.units
-  http://www.civfanatics.com/civ4/strategy/combat_explained.php
-  http://home.comcast.net/~proc/civ4/combat_calc.htm
-  unit strength modifiers
-    include in modifiedStrength formula
-  first strikes
-  retreat
-  collateral damage
-  experience points
+  move onto tile to initiate battle
+    if moving with individual unit, pick strongest enemy to fight
+    if moving with group, loop through each of your units and pick the one with the best chance to beat its strongest enemy
+  movement after battle
+    if attacker wins and defender's tile has no more defenders, move there
+  combat complexity
+    http://www.civfanatics.com/civ4/strategy/combat_explained.php
+    http://home.comcast.net/~proc/civ4/combat_calc.htm
+    unit strength modifiers
+      include in modifiedStrength formula
+    first strikes
+    retreat
+    collateral damage
+    experience points
+
+UI polish
+  map click on barbarian shouldn't activate it
+  same with grouping stuff
+  show non-player unit icons shadowed
 
 unit tests for grouped units?
   karma/mocha/chai

@@ -273,7 +273,7 @@ console.log("SENTRY")
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.map.tiles[coords[0]][coords[1]].units.push(this);
+            game.getTile(coords).units.push(this);
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
@@ -282,6 +282,34 @@ console.log("SENTRY")
         moveOnMap(coords : number[]) {
             // It's an individual unit!
             game.map.moveUnit(this, coords);
+        }
+
+        delete() {
+            var i, tileUnits;
+
+            // Remove from group
+            if (this.group) {
+                this.group.remove(this.id, false);
+            }
+
+            // Remove from map
+            tileUnits = game.getTile(this.coords).units;
+            for (i = 0; i < tileUnits.length; i++) {
+                if (tileUnits[i].id === this.id) {
+                    tileUnits.splice(i, 1);
+                    break;
+                }
+            }
+
+            // Remove from game
+            delete game.units[this.owner][this.id];
+
+            // Remove from active
+            if (this.active) {
+                game.activeUnit = null;
+                game.moveUnits(); // Might render map, but might not
+            }
+            window.requestAnimationFrame(mapUI.render.bind(mapUI));
         }
     }
 

@@ -79,10 +79,12 @@ module Combat {
             }
 
             this.log.push(this.names[i] + " defeated " + this.names[j] + "!");
+console.log(this.log);
 
+            // Process results
+            this.units[j].delete();
             this.winner = i;
             this.loser = j;
-console.log(this.log);
         }
     }
 }
