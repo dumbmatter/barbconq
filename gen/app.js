@@ -2235,6 +2235,10 @@ var Combat;
                 // THIS DOESN'T ALWAYS WORK
                 game.moveUnits();
             }
+
+            // Update hover tile, since this could change, particularly for right click attack when defending tile is hovered over
+            chromeUI.onHoverTile(game.getTile(controller.hoveredTile));
+
             return true;
         }
 
