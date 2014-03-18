@@ -1552,6 +1552,12 @@ var Units;
 
         // Check for valid coords before calling
         UnitOrGroup.prototype.moveToCoords = function (coords) {
+            // Reset skippedTurn status
+            this.skippedTurn = false;
+
+            // Keep track of unit movement (applies even if the unit fights but does not move)
+            this.currentMovement -= 1; // Should depend on terrain/improvements
+
             if (Combat.fightIfTileHasEnemy(this, coords)) {
                 return;
             }
@@ -1559,12 +1565,9 @@ var Units;
             // Move the unit(s) in the map data structure
             this.moveOnMap(coords);
 
-            // Reset skippedTurn status
-            this.skippedTurn = false;
-
             // Keep track of movement locally
             this.coords = coords;
-            this.currentMovement -= 1; // Should depend on terrain/improvements
+
             if (this.currentMovement <= 0) {
                 this.currentMovement = 0;
 
@@ -2214,7 +2217,7 @@ var Combat;
                     attackerUnitOrGroup.moveToCoords(coords);
                 } else {
                     // decrease movement (or can this be done before this function is called?).
-                    // render
+                    // render?
                 }
                 console.log(newTileUnits);
             } else {

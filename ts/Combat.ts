@@ -121,7 +121,6 @@ console.log(this.log);
                     // No enemies left on tile, take it.
                     attackerUnitOrGroup.moveToCoords(coords);
                 } else {
-// decrease movement (or can this be done before this function is called?).
 // render?
                 }
 console.log(newTileUnits);

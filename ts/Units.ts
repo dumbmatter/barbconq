@@ -142,6 +142,12 @@ module Units {
 
         // Check for valid coords before calling
         moveToCoords(coords : number[]) {
+            // Reset skippedTurn status
+            this.skippedTurn = false;
+
+            // Keep track of unit movement (applies even if the unit fights but does not move)
+            this.currentMovement -= 1; // Should depend on terrain/improvements
+
             if (Combat.fightIfTileHasEnemy(this, coords)) {
                 return;
             }
@@ -149,12 +155,9 @@ module Units {
             // Move the unit(s) in the map data structure
             this.moveOnMap(coords);
 
-            // Reset skippedTurn status
-            this.skippedTurn = false;
-
             // Keep track of movement locally
             this.coords = coords;
-            this.currentMovement -= 1; // Should depend on terrain/improvements
+
             if (this.currentMovement <= 0) {
                 this.currentMovement = 0;
 
