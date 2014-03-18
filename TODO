@@ -1,10 +1,6 @@
 # Major current tasks
 
 Combat
-  Attack and die UI glitch
-    with numpad movement, UI looks fine
-    with right click movement, warrior still shows on map for some reason
-      highlighted chariot underneath flashes at first...
   get list of enemies on tile being moved to
   pick enemy with highest defense
   group attack

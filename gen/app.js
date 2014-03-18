@@ -833,7 +833,6 @@ var MapUI = (function () {
 
     MapUI.prototype.render = function () {
         var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
-        console.log("render");
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -946,7 +945,6 @@ var MapUI = (function () {
                     }
                 }
 
-                console.log(unit.type);
                 this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
                 this.context.textBaseline = "top";
                 this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
@@ -1556,8 +1554,6 @@ var Units;
         UnitOrGroup.prototype.moveToCoords = function (coords) {
             // Reset skippedTurn status
             this.skippedTurn = false;
-
-            console.log("moveToCoords");
 
             if (Combat.fightIfTileHasEnemy(this, coords)) {
                 return;
@@ -2186,7 +2182,9 @@ var Combat;
             this.loser = j === 0 ? "attacker" : "defender";
 
             // Loser gets deleted
-            this.units[j].delete();
+            this.units[j].delete(); // Delete the references we can
+            this.units[j].currentStrength = 0; // So any outstanding references can see it's dead
+            this.units[j].currentMovement = 0; // So any outstanding references can see it's dead
 
             // Winner gets damaged
             this.units[i].currentStrength *= this.hps[i] / 100;

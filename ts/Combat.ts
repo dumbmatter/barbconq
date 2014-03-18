@@ -86,7 +86,9 @@ console.log(this.log);
             this.loser = j === 0 ? "attacker" : "defender";
 
             // Loser gets deleted
-            this.units[j].delete();
+            this.units[j].delete(); // Delete the references we can
+            this.units[j].currentStrength = 0; // So any outstanding references can see it's dead
+            this.units[j].currentMovement = 0; // So any outstanding references can see it's dead
 
             // Winner gets damaged
             this.units[i].currentStrength *= this.hps[i] / 100;

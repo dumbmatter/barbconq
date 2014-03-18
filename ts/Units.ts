@@ -145,8 +145,6 @@ module Units {
             // Reset skippedTurn status
             this.skippedTurn = false;
 
-console.log("moveToCoords");
-
             if (Combat.fightIfTileHasEnemy(this, coords)) {
                 return;
             }

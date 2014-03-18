@@ -123,7 +123,6 @@ class MapUI {
 
     render() {
         var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
-console.log("render")
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -236,7 +235,6 @@ console.log("render")
                     }
                 }
 
-console.log(unit.type);
                 this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
                 this.context.textBaseline = "top";
                 this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
