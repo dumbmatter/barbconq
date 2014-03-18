@@ -1552,17 +1552,7 @@ var Units;
 
         // Check for valid coords before calling
         UnitOrGroup.prototype.moveToCoords = function (coords) {
-            var hasEnemy;
-
-            // See if an enemy is on that tile
-            hasEnemy = false;
-            game.getTile(coords).units.forEach(function (unit) {
-                if (unit.owner !== this.owner) {
-                    hasEnemy = true;
-                }
-            }.bind(this));
-            if (hasEnemy) {
-                console.log("ENEMY THERE");
+            if (Combat.fightIfTileHasEnemy(this, coords)) {
                 return;
             }
 
@@ -2111,7 +2101,7 @@ var Combat;
             this.damagePerHit = [null, null];
             this.names = [null, null];
             this.log = [];
-            // 0: attacker, 1: defender
+            // "attacker" or "defender"
             this.winner = null;
             this.loser = null;
             this.units = [attacker, defender];
@@ -2181,12 +2171,64 @@ var Combat;
 
             // Process results
             this.units[j].delete();
-            this.winner = i;
-            this.loser = j;
+            this.winner = i === 0 ? "attacker" : "defender";
+            this.loser = j === 0 ? "attacker" : "defender";
         };
         return Battle;
     })();
     Combat.Battle = Battle;
+
+    // If tile has enemy unit on it, initiate combat and return true. Otherwise, do nothing and return false.
+    function fightIfTileHasEnemy(attackerUnitOrGroup, coords) {
+        var attacker, battle, defender, maxStrength, newTileUnits;
+
+        // Delete path
+        attackerUnitOrGroup.targetCoords = null;
+
+        // FIX THIS TO HANDLE GROUP ATTACK
+        attacker = attackerUnitOrGroup;
+
+        newTileUnits = game.getTile(coords).units;
+
+        // See if an enemy is on that tile, and if so, find the one with max strength against attacker
+        defender = null;
+        maxStrength = -Infinity;
+        newTileUnits.forEach(function (unit) {
+            if (unit.owner !== attacker.owner) {
+                battle = new Battle(attacker, unit);
+                if (battle.D > maxStrength) {
+                    maxStrength = battle.D;
+                    defender = unit;
+                }
+            }
+        });
+
+        if (defender) {
+            battle = new Battle(attacker, defender);
+            battle.fight();
+            if (battle.winner === "attacker") {
+                if (newTileUnits.filter(function (unit) {
+                    return unit.owner !== attacker.owner;
+                }).length === 0) {
+                    // No enemies left on tile, take it.
+                    attackerUnitOrGroup.moveToCoords(coords);
+                } else {
+                    // decrease movement (or can this be done before this function is called?).
+                    // render
+                }
+                console.log(newTileUnits);
+            } else {
+                // game.moveUnits()?
+            }
+
+            // Do battle
+            // See if there are more enemies on tile. If so, move. If not,
+            return true;
+        }
+
+        return false;
+    }
+    Combat.fightIfTileHasEnemy = fightIfTileHasEnemy;
 })(Combat || (Combat = {}));
 ///<reference path='Random.ts'/>
 ///<reference path='Controller.ts'/>
@@ -2225,9 +2267,12 @@ var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
 [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
-new Units.Warrior(config.PLAYER_ID, [10, 19]);
-var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
-var u2 = new Units.Warrior(config.BARB_ID, [10, 21]);
+new Units.Chariot(config.PLAYER_ID, [10, 20]);
+new Units.Chariot(config.PLAYER_ID, [10, 20]);
+new Units.Chariot(config.PLAYER_ID, [10, 20]);
+new Units.Chariot(config.PLAYER_ID, [10, 20]);
+new Units.Warrior(config.BARB_ID, [10, 21]);
+new Units.Warrior(config.BARB_ID, [10, 21]);
 
 //var c = new Combat.Battle(u1, u2);
 //c.fight();

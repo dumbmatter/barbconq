@@ -142,17 +142,7 @@ module Units {
 
         // Check for valid coords before calling
         moveToCoords(coords : number[]) {
-            var hasEnemy;
-
-            // See if an enemy is on that tile
-            hasEnemy = false;
-            game.getTile(coords).units.forEach(function (unit) {
-                if (unit.owner !== this.owner) {
-                    hasEnemy = true;
-                }
-            }.bind(this));
-            if (hasEnemy) {
-console.log("ENEMY THERE")
+            if (Combat.fightIfTileHasEnemy(this, coords)) {
                 return;
             }
 

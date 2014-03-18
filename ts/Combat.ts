@@ -10,9 +10,9 @@ module Combat {
         names : string[] = [null, null]; // Unit names
         log : string[] = [];
 
-        // 0: attacker, 1: defender
-        winner : number = null;
-        loser : number = null;
+        // "attacker" or "defender"
+        winner : string = null;
+        loser : string = null;
 
         constructor(attacker : Units.Unit, defender : Units.Unit) {
             this.units = [attacker, defender];
@@ -83,8 +83,56 @@ console.log(this.log);
 
             // Process results
             this.units[j].delete();
-            this.winner = i;
-            this.loser = j;
+            this.winner = i === 0 ? "attacker" : "defender";
+            this.loser = j === 0 ? "attacker" : "defender";
         }
+    }
+
+    // If tile has enemy unit on it, initiate combat and return true. Otherwise, do nothing and return false.
+    export function fightIfTileHasEnemy(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) {
+        var attacker : Units.Unit, battle : Battle, defender : Units.Unit, maxStrength : number, newTileUnits : Units.Unit[];
+
+        // Delete path
+        attackerUnitOrGroup.targetCoords = null;
+
+// FIX THIS TO HANDLE GROUP ATTACK
+        attacker = <Units.Unit> attackerUnitOrGroup;
+
+        newTileUnits = game.getTile(coords).units;
+
+        // See if an enemy is on that tile, and if so, find the one with max strength against attacker
+        defender = null;
+        maxStrength = -Infinity;
+        newTileUnits.forEach(function (unit) {
+            if (unit.owner !== attacker.owner) {
+                battle = new Battle(attacker, unit);
+                if (battle.D > maxStrength) {
+                    maxStrength = battle.D;
+                    defender = unit;
+                }
+            }
+        });
+
+        if (defender) {
+            battle = new Battle(attacker, defender);
+            battle.fight();
+            if (battle.winner === "attacker") {
+                if (newTileUnits.filter(function (unit) { return unit.owner !== attacker.owner; }).length === 0) {
+                    // No enemies left on tile, take it.
+                    attackerUnitOrGroup.moveToCoords(coords);
+                } else {
+// decrease movement (or can this be done before this function is called?).
+// render?
+                }
+console.log(newTileUnits);
+            } else {
+// game.moveUnits()?                    
+            }
+// Do battle
+// See if there are more enemies on tile. If so, move. If not, 
+            return true;
+        }
+
+        return false;
     }
 }
