@@ -126,10 +126,10 @@ console.log(this.log);
                     // No enemies left on tile, take it.
                     attackerUnitOrGroup.moveToCoords(coords);
                 } else {
-// render?
+                    attackerUnitOrGroup.countMovementToCoords(coords);
                 }
             } else {
-// game.moveUnits()? 
+// game.moveUnits()? Probably not necessary
             }
             return true;
         }

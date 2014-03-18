@@ -1555,8 +1555,7 @@ var Units;
             // Reset skippedTurn status
             this.skippedTurn = false;
 
-            // Keep track of unit movement (applies even if the unit fights but does not move)
-            this.currentMovement -= 1; // Should depend on terrain/improvements
+            console.log("moveToCoords");
 
             if (Combat.fightIfTileHasEnemy(this, coords)) {
                 return;
@@ -1567,6 +1566,14 @@ var Units;
 
             // Keep track of movement locally
             this.coords = coords;
+
+            this.countMovementToCoords(coords);
+        };
+
+        // Decrease currentMovement as if the unit is moving to coords (this happens during a real movement, and also after winning a battle with enemy units still on the target tile)
+        UnitOrGroup.prototype.countMovementToCoords = function (coords) {
+            // Keep track of unit movement (applies even if the unit fights but does not move)
+            this.currentMovement -= 1; // Should depend on terrain/improvements
 
             if (this.currentMovement <= 0) {
                 this.currentMovement = 0;
@@ -2221,10 +2228,10 @@ var Combat;
                     // No enemies left on tile, take it.
                     attackerUnitOrGroup.moveToCoords(coords);
                 } else {
-                    // render?
+                    attackerUnitOrGroup.countMovementToCoords(coords);
                 }
             } else {
-                // game.moveUnits()?
+                // game.moveUnits()? Probably not necessary
             }
             return true;
         }
@@ -2275,10 +2282,6 @@ new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
-new Units.Warrior(config.BARB_ID, [10, 21]);
-new Units.Warrior(config.BARB_ID, [10, 21]);
-new Units.Chariot(config.BARB_ID, [10, 21]);
-new Units.Warrior(config.BARB_ID, [10, 21]);
 new Units.Warrior(config.BARB_ID, [10, 21]);
 new Units.Warrior(config.BARB_ID, [10, 21]);
 

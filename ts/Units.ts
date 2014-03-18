@@ -145,8 +145,7 @@ module Units {
             // Reset skippedTurn status
             this.skippedTurn = false;
 
-            // Keep track of unit movement (applies even if the unit fights but does not move)
-            this.currentMovement -= 1; // Should depend on terrain/improvements
+console.log("moveToCoords");
 
             if (Combat.fightIfTileHasEnemy(this, coords)) {
                 return;
@@ -157,6 +156,14 @@ module Units {
 
             // Keep track of movement locally
             this.coords = coords;
+
+            this.countMovementToCoords(coords);
+        }
+
+        // Decrease currentMovement as if the unit is moving to coords (this happens during a real movement, and also after winning a battle with enemy units still on the target tile)
+        countMovementToCoords(coords : number[]) {
+            // Keep track of unit movement (applies even if the unit fights but does not move)
+            this.currentMovement -= 1; // Should depend on terrain/improvements
 
             if (this.currentMovement <= 0) {
                 this.currentMovement = 0;
