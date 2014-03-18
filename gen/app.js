@@ -263,7 +263,7 @@ var Controller = (function () {
                             currentMetric += 1000;
                         }
 
-                        if (currentMetric > maxMetric) {
+                        if (currentMetric > maxMetric && units[i].owner === config.PLAYER_ID) {
                             unit = units[i];
                             maxMetric = currentMetric;
                         }

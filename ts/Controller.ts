@@ -257,7 +257,7 @@ class Controller {
                         if (units[i].currentMovement > 0) { currentMetric += 100; }
                         if (units[i].active || (units[i].group && units[i].group.active)) { currentMetric += 1000; }
 
-                        if (currentMetric > maxMetric) {
+                        if (currentMetric > maxMetric && units[i].owner === config.PLAYER_ID) { // Only select user's units
                             unit = units[i];
                             maxMetric = currentMetric;
                         }

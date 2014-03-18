@@ -21,11 +21,6 @@ Combat
     collateral damage
     experience points
 
-UI polish
-  map click on barbarian shouldn't activate it
-  same with grouping stuff
-  show non-player unit icons shadowed
-
 unit tests for grouped units?
   karma/mocha/chai
   install all with npm
