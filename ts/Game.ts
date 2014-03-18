@@ -113,6 +113,7 @@ class Game {
 
         // If we made it this far, everybody has moved
         chromeUI.onMovesDone();
+        window.requestAnimationFrame(mapUI.render.bind(mapUI));
         return false;
     }
 }

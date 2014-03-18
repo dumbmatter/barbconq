@@ -307,9 +307,10 @@ console.log("SENTRY")
             // Remove from active
             if (this.active) {
                 game.activeUnit = null;
-                game.moveUnits(); // Might render map, but might not
+                game.moveUnits(); // Will always render map... right?
+            } else {
+                window.requestAnimationFrame(mapUI.render.bind(mapUI));
             }
-            window.requestAnimationFrame(mapUI.render.bind(mapUI));
         }
     }
 

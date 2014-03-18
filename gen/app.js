@@ -1331,6 +1331,7 @@ var Game = (function () {
 
         // If we made it this far, everybody has moved
         chromeUI.onMovesDone();
+        window.requestAnimationFrame(mapUI.render.bind(mapUI));
         return false;
     };
     return Game;
@@ -1711,9 +1712,10 @@ var Units;
             // Remove from active
             if (this.active) {
                 game.activeUnit = null;
-                game.moveUnits(); // Might render map, but might not
+                game.moveUnits(); // Will always render map... right?
+            } else {
+                window.requestAnimationFrame(mapUI.render.bind(mapUI));
             }
-            window.requestAnimationFrame(mapUI.render.bind(mapUI));
         };
         return Unit;
     })(UnitOrGroup);
