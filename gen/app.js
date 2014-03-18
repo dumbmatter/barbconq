@@ -833,6 +833,7 @@ var MapUI = (function () {
 
     MapUI.prototype.render = function () {
         var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
+        console.log("render");
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -945,6 +946,7 @@ var MapUI = (function () {
                     }
                 }
 
+                console.log(unit.type);
                 this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
                 this.context.textBaseline = "top";
                 this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
@@ -2231,7 +2233,9 @@ var Combat;
                     attackerUnitOrGroup.countMovementToCoords(coords);
                 }
             } else {
-                // game.moveUnits()? Probably not necessary
+                // Attacker died, so on to the next one
+                // THIS DOESN'T ALWAYS WORK
+                game.moveUnits();
             }
             return true;
         }
@@ -2284,6 +2288,7 @@ new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Warrior(config.BARB_ID, [10, 21]);
 new Units.Warrior(config.BARB_ID, [10, 21]);
+new Units.Chariot(config.BARB_ID, [10, 21]);
 
 //var c = new Combat.Battle(u1, u2);
 //c.fight();

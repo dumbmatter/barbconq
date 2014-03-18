@@ -129,7 +129,9 @@ console.log(this.log);
                     attackerUnitOrGroup.countMovementToCoords(coords);
                 }
             } else {
-// game.moveUnits()? Probably not necessary
+                // Attacker died, so on to the next one
+// THIS DOESN'T ALWAYS WORK
+                game.moveUnits();
             }
             return true;
         }
