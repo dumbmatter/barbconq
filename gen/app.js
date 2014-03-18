@@ -1552,6 +1552,20 @@ var Units;
 
         // Check for valid coords before calling
         UnitOrGroup.prototype.moveToCoords = function (coords) {
+            var hasEnemy;
+
+            // See if an enemy is on that tile
+            hasEnemy = false;
+            game.getTile(coords).units.forEach(function (unit) {
+                if (unit.owner !== this.owner) {
+                    hasEnemy = true;
+                }
+            }.bind(this));
+            if (hasEnemy) {
+                console.log("ENEMY THERE");
+                return;
+            }
+
             // Move the unit(s) in the map data structure
             this.moveOnMap(coords);
 
@@ -2215,8 +2229,7 @@ new Units.Warrior(config.PLAYER_ID, [10, 19]);
 var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
 var u2 = new Units.Warrior(config.BARB_ID, [10, 21]);
 
-var c = new Combat.Battle(u1, u2);
-c.fight();
-
+//var c = new Combat.Battle(u1, u2);
+//c.fight();
 game.newTurn();
 //# sourceMappingURL=app.js.map

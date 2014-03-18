@@ -6,8 +6,9 @@ Combat
     pick enemy with highest defense
     group attack
   move onto tile to initiate battle
-    if moving with individual unit, pick strongest enemy to fight
-    if moving with group, loop through each of your units and pick the one with the best chance to beat its strongest enemy
+    call some function to handle it in Unit.MoveToCoords
+      if moving with individual unit, pick strongest enemy to fight
+      if moving with group, loop through each of your units and pick the one with the best chance to beat its strongest enemy
   movement after battle
     if attacker wins and defender's tile has no more defenders, move there
   combat complexity
