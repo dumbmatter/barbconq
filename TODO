@@ -17,9 +17,6 @@ Combat
     retreat
     collateral damage
     experience points
-  limit attacks per turn
-    unit should have "attacked" property, init to False each turn
-      also at group level attacked is True only if every unit's is True (factor in canAttack)
 
 unit tests for grouped units?
   karma/mocha/chai

@@ -65,6 +65,8 @@ module Combat {
             this.log.push(this.names[0] + " (" + this.round(this.A, 2) + ") attacked " + this.names[1] + " (" + this.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
 
+            this.units[0].attacked = true;
+
             // Simulate the fight
             while (this.hps[0] > 0 && this.hps[1] > 0) {
                 if (this.attackerWinsRound()) {
@@ -95,13 +97,12 @@ console.log(this.log);
         }
     }
 
-    // If tile has enemy unit on it, initiate combat and return true. Otherwise, do nothing and return false.
+    // If tile has enemy unit on it, initiate combat (if appropriate) and return true. Otherwise, do nothing and return false.
     export function fightIfTileHasEnemy(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : boolean {
         var attacker : Units.Unit, battle : Battle, defender : Units.Unit, newTileUnits : Units.Unit[];
 
         // Delete path
         attackerUnitOrGroup.targetCoords = null;
-
 
         newTileUnits = game.getTile(coords).units;
 
@@ -128,11 +129,14 @@ console.log(this.log);
             };
         };
 
-// FIX THIS TO HANDLE GROUP ATTACK
         if (attackerUnitOrGroup instanceof Units.Unit) {
             // Attacker is a single unit
             attacker = <Units.Unit> attackerUnitOrGroup;
-            defender = findBestDefender(attacker).defender;
+
+            // Only proceed if there is a valid attacker
+            if (attacker.canAttack && !attacker.attacked) {
+                defender = findBestDefender(attacker).defender;
+            }
         } else if (attackerUnitOrGroup instanceof Units.Group) {
             // Attacker is a group, find the one with the best odds against its best defender
             (function () { // Just makes things neater if some variables are local here
@@ -143,22 +147,27 @@ console.log(this.log);
                 attackerGroup = <Units.Group> attackerUnitOrGroup;
                 attackerGroup.units.forEach(function (unit) {
                     var obj;
-                    obj = findBestDefender(unit);
 
-                    if (obj.oddsDefenderWinsFight < minOdds) {
-                        minOdds = obj.oddsDefenderWinsFight;
-                        attacker = unit;
-                        defender = obj.defender;
+                    // Only proceed if there is a valid attacker
+                    if (unit.canAttack && !unit.attacked) {
+                        obj = findBestDefender(unit);
+
+                        if (obj.oddsDefenderWinsFight < minOdds) {
+                            minOdds = obj.oddsDefenderWinsFight;
+                            attacker = unit;
+                            defender = obj.defender;
+                        }
                     }
                 });
             }());
         }
 
         if (defender) {
+            // We have a valid attacker and defender! Fight!
             battle = new Battle(attacker, defender);
             battle.fight();
             if (battle.winner === "attacker") {
-                if (newTileUnits.filter(function (unit) { return unit.owner !== attacker.owner; }).length === 0) {
+                if (newTileUnits.filter(function (unit) { return unit.owner !== attackerUnitOrGroup.owner; }).length === 0) {
                     // No enemies left on tile, take it.
                     attackerUnitOrGroup.moveToCoords(coords); // Move entire group, if it's a group
                 } else {
@@ -172,6 +181,9 @@ console.log(this.log);
             // Update hover tile, since this could change, particularly for right click attack when defending tile is hovered over
             chromeUI.onHoverTile(game.getTile(controller.hoveredTile));
 
+            return true;
+        } else if (newTileUnits.filter(function (unit) { return unit.owner !== attackerUnitOrGroup.owner; }).length > 0) {
+            // We didn't find an attacker, because there is an enemy on the tile and we're not attacking
             return true;
         }
 

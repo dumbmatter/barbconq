@@ -35,6 +35,7 @@ module Units {
         // Turn stuff
         _active : boolean = false; // When set, show UI options for this unit
         _skippedTurn : boolean = false; // When set, no need to loop through this unit before showing turn is over
+        _attacked : boolean = false;
 
         // Default getters/setters for units
         set owner(value : number) { this._owner = value; }
@@ -59,6 +60,8 @@ module Units {
         get active() : boolean { return this._active; }
         set skippedTurn(value : boolean) { this._skippedTurn = value; }
         get skippedTurn() : boolean { return this._skippedTurn; }
+        set attacked(value : boolean) { this._attacked = value; }
+        get attacked() : boolean { return this._attacked; }
 
         constructor() {
             // Set unique ID for unit or group
@@ -429,7 +432,7 @@ console.log("SENTRY")
             var i : number;
 
             for (i = 0; i < this.units.length; i++) {
-                if (this.units[i].canAttack) {
+                if (this.units[i].canDefend) {
                     return true;
                 }
             }
@@ -468,6 +471,20 @@ console.log("SENTRY")
             this._skippedTurn = value;
         }
         get skippedTurn() : boolean { return this._skippedTurn; }
+
+        // Do nothing, can't be changed at group level
+        set attacked(value : boolean) {}
+        // Only true if every group member either can't attack or has already attacked
+        get attacked() : boolean {
+            var i : number;
+
+            for (i = 0; i < this.units.length; i++) {
+                if (!this.units[i].attacked && this.units[i].canAttack) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         constructor(owner : number, units : Unit[]) {
             super();
