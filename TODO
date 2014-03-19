@@ -8,6 +8,14 @@ UI Glitch
       POSSIBLE SOLUTION
         game.map.pathFinding should somehow not allow path finding on tile with enemy, except if it's right under the target
       QUICK FIX (done): check if movement happens naturally or if battle takes over before calling tryToMove
+--
+issues raised by the above glitch
+  how can i have right click hover show battle info, but have all other paths avoid enemy units?
+    when building grid in map.pathFinding, any tile with an enemy on it can't be moved on, except the tile currently being hovered over
+      make generic function Tile.hasEnemyUnit(player_id) and also use this it to replace the "unit.owner !== attackerUnitOrGroup.owner" stuff in Combat.fightIfTileHasEnemy
+        player_id is passed so this function can be used for the user or for CPU players
+  how can i show battle info for a unit without moves/attacks left while right click hovering on enemy?
+    need some option to pass to Combat.findBestDefender from MapUI.drawPath
 
 Combat
   right click hover
