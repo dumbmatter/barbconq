@@ -814,7 +814,7 @@ var MapUI = (function () {
             if (path && path.length > 1) {
                 // See if the path ends at an enemy unit. If so, display combat info.
                 console.log(path[path.length - 1]);
-                units = Combat.findBestDefender(game.activeUnit, path[path.length - 1]);
+                units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
                 console.log(units);
 
                 // Start at origin
@@ -2246,8 +2246,10 @@ var Combat;
     })();
     Combat.Battle = Battle;
 
-    // Find best defender for a unit/group attacking a tile, if that tile has a defender and there is a possible attacker (otherwise null)
-    function findBestDefender(attackerUnitOrGroup, coords) {
+    // Find best attacker/defender combo for a unit/group attacking a tile. If no combo found, defender is null.
+    // If the third parameter (forceFindDefender) is true, then even invalid attackers are used. This should be used for path finding only, not for actual attacking
+    function findBestDefender(attackerUnitOrGroup, coords, forceFindDefender) {
+        if (typeof forceFindDefender === "undefined") { forceFindDefender = false; }
         var attacker, defender, findBestDefenderForAttacker;
 
         // Works on individual attacker; needs to be called on all members of group
@@ -2281,7 +2283,7 @@ var Combat;
             attacker = attackerUnitOrGroup;
 
             // Only proceed if there is a valid attacker
-            if (attacker.canAttack && !attacker.attacked) {
+            if (forceFindDefender || (attacker.canAttack && !attacker.attacked)) {
                 defender = findBestDefenderForAttacker(attacker, coords).defender;
             }
         } else if (attackerUnitOrGroup instanceof Units.Group) {
@@ -2296,7 +2298,7 @@ var Combat;
                     var obj;
 
                     // Only proceed if there is a valid attacker
-                    if (unit.canAttack && !unit.attacked) {
+                    if (forceFindDefender || (unit.canAttack && !unit.attacked)) {
                         obj = findBestDefenderForAttacker(unit, coords);
 
                         if (obj.oddsDefenderWinsFight < minOdds) {

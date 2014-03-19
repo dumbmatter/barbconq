@@ -97,8 +97,9 @@ console.log(this.log);
         }
     }
 
-    // Find best defender for a unit/group attacking a tile, if that tile has a defender and there is a possible attacker (otherwise null)
-    export function findBestDefender(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : {attacker : Units.Unit; defender : Units.Unit} {
+    // Find best attacker/defender combo for a unit/group attacking a tile. If no combo found, defender is null.
+    // If the third parameter (forceFindDefender) is true, then even invalid attackers are used. This should be used for path finding only, not for actual attacking
+    export function findBestDefender(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[], forceFindDefender : boolean = false) : {attacker : Units.Unit; defender : Units.Unit} {
         var attacker : Units.Unit, defender : Units.Unit, findBestDefenderForAttacker;
 
         // Works on individual attacker; needs to be called on all members of group
@@ -132,7 +133,7 @@ console.log(this.log);
             attacker = <Units.Unit> attackerUnitOrGroup;
 
             // Only proceed if there is a valid attacker
-            if (attacker.canAttack && !attacker.attacked) {
+            if (forceFindDefender || (attacker.canAttack && !attacker.attacked)) {
                 defender = findBestDefenderForAttacker(attacker, coords).defender;
             }
         } else if (attackerUnitOrGroup instanceof Units.Group) {
@@ -147,7 +148,7 @@ console.log(this.log);
                     var obj;
 
                     // Only proceed if there is a valid attacker
-                    if (unit.canAttack && !unit.attacked) {
+                    if (forceFindDefender || (unit.canAttack && !unit.attacked)) {
                         obj = findBestDefenderForAttacker(unit, coords);
 
                         if (obj.oddsDefenderWinsFight < minOdds) {

@@ -104,8 +104,9 @@ class MapUI {
             if (path && path.length > 1) {
                 // See if the path ends at an enemy unit. If so, display combat info.
 console.log(path[path.length - 1]);
-                units = Combat.findBestDefender(game.activeUnit, path[path.length - 1]);
-console.log(units);
+                units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
+                battle = new Combat.Battle(units.attacker, units.defender);
+console.log(battle.oddsAttackerWinsFight());
 
                 // Start at origin
                 this.context.beginPath();
