@@ -1326,6 +1326,7 @@ var Game = (function () {
             for (j in this.units[i]) {
                 unit = this.units[i][j];
                 unit.skippedTurn = false;
+                unit.attacked = false;
                 unit.currentMovement = unit.movement;
             }
             for (j in this.groups[i]) {
