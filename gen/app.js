@@ -2343,9 +2343,6 @@ var Combat;
     function fightIfTileHasEnemy(attackerUnitOrGroup, coords) {
         var attacker, battle, defender, newTileUnits, units;
 
-        // Delete path
-        attackerUnitOrGroup.targetCoords = null;
-
         newTileUnits = game.getTile(coords).units;
 
         units = findBestDefender(attackerUnitOrGroup, coords);
@@ -2353,6 +2350,9 @@ var Combat;
         defender = units.defender;
 
         if (defender) {
+            // Delete path
+            attackerUnitOrGroup.targetCoords = null;
+
             // We have a valid attacker and defender! Fight!
             battle = new Battle(attacker, defender);
             battle.fight();
@@ -2377,6 +2377,9 @@ var Combat;
         } else if (newTileUnits.filter(function (unit) {
             return unit.owner !== attackerUnitOrGroup.owner;
         }).length > 0) {
+            // Delete path
+            attackerUnitOrGroup.targetCoords = null;
+
             // We didn't find an attacker, because there is an enemy on the tile and we're not attacking
             return true;
         }
@@ -2423,10 +2426,10 @@ var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
 [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
 new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
-new Units.Warrior(config.PLAYER_ID, [10, 20]);
+/*new Units.Warrior(config.PLAYER_ID, [10, 20]);
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
-new Units.Chariot(config.PLAYER_ID, [10, 20]);
+new Units.Chariot(config.PLAYER_ID, [10, 20]);*/
 new Units.Chariot(config.PLAYER_ID, [10, 20]);
 new Units.Warrior(config.BARB_ID, [10, 21]);
 new Units.Warrior(config.BARB_ID, [10, 21]);

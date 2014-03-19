@@ -1,5 +1,7 @@
 # Major current tasks
 
+move all requestAnimationFrame calls inside MapUI
+
 show move numbers on top of path
 
 unit tests for grouped units?

@@ -156,9 +156,6 @@ console.log(this.log);
     export function fightIfTileHasEnemy(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : boolean {
         var attacker : Units.Unit, battle : Battle, defender : Units.Unit, newTileUnits : Units.Unit[], units : {attacker : Units.Unit; defender : Units.Unit};
 
-        // Delete path
-        attackerUnitOrGroup.targetCoords = null;
-
         newTileUnits = game.getTile(coords).units;
 
         units = findBestDefender(attackerUnitOrGroup, coords);
@@ -166,6 +163,9 @@ console.log(this.log);
         defender = units.defender;
 
         if (defender) {
+            // Delete path
+            attackerUnitOrGroup.targetCoords = null;
+
             // We have a valid attacker and defender! Fight!
             battle = new Battle(attacker, defender);
             battle.fight();
@@ -186,6 +186,9 @@ console.log(this.log);
 
             return true;
         } else if (newTileUnits.filter(function (unit) { return unit.owner !== attackerUnitOrGroup.owner; }).length > 0) {
+            // Delete path
+            attackerUnitOrGroup.targetCoords = null;
+
             // We didn't find an attacker, because there is an enemy on the tile and we're not attacking
             return true;
         }
