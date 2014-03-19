@@ -1,12 +1,9 @@
 # Major current tasks
 
 Combat
-  move onto tile to initiate battle
-    right click hover
-      show predicted odds in hover box
-      show path in red
-  movement after battle
-    if attacker wins and defender's tile has no more defenders, move there
+  right click hover
+    show predicted odds in hover box
+    show path in red
   combat complexity
     http://www.civfanatics.com/civ4/strategy/combat_explained.php
     http://home.comcast.net/~proc/civ4/combat_calc.htm

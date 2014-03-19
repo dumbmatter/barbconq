@@ -113,7 +113,7 @@ class Controller {
         }.bind(this));
 
         // Unit movement with right click
-        mapUI.canvas.addEventListener("contextmenu", function (e) {
+        window.addEventListener("contextmenu", function (e) {
             e.preventDefault();
         });
         mapUI.canvas.addEventListener("mousedown", function (e) {
