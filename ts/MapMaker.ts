@@ -5,9 +5,10 @@ module MapMaker {
         terrain : string;
         features : string[];
         units : Units.Unit[];
-        lastSeenState: {
+        lastSeenState? : {
             terrain : string;
             features : string[];
+            units : Units.Unit[]; // This should never get anything in it! Just a placeholder empty array!
         };
     }
 
@@ -95,6 +96,43 @@ module MapMaker {
 
             // Add unit at new tile
             game.getTile(coords).units.push(unit);
+        }
+
+        // Entries in output matrix are visible (1) or not visible (0).
+        getVisibility() : number[][] {
+            var i : number, j : number, visibility : number[][];
+
+            // Find the visibilility of each tile in the grid (could be made smarter by only looking at units that can impact viewport)
+            // Init as everything is unseen
+            visibility = [];
+            for (i = 0; i < this.rows; i++) {
+                visibility[i] = [];
+                for (j = 0; j < this.cols; j++) {
+                    visibility[i][j] = 0;
+                }
+            }
+            // Loop through units, set visibility
+            Object.keys(game.units[config.PLAYER_ID]).forEach(function (id) {
+                var i : number, j : number, unit : Units.Unit;
+
+                unit = game.units[config.PLAYER_ID][id];
+
+                // Radius 1 search around unit
+                for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
+                    for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
+                        if (this.validCoords([i, j])) {
+                            visibility[i][j] = 1;
+                            this.tiles[i][j].lastSeenState = {
+                                terrain: this.tiles[i][j].terrain,
+                                features: this.tiles[i][j].features,
+                                units: []
+                            };
+                        }
+                    }
+                }
+            }.bind(this));
+
+            return visibility;
         }
     }
 

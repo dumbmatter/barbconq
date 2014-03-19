@@ -1,5 +1,7 @@
 # Major current tasks
 
+empty set()s in Unit.Group should throw error
+
 have Tile.enemyUnits(player_id) which can be used in places that checking for enemy units on tile exists currently (I think twice in Combat, once in MapUI).
 
 move all requestAnimationFrame calls inside MapUI
@@ -27,11 +29,9 @@ fog of war
   visibility range - don't get too fancy yet
     default: 1 tile
     on hill: +1
-  states
-    never seen yet: completely black
-    saw before, but not currently in field of vision: terrain+improvements appear as last known, with shadow over it
-      need to somehow cache last viewed tile state for every tile. copy of map, i guess
-    in field of vision: visible
+  pathfinding
+    if a tile has not been seen yet, allow routing to it. assume all unseen tiles have cost of 1
+    if a tile has been seen but is not currently visible, don't route around enemies on it
 
 basic barb AI
   is there anyone i can attack with >25% chance of winning? if so, attack

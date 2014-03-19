@@ -763,8 +763,6 @@ var MapUI = (function () {
     function MapUI() {
         // Constants
         this.TILE_SIZE = 50;
-        this.TILE_VISIBLE = 1;
-        this.TILE_NOT_VISIBLE = 0;
         this.pathFindingSearch = false;
         // Colors!
         this.terrainColors = {
@@ -878,7 +876,7 @@ var MapUI = (function () {
     };
 
     MapUI.prototype.render = function () {
-        var bottom, i, j, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, visibility, x, y;
+        var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -922,36 +920,6 @@ var MapUI = (function () {
             tileOffsetX += this.TILE_SIZE;
         }
 
-        // Find the visibilility of each tile in the grid (could be made smarter by only looking at units that can impact viewport)
-        // Init as everything is unseen
-        visibility = [];
-        for (i = 0; i < game.map.rows; i++) {
-            visibility[i] = [];
-            for (j = 0; j < game.map.cols; j++) {
-                visibility[i][j] = this.TILE_NOT_VISIBLE;
-            }
-        }
-
-        // Loop through units, set visibility
-        Object.keys(game.units[config.PLAYER_ID]).forEach(function (id) {
-            var i, j, unit;
-
-            unit = game.units[config.PLAYER_ID][id];
-
-            for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
-                for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
-                    if (game.map.validCoords([i, j])) {
-                        visibility[i][j] = this.TILE_VISIBLE;
-                        game.map.tiles[i][j].lastSeenState = {
-                            terrain: game.map.tiles[i][j].terrain,
-                            features: game.map.tiles[i][j].features
-                        };
-                    }
-                }
-            }
-        }.bind(this));
-        console.log(visibility);
-
         // Clear canvas and redraw everything in view
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.context.fillStyle = "#000";
@@ -977,17 +945,19 @@ var MapUI = (function () {
 
         // First pass: draw tiles and units
         drawViewport(function (i, j, x, y) {
-            var k, maxStrength, tile, unit, units;
+            var k, maxStrength, tile, unit, units, visibility;
 
-            if (visibility[i][j] === this.TILE_NOT_VISIBLE) {
+            visibility = game.map.getVisibility();
+            if (!visibility[i][j]) {
                 if (!game.map.tiles[i][j].lastSeenState) {
                     // Never seen this tile, show nothing
                     return;
                 } else {
+                    // Seen before, show last seen state
                     tile = game.map.tiles[i][j].lastSeenState;
-                    tile.units = [];
                 }
             } else {
+                // Tile is visible, show current state
                 tile = game.map.tiles[i][j];
             }
 
@@ -1278,6 +1248,43 @@ var MapMaker;
 
             // Add unit at new tile
             game.getTile(coords).units.push(unit);
+        };
+
+        // Entries in output matrix are visible (1) or not visible (0).
+        Map.prototype.getVisibility = function () {
+            var i, j, visibility;
+
+            // Find the visibilility of each tile in the grid (could be made smarter by only looking at units that can impact viewport)
+            // Init as everything is unseen
+            visibility = [];
+            for (i = 0; i < this.rows; i++) {
+                visibility[i] = [];
+                for (j = 0; j < this.cols; j++) {
+                    visibility[i][j] = 0;
+                }
+            }
+
+            // Loop through units, set visibility
+            Object.keys(game.units[config.PLAYER_ID]).forEach(function (id) {
+                var i, j, unit;
+
+                unit = game.units[config.PLAYER_ID][id];
+
+                for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
+                    for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
+                        if (this.validCoords([i, j])) {
+                            visibility[i][j] = 1;
+                            this.tiles[i][j].lastSeenState = {
+                                terrain: this.tiles[i][j].terrain,
+                                features: this.tiles[i][j].features,
+                                units: []
+                            };
+                        }
+                    }
+                }
+            }.bind(this));
+
+            return visibility;
         };
         return Map;
     })();

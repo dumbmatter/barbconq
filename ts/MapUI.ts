@@ -5,8 +5,6 @@ class MapUI {
     TILE_SIZE : number = 50;
     terrainColors: any;
     terrainFontColors: any;
-    TILE_VISIBLE : number = 1;
-    TILE_NOT_VISIBLE : number = 0;
 
     // Display
     // (X, Y) is the center of the region of the map displayed on the screen.
@@ -137,7 +135,7 @@ class MapUI {
     }
 
     render() {
-        var bottom, i : number, j : number, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, visibility : number[][], x, y;
+        var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -181,35 +179,6 @@ class MapUI {
             tileOffsetX += this.TILE_SIZE;
         }
 
-        // Find the visibilility of each tile in the grid (could be made smarter by only looking at units that can impact viewport)
-        // Init as everything is unseen
-        visibility = [];
-        for (i = 0; i < game.map.rows; i++) {
-            visibility[i] = [];
-            for (j = 0; j < game.map.cols; j++) {
-                visibility[i][j] = this.TILE_NOT_VISIBLE;
-            }
-        }
-        // Loop through units, set visibility
-        Object.keys(game.units[config.PLAYER_ID]).forEach(function (id) {
-            var i : number, j : number, unit : Units.Unit;
-
-            unit = game.units[config.PLAYER_ID][id];
-
-            // Radius 1 search around unit
-            for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
-                for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
-                    if (game.map.validCoords([i, j])) {
-                        visibility[i][j] = this.TILE_VISIBLE;
-                        game.map.tiles[i][j].lastSeenState = {
-                            terrain: game.map.tiles[i][j].terrain,
-                            features: game.map.tiles[i][j].features
-                        };
-                    }
-                }
-            }
-        }.bind(this));
-
         // Clear canvas and redraw everything in view
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.context.fillStyle = "#000";
@@ -235,17 +204,19 @@ class MapUI {
 
         // First pass: draw tiles and units
         drawViewport(function (i, j, x, y) {
-            var k, maxStrength, tile, unit, units;
+            var k, maxStrength, tile : MapMaker.Tile, unit, units, visibility : number[][];
 
-            if (visibility[i][j] === this.TILE_NOT_VISIBLE) {
+            visibility = game.map.getVisibility();
+            if (!visibility[i][j]) {
                 if (!game.map.tiles[i][j].lastSeenState) {
                     // Never seen this tile, show nothing
                     return;
                 } else {
+                    // Seen before, show last seen state
                     tile = game.map.tiles[i][j].lastSeenState;
-                    tile.units = [];
                 }
             } else {
+                // Tile is visible, show current state
                 tile = game.map.tiles[i][j];
             }
 
