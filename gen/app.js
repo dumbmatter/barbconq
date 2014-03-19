@@ -2288,6 +2288,7 @@ var Combat;
 ///<reference path='Combat.ts'/>
 var easystar = new EasyStar.js();
 
+// Default options
 var config = {
     BARB_ID: 0,
     PLAYER_ID: 1,

@@ -7,9 +7,11 @@
 ///<reference path='Units.ts'/>
 ///<reference path='Combat.ts'/>
 
+// Load easystar.js
 declare var EasyStar : any;
 var easystar : any = new EasyStar.js();
 
+// Default options
 var config : any = {
     BARB_ID: 0,
     PLAYER_ID: 1,
