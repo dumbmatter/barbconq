@@ -8,6 +8,7 @@ class Game {
     groups : {[id : number] : Units.Group}[] = []; // Same as above
     activeUnit : Units.UnitOrGroup = null;
     turn : number = 0;
+    turnID : number; // ID number of the user whose turn it is
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
         var i : number;
@@ -67,6 +68,8 @@ class Game {
         var i : number, j : string, unit : Units.Unit, group : Units.Group;
 
         for (i = 0; i < this.names.length; i++) {
+            game.turnID = i;
+
             // User
             if (i === config.PLAYER_ID) {
                 // UNIT GROUPS

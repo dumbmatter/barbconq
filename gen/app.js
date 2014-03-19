@@ -1132,14 +1132,21 @@ var MapMaker;
             for (i = 0; i < this.rows; i++) {
                 grid[i] = [];
                 for (j = 0; j < this.cols; j++) {
-                    // Two types: two move (2), one move (1), and blocked
-                    // But 2 move only matters if unit can move more than once
-                    if (this.tiles[i][j].features.indexOf("hills") >= 0 || this.tiles[i][j].features.indexOf("forest") >= 0 || this.tiles[i][j].features.indexOf("jungle") >= 0) {
-                        grid[i][j] = unit.movement > 1 ? 2 : 1;
-                    } else if (this.tiles[i][j].terrain === "snow" || this.tiles[i][j].terrain === "desert" || this.tiles[i][j].terrain === "tundra" || this.tiles[i][j].terrain === "grassland" || this.tiles[i][j].terrain === "plains") {
-                        grid[i][j] = 1;
-                    } else {
+                    // Avoid enemies
+                    if (this.tiles[i][j].units.filter(function (unit) {
+                        return unit.owner !== game.turnID;
+                    }).length > 0) {
                         grid[i][j] = 0;
+                    } else {
+                        // Two types: two move (2), one move (1), and blocked
+                        // But 2 move only matters if unit can move more than once
+                        if (this.tiles[i][j].features.indexOf("hills") >= 0 || this.tiles[i][j].features.indexOf("forest") >= 0 || this.tiles[i][j].features.indexOf("jungle") >= 0) {
+                            grid[i][j] = unit.movement > 1 ? 2 : 1;
+                        } else if (this.tiles[i][j].terrain === "snow" || this.tiles[i][j].terrain === "desert" || this.tiles[i][j].terrain === "tundra" || this.tiles[i][j].terrain === "grassland" || this.tiles[i][j].terrain === "plains") {
+                            grid[i][j] = 1;
+                        } else {
+                            grid[i][j] = 0;
+                        }
                     }
                 }
             }
@@ -1300,6 +1307,8 @@ var Game = (function () {
         var i, j, unit, group;
 
         for (i = 0; i < this.names.length; i++) {
+            game.turnID = i;
+
             // User
             if (i === config.PLAYER_ID) {
                 for (j in this.groups[i]) {
