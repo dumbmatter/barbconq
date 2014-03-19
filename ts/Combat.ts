@@ -152,10 +152,6 @@ console.log(this.log);
                     }
                 });
             }());
-
-console.log("GROUP ATTACK");
-console.log(attacker);
-console.log(defender);
         }
 
         if (defender) {
@@ -164,13 +160,12 @@ console.log(defender);
             if (battle.winner === "attacker") {
                 if (newTileUnits.filter(function (unit) { return unit.owner !== attacker.owner; }).length === 0) {
                     // No enemies left on tile, take it.
-                    attackerUnitOrGroup.moveToCoords(coords);
+                    attackerUnitOrGroup.moveToCoords(coords); // Move entire group, if it's a group
                 } else {
-                    attackerUnitOrGroup.countMovementToCoords(coords);
+                    attacker.countMovementToCoords(coords); // Only count for attacker, not whole group
                 }
             } else {
                 // Attacker died, so on to the next one
-// THIS DOESN'T ALWAYS WORK
                 game.moveUnits();
             }
 

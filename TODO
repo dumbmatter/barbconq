@@ -1,14 +1,7 @@
 # Major current tasks
 
 Combat
-  based on Combat.fightIfTileHasEnemy
-    get list of enemies on tile being moved to
-    pick enemy with highest defense
-    group attack
-      should only add move for attacker
   move onto tile to initiate battle
-    Combat.fightIfTileHasEnemy
-      if moving with group, loop through each of your units and pick the one with the best chance to beat its strongest enemy
     right click hover
       show predicted odds in hover box
       show path in red
@@ -24,6 +17,9 @@ Combat
     retreat
     collateral damage
     experience points
+  limit attacks per turn
+    unit should have "attacked" property, init to False each turn
+      also at group level attacked is True only if every unit's is True (factor in canAttack)
 
 unit tests for grouped units?
   karma/mocha/chai
@@ -90,6 +86,9 @@ unit types, to start with
   chariot
   spearman
   axeman
+
+unit promotions
+  with "Blitz" promotion, never "attacked" set to True
 
 unit design as weapons
   club, bow+arrow, spear, axe, horse
