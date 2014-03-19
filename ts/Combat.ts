@@ -98,11 +98,11 @@ console.log(this.log);
     }
 
     // Find best defender for a unit/group attacking a tile, if that tile has a defender and there is a possible attacker (otherwise null)
-    export function findBestDefender(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) {
+    export function findBestDefender(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : {attacker : Units.Unit; defender : Units.Unit} {
         var attacker : Units.Unit, defender : Units.Unit, findBestDefenderForAttacker;
 
         // Works on individual attacker; needs to be called on all members of group
-        findBestDefenderForAttacker = function (attacker : Units.Unit, coords : number[]) {
+        findBestDefenderForAttacker = function (attacker : Units.Unit, coords : number[]) : {defender : Units.Unit; oddsDefenderWinsFight : number} {
             var battle : Battle, defender : Units.Unit, maxOdds : number, newTileUnits : Units.Unit[], oddsDefenderWinsFight : number;
 
             newTileUnits = game.getTile(coords).units;
