@@ -547,7 +547,7 @@ var ChromeUI = (function () {
         if (typeof tile === "undefined") { tile = null; }
         var content, i;
 
-        if (tile) {
+        if (tile && tile.terrain !== "unseen") {
             content = "";
 
             for (i = 0; i < tile.units.length; i++) {
@@ -766,6 +766,7 @@ var MapUI = (function () {
         this.pathFindingSearch = false;
         // Colors!
         this.terrainColors = {
+            unseen: "#000",
             peak: "#000",
             snow: "#fff",
             desert: "#f1eabd",
@@ -945,21 +946,9 @@ var MapUI = (function () {
 
         // First pass: draw tiles and units
         drawViewport(function (i, j, x, y) {
-            var k, maxStrength, tile, unit, units, visibility;
+            var k, maxStrength, tile, unit, units;
 
-            visibility = game.map.getVisibility();
-            if (!visibility[i][j]) {
-                if (!game.map.tiles[i][j].lastSeenState) {
-                    // Never seen this tile, show nothing
-                    return;
-                } else {
-                    // Seen before, show last seen state
-                    tile = game.map.tiles[i][j].lastSeenState;
-                }
-            } else {
-                // Tile is visible, show current state
-                tile = game.map.tiles[i][j];
-            }
+            tile = game.getTile([i, j]);
 
             // Background
             this.context.fillStyle = this.terrainColors[tile.terrain];
@@ -1355,9 +1344,32 @@ var Game = (function () {
             this.groups.push({});
         }
     }
+    // Returns null if coords are not valid. Otherwise, returns tile info while factoring in visibility
     Game.prototype.getTile = function (coords) {
+        var i, j, visibility;
+
+        i = coords[0];
+        j = coords[1];
+
+        visibility = game.map.getVisibility();
+
         if (this.map.validCoords(coords)) {
-            return this.map.tiles[coords[0]][coords[1]];
+            if (!visibility[i][j]) {
+                if (!this.map.tiles[i][j].lastSeenState) {
+                    // Never seen this tile, show nothing
+                    return {
+                        terrain: "unseen",
+                        features: [],
+                        units: []
+                    };
+                } else {
+                    // Seen before, show last seen state
+                    return this.map.tiles[i][j];
+                }
+            } else {
+                // Tile is visible, show current state
+                return this.map.tiles[i][j];
+            }
         } else {
             return null;
         }

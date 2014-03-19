@@ -26,6 +26,7 @@ class MapUI {
     constructor() {
         // Colors!
         this.terrainColors = {
+            unseen: "#000",
             peak: "#000",
             snow: "#fff",
             desert: "#f1eabd",
@@ -204,21 +205,9 @@ class MapUI {
 
         // First pass: draw tiles and units
         drawViewport(function (i, j, x, y) {
-            var k, maxStrength, tile : MapMaker.Tile, unit, units, visibility : number[][];
+            var k, maxStrength, tile : MapMaker.Tile, unit, units;
 
-            visibility = game.map.getVisibility();
-            if (!visibility[i][j]) {
-                if (!game.map.tiles[i][j].lastSeenState) {
-                    // Never seen this tile, show nothing
-                    return;
-                } else {
-                    // Seen before, show last seen state
-                    tile = game.map.tiles[i][j].lastSeenState;
-                }
-            } else {
-                // Tile is visible, show current state
-                tile = game.map.tiles[i][j];
-            }
+            tile = game.getTile([i, j]);
 
             // Background
             this.context.fillStyle = this.terrainColors[tile.terrain];

@@ -45,7 +45,7 @@ class ChromeUI {
     onHoverTile(tile : MapMaker.Tile = null) {
         var content : string, i : number;
 
-        if (tile) {
+        if (tile && tile.terrain !== "unseen") {
             content = "";
 
             for (i = 0; i < tile.units.length; i++) {

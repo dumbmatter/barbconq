@@ -28,9 +28,32 @@ class Game {
         }
     }
 
-    getTile(coords : number[]) {
+    // Returns null if coords are not valid. Otherwise, returns tile info while factoring in visibility
+    getTile(coords : number[]) : MapMaker.Tile {
+        var i : number, j : number, visibility : number[][];
+
+        i = coords[0];
+        j = coords[1];
+
+        visibility = game.map.getVisibility();
+
         if (this.map.validCoords(coords)) {
-            return this.map.tiles[coords[0]][coords[1]];
+            if (!visibility[i][j]) {
+                if (!this.map.tiles[i][j].lastSeenState) {
+                    // Never seen this tile, show nothing
+                    return {
+                        terrain: "unseen",
+                        features: [],
+                        units: []
+                    };
+                } else {
+                    // Seen before, show last seen state
+                    return this.map.tiles[i][j];
+                }
+            } else {
+                // Tile is visible, show current state
+                return this.map.tiles[i][j];
+            }
         } else {
             return null;
         }
