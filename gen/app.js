@@ -812,7 +812,10 @@ var MapUI = (function () {
             }
 
             if (path && path.length > 1) {
-                // Origin
+                // See if the path ends at an enemy unit. If so, display combat info.
+                console.log(path[path.length - 1]);
+
+                // Start at origin
                 this.context.beginPath();
                 pixels = this.coordsToPixels(path[0][0], path[0][1]);
                 this.context.moveTo(pixels[0], pixels[1]);
@@ -2226,6 +2229,34 @@ var Combat;
     })();
     Combat.Battle = Battle;
 
+    // Find best defender for a unit/group attacking a tile, if that tile has a defender
+    function findBestDefender(attacker, coords) {
+        var battle, defender, maxOdds, newTileUnits, oddsDefenderWinsFight;
+
+        newTileUnits = game.getTile(coords).units;
+
+        // See if an enemy is on that tile, and if so, find the one with max strength against attacker
+        defender = null;
+        maxOdds = -Infinity;
+        newTileUnits.forEach(function (unit) {
+            if (unit.owner !== attacker.owner) {
+                battle = new Battle(attacker, unit);
+                oddsDefenderWinsFight = 1 - battle.oddsAttackerWinsFight();
+                if (oddsDefenderWinsFight > maxOdds) {
+                    maxOdds = oddsDefenderWinsFight;
+                    defender = unit;
+                }
+            }
+        });
+
+        return {
+            defender: defender,
+            oddsDefenderWinsFight: maxOdds
+        };
+    }
+    Combat.findBestDefender = findBestDefender;
+    ;
+
     // If tile has enemy unit on it, initiate combat (if appropriate) and return true. Otherwise, do nothing and return false.
     function fightIfTileHasEnemy(attackerUnitOrGroup, coords) {
         var attacker, battle, defender, newTileUnits;
@@ -2235,36 +2266,13 @@ var Combat;
 
         newTileUnits = game.getTile(coords).units;
 
-        var findBestDefender = function (attacker) {
-            var defender, maxOdds, oddsDefenderWinsFight;
-
-            // See if an enemy is on that tile, and if so, find the one with max strength against attacker
-            defender = null;
-            maxOdds = -Infinity;
-            newTileUnits.forEach(function (unit) {
-                if (unit.owner !== attacker.owner) {
-                    battle = new Battle(attacker, unit);
-                    oddsDefenderWinsFight = 1 - battle.oddsAttackerWinsFight();
-                    if (oddsDefenderWinsFight > maxOdds) {
-                        maxOdds = oddsDefenderWinsFight;
-                        defender = unit;
-                    }
-                }
-            });
-
-            return {
-                defender: defender,
-                oddsDefenderWinsFight: maxOdds
-            };
-        };
-
         if (attackerUnitOrGroup instanceof Units.Unit) {
             // Attacker is a single unit
             attacker = attackerUnitOrGroup;
 
             // Only proceed if there is a valid attacker
             if (attacker.canAttack && !attacker.attacked) {
-                defender = findBestDefender(attacker).defender;
+                defender = findBestDefender(attacker, coords).defender;
             }
         } else if (attackerUnitOrGroup instanceof Units.Group) {
             // Attacker is a group, find the one with the best odds against its best defender
@@ -2279,7 +2287,7 @@ var Combat;
 
                     // Only proceed if there is a valid attacker
                     if (unit.canAttack && !unit.attacked) {
-                        obj = findBestDefender(unit);
+                        obj = findBestDefender(unit, coords);
 
                         if (obj.oddsDefenderWinsFight < minOdds) {
                             minOdds = obj.oddsDefenderWinsFight;

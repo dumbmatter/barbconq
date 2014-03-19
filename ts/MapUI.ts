@@ -102,11 +102,15 @@ class MapUI {
             }
 
             if (path && path.length > 1) {
-                // Origin
+                // See if the path ends at an enemy unit. If so, display combat info.
+console.log(path[path.length - 1]);
+
+                // Start at origin
                 this.context.beginPath();
                 pixels = this.coordsToPixels(path[0][0], path[0][1]);
                 this.context.moveTo(pixels[0], pixels[1]);
 
+                // Add a line for each step in the path
                 for (i = 1; i < path.length; i++) { // Skip the last one, since we're connecting points
                     pixels = this.coordsToPixels(path[i][0], path[i][1]);
                     this.context.lineTo(pixels[0], pixels[1]);

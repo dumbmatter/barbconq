@@ -2,6 +2,8 @@
 
 Combat
   right click hover
+    check for this stuff in mapUI.drawPath, since it's needed only when a path is being drawn
+      make a Combat.findBestDefender I can use for both units and groups
     show predicted odds in hover box
     show path in red
   combat complexity
