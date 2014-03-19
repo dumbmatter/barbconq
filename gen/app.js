@@ -805,7 +805,7 @@ var MapUI = (function () {
         if (typeof path === "undefined") { path = []; }
         if (typeof renderMapFirst === "undefined") { renderMapFirst = true; }
         window.requestAnimationFrame(function () {
-            var i, pixels;
+            var i, pixels, units;
 
             if (renderMapFirst) {
                 this.render();
@@ -814,6 +814,8 @@ var MapUI = (function () {
             if (path && path.length > 1) {
                 // See if the path ends at an enemy unit. If so, display combat info.
                 console.log(path[path.length - 1]);
+                units = Combat.findBestDefender(game.activeUnit, path[path.length - 1]);
+                console.log(units);
 
                 // Start at origin
                 this.context.beginPath();
@@ -825,7 +827,11 @@ var MapUI = (function () {
                     this.context.lineTo(pixels[0], pixels[1]);
                 }
 
-                this.context.strokeStyle = "#000";
+                if (units.defender) {
+                    this.context.strokeStyle = "#f00";
+                } else {
+                    this.context.strokeStyle = "#000";
+                }
                 this.context.lineWidth = 2;
                 this.context.setLineDash([5]);
                 this.context.stroke();

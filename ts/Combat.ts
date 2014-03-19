@@ -168,7 +168,7 @@ console.log(this.log);
 
     // If tile has enemy unit on it, initiate combat (if appropriate) and return true. Otherwise, do nothing and return false.
     export function fightIfTileHasEnemy(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : boolean {
-        var attacker : Units.Unit, battle : Battle, defender : Units.Unit, newTileUnits : Units.Unit[], units;
+        var attacker : Units.Unit, battle : Battle, defender : Units.Unit, newTileUnits : Units.Unit[], units : {attacker : Units.Unit; defender : Units.Unit};
 
         // Delete path
         attackerUnitOrGroup.targetCoords = null;
