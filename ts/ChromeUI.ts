@@ -78,6 +78,16 @@ class ChromeUI {
         }
     }
 
+    onHoverMoveEnemy(battle : Combat.Battle) {
+        var content : string;
+
+        content = "<p>Combat Odds: " + Util.round(battle.oddsAttackerWinsFight() * 100, 1) + "%</p>";
+        content += "<p>" + Util.round(battle.A, 2) + " vs. " + Util.round(battle.D, 2) + "</p>";
+
+        this.elHoverBox.innerHTML = content;
+        this.elHoverBox.style.display = "block";
+    }
+
     private hoverBoxUnitSummary(unit : Units.Unit) {
         var content : string;
 

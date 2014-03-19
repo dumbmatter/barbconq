@@ -1,4 +1,4 @@
-///<reference path='Random.ts'/>
+///<reference path='Util.ts'/>
 ///<reference path='Controller.ts'/>
 ///<reference path='ChromeUI.ts'/>
 ///<reference path='MapUI.ts'/>

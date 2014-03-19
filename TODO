@@ -1,19 +1,6 @@
 # Major current tasks
 
-Combat
-  right click hover
-    show predicted odds in hover box
-    show path in red
-  combat complexity
-    http://www.civfanatics.com/civ4/strategy/combat_explained.php
-    http://home.comcast.net/~proc/civ4/combat_calc.htm
-    http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-    unit strength modifiers
-      include in modifiedStrength formula
-    first strikes
-    retreat
-    collateral damage
-    experience points
+show move numbers on top of path
 
 unit tests for grouped units?
   karma/mocha/chai
@@ -86,6 +73,19 @@ unit types, to start with
 unit promotions
   with "Blitz" promotion, never "attacked" set to True
 
+Combat
+  combat complexity
+    http://www.civfanatics.com/civ4/strategy/combat_explained.php
+    http://home.comcast.net/~proc/civ4/combat_calc.htm
+    http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
+    unit strength modifiers
+      include in modifiedStrength formula
+      list under unit in hoverBox, both for ChromeUI.onHoverMoveEnemy and ChromeUI.hoverBoxUnitSummary
+    first strikes
+    retreat
+    collateral damage
+    experience points
+
 unit design as weapons
   club, bow+arrow, spear, axe, horse
   monotone
@@ -107,6 +107,7 @@ UI POLISH
     draw a line between current coords and future coords. if it's long enough, discretize it and use setTimeout to move to each point along the way. uneven discretization can make it decelerate smoothly at the end
   Map.pathFinding will cancel if an enemy blocks the path... but not when the enemy blocks the last tile! in that case, it'll auto-attack
     should there be any auto-attack? even for unit right outside city the turn before, should it just generally wake up unit that is near enemy?
+  when moving through units in Game.moveUnits, should always go through all the units on the current tile before moving on to other units
 
 # Barbarian Conquest (barbconq)
 
@@ -173,7 +174,7 @@ animate unit movement
   maybe add a transparent canvas on top and use that to animate movement before redrawing map
 
 scroll wheel zoom by increasing TILE_SIZE
-  but this won't scale the contents of the tiles...
+  but this won't scale the contents of the tiles... so instead have some variable MapUI.scale which scales everything
 
 # Far future
 

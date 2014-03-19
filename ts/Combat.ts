@@ -28,27 +28,12 @@ module Combat {
             this.D = defender.currentStrength * (this.hps[1] / 100);
 
             // Damage per hit
-            this.damagePerHit[0] = this.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
-            this.damagePerHit[1] = this.bound(Math.floor(20 * (3 * this.D + this.A) / (3 * this.A + this.D)), 6, 60);
+            this.damagePerHit[0] = Util.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
+            this.damagePerHit[1] = Util.bound(Math.floor(20 * (3 * this.D + this.A) / (3 * this.A + this.D)), 6, 60);
 
             // Names
             this.names[0] = game.names[this.units[0].owner] + "'s " + this.units[0].type;
             this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
-        }
-
-        // Bound x between min and max
-        bound(x : number, min : number, max : number) {
-            if (x > max) {
-                return max;
-            }
-            if (x < min) {
-                return min;
-            }
-            return x;
-        }
-
-        round(value : number, precision : number = 0) : string {
-            return value.toFixed(precision);
         }
 
         oddsAttackerWinsFight() : number {
@@ -62,7 +47,7 @@ module Combat {
         fight() {
             var i : number, j : number;
 
-            this.log.push(this.names[0] + " (" + this.round(this.A, 2) + ") attacked " + this.names[1] + " (" + this.round(this.D, 2) + ")");
+            this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
 
             this.units[0].attacked = true;
@@ -76,7 +61,7 @@ module Combat {
                     i = 1; // Winner
                     j = 0; // Loser
                 }
-                this.hps[j] = this.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
+                this.hps[j] = Util.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
                 this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
             }
 

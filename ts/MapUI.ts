@@ -95,7 +95,7 @@ class MapUI {
 
     drawPath(path : number[][] = [], renderMapFirst : boolean = true) {
         window.requestAnimationFrame(function () {
-            var i : number, pixels : number[], units : {attacker : Units.Unit; defender : Units.Unit};
+            var battle : Combat.Battle, i : number, pixels : number[], units : {attacker : Units.Unit; defender : Units.Unit};
 
             if (renderMapFirst) {
                 this.render();
@@ -103,10 +103,11 @@ class MapUI {
 
             if (path && path.length > 1) {
                 // See if the path ends at an enemy unit. If so, display combat info.
-console.log(path[path.length - 1]);
                 units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
-                battle = new Combat.Battle(units.attacker, units.defender);
-console.log(battle.oddsAttackerWinsFight());
+                if (units.defender) {
+                    battle = new Combat.Battle(units.attacker, units.defender);
+                    chromeUI.onHoverMoveEnemy(battle);
+                }
 
                 // Start at origin
                 this.context.beginPath();
@@ -120,6 +121,7 @@ console.log(battle.oddsAttackerWinsFight());
                 }
 
                 if (units.defender) {
+                    // Path ends in enemy, so show red
                     this.context.strokeStyle = "#f00";
                 } else {
                     this.context.strokeStyle = "#000";

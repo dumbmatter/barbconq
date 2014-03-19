@@ -6,6 +6,28 @@ var Random;
     }
     Random.choice = choice;
 })(Random || (Random = {}));
+
+// Util - general utility functions
+var Util;
+(function (Util) {
+    function round(value, precision) {
+        if (typeof precision === "undefined") { precision = 0; }
+        return value.toFixed(precision);
+    }
+    Util.round = round;
+
+    // Bound x between min and max
+    function bound(x, min, max) {
+        if (x > max) {
+            return max;
+        }
+        if (x < min) {
+            return min;
+        }
+        return x;
+    }
+    Util.bound = bound;
+})(Util || (Util = {}));
 // Handle user input from keyboard and mouse, and route it to the appropriate place based on the state of the game
 var Controller = (function () {
     function Controller() {
@@ -560,6 +582,16 @@ var ChromeUI = (function () {
         }
     };
 
+    ChromeUI.prototype.onHoverMoveEnemy = function (battle) {
+        var content;
+
+        content = "<p>Combat Odds: " + Util.round(battle.oddsAttackerWinsFight() * 100, 1) + "%</p>";
+        content += "<p>" + Util.round(battle.A, 2) + " vs. " + Util.round(battle.D, 2) + "</p>";
+
+        this.elHoverBox.innerHTML = content;
+        this.elHoverBox.style.display = "block";
+    };
+
     ChromeUI.prototype.hoverBoxUnitSummary = function (unit) {
         var content;
 
@@ -805,7 +837,7 @@ var MapUI = (function () {
         if (typeof path === "undefined") { path = []; }
         if (typeof renderMapFirst === "undefined") { renderMapFirst = true; }
         window.requestAnimationFrame(function () {
-            var i, pixels, units;
+            var battle, i, pixels, units;
 
             if (renderMapFirst) {
                 this.render();
@@ -813,9 +845,11 @@ var MapUI = (function () {
 
             if (path && path.length > 1) {
                 // See if the path ends at an enemy unit. If so, display combat info.
-                console.log(path[path.length - 1]);
                 units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
-                console.log(units);
+                if (units.defender) {
+                    battle = new Combat.Battle(units.attacker, units.defender);
+                    chromeUI.onHoverMoveEnemy(battle);
+                }
 
                 // Start at origin
                 this.context.beginPath();
@@ -828,6 +862,7 @@ var MapUI = (function () {
                 }
 
                 if (units.defender) {
+                    // Path ends in enemy, so show red
                     this.context.strokeStyle = "#f00";
                 } else {
                     this.context.strokeStyle = "#000";
@@ -2176,29 +2211,13 @@ var Combat;
             this.D = defender.currentStrength * (this.hps[1] / 100);
 
             // Damage per hit
-            this.damagePerHit[0] = this.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
-            this.damagePerHit[1] = this.bound(Math.floor(20 * (3 * this.D + this.A) / (3 * this.A + this.D)), 6, 60);
+            this.damagePerHit[0] = Util.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
+            this.damagePerHit[1] = Util.bound(Math.floor(20 * (3 * this.D + this.A) / (3 * this.A + this.D)), 6, 60);
 
             // Names
             this.names[0] = game.names[this.units[0].owner] + "'s " + this.units[0].type;
             this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
         }
-        // Bound x between min and max
-        Battle.prototype.bound = function (x, min, max) {
-            if (x > max) {
-                return max;
-            }
-            if (x < min) {
-                return min;
-            }
-            return x;
-        };
-
-        Battle.prototype.round = function (value, precision) {
-            if (typeof precision === "undefined") { precision = 0; }
-            return value.toFixed(precision);
-        };
-
         Battle.prototype.oddsAttackerWinsFight = function () {
             return this.A / (this.A + this.D);
         };
@@ -2210,7 +2229,7 @@ var Combat;
         Battle.prototype.fight = function () {
             var i, j;
 
-            this.log.push(this.names[0] + " (" + this.round(this.A, 2) + ") attacked " + this.names[1] + " (" + this.round(this.D, 2) + ")");
+            this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
 
             this.units[0].attacked = true;
@@ -2223,7 +2242,7 @@ var Combat;
                     i = 1; // Winner
                     j = 0; // Loser
                 }
-                this.hps[j] = this.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
+                this.hps[j] = Util.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
                 this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
             }
 
@@ -2365,7 +2384,7 @@ var Combat;
     }
     Combat.fightIfTileHasEnemy = fightIfTileHasEnemy;
 })(Combat || (Combat = {}));
-///<reference path='Random.ts'/>
+///<reference path='Util.ts'/>
 ///<reference path='Controller.ts'/>
 ///<reference path='ChromeUI.ts'/>
 ///<reference path='MapUI.ts'/>
