@@ -5,6 +5,8 @@ class MapUI {
     TILE_SIZE : number = 50;
     terrainColors: any;
     terrainFontColors: any;
+    TILE_VISIBLE : number = 1;
+    TILE_NOT_VISIBLE : number = 0;
 
     // Display
     // (X, Y) is the center of the region of the map displayed on the screen.
@@ -135,7 +137,7 @@ class MapUI {
     }
 
     render() {
-        var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
+        var bottom, i : number, j : number, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, visibility : number[][], x, y;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -179,12 +181,41 @@ class MapUI {
             tileOffsetX += this.TILE_SIZE;
         }
 
+        // Find the visibilility of each tile in the grid (could be made smarter by only looking at units that can impact viewport)
+        // Init as everything is unseen
+        visibility = [];
+        for (i = 0; i < game.map.rows; i++) {
+            visibility[i] = [];
+            for (j = 0; j < game.map.cols; j++) {
+                visibility[i][j] = this.TILE_NOT_VISIBLE;
+            }
+        }
+        // Loop through units, set visibility
+        Object.keys(game.units[config.PLAYER_ID]).forEach(function (id) {
+            var i : number, j : number, unit : Units.Unit;
+
+            unit = game.units[config.PLAYER_ID][id];
+
+            // Radius 1 search around unit
+            for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
+                for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
+                    if (game.map.validCoords([i, j])) {
+                        visibility[i][j] = this.TILE_VISIBLE;
+                        game.map.tiles[i][j].lastSeenState = {
+                            terrain: game.map.tiles[i][j].terrain,
+                            features: game.map.tiles[i][j].features
+                        };
+                    }
+                }
+            }
+        }.bind(this));
+
         // Clear canvas and redraw everything in view
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.context.fillStyle = "#000";
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Loop over all tiles, call cb on each tile in the viewport
+        // Function to loop over all tiles, call cb on each tile in the viewport
         var drawViewport = function (cb) {
             var i, j, x, y;
 
@@ -204,10 +235,22 @@ class MapUI {
 
         // First pass: draw tiles and units
         drawViewport(function (i, j, x, y) {
-            var k, maxStrength, unit, units;
+            var k, maxStrength, tile, unit, units;
+
+            if (visibility[i][j] === this.TILE_NOT_VISIBLE) {
+                if (!game.map.tiles[i][j].lastSeenState) {
+                    // Never seen this tile, show nothing
+                    return;
+                } else {
+                    tile = game.map.tiles[i][j].lastSeenState;
+                    tile.units = [];
+                }
+            } else {
+                tile = game.map.tiles[i][j];
+            }
 
             // Background
-            this.context.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
+            this.context.fillStyle = this.terrainColors[tile.terrain];
             this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
             // Grid lines
@@ -216,7 +259,7 @@ class MapUI {
             this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
             // Text - list units
-            units = game.map.tiles[i][j].units;
+            units = tile.units;
             if (units.length > 0) {
                 // Pick which unit to show on top of tile
                 if (units.length === 1) {
@@ -248,7 +291,7 @@ class MapUI {
                     }
                 }
 
-                this.context.fillStyle = this.terrainFontColors[game.map.tiles[i][j].terrain];
+                this.context.fillStyle = this.terrainFontColors[tile.terrain];
                 this.context.textBaseline = "top";
                 this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
             }

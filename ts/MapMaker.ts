@@ -5,6 +5,10 @@ module MapMaker {
         terrain : string;
         features : string[];
         units : Units.Unit[];
+        lastSeenState: {
+            terrain : string;
+            features : string[];
+        };
     }
 
     export class Map {
@@ -121,7 +125,8 @@ module MapMaker {
                     this.tiles[i][j] = {
                         terrain: Random.choice(Object.keys(types)),
                         features: [],
-                        units: []
+                        units: [],
+                        lastSeenState: null
                     };
                     if (Math.random() < 0.5 && types[this.tiles[i][j].terrain].length > 0) {
                         this.tiles[i][j].features.push(Random.choice(types[this.tiles[i][j].terrain]));

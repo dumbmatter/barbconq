@@ -1,10 +1,13 @@
 # Major current tasks
 
+have Tile.enemyUnits(player_id) which can be used in places that checking for enemy units on tile exists currently (I think twice in Combat, once in MapUI).
+
 move all requestAnimationFrame calls inside MapUI
 
 show move numbers on top of path
 
 unit tests for grouped units?
+  mock Controller, MapUI, ChromeUI?
   karma/mocha/chai
   install all with npm
     need karma-mocha and karma-chai?
@@ -19,6 +22,11 @@ unit tests for grouped units?
           NO, problem is not source-map. it's the input to source-map: karma's reporter.js isn't getting column numbers. why? not sure. maybe it'll work if i can make it error-free until real tests run?
 
 fog of war
+  minimap, hover
+    make function out of visibility code from MapUI.render
+  visibility range - don't get too fancy yet
+    default: 1 tile
+    on hill: +1
   states
     never seen yet: completely black
     saw before, but not currently in field of vision: terrain+improvements appear as last known, with shadow over it
