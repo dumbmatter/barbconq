@@ -29,16 +29,20 @@ class Game {
     }
 
     // Returns null if coords are not valid. Otherwise, returns tile info while factoring in visibility
-    getTile(coords : number[]) : MapMaker.Tile {
-        var i : number, j : number, visibility : number[][];
+    // onlyVisible can be set when the base tile is needed no matter what, like adding new units at the beginning of the game
+    getTile(coords : number[], onlyVisible : boolean = true) : MapMaker.Tile {
+        var i : number, j : number;
 
         i = coords[0];
         j = coords[1];
 
-        visibility = game.map.getVisibility();
-
         if (this.map.validCoords(coords)) {
-            if (!visibility[i][j]) {
+            if (!onlyVisible) {
+                // Forced to get real tile
+                return this.map.tiles[i][j];
+            }
+
+            if (!this.map.visibility[i][j]) {
                 if (!this.map.tiles[i][j].lastSeenState) {
                     // Never seen this tile, show nothing
                     return {
@@ -51,7 +55,7 @@ class Game {
                     return this.map.tiles[i][j];
                 }
             } else {
-                // Tile is visible, show current state
+                // Tile is visible (or forced to be shown), show current state
                 return this.map.tiles[i][j];
             }
         } else {
@@ -69,6 +73,7 @@ class Game {
 
         game.turn++;
         chromeUI.onNewTurn();
+        game.map.updateVisibility();
 
         // Reset all movement counters
         for (i = 0; i < this.units.length; i++) {

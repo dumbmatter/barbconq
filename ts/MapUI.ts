@@ -286,7 +286,7 @@ class MapUI {
     }
 
     renderMiniMap() {
-        var bottom : number, bottomTile : number, i : number, j : number, k : number, left : number, leftTile : number, right : number, rightTile : number, top : number, topTile : number, unit : Units.Unit;
+        var bottom : number, bottomTile : number, i : number, j : number, k : number, left : number, leftTile : number, right : number, rightTile : number, top : number, tile : MapMaker.Tile, topTile : number, unit : Units.Unit;
 
         // Clear canvas and redraw everything
         this.miniContext.clearRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
@@ -297,7 +297,8 @@ class MapUI {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Background
-                this.miniContext.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
+                tile = game.getTile([i, j]);
+                this.miniContext.fillStyle = this.terrainColors[tile.terrain];
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
             }
         }
@@ -306,9 +307,10 @@ class MapUI {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Highlight active tile
-                if (game.map.tiles[i][j].units.length > 0) {
-                    for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
-                        unit = game.map.tiles[i][j].units[k];
+                tile = game.getTile([i, j]);
+                if (tile.units.length > 0) {
+                    for (k = 0; k < tile.units.length; k++) {
+                        unit = tile.units[k];
 
                         if (unit.active) {
                             this.miniContext.fillStyle = "#f00";

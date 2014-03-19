@@ -1027,7 +1027,7 @@ var MapUI = (function () {
     };
 
     MapUI.prototype.renderMiniMap = function () {
-        var bottom, bottomTile, i, j, k, left, leftTile, right, rightTile, top, topTile, unit;
+        var bottom, bottomTile, i, j, k, left, leftTile, right, rightTile, top, tile, topTile, unit;
 
         // Clear canvas and redraw everything
         this.miniContext.clearRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
@@ -1037,7 +1037,8 @@ var MapUI = (function () {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Background
-                this.miniContext.fillStyle = this.terrainColors[game.map.tiles[i][j].terrain];
+                tile = game.getTile([i, j]);
+                this.miniContext.fillStyle = this.terrainColors[tile.terrain];
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
             }
         }
@@ -1045,9 +1046,10 @@ var MapUI = (function () {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Highlight active tile
-                if (game.map.tiles[i][j].units.length > 0) {
-                    for (k = 0; k < game.map.tiles[i][j].units.length; k++) {
-                        unit = game.map.tiles[i][j].units[k];
+                tile = game.getTile([i, j]);
+                if (tile.units.length > 0) {
+                    for (k = 0; k < tile.units.length; k++) {
+                        unit = tile.units[k];
 
                         if (unit.active) {
                             this.miniContext.fillStyle = "#f00";
@@ -1240,16 +1242,16 @@ var MapMaker;
         };
 
         // Entries in output matrix are visible (1) or not visible (0).
-        Map.prototype.getVisibility = function () {
-            var i, j, visibility;
+        Map.prototype.updateVisibility = function () {
+            var i, j;
 
             // Find the visibilility of each tile in the grid (could be made smarter by only looking at units that can impact viewport)
             // Init as everything is unseen
-            visibility = [];
+            this.visibility = [];
             for (i = 0; i < this.rows; i++) {
-                visibility[i] = [];
+                this.visibility[i] = [];
                 for (j = 0; j < this.cols; j++) {
-                    visibility[i][j] = 0;
+                    this.visibility[i][j] = 0;
                 }
             }
 
@@ -1262,7 +1264,7 @@ var MapMaker;
                 for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
                     for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
                         if (this.validCoords([i, j])) {
-                            visibility[i][j] = 1;
+                            this.visibility[i][j] = 1;
                             this.tiles[i][j].lastSeenState = {
                                 terrain: this.tiles[i][j].terrain,
                                 features: this.tiles[i][j].features,
@@ -1272,8 +1274,6 @@ var MapMaker;
                     }
                 }
             }.bind(this));
-
-            return visibility;
         };
         return Map;
     })();
@@ -1345,16 +1345,21 @@ var Game = (function () {
         }
     }
     // Returns null if coords are not valid. Otherwise, returns tile info while factoring in visibility
-    Game.prototype.getTile = function (coords) {
-        var i, j, visibility;
+    // onlyVisible can be set when the base tile is needed no matter what, like adding new units at the beginning of the game
+    Game.prototype.getTile = function (coords, onlyVisible) {
+        if (typeof onlyVisible === "undefined") { onlyVisible = true; }
+        var i, j;
 
         i = coords[0];
         j = coords[1];
 
-        visibility = game.map.getVisibility();
-
         if (this.map.validCoords(coords)) {
-            if (!visibility[i][j]) {
+            if (!onlyVisible) {
+                // Forced to get real tile
+                return this.map.tiles[i][j];
+            }
+
+            if (!this.map.visibility[i][j]) {
                 if (!this.map.tiles[i][j].lastSeenState) {
                     // Never seen this tile, show nothing
                     return {
@@ -1367,7 +1372,7 @@ var Game = (function () {
                     return this.map.tiles[i][j];
                 }
             } else {
-                // Tile is visible, show current state
+                // Tile is visible (or forced to be shown), show current state
                 return this.map.tiles[i][j];
             }
         } else {
@@ -1385,6 +1390,7 @@ var Game = (function () {
 
         game.turn++;
         chromeUI.onNewTurn();
+        game.map.updateVisibility();
 
         for (i = 0; i < this.units.length; i++) {
             for (j in this.units[i]) {
@@ -1716,6 +1722,9 @@ var Units;
                 }, config.UNIT_MOVEMENT_UI_DELAY);
             }
 
+            // Update visibility, since something moved this could have changed
+            game.map.updateVisibility();
+
             window.requestAnimationFrame(mapUI.render.bind(mapUI));
         };
 
@@ -1822,7 +1831,7 @@ var Units;
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.getTile(coords).units.push(this);
+            game.getTile(coords, false).units.push(this);
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
@@ -2473,6 +2482,8 @@ var game = new Game(1, 20, 40);
 var chromeUI = new ChromeUI();
 var mapUI = new MapUI();
 var controller = new Controller();
+
+game.map.updateVisibility();
 
 for (var i = 0; i < 200; i++) {
     //    new Units.Warrior(config.BARB_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);

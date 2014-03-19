@@ -23,6 +23,8 @@ var chromeUI = new ChromeUI();
 var mapUI = new MapUI();
 var controller = new Controller();
 
+game.map.updateVisibility();
+
 for (var i = 0; i < 200; i++) {
 //    new Units.Warrior(config.BARB_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
 }

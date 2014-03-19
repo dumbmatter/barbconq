@@ -24,9 +24,6 @@ unit tests for grouped units?
           NO, problem is not source-map. it's the input to source-map: karma's reporter.js isn't getting column numbers. why? not sure. maybe it'll work if i can make it error-free until real tests run?
 
 fog of war
-  minimap
-    do like MapUI.render
-  where to calculate visibility matrix? cache somewhere and update every move?
   visibility range - don't get too fancy yet
     default: 1 tile
     on hill: +1

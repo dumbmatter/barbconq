@@ -180,6 +180,9 @@ module Units {
                 }, config.UNIT_MOVEMENT_UI_DELAY);
             }
 
+            // Update visibility, since something moved this could have changed
+            game.map.updateVisibility();
+
             window.requestAnimationFrame(mapUI.render.bind(mapUI));
         }
 
@@ -291,7 +294,7 @@ console.log("SENTRY")
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.getTile(coords).units.push(this);
+            game.getTile(coords, false).units.push(this);
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
