@@ -25,8 +25,8 @@ module MapMaker {
             for (i = 0; i < this.rows; i++) {
                 grid[i] = [];
                 for (j = 0; j < this.cols; j++) {
-                    if (this.tiles[i][j].units.filter(function (unit) { return unit.owner !== game.turnID; }).length > 0) {
-                        // Avoid enemies
+                    if (this.tiles[i][j].units.filter(function (unit) { return unit.owner !== game.turnID; }).length > 0 && (i !== targetCoords[0] || j !== targetCoords[1])) {
+                        // Avoid enemies, except on the targetCoords tile
                         grid[i][j] = 0;
                     } else {
                         // Two types: two move (2), one move (1), and blocked

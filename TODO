@@ -1,18 +1,11 @@
 # Major current tasks
 
-pathfinding/combat issues
-  how can i have right click hover show battle info, but have all other paths avoid enemy units?
-    when building grid in map.pathFinding, any tile with an enemy on it can't be moved on, except the target tile
-      see "Avoid enemies"
-
-  how can i show battle info for a unit without moves/attacks left while right click hovering on enemy?
-    need some option to pass to Combat.findBestDefender from MapUI.drawPath
-
 Combat
   right click hover
     check for this stuff in mapUI.drawPath, since it's needed only when a path is being drawn
       make a Combat.findBestDefender I can use for both units and groups
-      needs to work even if attack can't happen this turn
+        how can i show battle info for a unit without moves/attacks left while right click hovering on enemy?
+          need some option to pass to Combat.findBestDefender from MapUI.drawPath
     show predicted odds in hover box
     show path in red
   combat complexity
