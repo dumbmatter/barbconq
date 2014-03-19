@@ -1,5 +1,14 @@
 # Major current tasks
 
+UI Glitch
+  Take a chariot that has already attacked this turn. Right click hover over enemy, and dotted line blinks off. stays off until you hover over another tile. why?
+    map.pathFinding is called once before a right click, and twice after. if the second click comes before the 2 after ones, then it clears the path.
+    DIAGNOSED PROBLEM: moveTowardsTarget should not be called if the unit can't actually move towards the target because an enemy is there
+      this ties into another problem - pathFinding should route around enemies. but in that case, how can it show battle info when you right click hover on enemy? it will just show nothing, like the enemy is a peak
+      POSSIBLE SOLUTION
+        game.map.pathFinding should somehow not allow path finding on tile with enemy, except if it's right under the target
+      QUICK FIX (done): check if movement happens naturally or if battle takes over before calling tryToMove
+
 Combat
   right click hover
     check for this stuff in mapUI.drawPath, since it's needed only when a path is being drawn

@@ -143,13 +143,13 @@ module Units {
         // Needs to be defined separately for individual and group
         moveOnMap(coords : number[]) {}
 
-        // Check for valid coords before calling
-        moveToCoords(coords : number[]) {
+        // Check for valid coords before calling. Returns true when successful, false when "maybe successful" (battle takes over because enemy is on coords)
+        moveToCoords(coords : number[]) : boolean {
             // Reset skippedTurn status
             this.skippedTurn = false;
 
             if (Combat.fightIfTileHasEnemy(this, coords)) {
-                return;
+                return false;
             }
 
             // Move the unit(s) in the map data structure
@@ -159,6 +159,8 @@ module Units {
             this.coords = coords;
 
             this.countMovementToCoords(coords);
+
+            return true;
         }
 
         // Decrease currentMovement as if the unit is moving to coords (this happens during a real movement, and also after winning a battle with enemy units still on the target tile)
@@ -213,11 +215,12 @@ module Units {
                     // Move until moves are used up or target is reached
                     tryToMove = function (cb : () => void) {
                         if (this.currentMovement > 0 && path.length > 0) {
-                            this.moveToCoords(path.shift());
-                            // Delay so that the map can update before the next move
-                            setTimeout(function () {
-                                tryToMove(cb);
-                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                            if (this.moveToCoords(path.shift())) { // This will be false is an enemy is on the target tile, in which case battle code takes over
+                                // Delay so that the map can update before the next move
+                                setTimeout(function () {
+                                    tryToMove(cb);
+                                }, config.UNIT_MOVEMENT_UI_DELAY);
+                            }
                         } else {
                             cb();
                         }

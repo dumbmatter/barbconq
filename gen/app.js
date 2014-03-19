@@ -1570,13 +1570,13 @@ var Units;
         UnitOrGroup.prototype.moveOnMap = function (coords) {
         };
 
-        // Check for valid coords before calling
+        // Check for valid coords before calling. Returns true when successful, false when "maybe successful" (battle takes over because enemy is on coords)
         UnitOrGroup.prototype.moveToCoords = function (coords) {
             // Reset skippedTurn status
             this.skippedTurn = false;
 
             if (Combat.fightIfTileHasEnemy(this, coords)) {
-                return;
+                return false;
             }
 
             // Move the unit(s) in the map data structure
@@ -1586,6 +1586,8 @@ var Units;
             this.coords = coords;
 
             this.countMovementToCoords(coords);
+
+            return true;
         };
 
         // Decrease currentMovement as if the unit is moving to coords (this happens during a real movement, and also after winning a battle with enemy units still on the target tile)
@@ -1640,12 +1642,12 @@ var Units;
                     // Move until moves are used up or target is reached
                     tryToMove = function (cb) {
                         if (this.currentMovement > 0 && path.length > 0) {
-                            this.moveToCoords(path.shift());
-
-                            // Delay so that the map can update before the next move
-                            setTimeout(function () {
-                                tryToMove(cb);
-                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                            if (this.moveToCoords(path.shift())) {
+                                // Delay so that the map can update before the next move
+                                setTimeout(function () {
+                                    tryToMove(cb);
+                                }, config.UNIT_MOVEMENT_UI_DELAY);
+                            }
                         } else {
                             cb();
                         }
