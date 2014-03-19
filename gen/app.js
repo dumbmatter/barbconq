@@ -2195,28 +2195,65 @@ var Combat;
 
     // If tile has enemy unit on it, initiate combat and return true. Otherwise, do nothing and return false.
     function fightIfTileHasEnemy(attackerUnitOrGroup, coords) {
-        var attacker, battle, defender, maxStrength, newTileUnits;
+        var attacker, battle, defender, newTileUnits;
 
         // Delete path
         attackerUnitOrGroup.targetCoords = null;
 
-        // FIX THIS TO HANDLE GROUP ATTACK
-        attacker = attackerUnitOrGroup;
-
         newTileUnits = game.getTile(coords).units;
 
-        // See if an enemy is on that tile, and if so, find the one with max strength against attacker
-        defender = null;
-        maxStrength = -Infinity;
-        newTileUnits.forEach(function (unit) {
-            if (unit.owner !== attacker.owner) {
-                battle = new Battle(attacker, unit);
-                if (battle.D > maxStrength) {
-                    maxStrength = battle.D;
-                    defender = unit;
+        var findBestDefender = function (attacker) {
+            var defender, maxOdds, oddsDefenderWinsFight;
+
+            // See if an enemy is on that tile, and if so, find the one with max strength against attacker
+            defender = null;
+            maxOdds = -Infinity;
+            newTileUnits.forEach(function (unit) {
+                if (unit.owner !== attacker.owner) {
+                    battle = new Battle(attacker, unit);
+                    oddsDefenderWinsFight = 1 - battle.oddsAttackerWinsFight();
+                    if (oddsDefenderWinsFight > maxOdds) {
+                        maxOdds = oddsDefenderWinsFight;
+                        defender = unit;
+                    }
                 }
-            }
-        });
+            });
+
+            return {
+                defender: defender,
+                oddsDefenderWinsFight: maxOdds
+            };
+        };
+
+        // FIX THIS TO HANDLE GROUP ATTACK
+        if (attackerUnitOrGroup instanceof Units.Unit) {
+            // Attacker is a single unit
+            attacker = attackerUnitOrGroup;
+            defender = findBestDefender(attacker).defender;
+        } else if (attackerUnitOrGroup instanceof Units.Group) {
+            // Attacker is a group, find the one with the best odds against its best defender
+            (function () {
+                var attackerGroup, minOdds;
+
+                minOdds = Infinity;
+
+                attackerGroup = attackerUnitOrGroup;
+                attackerGroup.units.forEach(function (unit) {
+                    var obj;
+                    obj = findBestDefender(unit);
+
+                    if (obj.oddsDefenderWinsFight < minOdds) {
+                        minOdds = obj.oddsDefenderWinsFight;
+                        attacker = unit;
+                        defender = obj.defender;
+                    }
+                });
+            }());
+
+            console.log("GROUP ATTACK");
+            console.log(attacker);
+            console.log(defender);
+        }
 
         if (defender) {
             battle = new Battle(attacker, defender);

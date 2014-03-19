@@ -5,9 +5,9 @@ Combat
     get list of enemies on tile being moved to
     pick enemy with highest defense
     group attack
+      should only add move for attacker
   move onto tile to initiate battle
     Combat.fightIfTileHasEnemy
-      if moving with individual unit, pick strongest enemy to fight
       if moving with group, loop through each of your units and pick the one with the best chance to beat its strongest enemy
     right click hover
       show predicted odds in hover box
