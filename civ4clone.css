@@ -284,9 +284,9 @@ canvas { display:block; } /* To remove the scrollbars */
 }
 .instructions-unit {
   background-color: rgba(0, 255, 0, 0.15);
-  float: left;
   margin: 2px;
-  width: 140px;
+  width: 33%;
+  vertical-align: top;
 }
 .instructions-unit h2 {
   margin: 15px 0;
