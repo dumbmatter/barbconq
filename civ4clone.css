@@ -22,11 +22,11 @@ canvas { display:block; } /* To remove the scrollbars */
   border: solid #ffde00;
   border-width: 5px 2px;
   width: 290px;
-  padding-top: 0; /* Match with +5 margin-top in #hover-box p */
+  padding-top: 0; /* Match with +5 margin-top in p */
 }
 #hover-box p, #top-right-box p {
   margin: 0;
-  margin-top: 5px; /* Match with 0 padding-top in #hover-box */
+  margin-top: 5px; /* Match with -5 padding-top in #hover-box, #top-right-box */
 }
 #hover-box .unit-name {
   color: #ffde00;
@@ -49,7 +49,7 @@ canvas { display:block; } /* To remove the scrollbars */
   pointer-events: none;
   border: solid #ffde00;
   border-width: 0 0 5px 2px;
-  padding-top: 5px; /* Match with +5 margin-top in #top-right-box p */
+  padding-top: 5px; /* Match with +5 margin-top in p */
 }
 #top-right-box a {
   color: #99e6ff;
@@ -255,4 +255,30 @@ canvas { display:block; } /* To remove the scrollbars */
 }
 #bottom-units .movement-none {
   background-color: red;
+}
+
+.modal {
+  display: none;
+}
+.modal-active {
+  display: block;
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  overflow-y: auto;
+  max-width: 500px;
+
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
+  padding: 0 14px;
+  border: solid #99e6ff;
+  border-width: 5px 2px;
+}
+.modal-active h1 {
+  color: #ffde00;
+  font-size: 22px;
+  margin: 14px 0;
 }

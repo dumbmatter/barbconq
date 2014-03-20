@@ -762,6 +762,15 @@ var ChromeUI = (function () {
             this.elBottomText.style.display = "block";
         }
     };
+
+    ChromeUI.prototype.showModal = function (id) {
+        var modal;
+
+        modal = document.getElementById(id);
+        modal.classList.add("modal-active");
+        modal.classList.remove("modal");
+        console.log(document.getElementById(id));
+    };
     return ChromeUI;
 })();
 // MapUI - Everything related to the display and interactivity of the on-screen map (including units, but not including non-map chrome)

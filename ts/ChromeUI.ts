@@ -266,4 +266,13 @@ class ChromeUI {
             this.elBottomText.style.display = "block";
         }
     }
+
+    showModal(id : string) {
+        var modal;
+
+        modal = document.getElementById(id);
+        modal.classList.add("modal-active");
+        modal.classList.remove("modal");
+console.log(document.getElementById(id));
+    }
 }
