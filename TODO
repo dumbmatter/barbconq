@@ -5,7 +5,8 @@ UI GLITCH
     why?
 
 modals to display info from top right
-  Good library?
+  prevent clicks in background, somehow - shouldn't be able to play game
+    div over it all?
   How to do instructions/new game for new users?
   about
     scout http://game-icons.net/lorc/originals/tread.html
