@@ -280,7 +280,7 @@ class Controller {
                         }
                     } else {
                         // None of the user's units are on this tile, so pan to it
-//                        mapUI.goToCoords(coords);
+                        mapUI.goToCoords(coords);
                     }
                 }
             }

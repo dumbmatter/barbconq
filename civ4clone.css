@@ -257,29 +257,40 @@ canvas { display:block; } /* To remove the scrollbars */
   background-color: red;
 }
 
-.modal {
+#modal-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+.modal-inactive {
   display: none;
 }
 .modal-active {
   display: block;
-  position: absolute;
-  top: 20px;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
+}
+.modal {
   overflow-y: auto;
-  max-width: 500px;
+  max-width: 600px;
+  margin: 20px auto;
 
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.75);
   color: #fff;
   text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
   padding: 0 14px;
   border: solid #99e6ff;
   border-width: 5px 2px;
 }
-.modal-active h1 {
+.modal h1 {
   color: #ffde00;
   font-size: 22px;
+  margin: 14px 0;
+}
+.modal h2 {
+  color: #ffde00;
+  font-size: 16px;
   margin: 14px 0;
 }
 .instructions-unit {
@@ -289,6 +300,7 @@ canvas { display:block; } /* To remove the scrollbars */
   vertical-align: top;
 }
 .instructions-unit h2 {
+  color: #fff;
   margin: 15px 0;
   font-size: 16px;
 }

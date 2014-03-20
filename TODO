@@ -5,9 +5,9 @@ UI GLITCH
     why?
 
 modals to display info from top right
-  prevent clicks in background, somehow - shouldn't be able to play game
-    div over it all?
+  close with close button or esc
   How to do instructions/new game for new users?
+    new game on separate html page, instructions auto show on first game
   about
     scout http://game-icons.net/lorc/originals/tread.html
     warrior http://game-icons.net/lorc/originals/stone-axe.html

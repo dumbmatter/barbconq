@@ -308,7 +308,7 @@ var Controller = (function () {
                         }
                     } else {
                         // None of the user's units are on this tile, so pan to it
-                        //                        mapUI.goToCoords(coords);
+                        mapUI.goToCoords(coords);
                     }
                 }
             }
@@ -764,25 +764,41 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.showModal = function (id) {
-        var closeModal, modal, preventCloseModal;
+        var closeModal, modal, modalWrapper, preventCloseModal, resizeModal;
 
         modal = document.getElementById(id);
         modal.classList.add("modal-active");
-        modal.classList.remove("modal");
+        modal.classList.remove("modal-inactive");
+
+        // Set maximum height dynamically
+        resizeModal = function () {
+            modal.style.maxHeight = (window.innerHeight - 40) + "px";
+        };
+        resizeModal();
+        window.addEventListener("resize", resizeModal);
+
+        modalWrapper = document.getElementById("modal-wrapper");
+        modalWrapper.classList.add("modal-active");
+        modalWrapper.classList.remove("modal-inactive");
 
         // Close modal with a click outside of it
         closeModal = function (e) {
-            e.preventDefault();
-            modal.classList.add("modal");
+            e.stopPropagation();
+
             modal.classList.remove("modal-active");
-            document.removeEventListener("click", closeModal);
+            modal.classList.add("modal-inactive");
+            modalWrapper.classList.remove("modal-active");
+            modalWrapper.classList.add("modal-inactive");
+
+            modalWrapper.removeEventListener("click", closeModal);
             modal.removeEventListener("click", preventCloseModal);
+            window.removeEventListener("resize", resizeModal);
         };
         preventCloseModal = function (e) {
             e.stopPropagation();
         };
         modal.addEventListener("click", preventCloseModal);
-        document.addEventListener("click", closeModal);
+        modalWrapper.addEventListener("click", closeModal);
     };
     return ChromeUI;
 })();
