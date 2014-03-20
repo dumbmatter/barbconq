@@ -567,11 +567,35 @@ console.log("SENTRY")
         merge() {}
     }
 
+    export class Scout extends Unit {
+        type = "Scout";
+
+        strength = 1;
+        currentStrength = 1;
+        movement = 2;
+        currentMovement = 2;
+
+        landOrSea = "land";
+        actions = ["fortify", "skipTurn", "sentry"];
+    }
+
     export class Warrior extends Unit {
         type = "Warrior";
 
         strength = 2;
         currentStrength = 2;
+        movement = 1;
+        currentMovement = 1;
+
+        landOrSea = "land";
+        actions = ["fortify", "skipTurn", "sentry"];
+    }
+
+    export class Archer extends Unit {
+        type = "Archer";
+
+        strength = 3;
+        currentStrength = 3;
         movement = 1;
         currentMovement = 1;
 
@@ -586,6 +610,30 @@ console.log("SENTRY")
         currentStrength = 4;
         movement = 2;
         currentMovement = 2;
+
+        landOrSea = "land";
+        actions = ["fortify", "skipTurn", "sentry"];
+    }
+
+    export class Spearman extends Unit {
+        type = "Spearman";
+
+        strength = 4;
+        currentStrength = 4;
+        movement = 1;
+        currentMovement = 1;
+
+        landOrSea = "land";
+        actions = ["fortify", "skipTurn", "sentry"];
+    }
+
+    export class Axeman extends Unit {
+        type = "Axeman";
+
+        strength = 5;
+        currentStrength = 5;
+        movement = 1;
+        currentMovement = 1;
 
         landOrSea = "land";
         actions = ["fortify", "skipTurn", "sentry"];

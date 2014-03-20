@@ -11,7 +11,7 @@
 declare var EasyStar : any;
 var easystar : any = new EasyStar.js();
 
-var chromeUI, controller, game, mapUI;
+var assets : any, chromeUI, controller, game, mapUI;
 
 // Default options
 var config : any = {
@@ -21,7 +21,7 @@ var config : any = {
     DISABLE_FOG_OF_WAR: true
 };
 
-var assets : any = {};
+/*var assets : any = {};
 assets.hills = new Image();
 assets.hills.src = 'assets/hills.png';
 assets.hills.onload = function () {
@@ -36,7 +36,25 @@ assets.hills.onload = function () {
             assets.Chariot.onload = init;
         };
     };
-};
+};*/
+
+function loadAssets(assetsToLoad, cb) {
+    var name : string, numAssetsRemaining : number;
+
+    numAssetsRemaining = Object.keys(assetsToLoad).length;
+
+    assets = {};
+    for (name in assetsToLoad) {
+        assets[name] = new Image();
+        assets[name].src = "assets/" + assetsToLoad[name];
+        assets[name].onload = function () {
+            numAssetsRemaining -= 1;
+            if (numAssetsRemaining === 0) {
+                cb();
+            }
+        }
+    }
+}
 
 function init() {
     game = new Game(1, 20, 40);
@@ -63,11 +81,12 @@ function init() {
     [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
 
+    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
+    new Units.Archer(config.PLAYER_ID, [10, 20]);
     new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Spearman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Chariot(config.BARB_ID, [10, 21]);
@@ -77,3 +96,14 @@ function init() {
 
     game.newTurn();
 }
+
+loadAssets({
+    hills: "hills.png",
+    forest: "forest.png",
+    Scout: "tread.png",
+    Warrior: "stone-axe.png",
+    Archer: "high-shot.png",
+    Chariot: "horse-head.png",
+    Spearman: "spears.png",
+    Axeman: "battle-axe.png"
+}, init);

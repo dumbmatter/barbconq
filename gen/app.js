@@ -2273,6 +2273,22 @@ var Units;
     })(UnitOrGroup);
     Units.Group = Group;
 
+    var Scout = (function (_super) {
+        __extends(Scout, _super);
+        function Scout() {
+            _super.apply(this, arguments);
+            this.type = "Scout";
+            this.strength = 1;
+            this.currentStrength = 1;
+            this.movement = 2;
+            this.currentMovement = 2;
+            this.landOrSea = "land";
+            this.actions = ["fortify", "skipTurn", "sentry"];
+        }
+        return Scout;
+    })(Unit);
+    Units.Scout = Scout;
+
     var Warrior = (function (_super) {
         __extends(Warrior, _super);
         function Warrior() {
@@ -2289,6 +2305,22 @@ var Units;
     })(Unit);
     Units.Warrior = Warrior;
 
+    var Archer = (function (_super) {
+        __extends(Archer, _super);
+        function Archer() {
+            _super.apply(this, arguments);
+            this.type = "Archer";
+            this.strength = 3;
+            this.currentStrength = 3;
+            this.movement = 1;
+            this.currentMovement = 1;
+            this.landOrSea = "land";
+            this.actions = ["fortify", "skipTurn", "sentry"];
+        }
+        return Archer;
+    })(Unit);
+    Units.Archer = Archer;
+
     var Chariot = (function (_super) {
         __extends(Chariot, _super);
         function Chariot() {
@@ -2304,6 +2336,38 @@ var Units;
         return Chariot;
     })(Unit);
     Units.Chariot = Chariot;
+
+    var Spearman = (function (_super) {
+        __extends(Spearman, _super);
+        function Spearman() {
+            _super.apply(this, arguments);
+            this.type = "Spearman";
+            this.strength = 4;
+            this.currentStrength = 4;
+            this.movement = 1;
+            this.currentMovement = 1;
+            this.landOrSea = "land";
+            this.actions = ["fortify", "skipTurn", "sentry"];
+        }
+        return Spearman;
+    })(Unit);
+    Units.Spearman = Spearman;
+
+    var Axeman = (function (_super) {
+        __extends(Axeman, _super);
+        function Axeman() {
+            _super.apply(this, arguments);
+            this.type = "Axeman";
+            this.strength = 5;
+            this.currentStrength = 5;
+            this.movement = 1;
+            this.currentMovement = 1;
+            this.landOrSea = "land";
+            this.actions = ["fortify", "skipTurn", "sentry"];
+        }
+        return Axeman;
+    })(Unit);
+    Units.Axeman = Axeman;
 
     // Functions for working with units or groups of units
     // Like alt+click
@@ -2563,7 +2627,7 @@ var Combat;
 ///<reference path='Combat.ts'/>
 var easystar = new EasyStar.js();
 
-var chromeUI, controller, game, mapUI;
+var assets, chromeUI, controller, game, mapUI;
 
 // Default options
 var config = {
@@ -2573,22 +2637,39 @@ var config = {
     DISABLE_FOG_OF_WAR: true
 };
 
-var assets = {};
+/*var assets : any = {};
 assets.hills = new Image();
 assets.hills.src = 'assets/hills.png';
 assets.hills.onload = function () {
-    assets.forest = new Image();
-    assets.forest.src = 'assets/forest.png';
-    assets.forest.onload = function () {
-        assets.Warrior = new Image();
-        assets.Warrior.src = 'assets/stone-axe.png';
-        assets.Warrior.onload = function () {
-            assets.Chariot = new Image();
-            assets.Chariot.src = 'assets/horse-head.png';
-            assets.Chariot.onload = init;
-        };
-    };
+assets.forest = new Image();
+assets.forest.src = 'assets/forest.png';
+assets.forest.onload = function () {
+assets.Warrior = new Image();
+assets.Warrior.src = 'assets/stone-axe.png';
+assets.Warrior.onload = function () {
+assets.Chariot = new Image();
+assets.Chariot.src = 'assets/horse-head.png';
+assets.Chariot.onload = init;
 };
+};
+};*/
+function loadAssets(assetsToLoad, cb) {
+    var name, numAssetsRemaining;
+
+    numAssetsRemaining = Object.keys(assetsToLoad).length;
+
+    assets = {};
+    for (name in assetsToLoad) {
+        assets[name] = new Image();
+        assets[name].src = "assets/" + assetsToLoad[name];
+        assets[name].onload = function () {
+            numAssetsRemaining -= 1;
+            if (numAssetsRemaining === 0) {
+                cb();
+            }
+        };
+    }
+}
 
 function init() {
     game = new Game(1, 20, 40);
@@ -2614,11 +2695,12 @@ function init() {
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
     [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
+    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
+    new Units.Archer(config.PLAYER_ID, [10, 20]);
     new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Spearman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Chariot(config.BARB_ID, [10, 21]);
@@ -2627,4 +2709,15 @@ function init() {
     //c.fight();
     game.newTurn();
 }
+
+loadAssets({
+    hills: "hills.png",
+    forest: "forest.png",
+    Scout: "tread.png",
+    Warrior: "stone-axe.png",
+    Archer: "high-shot.png",
+    Chariot: "horse-head.png",
+    Spearman: "spears.png",
+    Axeman: "battle-axe.png"
+}, init);
 //# sourceMappingURL=app.js.map

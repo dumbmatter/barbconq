@@ -3,12 +3,16 @@
 unit graphics
   http://oryxdesignlab.com/sprites/ultimate-roguelike-tileset
   http://game-icons.net/
-    scout maybe http://game-icons.net/lorc/originals/flying-flag.html or http://game-icons.net/lorc/originals/tread.html
-    warrior maybe http://game-icons.net/lorc/originals/stone-axe.html
-    archer http://game-icons.net/tags/arrow.html
+    scout http://game-icons.net/lorc/originals/tread.html
+    warrior http://game-icons.net/lorc/originals/stone-axe.html
+    archer http://game-icons.net/lorc/originals/high-shot.html
     chariot http://game-icons.net/lorc/originals/horse-head.html
-    spearman http://game-icons.net/tags/spear.html
-    axeman http://game-icons.net/tags/axe.html
+    spearman http://game-icons.net/lorc/originals/spears.html
+    axeman http://game-icons.net/lorc/originals/battle-axe.html
+  colors for team
+    automate generationg colored pngs?
+    do it in JS?
+    for barbconq, maybe just invert white to black?
 
 
 map with just grassland, hills, and forest
