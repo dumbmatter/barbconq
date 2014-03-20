@@ -764,12 +764,25 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.showModal = function (id) {
-        var modal;
+        var closeModal, modal, preventCloseModal;
 
         modal = document.getElementById(id);
         modal.classList.add("modal-active");
         modal.classList.remove("modal");
-        console.log(document.getElementById(id));
+
+        // Close modal with a click outside of it
+        closeModal = function (e) {
+            e.preventDefault();
+            modal.classList.add("modal");
+            modal.classList.remove("modal-active");
+            document.removeEventListener("click", closeModal);
+            modal.removeEventListener("click", preventCloseModal);
+        };
+        preventCloseModal = function (e) {
+            e.stopPropagation();
+        };
+        modal.addEventListener("click", preventCloseModal);
+        document.addEventListener("click", closeModal);
     };
     return ChromeUI;
 })();

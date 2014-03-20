@@ -282,3 +282,33 @@ canvas { display:block; } /* To remove the scrollbars */
   font-size: 22px;
   margin: 14px 0;
 }
+.instructions-unit {
+  background-color: rgba(0, 255, 0, 0.15);
+  float: left;
+  margin: 2px;
+  width: 140px;
+}
+.instructions-unit h2 {
+  margin: 15px 0;
+  font-size: 16px;
+}
+.instructions-unit-icon {
+  background-color: #080;
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  float: left;
+}
+.instructions-unit-desc {
+  clear: both;
+  padding: 5px;
+  padding-top: 0;
+}
+.instructions-unit-desc p {
+  margin: 0;
+  margin-top: 5px;
+}
+.modal-active p {
+  clear: both;
+}
