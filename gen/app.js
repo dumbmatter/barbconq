@@ -1780,6 +1780,7 @@ var Units;
 
         // Needs to be defined separately for individual and group
         UnitOrGroup.prototype.moveOnMap = function (coords) {
+            throw new Error('"moveOnMap" needs to be redefined by each derived class.');
         };
 
         // Check for valid coords before calling. Returns true when successful, false when "maybe successful" (battle takes over because enemy is on coords)
@@ -2022,6 +2023,7 @@ var Units;
             },
             // Do nothing, can't be changed at group level
             set: function (value) {
+                throw new Error('"movement" can only be set for individual units, not groups.');
             },
             enumerable: true,
             configurable: true
@@ -2101,6 +2103,7 @@ var Units;
             },
             // Do nothing, can't be changed at group level
             set: function (value) {
+                throw new Error('"landOrSea" can only be set for individual units, not groups.');
             },
             enumerable: true,
             configurable: true
@@ -2119,6 +2122,7 @@ var Units;
             },
             // Do nothing, can't be changed at group level
             set: function (value) {
+                throw new Error('"canAttack" can only be set for individual units, not groups.');
             },
             enumerable: true,
             configurable: true
@@ -2137,6 +2141,7 @@ var Units;
             },
             // Do nothing, can't be changed at group level
             set: function (value) {
+                throw new Error('"canDefend" can only be set for individual units, not groups.');
             },
             enumerable: true,
             configurable: true
@@ -2161,6 +2166,7 @@ var Units;
             },
             // Do nothing, can't be changed at group level
             set: function (value) {
+                throw new Error('"actions" can only be set for individual units, not groups.');
             },
             enumerable: true,
             configurable: true
@@ -2209,6 +2215,7 @@ var Units;
             },
             // Do nothing, can't be changed at group level
             set: function (value) {
+                throw new Error('"attacked" can only be set for individual units, not groups.');
             },
             enumerable: true,
             configurable: true
@@ -2270,9 +2277,6 @@ var Units;
             if (activateUnitAtEnd) {
                 toActivate.activate();
             }
-        };
-
-        Group.prototype.merge = function () {
         };
         return Group;
     })(UnitOrGroup);

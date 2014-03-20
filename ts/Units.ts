@@ -141,7 +141,9 @@ module Units {
         }
 
         // Needs to be defined separately for individual and group
-        moveOnMap(coords : number[]) {}
+        moveOnMap(coords : number[]) {
+            throw new Error('"moveOnMap" needs to be redefined by each derived class.');
+        }
 
         // Check for valid coords before calling. Returns true when successful, false when "maybe successful" (battle takes over because enemy is on coords)
         moveToCoords(coords : number[]) : boolean {
@@ -353,7 +355,9 @@ console.log("SENTRY")
         get owner() : number { return this._owner; }
 
         // Do nothing, can't be changed at group level
-        set movement(value : number) {}
+        set movement(value : number) {
+            throw new Error('"movement" can only be set for individual units, not groups.');
+        }
         // Find minimum of group members
         get movement() : number {
             var i : number, min : number;
@@ -413,14 +417,18 @@ console.log("SENTRY")
         get targetCoords() : number[] { return this._targetCoords; }
 
         // Do nothing, can't be changed at group level
-        set landOrSea(value : string) {}
+        set landOrSea(value : string) {
+            throw new Error('"landOrSea" can only be set for individual units, not groups.');
+        }
         // Find from units, all have the same value
         get landOrSea() : string {
             return this.units[0].landOrSea;
         }
 
         // Do nothing, can't be changed at group level
-        set canAttack(value : boolean) {}
+        set canAttack(value : boolean) {
+            throw new Error('"canAttack" can only be set for individual units, not groups.');
+        }
         get canAttack() : boolean {
             var i : number;
 
@@ -433,7 +441,9 @@ console.log("SENTRY")
         }
 
         // Do nothing, can't be changed at group level
-        set canDefend(value : boolean) {}
+        set canDefend(value : boolean) {
+            throw new Error('"canDefend" can only be set for individual units, not groups.');
+        }
         get canDefend() : boolean {
             var i : number;
 
@@ -446,7 +456,9 @@ console.log("SENTRY")
         }
 
         // Do nothing, can't be changed at group level
-        set actions(value : string[]) {}
+        set actions(value : string[]) {
+            throw new Error('"actions" can only be set for individual units, not groups.');
+        }
         get actions() : string[] {
             var actions : string[], i : number, j : number;
 
@@ -479,7 +491,9 @@ console.log("SENTRY")
         get skippedTurn() : boolean { return this._skippedTurn; }
 
         // Do nothing, can't be changed at group level
-        set attacked(value : boolean) {}
+        set attacked(value : boolean) {
+            throw new Error('"attacked" can only be set for individual units, not groups.');
+        }
         // Only true if every group member either can't attack or has already attacked
         get attacked() : boolean {
             var i : number;
@@ -563,8 +577,6 @@ console.log("SENTRY")
                 toActivate.activate();
             }
         }
-
-        merge() {}
     }
 
     export class Scout extends Unit {

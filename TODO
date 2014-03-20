@@ -10,11 +10,6 @@ unit graphics
     spearman http://game-icons.net/lorc/originals/spears.html
     axeman http://game-icons.net/lorc/originals/battle-axe.html
 
-map with just grassland, hills, and forest
-  island
-
-empty set()s in Unit.Group should throw error
-
 have Tile.enemyUnits(player_id) which can be used in places that checking for enemy units on tile exists currently (I think twice in Combat, once in MapUI, once in MapMaker).
 
 move all requestAnimationFrame calls inside MapUI
