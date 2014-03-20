@@ -30,6 +30,7 @@ class Game {
 
     // Returns null if coords are not valid. Otherwise, returns tile info while factoring in visibility
     // onlyVisible can be set when the base tile is needed no matter what, like adding new units at the beginning of the game
+    // See also config.DISABLE_FOG_OF_WAR
     getTile(coords : number[], onlyVisible : boolean = true) : MapMaker.Tile {
         var i : number, j : number;
 
@@ -37,7 +38,7 @@ class Game {
         j = coords[1];
 
         if (this.map.validCoords(coords)) {
-            if (!onlyVisible) {
+            if (!onlyVisible || config.DISABLE_FOG_OF_WAR) {
                 // Forced to get real tile
                 return this.map.tiles[i][j];
             }

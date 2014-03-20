@@ -20,7 +20,7 @@ module MapMaker {
 
         // Default callback will draw path (or clear path if it's not valid)
         pathFinding(unit : Units.UnitOrGroup = null, targetCoords : number[] = null, cb : (path? : number[][]) => void = mapUI.drawPath.bind(mapUI)) {
-            var grid : number[][], i : number, j : number;
+            var grid : number[][], i : number, j : number, tile : MapMaker.Tile;
 
             if (!unit || !this.validCoords(unit.coords) || !this.validCoords(targetCoords) || (unit.coords[0] === targetCoords[0] && unit.coords[1] === targetCoords[1])) {
                 cb(); // Clear any previous paths
@@ -31,15 +31,16 @@ module MapMaker {
             for (i = 0; i < this.rows; i++) {
                 grid[i] = [];
                 for (j = 0; j < this.cols; j++) {
-                    if (this.tiles[i][j].units.filter(function (unit) { return unit.owner !== game.turnID; }).length > 0 && (i !== targetCoords[0] || j !== targetCoords[1])) {
+                    tile = game.getTile([i, j]);
+                    if (tile.units.filter(function (unit) { return unit.owner !== game.turnID; }).length > 0 && (i !== targetCoords[0] || j !== targetCoords[1])) {
                         // Avoid enemies, except on the targetCoords tile
                         grid[i][j] = 0;
                     } else {
                         // Two types: two move (2), one move (1), and blocked
                         // But 2 move only matters if unit can move more than once
-                        if (this.tiles[i][j].features.indexOf("hills") >= 0 || this.tiles[i][j].features.indexOf("forest") >= 0 || this.tiles[i][j].features.indexOf("jungle") >= 0) {
+                        if (tile.features.indexOf("hills") >= 0 || tile.features.indexOf("forest") >= 0 || tile.features.indexOf("jungle") >= 0) {
                             grid[i][j] = unit.movement > 1 ? 2 : 1;
-                        } else if (this.tiles[i][j].terrain === "snow" || this.tiles[i][j].terrain === "desert" || this.tiles[i][j].terrain === "tundra" || this.tiles[i][j].terrain === "grassland" || this.tiles[i][j].terrain === "plains") {
+                        } else if (tile.terrain === "snow" || tile.terrain === "desert" || tile.terrain === "tundra" || tile.terrain === "grassland" || tile.terrain === "plains" || tile.terrain === "unseen") {
                             grid[i][j] = 1;
                         } else {
                             grid[i][j] = 0;

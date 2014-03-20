@@ -2,7 +2,7 @@
 
 empty set()s in Unit.Group should throw error
 
-have Tile.enemyUnits(player_id) which can be used in places that checking for enemy units on tile exists currently (I think twice in Combat, once in MapUI).
+have Tile.enemyUnits(player_id) which can be used in places that checking for enemy units on tile exists currently (I think twice in Combat, once in MapUI, once in MapMaker).
 
 move all requestAnimationFrame calls inside MapUI
 
@@ -24,9 +24,7 @@ unit tests for grouped units?
           NO, problem is not source-map. it's the input to source-map: karma's reporter.js isn't getting column numbers. why? not sure. maybe it'll work if i can make it error-free until real tests run?
 
 fog of war
-  pathfinding
-    if a tile has not been seen yet, allow routing to it. assume all unseen tiles have cost of 1
-    if a tile has been seen but is not currently visible, don't route around enemies on it
+  shadow on tiles that aren't currently visible
 
 basic barb AI
   is there anyone i can attack with >25% chance of winning? if so, attack

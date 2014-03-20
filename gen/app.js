@@ -1161,7 +1161,7 @@ var MapMaker;
             if (typeof unit === "undefined") { unit = null; }
             if (typeof targetCoords === "undefined") { targetCoords = null; }
             if (typeof cb === "undefined") { cb = mapUI.drawPath.bind(mapUI); }
-            var grid, i, j;
+            var grid, i, j, tile;
 
             if (!unit || !this.validCoords(unit.coords) || !this.validCoords(targetCoords) || (unit.coords[0] === targetCoords[0] && unit.coords[1] === targetCoords[1])) {
                 cb(); // Clear any previous paths
@@ -1172,7 +1172,8 @@ var MapMaker;
             for (i = 0; i < this.rows; i++) {
                 grid[i] = [];
                 for (j = 0; j < this.cols; j++) {
-                    if (this.tiles[i][j].units.filter(function (unit) {
+                    tile = game.getTile([i, j]);
+                    if (tile.units.filter(function (unit) {
                         return unit.owner !== game.turnID;
                     }).length > 0 && (i !== targetCoords[0] || j !== targetCoords[1])) {
                         // Avoid enemies, except on the targetCoords tile
@@ -1180,9 +1181,9 @@ var MapMaker;
                     } else {
                         // Two types: two move (2), one move (1), and blocked
                         // But 2 move only matters if unit can move more than once
-                        if (this.tiles[i][j].features.indexOf("hills") >= 0 || this.tiles[i][j].features.indexOf("forest") >= 0 || this.tiles[i][j].features.indexOf("jungle") >= 0) {
+                        if (tile.features.indexOf("hills") >= 0 || tile.features.indexOf("forest") >= 0 || tile.features.indexOf("jungle") >= 0) {
                             grid[i][j] = unit.movement > 1 ? 2 : 1;
-                        } else if (this.tiles[i][j].terrain === "snow" || this.tiles[i][j].terrain === "desert" || this.tiles[i][j].terrain === "tundra" || this.tiles[i][j].terrain === "grassland" || this.tiles[i][j].terrain === "plains") {
+                        } else if (tile.terrain === "snow" || tile.terrain === "desert" || tile.terrain === "tundra" || tile.terrain === "grassland" || tile.terrain === "plains" || tile.terrain === "unseen") {
                             grid[i][j] = 1;
                         } else {
                             grid[i][j] = 0;
@@ -1355,6 +1356,7 @@ var Game = (function () {
     }
     // Returns null if coords are not valid. Otherwise, returns tile info while factoring in visibility
     // onlyVisible can be set when the base tile is needed no matter what, like adding new units at the beginning of the game
+    // See also config.DISABLE_FOG_OF_WAR
     Game.prototype.getTile = function (coords, onlyVisible) {
         if (typeof onlyVisible === "undefined") { onlyVisible = true; }
         var i, j;
@@ -1363,7 +1365,7 @@ var Game = (function () {
         j = coords[1];
 
         if (this.map.validCoords(coords)) {
-            if (!onlyVisible) {
+            if (!onlyVisible || config.DISABLE_FOG_OF_WAR) {
                 // Forced to get real tile
                 return this.map.tiles[i][j];
             }
@@ -2484,7 +2486,8 @@ var easystar = new EasyStar.js();
 var config = {
     BARB_ID: 0,
     PLAYER_ID: 1,
-    UNIT_MOVEMENT_UI_DELAY: 500
+    UNIT_MOVEMENT_UI_DELAY: 500,
+    DISABLE_FOG_OF_WAR: false
 };
 
 var game = new Game(1, 20, 40);
