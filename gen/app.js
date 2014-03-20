@@ -779,7 +779,7 @@ var MapUI = (function () {
             tundra: "#ddd",
             sea: "#00f",
             coast: "#7c7cff",
-            grassland: "#070",
+            grassland: "#080",
             plains: "#fd0",
             shadow: "rgba(0, 0, 0, 0.5)"
         };
@@ -961,6 +961,15 @@ var MapUI = (function () {
             this.context.fillStyle = this.terrainColors[tile.terrain];
             this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
+            if (tile.features.indexOf("forest") >= 0) {
+                this.context.drawImage(assets.forest, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+            }
+            if (tile.features.indexOf("hills") >= 0) {
+                this.context.globalAlpha = 0.5;
+                this.context.drawImage(assets.hills, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+                this.context.globalAlpha = 1.0;
+            }
+
             // Grid lines
             this.context.strokeStyle = "#000";
             this.context.lineWidth = 1;
@@ -1005,9 +1014,10 @@ var MapUI = (function () {
                     }
                 }
 
-                this.context.fillStyle = this.terrainFontColors[tile.terrain];
-                this.context.textBaseline = "top";
-                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+                //                this.context.fillStyle = this.terrainFontColors[tile.terrain];
+                //                this.context.textBaseline = "top";
+                //                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+                this.context.drawImage(assets[unit.type], x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
             }
         }.bind(this));
 
@@ -2553,6 +2563,8 @@ var Combat;
 ///<reference path='Combat.ts'/>
 var easystar = new EasyStar.js();
 
+var chromeUI, controller, game, mapUI;
+
 // Default options
 var config = {
     BARB_ID: 0,
@@ -2561,39 +2573,58 @@ var config = {
     DISABLE_FOG_OF_WAR: true
 };
 
-var game = new Game(1, 20, 40);
-var chromeUI = new ChromeUI();
-var mapUI = new MapUI();
-var controller = new Controller();
+var assets = {};
+assets.hills = new Image();
+assets.hills.src = 'assets/hills.png';
+assets.hills.onload = function () {
+    assets.forest = new Image();
+    assets.forest.src = 'assets/forest.png';
+    assets.forest.onload = function () {
+        assets.Warrior = new Image();
+        assets.Warrior.src = 'assets/stone-axe.png';
+        assets.Warrior.onload = function () {
+            assets.Chariot = new Image();
+            assets.Chariot.src = 'assets/horse-head.png';
+            assets.Chariot.onload = init;
+        };
+    };
+};
 
-game.map.updateVisibility();
+function init() {
+    game = new Game(1, 20, 40);
+    chromeUI = new ChromeUI();
+    mapUI = new MapUI();
+    controller = new Controller();
 
-for (var i = 0; i < 200; i++) {
-    //    new Units.Warrior(config.BARB_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
+    game.map.updateVisibility();
+
+    for (var i = 0; i < 200; i++) {
+        //    new Units.Warrior(config.BARB_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
+    }
+    for (var i = 0; i < 1; i++) {
+        //    new Units.Warrior(config.PLAYER_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
+    }
+
+    /*var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+    var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
+    var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    for (i = 0; i < 10; i++) {
+    var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    }
+    new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
+    [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
+    new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
+    new Units.Warrior(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Warrior(config.BARB_ID, [10, 21]);
+    new Units.Warrior(config.BARB_ID, [10, 21]);
+    new Units.Chariot(config.BARB_ID, [10, 21]);
+
+    //var c = new Combat.Battle(u1, u2);
+    //c.fight();
+    game.newTurn();
 }
-for (var i = 0; i < 1; i++) {
-    //    new Units.Warrior(config.PLAYER_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
-}
-
-/*var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
-var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
-var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
-for (i = 0; i < 10; i++) {
-var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
-}
-new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
-[new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
-new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
-new Units.Warrior(config.PLAYER_ID, [10, 20]);
-new Units.Chariot(config.PLAYER_ID, [10, 20]);
-new Units.Chariot(config.PLAYER_ID, [10, 20]);
-new Units.Chariot(config.PLAYER_ID, [10, 20]);
-new Units.Chariot(config.PLAYER_ID, [10, 20]);
-new Units.Warrior(config.BARB_ID, [10, 21]);
-new Units.Warrior(config.BARB_ID, [10, 21]);
-new Units.Chariot(config.BARB_ID, [10, 21]);
-
-//var c = new Combat.Battle(u1, u2);
-//c.fight();
-game.newTurn();
 //# sourceMappingURL=app.js.map

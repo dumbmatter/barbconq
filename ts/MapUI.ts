@@ -33,7 +33,7 @@ class MapUI {
             tundra: "#ddd",
             sea: "#00f",
             coast: "#7c7cff",
-            grassland: "#070",
+            grassland: "#080",
             plains: "#fd0",
             shadow: "rgba(0, 0, 0, 0.5)" // Goes on top of other colors
         }
@@ -214,6 +214,15 @@ class MapUI {
             this.context.fillStyle = this.terrainColors[tile.terrain];
             this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
+            if (tile.features.indexOf("forest") >= 0) {
+              this.context.drawImage(assets.forest, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+            }
+            if (tile.features.indexOf("hills") >= 0) {
+              this.context.globalAlpha = 0.5;
+              this.context.drawImage(assets.hills, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+              this.context.globalAlpha = 1.0;
+            }
+
             // Grid lines
             this.context.strokeStyle = "#000";
             this.context.lineWidth = 1;
@@ -258,9 +267,10 @@ class MapUI {
                     }
                 }
 
-                this.context.fillStyle = this.terrainFontColors[tile.terrain];
-                this.context.textBaseline = "top";
-                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+//                this.context.fillStyle = this.terrainFontColors[tile.terrain];
+//                this.context.textBaseline = "top";
+//                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+                this.context.drawImage(assets[unit.type], x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
             }
         }.bind(this));
 
