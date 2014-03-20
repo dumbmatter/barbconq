@@ -23,14 +23,13 @@ unit tests for grouped units?
           https://github.com/mozilla/source-map/issues/106
           NO, problem is not source-map. it's the input to source-map: karma's reporter.js isn't getting column numbers. why? not sure. maybe it'll work if i can make it error-free until real tests run?
 
-fog of war
-  shadow on tiles that aren't currently visible
-
 basic barb AI
   is there anyone i can attack with >25% chance of winning? if so, attack
   is there any move that will bring me closer/further from someone i am stronger/weaker than? if so, make it
   am i hurt? if so, fortify/rest
   otherwise, move randomly
+
+barb generation in non-visible tiles
 
 # Minor current tasks
 
