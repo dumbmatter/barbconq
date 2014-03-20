@@ -98,12 +98,18 @@ function init() {
 }
 
 loadAssets({
-    hills: "hills.png",
-    forest: "forest.png",
-    Scout: "tread.png",
-    Warrior: "stone-axe.png",
-    Archer: "high-shot.png",
-    Chariot: "horse-head.png",
-    Spearman: "spears.png",
-    Axeman: "battle-axe.png"
+    hills: "terrain/hills.png",
+    forest: "terrain/forest.png",
+    WhiteScout: "units/white/tread.png",
+    WhiteWarrior: "units/white/stone-axe.png",
+    WhiteArcher: "units/white/high-shot.png",
+    WhiteChariot: "units/white/horse-head.png",
+    WhiteSpearman: "units/white/spears.png",
+    WhiteAxeman: "units/white/battle-axe.png",
+    BlackScout: "units/black/tread.png",
+    BlackWarrior: "units/black/stone-axe.png",
+    BlackArcher: "units/black/high-shot.png",
+    BlackChariot: "units/black/horse-head.png",
+    BlackSpearman: "units/black/spears.png",
+    BlackAxeman: "units/black/battle-axe.png"
 }, init);

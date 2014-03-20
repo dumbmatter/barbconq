@@ -206,7 +206,7 @@ class MapUI {
 
         // First pass: draw tiles and units
         drawViewport(function (i, j, x, y) {
-            var k, maxStrength, tile : MapMaker.Tile, unit, units;
+            var k, maxStrength, tile : MapMaker.Tile, unit, unitImage, units;
 
             tile = game.getTile([i, j]);
 
@@ -270,7 +270,12 @@ class MapUI {
 //                this.context.fillStyle = this.terrainFontColors[tile.terrain];
 //                this.context.textBaseline = "top";
 //                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
-                this.context.drawImage(assets[unit.type], x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+                if (unit.owner === config.BARB_ID) {
+                    unitImage = assets["Black" + unit.type];
+                } else {
+                    unitImage = assets["White" + unit.type];
+                }
+                this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
             }
         }.bind(this));
 

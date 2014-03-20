@@ -9,10 +9,6 @@ unit graphics
     chariot http://game-icons.net/lorc/originals/horse-head.html
     spearman http://game-icons.net/lorc/originals/spears.html
     axeman http://game-icons.net/lorc/originals/battle-axe.html
-  colors for team
-    automate generationg colored pngs?
-    do it in JS?
-    for barbconq, maybe just invert white to black?
 
 
 map with just grassland, hills, and forest

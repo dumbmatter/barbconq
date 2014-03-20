@@ -953,7 +953,7 @@ var MapUI = (function () {
 
         // First pass: draw tiles and units
         drawViewport(function (i, j, x, y) {
-            var k, maxStrength, tile, unit, units;
+            var k, maxStrength, tile, unit, unitImage, units;
 
             tile = game.getTile([i, j]);
 
@@ -1017,7 +1017,12 @@ var MapUI = (function () {
                 //                this.context.fillStyle = this.terrainFontColors[tile.terrain];
                 //                this.context.textBaseline = "top";
                 //                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
-                this.context.drawImage(assets[unit.type], x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+                if (unit.owner === config.BARB_ID) {
+                    unitImage = assets["Black" + unit.type];
+                } else {
+                    unitImage = assets["White" + unit.type];
+                }
+                this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
             }
         }.bind(this));
 
@@ -2711,13 +2716,19 @@ function init() {
 }
 
 loadAssets({
-    hills: "hills.png",
-    forest: "forest.png",
-    Scout: "tread.png",
-    Warrior: "stone-axe.png",
-    Archer: "high-shot.png",
-    Chariot: "horse-head.png",
-    Spearman: "spears.png",
-    Axeman: "battle-axe.png"
+    hills: "terrain/hills.png",
+    forest: "terrain/forest.png",
+    WhiteScout: "units/white/tread.png",
+    WhiteWarrior: "units/white/stone-axe.png",
+    WhiteArcher: "units/white/high-shot.png",
+    WhiteChariot: "units/white/horse-head.png",
+    WhiteSpearman: "units/white/spears.png",
+    WhiteAxeman: "units/white/battle-axe.png",
+    BlackScout: "units/black/tread.png",
+    BlackWarrior: "units/black/stone-axe.png",
+    BlackArcher: "units/black/high-shot.png",
+    BlackChariot: "units/black/horse-head.png",
+    BlackSpearman: "units/black/spears.png",
+    BlackAxeman: "units/black/battle-axe.png"
 }, init);
 //# sourceMappingURL=app.js.map
