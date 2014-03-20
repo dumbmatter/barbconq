@@ -1466,7 +1466,7 @@ var Game = (function () {
                     };
                 } else {
                     // Seen before, show last seen state
-                    return this.map.tiles[i][j];
+                    return this.map.tiles[i][j].lastSeenState;
                 }
             } else {
                 // Tile is visible (or forced to be shown), show current state
@@ -2643,7 +2643,7 @@ var config = {
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
-    DISABLE_FOG_OF_WAR: true
+    DISABLE_FOG_OF_WAR: false
 };
 
 /*var assets : any = {};

@@ -18,7 +18,7 @@ var config : any = {
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
-    DISABLE_FOG_OF_WAR: true
+    DISABLE_FOG_OF_WAR: false
 };
 
 /*var assets : any = {};

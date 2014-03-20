@@ -53,7 +53,7 @@ class Game {
                     };
                 } else {
                     // Seen before, show last seen state
-                    return this.map.tiles[i][j];
+                    return this.map.tiles[i][j].lastSeenState;
                 }
             } else {
                 // Tile is visible (or forced to be shown), show current state
