@@ -43,7 +43,7 @@ class ChromeUI {
     }
 
     onHoverTile(tile : MapMaker.Tile = null) {
-        var content : string, i : number;
+        var content : string, features : string[], i : number;
 
         if (tile && tile.terrain !== "unseen") {
             content = "";
@@ -52,8 +52,14 @@ class ChromeUI {
                 content += this.hoverBoxUnitSummary(tile.units[i]);
             }
 
+            // Capitalize feature names
+            features = [];
+            tile.features.forEach(function (feature) {
+                features.push(feature[0].toUpperCase() + feature.slice(1));
+            });
+
             // Show tile terrain and features
-            content += '<p>' + tile.features.join("/") + (tile.features.length ? "/" : "") + tile.terrain + '</p>';
+            content += '<p>' + features.join("/") + (features.length ? "/" : "") + tile.terrain[0].toUpperCase() + tile.terrain.slice(1) + '</p>';
 
             this.elHoverBox.innerHTML = content;
             this.elHoverBox.style.display = "block";

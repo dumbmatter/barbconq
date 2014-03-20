@@ -146,7 +146,7 @@ module MapMaker {
         }
     }
 
-    export class DefaultMap extends Map {
+    export class TotallyRandom extends Map {
         constructor(rows : number, cols : number) {
             var i : number, j : number, types: {[terrain : string] : string[]};
 
@@ -178,6 +178,55 @@ module MapMaker {
                     };
                     if (Math.random() < 0.5 && types[this.tiles[i][j].terrain].length > 0) {
                         this.tiles[i][j].features.push(Random.choice(types[this.tiles[i][j].terrain]));
+                    }
+                }
+            }
+        }
+    }
+
+    export class BigIsland extends Map {
+        constructor(rows : number, cols : number) {
+            var ci : number, cj : number, i : number, j : number, r : number, types: {[terrain : string] : string[]};
+
+            super();
+
+            this.rows = rows !== undefined ? rows : 40;
+            this.cols = cols !== undefined ? cols : 80;
+
+            // Center of map
+            ci = Math.round(this.rows / 2);
+            cj = Math.round(this.cols / 2);
+
+            // Radius of island
+            r = Math.round(Math.min(this.rows, this.cols) * 0.5);
+
+            this.tiles = [];
+            for (i = 0; i < this.rows; i++) {
+                this.tiles[i] = [];
+                for (j = 0; j < this.cols; j++) {
+                    // Inside circle at center?
+                    if (Math.sqrt(Math.pow(ci - i, 2) + Math.pow(cj - j, 2)) <= r * (0.75 + 0.5 * Math.random())) {
+                        this.tiles[i][j] = {
+                            terrain: "grassland",
+                            features: [],
+                            units: [],
+                            lastSeenState: null
+                        };
+
+                        // Features
+                        if (Math.random() < 0.5) {
+                            this.tiles[i][j].features.push("hills");
+                        }
+                        if (Math.random() < 0.5) {
+                            this.tiles[i][j].features.push("forest");
+                        }
+                    } else {
+                        this.tiles[i][j] = {
+                            terrain: "sea",
+                            features: [],
+                            units: [],
+                            lastSeenState: null
+                        };
                     }
                 }
             }

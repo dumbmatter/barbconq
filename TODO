@@ -1,5 +1,8 @@
 # Major current tasks
 
+map with just grassland, hills, and forest
+  island
+
 empty set()s in Unit.Group should throw error
 
 have Tile.enemyUnits(player_id) which can be used in places that checking for enemy units on tile exists currently (I think twice in Combat, once in MapUI, once in MapMaker).
@@ -128,8 +131,6 @@ Intro text:
   You can stack your units in the same tile. This provides better defense, since when a stack is attacked, the best defender against the attacking unit is chosen for battle. But if you keep your units together all the time, you won't be able to explore the island and find the barbarian capital quickly. And the barbarians are constantly training new units to fight you, especially in areas out of sight of your troops. So the longer it takes you to find the capital, the better defenses it will have.
   
 somewhere: "From the makers of Basketball GM, a free single-player basketball simulation game"
-
-map with just grassland, hills, and forest
 
 place barb city randomly
   this forces exploration, which presents a tradeoff: staying together increases your strength, but allows barbs to grow in numbers before you find their city.

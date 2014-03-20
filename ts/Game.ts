@@ -13,7 +13,7 @@ class Game {
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
         var i : number;
 
-        this.map = new MapMaker.DefaultMap(mapRows, mapCols);
+        this.map = new MapMaker.BigIsland(mapRows, mapCols);
 
         // + 1 is for barbarians at index 0
         for (i = 0; i < numPlayers + 1; i++) {

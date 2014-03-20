@@ -16,7 +16,7 @@ var config : any = {
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
-    DISABLE_FOG_OF_WAR: false
+    DISABLE_FOG_OF_WAR: true
 };
 
 var game = new Game(1, 20, 40);

@@ -545,7 +545,7 @@ var ChromeUI = (function () {
 
     ChromeUI.prototype.onHoverTile = function (tile) {
         if (typeof tile === "undefined") { tile = null; }
-        var content, i;
+        var content, features, i;
 
         if (tile && tile.terrain !== "unseen") {
             content = "";
@@ -554,8 +554,14 @@ var ChromeUI = (function () {
                 content += this.hoverBoxUnitSummary(tile.units[i]);
             }
 
+            // Capitalize feature names
+            features = [];
+            tile.features.forEach(function (feature) {
+                features.push(feature[0].toUpperCase() + feature.slice(1));
+            });
+
             // Show tile terrain and features
-            content += '<p>' + tile.features.join("/") + (tile.features.length ? "/" : "") + tile.terrain + '</p>';
+            content += '<p>' + features.join("/") + (features.length ? "/" : "") + tile.terrain[0].toUpperCase() + tile.terrain.slice(1) + '</p>';
 
             this.elHoverBox.innerHTML = content;
             this.elHoverBox.style.display = "block";
@@ -1302,9 +1308,9 @@ var MapMaker;
     })();
     MapMaker.Map = Map;
 
-    var DefaultMap = (function (_super) {
-        __extends(DefaultMap, _super);
-        function DefaultMap(rows, cols) {
+    var TotallyRandom = (function (_super) {
+        __extends(TotallyRandom, _super);
+        function TotallyRandom(rows, cols) {
             var i, j, types;
 
             _super.call(this);
@@ -1339,9 +1345,61 @@ var MapMaker;
                 }
             }
         }
-        return DefaultMap;
+        return TotallyRandom;
     })(Map);
-    MapMaker.DefaultMap = DefaultMap;
+    MapMaker.TotallyRandom = TotallyRandom;
+
+    var BigIsland = (function (_super) {
+        __extends(BigIsland, _super);
+        function BigIsland(rows, cols) {
+            var ci, cj, i, j, r, types;
+
+            _super.call(this);
+
+            this.rows = rows !== undefined ? rows : 40;
+            this.cols = cols !== undefined ? cols : 80;
+
+            // Center of map
+            ci = Math.round(this.rows / 2);
+            cj = Math.round(this.cols / 2);
+
+            // Radius of island
+            r = Math.round(Math.min(this.rows, this.cols) * 0.5);
+
+            this.tiles = [];
+            for (i = 0; i < this.rows; i++) {
+                this.tiles[i] = [];
+                for (j = 0; j < this.cols; j++) {
+                    // Inside circle at center?
+                    if (Math.sqrt(Math.pow(ci - i, 2) + Math.pow(cj - j, 2)) <= r * (0.75 + 0.5 * Math.random())) {
+                        this.tiles[i][j] = {
+                            terrain: "grassland",
+                            features: [],
+                            units: [],
+                            lastSeenState: null
+                        };
+
+                        // Features
+                        if (Math.random() < 0.5) {
+                            this.tiles[i][j].features.push("hills");
+                        }
+                        if (Math.random() < 0.5) {
+                            this.tiles[i][j].features.push("forest");
+                        }
+                    } else {
+                        this.tiles[i][j] = {
+                            terrain: "sea",
+                            features: [],
+                            units: [],
+                            lastSeenState: null
+                        };
+                    }
+                }
+            }
+        }
+        return BigIsland;
+    })(Map);
+    MapMaker.BigIsland = BigIsland;
 })(MapMaker || (MapMaker = {}));
 // Game - store the state of the game here, any non-UI stuff that would need for saving/loading a game
 var Game = (function () {
@@ -1354,7 +1412,7 @@ var Game = (function () {
         this.turn = 0;
         var i;
 
-        this.map = new MapMaker.DefaultMap(mapRows, mapCols);
+        this.map = new MapMaker.BigIsland(mapRows, mapCols);
 
         for (i = 0; i < numPlayers + 1; i++) {
             if (i === 0) {
@@ -2500,7 +2558,7 @@ var config = {
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
-    DISABLE_FOG_OF_WAR: false
+    DISABLE_FOG_OF_WAR: true
 };
 
 var game = new Game(1, 20, 40);
