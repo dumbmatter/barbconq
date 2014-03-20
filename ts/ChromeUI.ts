@@ -21,7 +21,7 @@ class ChromeUI {
         if (unit.strength === unit.currentStrength) {
             return unit.currentStrength + ' S';
         } else {
-            return unit.currentStrength + '/' + unit.strength + ' S';
+            return Util.round(unit.currentStrength, 1) + '/' + unit.strength + ' S';
         }
     }
 
@@ -29,7 +29,7 @@ class ChromeUI {
         if (unit.movement === unit.currentMovement) {
             return unit.currentMovement + ' M';
         } else {
-            return unit.currentMovement + '/' + unit.movement + ' M';
+            return Util.round(unit.currentMovement, 1) + '/' + unit.movement + ' M';
         }
     }
 
