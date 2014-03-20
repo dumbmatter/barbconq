@@ -109,20 +109,30 @@ module MapMaker {
             for (i = 0; i < this.rows; i++) {
                 this.visibility[i] = [];
                 for (j = 0; j < this.cols; j++) {
-                    this.visibility[i][j] = 0;
+                    this.visibility[i][j] = 0; // Not visible
                 }
             }
+
             // Loop through units, set visibility
             Object.keys(game.units[config.PLAYER_ID]).forEach(function (id) {
-                var i : number, j : number, unit : Units.Unit;
+                var i : number, j : number, radius : number, unit : Units.Unit;
 
                 unit = game.units[config.PLAYER_ID][id];
+            
+                // Number of tiles away from center that the unit can see
+                if (this.tiles[unit.coords[0]][unit.coords[1]].features.indexOf("hills") >= 0) {
+                    radius = 2;
+                }  else {
+                    radius = 1;
+                }
 
                 // Radius 1 search around unit
-                for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
-                    for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
+                for (i = unit.coords[0] - radius; i <= unit.coords[0] + radius; i++) {
+                    for (j = unit.coords[1] - radius; j <= unit.coords[1] + radius; j++) {
                         if (this.validCoords([i, j])) {
-                            this.visibility[i][j] = 1;
+                            this.visibility[i][j] = 1; // Visible
+
+                            // Cache current state
                             this.tiles[i][j].lastSeenState = {
                                 terrain: this.tiles[i][j].terrain,
                                 features: this.tiles[i][j].features,

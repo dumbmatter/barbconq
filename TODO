@@ -24,9 +24,6 @@ unit tests for grouped units?
           NO, problem is not source-map. it's the input to source-map: karma's reporter.js isn't getting column numbers. why? not sure. maybe it'll work if i can make it error-free until real tests run?
 
 fog of war
-  visibility range - don't get too fancy yet
-    default: 1 tile
-    on hill: +1
   pathfinding
     if a tile has not been seen yet, allow routing to it. assume all unseen tiles have cost of 1
     if a tile has been seen but is not currently visible, don't route around enemies on it
@@ -116,6 +113,9 @@ UI POLISH
   Map.pathFinding will cancel if an enemy blocks the path... but not when the enemy blocks the last tile! in that case, it'll auto-attack
     should there be any auto-attack? even for unit right outside city the turn before, should it just generally wake up unit that is near enemy?
   when moving through units in Game.moveUnits, should always go through all the units on the current tile before moving on to other units
+
+fog of war
+  range should change depending on hills/forests/peaks in view or slightly out of view
 
 # Barbarian Conquest (barbconq)
 
