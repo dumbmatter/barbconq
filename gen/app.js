@@ -512,7 +512,7 @@ var Controller = (function () {
 var ChromeUI = (function () {
     function ChromeUI() {
         this.elHoverBox = document.getElementById("hover-box");
-        this.elTurnBox = document.getElementById("turn-box");
+        this.elTurn = document.getElementById("turn");
         this.elBottomInfo = document.getElementById("bottom-info");
         this.elBottomActions = document.getElementById("bottom-actions");
         this.elBottomText = document.getElementById("bottom-text");
@@ -631,7 +631,7 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.onNewTurn = function () {
-        this.elTurnBox.innerHTML = "Turn " + game.turn;
+        this.elTurn.innerHTML = game.turn;
         this.updateBottomText();
     };
 

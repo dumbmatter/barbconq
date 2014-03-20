@@ -24,7 +24,7 @@ canvas { display:block; } /* To remove the scrollbars */
   width: 290px;
   padding-top: 0; /* Match with +5 margin-top in #hover-box p */
 }
-#hover-box p {
+#hover-box p, #top-right-box p {
   margin: 0;
   margin-top: 5px; /* Match with 0 padding-top in #hover-box */
 }
@@ -38,17 +38,26 @@ canvas { display:block; } /* To remove the scrollbars */
   color: #8eff66;
 }
 
-#turn-box {
+#top-right-box {
   position: absolute;
-  right: 10px;
-  top: 10px;
+  right: 0px;
+  top: 0px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
   text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
-  padding: 5px;
+  padding: 10px;
   pointer-events: none;
   border: solid #ffde00;
-  border-width: 5px 2px;
+  border-width: 0 0 5px 2px;
+  padding-top: 5px; /* Match with +5 margin-top in #top-right-box p */
+}
+#top-right-box a {
+  color: #99e6ff;
+  text-decoration: none;
+  pointer-events: auto;
+}
+#top-right-box a:hover {
+  text-decoration: underline;
 }
 
 #bottom-info {

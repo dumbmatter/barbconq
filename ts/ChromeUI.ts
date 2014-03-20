@@ -2,7 +2,7 @@
 
 class ChromeUI {
     elHoverBox : HTMLDivElement;
-    elTurnBox : HTMLDivElement;
+    elTurn : HTMLDivElement;
     elBottomInfo : HTMLDivElement;
     elBottomActions : HTMLDivElement;
     elBottomText : HTMLDivElement;
@@ -10,7 +10,7 @@ class ChromeUI {
 
     constructor() {
         this.elHoverBox = <HTMLDivElement> document.getElementById("hover-box");
-        this.elTurnBox = <HTMLDivElement> document.getElementById("turn-box");
+        this.elTurn = <HTMLDivElement> document.getElementById("turn");
         this.elBottomInfo = <HTMLDivElement> document.getElementById("bottom-info");
         this.elBottomActions = <HTMLDivElement> document.getElementById("bottom-actions");
         this.elBottomText = <HTMLDivElement> document.getElementById("bottom-text");
@@ -126,7 +126,7 @@ class ChromeUI {
     }
 
     onNewTurn() {
-        this.elTurnBox.innerHTML = "Turn " + game.turn;
+        this.elTurn.innerHTML = game.turn;
         this.updateBottomText();
     }
 
