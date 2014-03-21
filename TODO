@@ -2,9 +2,6 @@
 
 are the strengths shown in combat odds accurate? don't think so (but test). when injured, too low. maybe hp calculation is wrong?
 
-UI GLITCH
-  when attacking with group, if attacker dies, should go to next member as active, not first in set
-
 pathfinding glitch
   point towards water off screen, and it'll actually go there! need to cancel routes when it becomes clear target is not reachable
 

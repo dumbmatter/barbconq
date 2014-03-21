@@ -326,7 +326,7 @@ console.log("SENTRY")
 
             // Remove from group
             if (this.group) {
-                this.group.remove(this.id, false);
+                this.group.remove(this.id);
             }
 
             // Remove from map
@@ -342,7 +342,7 @@ console.log("SENTRY")
             delete game.units[this.owner][this.id];
 
             // Remove from active
-            if (this.active) {
+            if (game.activeUnit && game.activeUnit.id === this.id) {
                 game.activeUnit = null;
                 game.moveUnits(); // Will always render map... right?
             } else {
