@@ -170,7 +170,7 @@ console.log(this.log);
             battle = new Battle(attacker, defender);
             battle.fight();
             if (battle.winner === "attacker") {
-                if (newTileUnits.filter(function (unit) { return unit.owner !== attackerUnitOrGroup.owner; }).length === 0) {
+                if (game.map.enemyUnits(attackerUnitOrGroup.owner, coords).length === 0) {
                     // No enemies left on tile, take it.
                     attackerUnitOrGroup.moveToCoords(coords); // Move entire group, if it's a group
                 } else {
@@ -185,7 +185,7 @@ console.log(this.log);
             chromeUI.onHoverTile(game.getTile(controller.hoveredTile));
 
             return true;
-        } else if (newTileUnits.filter(function (unit) { return unit.owner !== attackerUnitOrGroup.owner; }).length > 0) {
+        } else if (game.map.enemyUnits(attackerUnitOrGroup.owner, coords).length > 0) {
             // Delete path
             attackerUnitOrGroup.targetCoords = null;
 

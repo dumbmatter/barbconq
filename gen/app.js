@@ -1245,9 +1245,7 @@ var MapMaker;
                 grid[i] = [];
                 for (j = 0; j < this.cols; j++) {
                     tile = game.getTile([i, j]);
-                    if (tile.units.filter(function (unit) {
-                        return unit.owner !== game.turnID;
-                    }).length > 0 && (i !== targetCoords[0] || j !== targetCoords[1])) {
+                    if (this.enemyUnits(game.turnID, [i, j]).length > 0 && (i !== targetCoords[0] || j !== targetCoords[1])) {
                         // Avoid enemies, except on the targetCoords tile
                         grid[i][j] = 0;
                     } else {
@@ -1356,6 +1354,12 @@ var MapMaker;
                     }
                 }
             }.bind(this));
+        };
+
+        Map.prototype.enemyUnits = function (player_id, coords) {
+            return game.getTile(coords).units.filter(function (unit) {
+                return unit.owner !== player_id;
+            });
         };
         return Map;
     })();
@@ -2633,9 +2637,7 @@ var Combat;
             battle = new Battle(attacker, defender);
             battle.fight();
             if (battle.winner === "attacker") {
-                if (newTileUnits.filter(function (unit) {
-                    return unit.owner !== attackerUnitOrGroup.owner;
-                }).length === 0) {
+                if (game.map.enemyUnits(attackerUnitOrGroup.owner, coords).length === 0) {
                     // No enemies left on tile, take it.
                     attackerUnitOrGroup.moveToCoords(coords); // Move entire group, if it's a group
                 } else {
@@ -2650,9 +2652,7 @@ var Combat;
             chromeUI.onHoverTile(game.getTile(controller.hoveredTile));
 
             return true;
-        } else if (newTileUnits.filter(function (unit) {
-            return unit.owner !== attackerUnitOrGroup.owner;
-        }).length > 0) {
+        } else if (game.map.enemyUnits(attackerUnitOrGroup.owner, coords).length > 0) {
             // Delete path
             attackerUnitOrGroup.targetCoords = null;
 

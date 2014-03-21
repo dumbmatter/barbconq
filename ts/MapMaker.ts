@@ -32,7 +32,7 @@ module MapMaker {
                 grid[i] = [];
                 for (j = 0; j < this.cols; j++) {
                     tile = game.getTile([i, j]);
-                    if (tile.units.filter(function (unit) { return unit.owner !== game.turnID; }).length > 0 && (i !== targetCoords[0] || j !== targetCoords[1])) {
+                    if (this.enemyUnits(game.turnID, [i, j]).length > 0 && (i !== targetCoords[0] || j !== targetCoords[1])) {
                         // Avoid enemies, except on the targetCoords tile
                         grid[i][j] = 0;
                     } else {
@@ -143,6 +143,10 @@ module MapMaker {
                     }
                 }
             }.bind(this));
+        }
+
+        enemyUnits(player_id : number, coords : number[]) : Units.Unit[] {
+            return game.getTile(coords).units.filter(function (unit) { return unit.owner !== player_id; });
         }
     }
 
