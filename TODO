@@ -6,17 +6,13 @@ UI GLITCH
     how is it possible that the activated states of the icons is wrong?
       happens in UnitOrGroup.countMovementToCoords because the above scenario (one member in group uses up moves) isn't handled right. needs to either deactivate group too, or remove moved unit from group.
 
-modals to display info from top right
+pathfinding glitch
+  point towards water off screen, and it'll actually go there! need to cancel routes when it becomes clear target is not reachable
+
+modals
   close with close button or esc
   How to do instructions/new game for new users?
     new game on separate html page, instructions auto show on first game
-  about
-    scout http://game-icons.net/lorc/originals/tread.html
-    warrior http://game-icons.net/lorc/originals/stone-axe.html
-    archer http://game-icons.net/lorc/originals/high-shot.html
-    chariot http://game-icons.net/lorc/originals/horse-head.html
-    spearman http://game-icons.net/lorc/originals/spears.html
-    axeman http://game-icons.net/lorc/originals/battle-axe.html
 
 show move numbers on top of path
 
