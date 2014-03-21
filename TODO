@@ -1,8 +1,10 @@
 # Major current tasks
 
 UI GLITCH
-  select two units. attack barbs. if first unit wins and uses up moves (like axeman), then the first unit in the stack will be activated and added to the group
-    why?
+  select two units. attack barbs. if first unit wins and uses up moves (like axeman), then the first unit in the stack will be activated but the icons for the group remain activated
+    should instead remove unit without moves from group, right? not sure. check.
+    how is it possible that the activated states of the icons is wrong?
+      happens in UnitOrGroup.countMovementToCoords because the above scenario (one member in group uses up moves) isn't handled right. needs to either deactivate group too, or remove moved unit from group.
 
 modals to display info from top right
   close with close button or esc
@@ -17,7 +19,10 @@ modals to display info from top right
     axeman http://game-icons.net/lorc/originals/battle-axe.html
 
 show move numbers on top of path
-  also, make numbers and path gray so they show up on unseen tiles
+
+some UI display of battle results
+  sound
+  not necessarily full battle details, but some text
 
 unit tests for grouped units?
   mock Controller, MapUI, ChromeUI?

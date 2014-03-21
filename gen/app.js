@@ -906,7 +906,7 @@ var MapUI = (function () {
                     // Path ends in enemy, so show red
                     this.context.strokeStyle = "#f00";
                 } else {
-                    this.context.strokeStyle = "#000";
+                    this.context.strokeStyle = "#fff";
                 }
                 this.context.lineWidth = 2;
                 this.context.setLineDash([5]);
