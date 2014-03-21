@@ -2509,10 +2509,10 @@ var Combat;
             this.hps[1] = Math.round(defender.currentStrength / defender.strength * 100);
 
             // Attacker's modified strength
-            this.A = attacker.currentStrength * (this.hps[0] / 100);
+            this.A = attacker.strength * (this.hps[0] / 100);
 
             // Defender's modified strength
-            this.D = defender.currentStrength * (this.hps[1] / 100);
+            this.D = defender.strength * (this.hps[1] / 100);
 
             // Damage per hit
             this.damagePerHit[0] = Util.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);

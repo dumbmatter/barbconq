@@ -1,7 +1,5 @@
 # Major current tasks
 
-are the strengths shown in combat odds accurate? don't think so (but test). when injured, too low. maybe hp calculation is wrong?
-
 pathfinding glitch
   point towards water off screen, and it'll actually go there! need to cancel routes when it becomes clear target is not reachable
 
