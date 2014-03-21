@@ -1,5 +1,7 @@
 # Major current tasks
 
+are the strengths shown in combat odds accurate? don't think so (but test). when injured, too low. maybe hp calculation is wrong?
+
 UI GLITCH
   select two units. attack barbs. if first unit wins and uses up moves (like axeman), then the first unit in the stack will be activated but the icons for the group remain activated
     should instead remove unit without moves from group, right? not sure. check.
@@ -54,6 +56,10 @@ keyboard shortcuts
     should allow you to let unit continue on path
 
 typescript live compile
+  typescript -w
+  "Watch input files."
+
+typescript --noImplicitAny
 
 "End turn early" green button and "end turn" red button, next to minimap
   if end turn early, make sure to move units on path towards targetCoords first!
