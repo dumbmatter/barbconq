@@ -59,7 +59,7 @@ class Controller {
                     mapUI.X = mapUI.X - 20;
                 }
 
-                requestAnimationFrame(mapUI.render.bind(mapUI));
+                mapUI.render();
             }
         }.bind(this));
         document.addEventListener("keyup", function (e) {
@@ -409,7 +409,7 @@ class Controller {
 
                             // Redraw everything, since there is no Unit.activate call here to do that otherwise
                             chromeUI.onUnitActivated();
-                            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                            mapUI.render();
                         }
                     } else {
                         // No unit active (like if they all got separateed above)
@@ -438,7 +438,7 @@ class Controller {
                         }
                         // Redraw everything, since there is no Unit.activate call here to do that otherwise
                         chromeUI.onUnitActivated();
-                        window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                        mapUI.render();
                     }
                 } else {
                     if (clickedSid !== null) {

@@ -16,9 +16,8 @@ modals to display info from top right
     spearman http://game-icons.net/lorc/originals/spears.html
     axeman http://game-icons.net/lorc/originals/battle-axe.html
 
-move all requestAnimationFrame calls inside MapUI
-
 show move numbers on top of path
+  also, make numbers and path gray so they show up on unseen tiles
 
 unit tests for grouped units?
   mock Controller, MapUI, ChromeUI?

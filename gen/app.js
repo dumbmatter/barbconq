@@ -84,7 +84,7 @@ var Controller = (function () {
                     mapUI.X = mapUI.X - 20;
                 }
 
-                requestAnimationFrame(mapUI.render.bind(mapUI));
+                mapUI.render();
             }
         }.bind(this));
         document.addEventListener("keyup", function (e) {
@@ -434,7 +434,7 @@ var Controller = (function () {
 
                             // Redraw everything, since there is no Unit.activate call here to do that otherwise
                             chromeUI.onUnitActivated();
-                            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                            mapUI.render();
                         }
                     } else {
                         // No unit active (like if they all got separateed above)
@@ -465,7 +465,7 @@ var Controller = (function () {
 
                         // Redraw everything, since there is no Unit.activate call here to do that otherwise
                         chromeUI.onUnitActivated();
-                        window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                        mapUI.render();
                     }
                 } else {
                     if (clickedSid !== null) {
@@ -858,16 +858,11 @@ var MapUI = (function () {
 
         // Handle resize
         window.addEventListener("resize", function () {
-            requestAnimationFrame(function () {
-                this.setCanvasSize();
-                this.render();
-            }.bind(this));
+            this.setCanvasSize();
+            this.render();
         }.bind(this));
 
         this.setCanvasSize();
-
-        // Initial render
-        window.requestAnimationFrame(this.render.bind(this));
     };
 
     MapUI.prototype.setCanvasSize = function () {
@@ -886,7 +881,7 @@ var MapUI = (function () {
             var battle, i, pixels, units;
 
             if (renderMapFirst) {
-                this.render();
+                this.render(true);
             }
 
             if (path && path.length > 1) {
@@ -921,8 +916,10 @@ var MapUI = (function () {
         }.bind(this));
     };
 
-    MapUI.prototype.render = function () {
-        var bottom, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
+    // If already requested an animation frame, set animationFrameAlreadyRequested to true to avoid race conditions.
+    MapUI.prototype.render = function (animationFrameAlreadyRequested) {
+        if (typeof animationFrameAlreadyRequested === "undefined") { animationFrameAlreadyRequested = false; }
+        var bottom, draw, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -989,107 +986,115 @@ var MapUI = (function () {
             }
         }.bind(this);
 
-        // First pass: draw tiles and units
-        drawViewport(function (i, j, x, y) {
-            var k, maxStrength, tile, unit, unitImage, units;
+        draw = function () {
+            // First pass: draw tiles and units
+            drawViewport(function (i, j, x, y) {
+                var k, maxStrength, tile, unit, unitImage, units;
 
-            tile = game.getTile([i, j]);
+                tile = game.getTile([i, j]);
 
-            // Background
-            this.context.fillStyle = this.terrainColors[tile.terrain];
-            this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
-
-            if (tile.features.indexOf("forest") >= 0) {
-                this.context.drawImage(assets.forest, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
-            }
-            if (tile.features.indexOf("hills") >= 0) {
-                this.context.globalAlpha = 0.5;
-                this.context.drawImage(assets.hills, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
-                this.context.globalAlpha = 1.0;
-            }
-
-            // Grid lines
-            this.context.strokeStyle = "#000";
-            this.context.lineWidth = 1;
-            this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
-
-            // Shadow for non-visible tiles?
-            if (!game.map.visibility[i][j] && tile.terrain !== "unseen") {
-                this.context.fillStyle = this.terrainColors.shadow;
+                // Background
+                this.context.fillStyle = this.terrainColors[tile.terrain];
                 this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
-            }
 
-            // Text - list units
-            units = tile.units;
-            if (units.length > 0) {
-                // Pick which unit to show on top of tile
-                if (units.length === 1) {
-                    // Only one to show...
-                    unit = units[0];
-                } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
-                    // Active unit/group on this tile
-                    if (game.activeUnit instanceof Units.Group) {
-                        // Group is active, show highest currentStrength from the group
+                if (tile.features.indexOf("forest") >= 0) {
+                    this.context.drawImage(assets.forest, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+                }
+                if (tile.features.indexOf("hills") >= 0) {
+                    this.context.globalAlpha = 0.5;
+                    this.context.drawImage(assets.hills, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+                    this.context.globalAlpha = 1.0;
+                }
+
+                // Grid lines
+                this.context.strokeStyle = "#000";
+                this.context.lineWidth = 1;
+                this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
+
+                // Shadow for non-visible tiles?
+                if (!game.map.visibility[i][j] && tile.terrain !== "unseen") {
+                    this.context.fillStyle = this.terrainColors.shadow;
+                    this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
+                }
+
+                // Text - list units
+                units = tile.units;
+                if (units.length > 0) {
+                    // Pick which unit to show on top of tile
+                    if (units.length === 1) {
+                        // Only one to show...
+                        unit = units[0];
+                    } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
+                        // Active unit/group on this tile
+                        if (game.activeUnit instanceof Units.Group) {
+                            // Group is active, show highest currentStrength from the group
+                            maxStrength = -Infinity;
+                            for (k = 0; k < units.length; k++) {
+                                if (units[k].currentStrength > maxStrength && (units[k].group && units[k].group.id === game.activeUnit.id)) {
+                                    unit = units[k];
+                                    maxStrength = units[k].currentStrength;
+                                }
+                            }
+                        } else {
+                            // Individual is active, show it
+                            unit = game.activeUnit;
+                        }
+                    } else {
+                        // Nothing active here, show highest currentStrength
                         maxStrength = -Infinity;
                         for (k = 0; k < units.length; k++) {
-                            if (units[k].currentStrength > maxStrength && (units[k].group && units[k].group.id === game.activeUnit.id)) {
+                            if (units[k].currentStrength > maxStrength) {
                                 unit = units[k];
                                 maxStrength = units[k].currentStrength;
                             }
                         }
+                    }
+
+                    //                this.context.fillStyle = this.terrainFontColors[tile.terrain];
+                    //                this.context.textBaseline = "top";
+                    //                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+                    if (unit.owner === config.BARB_ID) {
+                        unitImage = assets["Black" + unit.type];
                     } else {
-                        // Individual is active, show it
-                        unit = game.activeUnit;
+                        unitImage = assets["White" + unit.type];
                     }
-                } else {
-                    // Nothing active here, show highest currentStrength
-                    maxStrength = -Infinity;
-                    for (k = 0; k < units.length; k++) {
-                        if (units[k].currentStrength > maxStrength) {
-                            unit = units[k];
-                            maxStrength = units[k].currentStrength;
-                        }
+                    this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+                }
+            }.bind(this));
+
+            // Highlight active unit
+            if (game.activeUnit) {
+                x = game.activeUnit.coords[1] - leftTile;
+                y = game.activeUnit.coords[0] - topTile;
+
+                this.context.strokeStyle = "#f00";
+                this.context.lineWidth = 4;
+                this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX - 2, y * this.TILE_SIZE - tileOffsetY - 2, this.TILE_SIZE + 2, this.TILE_SIZE + 2);
+
+                // Draw path if unit is moving to a target
+                if (game.activeUnit.targetCoords) {
+                    // If there is a pathfinding search occurring (like from the user holding down the right click button), don't draw active path
+                    if (!this.pathFindingSearch) {
+                        game.map.pathFinding(game.activeUnit, game.activeUnit.targetCoords, function (path) {
+                            // This is to prevent an infinite loop of render() being called
+                            this.drawPath(path, false);
+                        }.bind(this));
                     }
-                }
-
-                //                this.context.fillStyle = this.terrainFontColors[tile.terrain];
-                //                this.context.textBaseline = "top";
-                //                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
-                if (unit.owner === config.BARB_ID) {
-                    unitImage = assets["Black" + unit.type];
-                } else {
-                    unitImage = assets["White" + unit.type];
-                }
-                this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
-            }
-        }.bind(this));
-
-        // Highlight active unit
-        if (game.activeUnit) {
-            x = game.activeUnit.coords[1] - leftTile;
-            y = game.activeUnit.coords[0] - topTile;
-
-            this.context.strokeStyle = "#f00";
-            this.context.lineWidth = 4;
-            this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX - 2, y * this.TILE_SIZE - tileOffsetY - 2, this.TILE_SIZE + 2, this.TILE_SIZE + 2);
-
-            // Draw path if unit is moving to a target
-            if (game.activeUnit.targetCoords) {
-                // If there is a pathfinding search occurring (like from the user holding down the right click button), don't draw active path
-                if (!this.pathFindingSearch) {
-                    game.map.pathFinding(game.activeUnit, game.activeUnit.targetCoords, function (path) {
-                        // This is to prevent an infinite loop of render() being called
-                        this.drawPath(path, false);
-                    }.bind(this));
                 }
             }
+
+            // Render minimap at the end
+            this.renderMiniMap();
+
+            // Other UI rendering
+            chromeUI.onMapRender();
+        }.bind(this);
+
+        if (animationFrameAlreadyRequested) {
+            draw();
+        } else {
+            window.requestAnimationFrame(draw);
         }
-
-        // Render minimap at the end
-        this.renderMiniMap();
-
-        // Other UI rendering
-        chromeUI.onMapRender();
     };
 
     MapUI.prototype.renderMiniMap = function () {
@@ -1151,7 +1156,7 @@ var MapUI = (function () {
         // ith row, jth column, 0 indexed
         this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
         this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;
-        window.requestAnimationFrame(this.render.bind(this));
+        this.render();
     };
 
     // Input: pixel coordinates from canvas events like "click" and "mousemove". Output: tile coordinates (row, col) 0 indexed
@@ -1594,7 +1599,7 @@ var Game = (function () {
 
         // If we made it this far, everybody has moved
         chromeUI.onMovesDone();
-        window.requestAnimationFrame(mapUI.render.bind(mapUI));
+        mapUI.render();
         return false;
     };
     return Game;
@@ -1772,7 +1777,7 @@ var Units;
             }
 
             chromeUI.onUnitActivated();
-            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+            mapUI.render();
         };
 
         // Should be able to make this general enough to handle all units
@@ -1865,7 +1870,7 @@ var Units;
             // Update visibility, since something moved this could have changed
             game.map.updateVisibility();
 
-            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+            mapUI.render();
         };
 
         // Sets the unit on a path towards a coordinate on the map
@@ -1878,13 +1883,13 @@ var Units;
                     // This render is usually redundant if the user is setting a new path by right click, since that path is already on screen.
                     // But if the path is not set by right click, this is necessary.
                     // Also, if the path is set by right click but there is an old path and no moves, then mapUI.render would otherwise not be called after this point and the old path would be shown instead from a prior mapUI.render call.
-                    window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                    mapUI.render();
 
                     this.moveTowardsTarget();
                 } else {
                     // No path found!
                     this.targetCoords = null;
-                    window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                    mapUI.render();
                 }
             }.bind(this));
         };
@@ -1941,7 +1946,7 @@ var Units;
             // Clear any saved path
             this.targetCoords = null;
 
-            requestAnimationFrame(mapUI.render.bind(mapUI));
+            mapUI.render();
         };
 
         UnitOrGroup.prototype.fortify = function () {
@@ -2006,7 +2011,7 @@ var Units;
                 game.activeUnit = null;
                 game.moveUnits(); // Will always render map... right?
             } else {
-                window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                mapUI.render();
             }
         };
         return Unit;

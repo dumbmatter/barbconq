@@ -92,7 +92,7 @@ module Units {
             }
 
             chromeUI.onUnitActivated();
-            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+            mapUI.render();
         }
 
         // Should be able to make this general enough to handle all units
@@ -185,7 +185,7 @@ module Units {
             // Update visibility, since something moved this could have changed
             game.map.updateVisibility();
 
-            window.requestAnimationFrame(mapUI.render.bind(mapUI));
+            mapUI.render();
         }
 
         // Sets the unit on a path towards a coordinate on the map
@@ -198,13 +198,13 @@ module Units {
                     // This render is usually redundant if the user is setting a new path by right click, since that path is already on screen.
                     // But if the path is not set by right click, this is necessary.
                     // Also, if the path is set by right click but there is an old path and no moves, then mapUI.render would otherwise not be called after this point and the old path would be shown instead from a prior mapUI.render call.
-                    window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                    mapUI.render();
 
                     this.moveTowardsTarget();
                 } else {
                     // No path found!
                     this.targetCoords = null;
-                    window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                    mapUI.render();
                 }
             }.bind(this));
         }
@@ -261,7 +261,7 @@ module Units {
             // Clear any saved path
             this.targetCoords = null;
 
-            requestAnimationFrame(mapUI.render.bind(mapUI));
+            mapUI.render();
         }
 
         fortify() {
@@ -332,7 +332,7 @@ console.log("SENTRY")
                 game.activeUnit = null;
                 game.moveUnits(); // Will always render map... right?
             } else {
-                window.requestAnimationFrame(mapUI.render.bind(mapUI));
+                mapUI.render();
             }
         }
     }
