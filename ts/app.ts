@@ -11,7 +11,8 @@
 declare var EasyStar : any;
 var easystar : any = new EasyStar.js();
 
-var assets : any, chromeUI, controller, game, mapUI;
+// assets : {[name: string] : HTMLImageElement}
+var assets : any, chromeUI : ChromeUI, controller : Controller, game : Game, mapUI : MapUI;
 
 // Default options
 var config : any = {
@@ -38,7 +39,7 @@ assets.hills.onload = function () {
     };
 };*/
 
-function loadAssets(assetsToLoad, cb) {
+function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
     var name : string, numAssetsRemaining : number;
 
     numAssetsRemaining = Object.keys(assetsToLoad).length;

@@ -133,7 +133,7 @@ class MapUI {
 
     // If already requested an animation frame, set animationFrameAlreadyRequested to true to avoid race conditions.
     render(animationFrameAlreadyRequested : boolean = false) {
-        var bottom, draw, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
+        var bottom : number, draw : () => void, left : number, leftTile : number, right : number, tileOffsetX : number, tileOffsetY : number, top : number, topTile : number;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -201,6 +201,8 @@ class MapUI {
         }.bind(this);
 
         draw = function () {
+            var x : number, y : number;
+
             // First pass: draw tiles and units
             drawViewport(function (i, j, x, y) {
                 var k, maxStrength, tile : MapMaker.Tile, unit, unitImage, units;
@@ -264,9 +266,9 @@ class MapUI {
                         }
                     }
 
-    //                this.context.fillStyle = this.terrainFontColors[tile.terrain];
-    //                this.context.textBaseline = "top";
-    //                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+//                    this.context.fillStyle = this.terrainFontColors[tile.terrain];
+//                    this.context.textBaseline = "top";
+//                    this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
                     if (unit.owner === config.BARB_ID) {
                         unitImage = assets["Black" + unit.type];
                     } else {

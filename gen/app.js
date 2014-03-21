@@ -631,7 +631,7 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.onNewTurn = function () {
-        this.elTurn.innerHTML = game.turn;
+        this.elTurn.innerHTML = String(game.turn);
         this.updateBottomText();
     };
 
@@ -919,7 +919,7 @@ var MapUI = (function () {
     // If already requested an animation frame, set animationFrameAlreadyRequested to true to avoid race conditions.
     MapUI.prototype.render = function (animationFrameAlreadyRequested) {
         if (typeof animationFrameAlreadyRequested === "undefined") { animationFrameAlreadyRequested = false; }
-        var bottom, draw, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile, x, y;
+        var bottom, draw, left, leftTile, right, tileOffsetX, tileOffsetY, top, topTile;
 
         // Check the bounds for the viewport
         top = this.Y - this.VIEW_HEIGHT / 2;
@@ -987,6 +987,8 @@ var MapUI = (function () {
         }.bind(this);
 
         draw = function () {
+            var x, y;
+
             // First pass: draw tiles and units
             drawViewport(function (i, j, x, y) {
                 var k, maxStrength, tile, unit, unitImage, units;
@@ -1050,9 +1052,9 @@ var MapUI = (function () {
                         }
                     }
 
-                    //                this.context.fillStyle = this.terrainFontColors[tile.terrain];
-                    //                this.context.textBaseline = "top";
-                    //                this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
+                    //                    this.context.fillStyle = this.terrainFontColors[tile.terrain];
+                    //                    this.context.textBaseline = "top";
+                    //                    this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
                     if (unit.owner === config.BARB_ID) {
                         unitImage = assets["Black" + unit.type];
                     } else {
@@ -2679,6 +2681,7 @@ var Combat;
 ///<reference path='Combat.ts'/>
 var easystar = new EasyStar.js();
 
+// assets : {[name: string] : HTMLImageElement}
 var assets, chromeUI, controller, game, mapUI;
 
 // Default options

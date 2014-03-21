@@ -126,7 +126,7 @@ class ChromeUI {
     }
 
     onNewTurn() {
-        this.elTurn.innerHTML = game.turn;
+        this.elTurn.innerHTML = String(game.turn);
         this.updateBottomText();
     }
 
@@ -207,7 +207,7 @@ class ChromeUI {
     }
 
     private unitIcon(unit : Units.Unit) : HTMLDivElement {
-        var healthPct : number, healthBar, icon, iconWrapper, movementIndicator;
+        var healthPct : number, healthBar : HTMLDivElement, icon : HTMLDivElement, iconWrapper, movementIndicator : HTMLDivElement;
 
         iconWrapper = document.createElement("div");
         iconWrapper.classList.add("unit-icon-wrapper");

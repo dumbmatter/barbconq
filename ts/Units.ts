@@ -308,7 +308,7 @@ console.log("SENTRY")
         }
 
         delete() {
-            var i, tileUnits;
+            var i : number, tileUnits : Unit[];
 
             // Remove from group
             if (this.group) {
