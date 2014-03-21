@@ -166,26 +166,40 @@ module Units {
         }
 
         // Decrease currentMovement as if the unit is moving to coords (this happens during a real movement, and also after winning a battle with enemy units still on the target tile)
-        countMovementToCoords(coords : number[]) {
+        // Last two arguments are only for the special case of attacking with a group but not taking the tile because more enemies remain. "attacker" should be the same as "this", but "this" is UnitOrGroup so the types don't match up.
+        countMovementToCoords(coords : number[], attacker : Unit = null) {
+            var atEnd : () => void;
             // Keep track of unit movement (applies even if the unit fights but does not move)
             this.currentMovement -= 1; // Should depend on terrain/improvements
+
+            // To update UI stuff after all movement things are done
+            atEnd = function () {
+                // Update visibility, since something moved this could have changed
+                game.map.updateVisibility();
+
+                mapUI.render();
+            }
 
             if (this.currentMovement <= 0) {
                 this.currentMovement = 0;
 
                 this.active = false;
 
-                // After delay, move to next unit
                 setTimeout(function () {
-                    game.activeUnit = null;
-                    game.moveUnits();
+                    if (!attacker || !attacker.group) {
+                        // After delay, move to next unit
+                        game.activeUnit = null;
+                        game.moveUnits();
+                    } else {
+                        // If unit is in a group and moves are used up after an attack while enemies still remain on attacked tile, leave the group
+                        attacker.group.remove(attacker.id); // Will activate rest of group
+                    }
+
+                    atEnd();
                 }, config.UNIT_MOVEMENT_UI_DELAY);
+            } else {
+                atEnd();
             }
-
-            // Update visibility, since something moved this could have changed
-            game.map.updateVisibility();
-
-            mapUI.render();
         }
 
         // Sets the unit on a path towards a coordinate on the map

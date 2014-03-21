@@ -3,10 +3,7 @@
 are the strengths shown in combat odds accurate? don't think so (but test). when injured, too low. maybe hp calculation is wrong?
 
 UI GLITCH
-  select two units. attack barbs. if first unit wins and uses up moves (like axeman), then the first unit in the stack will be activated but the icons for the group remain activated
-    should instead remove unit without moves from group, right? not sure. check.
-    how is it possible that the activated states of the icons is wrong?
-      happens in UnitOrGroup.countMovementToCoords because the above scenario (one member in group uses up moves) isn't handled right. needs to either deactivate group too, or remove moved unit from group.
+  when attacking with group, if attacker dies, should go to next member as active, not first in set
 
 pathfinding glitch
   point towards water off screen, and it'll actually go there! need to cancel routes when it becomes clear target is not reachable

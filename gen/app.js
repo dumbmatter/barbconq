@@ -1853,26 +1853,42 @@ var Units;
         };
 
         // Decrease currentMovement as if the unit is moving to coords (this happens during a real movement, and also after winning a battle with enemy units still on the target tile)
-        UnitOrGroup.prototype.countMovementToCoords = function (coords) {
+        // Last two arguments are only for the special case of attacking with a group but not taking the tile because more enemies remain. "attacker" should be the same as "this", but "this" is UnitOrGroup so the types don't match up.
+        UnitOrGroup.prototype.countMovementToCoords = function (coords, attacker) {
+            if (typeof attacker === "undefined") { attacker = null; }
+            var atEnd;
+
             // Keep track of unit movement (applies even if the unit fights but does not move)
             this.currentMovement -= 1; // Should depend on terrain/improvements
+
+            // To update UI stuff after all movement things are done
+            atEnd = function () {
+                // Update visibility, since something moved this could have changed
+                game.map.updateVisibility();
+
+                mapUI.render();
+            };
 
             if (this.currentMovement <= 0) {
                 this.currentMovement = 0;
 
                 this.active = false;
 
-                // After delay, move to next unit
                 setTimeout(function () {
-                    game.activeUnit = null;
-                    game.moveUnits();
+                    if (!attacker || !attacker.group) {
+                        // After delay, move to next unit
+                        game.activeUnit = null;
+                        game.moveUnits();
+                    } else {
+                        // If unit is in a group and moves are used up after an attack while enemies still remain on attacked tile, leave the group
+                        attacker.group.remove(attacker.id); // Will activate rest of group
+                    }
+
+                    atEnd();
                 }, config.UNIT_MOVEMENT_UI_DELAY);
+            } else {
+                atEnd();
             }
-
-            // Update visibility, since something moved this could have changed
-            game.map.updateVisibility();
-
-            mapUI.render();
         };
 
         // Sets the unit on a path towards a coordinate on the map
@@ -2648,7 +2664,8 @@ var Combat;
                     // No enemies left on tile, take it.
                     attackerUnitOrGroup.moveToCoords(coords); // Move entire group, if it's a group
                 } else {
-                    attacker.countMovementToCoords(coords); // Only count for attacker, not whole group
+                    // Enemies left on tile, don't take it
+                    attacker.countMovementToCoords(coords, attacker); // Only count for attacker, not whole group
                 }
             } else {
                 // Attacker died, so on to the next one

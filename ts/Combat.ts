@@ -174,7 +174,8 @@ console.log(this.log);
                     // No enemies left on tile, take it.
                     attackerUnitOrGroup.moveToCoords(coords); // Move entire group, if it's a group
                 } else {
-                    attacker.countMovementToCoords(coords); // Only count for attacker, not whole group
+                    // Enemies left on tile, don't take it
+                    attacker.countMovementToCoords(coords, attacker); // Only count for attacker, not whole group
                 }
             } else {
                 // Attacker died, so on to the next one
