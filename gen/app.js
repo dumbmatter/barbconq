@@ -2157,6 +2157,9 @@ var Units;
             // Remove from game
             delete game.units[this.owner][this.id];
 
+            // Update map visibility
+            game.map.updateVisibility();
+
             // Remove from active
             if (game.activeUnit && game.activeUnit.id === this.id) {
                 game.activeUnit = null;
