@@ -1,7 +1,5 @@
 # Major current tasks
 
-"Waiting for barbarians to move"
-
 basic barb AI
   Game.moveUnits
 
@@ -48,9 +46,6 @@ typescript --noImplicitAny
 
 right click to move
   right click on map -> drag off map -> drag back onto edge tile... path doesn't show up until drag onto another tile!
-
-Make randomly generated map into a pangaea facsimile
-  how do civ4 maps do it?
 
 unit actions
   fortify

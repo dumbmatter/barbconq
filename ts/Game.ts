@@ -78,7 +78,6 @@ class Game {
 
         this.turn++;
         this.turnID = this.turn === 1 ? 1 : 0; // Skip barbs first turn
-        chromeUI.onNewTurn();
         this.map.updateVisibility();
 
         // Randomly spawn barbs on non-visible tiles
@@ -121,6 +120,8 @@ class Game {
             if (i === config.PLAYER_ID) {
                 // User
 
+                chromeUI.onNewTurn();
+
                 // UNIT GROUPS
                 // First look for ones not on a path towards targetCoords
                 for (j in this.groups[i]) {
@@ -159,6 +160,8 @@ class Game {
                     }
                 }
             } else if (i === config.BARB_ID) {
+                chromeUI.onAIMoving();
+
                 // INDIVIDUAL UNITS
                 for (j in this.units[i]) {
                     unit = this.units[i][j];

@@ -626,6 +626,7 @@ var ChromeUI = (function () {
         }
     };
 
+    // Can be called multiple times during a turn, so needs to be idempotent
     ChromeUI.prototype.onNewTurn = function () {
         this.elTurn.innerHTML = String(game.turn);
         this.updateBottomText();
@@ -633,6 +634,10 @@ var ChromeUI = (function () {
 
     ChromeUI.prototype.onMovesDone = function () {
         this.updateBottomText("Press &lt;ENTER&gt; to begin the next turn...");
+    };
+
+    ChromeUI.prototype.onAIMoving = function () {
+        this.updateBottomText("Waiting for barbarians to move...");
     };
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
@@ -1642,7 +1647,6 @@ var Game = (function () {
 
         this.turn++;
         this.turnID = this.turn === 1 ? 1 : 0; // Skip barbs first turn
-        chromeUI.onNewTurn();
         this.map.updateVisibility();
 
         // Randomly spawn barbs on non-visible tiles
@@ -1682,6 +1686,9 @@ var Game = (function () {
 
         for (i = this.turnID; i < this.names.length; i++) {
             if (i === config.PLAYER_ID) {
+                // User
+                chromeUI.onNewTurn();
+
                 for (j in this.groups[i]) {
                     group = this.groups[i][j];
                     if (group.currentMovement > 0 && !group.skippedTurn && !group.targetCoords) {
@@ -1714,6 +1721,8 @@ var Game = (function () {
                     }
                 }
             } else if (i === config.BARB_ID) {
+                chromeUI.onAIMoving();
+
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
                     if (unit.currentMovement > 0 && !unit.skippedTurn) {

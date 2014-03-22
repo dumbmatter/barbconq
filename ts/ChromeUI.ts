@@ -124,6 +124,7 @@ class ChromeUI {
         }
     }
 
+    // Can be called multiple times during a turn, so needs to be idempotent
     onNewTurn() {
         this.elTurn.innerHTML = String(game.turn);
         this.updateBottomText();
@@ -131,6 +132,10 @@ class ChromeUI {
 
     onMovesDone() {
         this.updateBottomText("Press &lt;ENTER&gt; to begin the next turn...");
+    }
+
+    onAIMoving() {
+        this.updateBottomText("Waiting for barbarians to move...");
     }
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
