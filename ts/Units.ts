@@ -281,10 +281,6 @@ module Units {
         fortify() {
 console.log("FORTIFY")
         }
-
-        sentry() {
-console.log("SENTRY")
-        }
     }
 
     export class Unit extends UnitOrGroup {
@@ -602,7 +598,7 @@ console.log("SENTRY")
         currentMovement = 2;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "sentry"];
+        actions = ["fortify", "skipTurn"];
     }
 
     export class Warrior extends Unit {
@@ -614,7 +610,7 @@ console.log("SENTRY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "sentry"];
+        actions = ["fortify", "skipTurn"];
     }
 
     export class Archer extends Unit {
@@ -626,7 +622,7 @@ console.log("SENTRY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "sentry"];
+        actions = ["fortify", "skipTurn"];
     }
 
     export class Chariot extends Unit {
@@ -638,7 +634,7 @@ console.log("SENTRY")
         currentMovement = 2;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "sentry"];
+        actions = ["fortify", "skipTurn"];
     }
 
     export class Spearman extends Unit {
@@ -650,7 +646,7 @@ console.log("SENTRY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "sentry"];
+        actions = ["fortify", "skipTurn"];
     }
 
     export class Axeman extends Unit {
@@ -662,7 +658,7 @@ console.log("SENTRY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "sentry"];
+        actions = ["fortify", "skipTurn"];
     }
 
     // Functions for working with units or groups of units

@@ -131,8 +131,6 @@ var Controller = (function () {
                     activeUnit.fortify();
                 } else if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
                     activeUnit.skipTurn();
-                } else if (e.keyCode === this.KEYS.S && activeUnit.actions.indexOf("sentry") >= 0) {
-                    activeUnit.sentry();
                 }
             }
         }.bind(this));
@@ -618,9 +616,6 @@ var ChromeUI = (function () {
             this.elHoverBox.style.display = "block";
         } else if (action === "skipTurn") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Skip Turn</span> <span class="action-shortcut">&lt;Space Bar&gt;</span></p><p>The unit does nothing this turn, but will ask for orders again next turn.</p>';
-            this.elHoverBox.style.display = "block";
-        } else if (action === "sentry") {
-            this.elHoverBox.innerHTML = '<p><span class="action-name">Sentry</span> <span class="action-shortcut">&lt;S&gt;</span></p><p>The unit remains inactive until it sees an enemy unit.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "separate") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the group so you can move each unit individually.</p>';
@@ -1970,10 +1965,6 @@ var Units;
         UnitOrGroup.prototype.fortify = function () {
             console.log("FORTIFY");
         };
-
-        UnitOrGroup.prototype.sentry = function () {
-            console.log("SENTRY");
-        };
         return UnitOrGroup;
     })();
     Units.UnitOrGroup = UnitOrGroup;
@@ -2357,7 +2348,7 @@ var Units;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "sentry"];
+            this.actions = ["fortify", "skipTurn"];
         }
         return Scout;
     })(Unit);
@@ -2373,7 +2364,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "sentry"];
+            this.actions = ["fortify", "skipTurn"];
         }
         return Warrior;
     })(Unit);
@@ -2389,7 +2380,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "sentry"];
+            this.actions = ["fortify", "skipTurn"];
         }
         return Archer;
     })(Unit);
@@ -2405,7 +2396,7 @@ var Units;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "sentry"];
+            this.actions = ["fortify", "skipTurn"];
         }
         return Chariot;
     })(Unit);
@@ -2421,7 +2412,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "sentry"];
+            this.actions = ["fortify", "skipTurn"];
         }
         return Spearman;
     })(Unit);
@@ -2437,7 +2428,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "sentry"];
+            this.actions = ["fortify", "skipTurn"];
         }
         return Axeman;
     })(Unit);

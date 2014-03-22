@@ -106,8 +106,6 @@ class Controller {
                     activeUnit.fortify();
                 } else if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
                     activeUnit.skipTurn();
-                } else if (e.keyCode === this.KEYS.S && activeUnit.actions.indexOf("sentry") >= 0) {
-                    activeUnit.sentry();
                 }
             }
         }.bind(this));
