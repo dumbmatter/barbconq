@@ -41,7 +41,7 @@ class Controller {
     }
 
     initMapPanning() {
-        document.addEventListener("keydown", function (e) {
+        document.addEventListener("keydown", function (e : KeyboardEvent) {
             if (e.keyCode in this.keysPressed) {
                 this.keysPressed[e.keyCode] = true;
 
@@ -62,7 +62,7 @@ class Controller {
                 mapUI.render();
             }
         }.bind(this));
-        document.addEventListener("keyup", function (e) {
+        document.addEventListener("keyup", function (e : KeyboardEvent) {
             if (e.keyCode in this.keysPressed) {
                 this.keysPressed[e.keyCode] = false;
             }
@@ -70,7 +70,7 @@ class Controller {
     }
 
     initUnitActions() {
-        document.addEventListener("keydown", function (e) {
+        document.addEventListener("keydown", function (e : KeyboardEvent) {
             var activeUnit : Units.UnitOrGroup;
 
             // Active unit stuff
@@ -111,10 +111,10 @@ class Controller {
         }.bind(this));
 
         // Unit movement with right click
-        window.addEventListener("contextmenu", function (e) {
+        window.addEventListener("contextmenu", function (e : MouseEvent) {
             e.preventDefault();
         });
-        mapUI.canvas.addEventListener("mousedown", function (e) {
+        mapUI.canvas.addEventListener("mousedown", function (e : MouseEvent) {
             var coords : number[], mouseMoveWhileDown, mouseUp;
 
             if (e.button === 2 && game.activeUnit) { // Right click only! Active unit only!
@@ -133,7 +133,7 @@ class Controller {
                 mapUI.pathFindingSearch = true;
 
                 // Find paths to hovered tile as button remains down
-                mouseMoveWhileDown = function (e) {
+                mouseMoveWhileDown = function (e : MouseEvent) {
                     var coordsNew : number[];
 
                     coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
@@ -148,7 +148,7 @@ class Controller {
                 mapUI.canvas.addEventListener("mousemove", mouseMoveWhileDown);
 
                 // Move unit to the tile hovered over when the button is released
-                mouseUp = function (e) {
+                mouseUp = function (e : MouseEvent) {
                     var coordsNew : number[];
 
                     mapUI.pathFindingSearch = false;
@@ -177,7 +177,7 @@ class Controller {
         });
 
         // Actions bar at the bottom
-        chromeUI.elBottomActions.addEventListener("click", function (e) {
+        chromeUI.elBottomActions.addEventListener("click", function (e : MouseEvent) {
             var el;
 
             el = <HTMLElement> e.target;
@@ -186,7 +186,7 @@ class Controller {
                 game.activeUnit[el.dataset.action]();
             }
         });
-        chromeUI.elBottomActions.addEventListener("mouseover", function (e) {
+        chromeUI.elBottomActions.addEventListener("mouseover", function (e : MouseEvent) {
             var el;
 
             el = <HTMLElement> e.target;
@@ -195,7 +195,7 @@ class Controller {
                 chromeUI.onHoverAction(el.dataset.action);
             }
         });
-        chromeUI.elBottomActions.addEventListener("mouseout", function (e) {
+        chromeUI.elBottomActions.addEventListener("mouseout", function (e : MouseEvent) {
             var el;
 
             el = <HTMLElement> e.target;
@@ -209,7 +209,7 @@ class Controller {
     initHoverTile() {
         this.hoveredTile = [-1, -1]; // Dummy value for out of map
 
-        mapUI.canvas.addEventListener("mousemove", function (e) {
+        mapUI.canvas.addEventListener("mousemove", function (e : MouseEvent) {
             var coords : number[];
 
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
@@ -227,7 +227,7 @@ class Controller {
                 chromeUI.onHoverTile();
             }
         }.bind(this));
-        mapUI.canvas.addEventListener("mouseout", function (e) {
+        mapUI.canvas.addEventListener("mouseout", function (e : MouseEvent) {
             this.hoveredTile = [-1, -1];
             chromeUI.onHoverTile();
         }.bind(this));
@@ -236,7 +236,7 @@ class Controller {
     // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
     // if one of your units is not on the clicked tile, center the map
     initMapClick() {
-        mapUI.canvas.addEventListener("click", function (e) {
+        mapUI.canvas.addEventListener("click", function (e : MouseEvent) {
             var i : number, coords : number[], currentMetric : number, maxMetric : number, unit, units : Units.Unit[];
 
             if (e.button === 0) { // Left click only!
@@ -284,7 +284,7 @@ class Controller {
             }
         });
 
-        mapUI.miniCanvas.addEventListener("mousedown", function (e) {
+        mapUI.miniCanvas.addEventListener("mousedown", function (e : MouseEvent) {
             var coords : number[], miniMapPan, miniMapPanStop;
 
             if (e.button === 0) { // Left click only!
@@ -297,7 +297,7 @@ class Controller {
                 }
 
                 // Pan as click is held and mouse is moved
-                miniMapPan = function (e) {
+                miniMapPan = function (e : MouseEvent) {
                     var coords : number[];
 
                     coords = mapUI.miniPixelsToCoords(e.layerX, e.layerY);
@@ -309,7 +309,7 @@ class Controller {
                 mapUI.miniCanvas.addEventListener("mousemove", miniMapPan);
 
                 // Stop panning when mouse click ends
-                miniMapPanStop = function (e) {
+                miniMapPanStop = function (e : MouseEvent) {
                     mapUI.miniCanvas.removeEventListener("mousemove", miniMapPan);
                     document.removeEventListener("mouseup", miniMapPanStop);
                 };
@@ -319,7 +319,7 @@ class Controller {
     }
 
     initGameActions() {
-        document.addEventListener("keydown", function (e) {
+        document.addEventListener("keydown", function (e : KeyboardEvent) {
             if (e.keyCode === this.KEYS.ENTER) {
                 game.newTurn();
             }
@@ -328,7 +328,7 @@ class Controller {
 
     initUnitIcons() {
         // Unit icons at the bottom
-        chromeUI.elBottomUnits.addEventListener("click", function (e) {
+        chromeUI.elBottomUnits.addEventListener("click", function (e : MouseEvent) {
             var activeUnit : Units.Unit, activeGroup : Units.Group, clickedId : number, clickedOwner : number, clickedSid : number, el : any, i : number, newGroup : Units.Group, newUnits : Units.Unit[], units : Units.Unit[], type : string;
 
             el = <HTMLElement> e.target;
@@ -456,7 +456,7 @@ class Controller {
                 }
             }
         });
-        chromeUI.elBottomUnits.addEventListener("mouseover", function (e) {
+        chromeUI.elBottomUnits.addEventListener("mouseover", function (e : MouseEvent) {
             var el;
 
             el = <HTMLElement> e.target;
@@ -466,7 +466,7 @@ class Controller {
                 chromeUI.onHoverUnitIcon(parseInt(el.dataset.owner, 10), parseInt(el.dataset.id, 10));
             }
         });
-        chromeUI.elBottomUnits.addEventListener("mouseout", function (e) {
+        chromeUI.elBottomUnits.addEventListener("mouseout", function (e : MouseEvent) {
             var el;
 
             el = <HTMLElement> e.target;
