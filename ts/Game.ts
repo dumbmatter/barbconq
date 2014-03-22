@@ -10,6 +10,7 @@ class Game {
     activeUnit : Units.UnitOrGroup = null;
     turn : number = 0;
     turnID : number; // ID number of the user whose turn it is
+    result : string = "inProgress"; // Starts "inProgress", eventually will be "won" or "lost"
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
         var i : number;
@@ -165,16 +166,20 @@ class Game {
                         centerViewport = !(game.activeUnit && game.activeUnit.id === unit.id); // Don't center viewport if unit is already active (multi-move)
                         unit.activate(centerViewport);
 
-                        // Attack with >25% chance of winning
-
-                        // Move towards weaker unit
-
-                        // Move away from stronger unit
-
-                        // Hurt, so fortify until healed
-
-                        // Move randomly
                         setTimeout(function () {
+                            // If in city, only move to attack with >75% chance of winning
+
+                            // Attack with >25% chance of winning
+
+                            // Move towards weaker unit
+
+                            // Move into city, if possible
+
+                            // Move away from stronger unit
+
+                            // Hurt, so fortify until healed
+
+                            // Move randomly
                             if (Math.random() < 0.75) {
                                 unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
                             } else {

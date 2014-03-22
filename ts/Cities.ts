@@ -25,6 +25,11 @@ module Cities {
             game.cities[newOwner][this.id] = this;
             delete game.cities[this.owner][this.id];
             this.owner = newOwner;
+
+            if (this.owner === config.PLAYER_ID && game.result === "inProgress") {
+                game.result = "won";
+                chromeUI.showModal("won");
+            }
         }
     }
 }

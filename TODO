@@ -1,14 +1,14 @@
 # Major current tasks
 
+some UI display of battle results
+  sound
+  not necessarily full battle details, but some text
+
 basic barb AI
   Game.moveUnits
 
 rate of barb generation in non-visible tiles
   should increase with turns?
-
-barb city
-  barb AI: if in city, stay there
-  change city image to assets.CityCaptured when it is taken by player
 
 unit tests for grouped units?
   mock Controller, MapUI, ChromeUI?
@@ -31,12 +31,7 @@ How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game
   maybe instead of instructions showing, show a "mini-instructions" with a link to the full one
 
-some UI display of battle results
-  sound
-  not necessarily full battle details, but some text
-
 terrain effects
-  movement
   defensive bonuses
 
 keyboard shortcuts
@@ -53,7 +48,6 @@ typescript --noImplicitAny
 
 right click to move
   right click on map -> drag off map -> drag back onto edge tile... path doesn't show up until drag onto another tile!
-  needs to handle enemy units - can't cross
 
 Make randomly generated map into a pangaea facsimile
   how do civ4 maps do it?
@@ -63,16 +57,7 @@ unit actions
     defensive bonus
     healing
     top right indicator in unit icon
-  sentry
   sleep/fortify difference?
-
-unit types, to start with
-  scout
-  warrior
-  archer
-  chariot
-  spearman
-  axeman
 
 unit promotions
   with "Blitz" promotion, never "attacked" set to True
@@ -144,13 +129,15 @@ easy/medium/hard
   xp barbs start with
   intelligence of barbs (like.. likelihood to stack, or go to city)
 
-stats shown at end of game
-  won or lost
-  turns
-  time spent
-  barbs killed, by unit type
-  your units, with promotions and killed/not killed
-  combine to a score, compare user against a famous conqueror (like civ4 does with leaders)
+end of game
+  show stats
+    won or lost
+    turns
+    time spent
+    barbs killed, by unit type
+    your units, with promotions and killed/not killed
+    combine to a score, compare user against a famous conqueror (like civ4 does with leaders)
+  have another game.result, "wonThenLost" for when all your units die after you've captured the city previously, and then show stats again
 
 monetization ideas
   reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ4"
@@ -189,8 +176,7 @@ scroll wheel zoom by increasing TILE_SIZE
 # Far future
 
 Friendly civs
-  big problem: units of multiple civs can be on same tile. need a lot of stuff like this sprinkled throughout:
-    .filter(function (unit) { return unit.owner === config.PLAYER_ID; });
+  big problem: units of multiple civs can be on same tile.
 
 Import civ4 maps
 

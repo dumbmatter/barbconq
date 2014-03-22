@@ -394,6 +394,11 @@ console.log("FORTIFY")
             // Update map visibility
             game.map.updateVisibility();
 
+            if (this.owner === config.PLAYER_ID && game.result === "inProgress") {
+                game.result = "lost";
+                chromeUI.showModal("lost");
+            }
+
             // Remove from active
             if (game.activeUnit && game.activeUnit.id === this.id) {
                 game.activeUnit = null;

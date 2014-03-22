@@ -1558,6 +1558,7 @@ var Game = (function () {
         this.cities = [];
         this.activeUnit = null;
         this.turn = 0;
+        this.result = "inProgress";
         var i;
 
         this.map = new MapMaker.BigIsland(mapRows, mapCols);
@@ -1700,12 +1701,14 @@ var Game = (function () {
                         centerViewport = !(game.activeUnit && game.activeUnit.id === unit.id); // Don't center viewport if unit is already active (multi-move)
                         unit.activate(centerViewport);
 
-                        // Attack with >25% chance of winning
-                        // Move towards weaker unit
-                        // Move away from stronger unit
-                        // Hurt, so fortify until healed
-                        // Move randomly
                         setTimeout(function () {
+                            // If in city, only move to attack with >75% chance of winning
+                            // Attack with >25% chance of winning
+                            // Move towards weaker unit
+                            // Move into city, if possible
+                            // Move away from stronger unit
+                            // Hurt, so fortify until healed
+                            // Move randomly
                             if (Math.random() < 0.75) {
                                 unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
                             } else {
@@ -2200,6 +2203,11 @@ var Units;
             // Update map visibility
             game.map.updateVisibility();
 
+            if (this.owner === config.PLAYER_ID && game.result === "inProgress") {
+                game.result = "lost";
+                chromeUI.showModal("lost");
+            }
+
             // Remove from active
             if (game.activeUnit && game.activeUnit.id === this.id) {
                 game.activeUnit = null;
@@ -2688,6 +2696,11 @@ var Cities;
             game.cities[newOwner][this.id] = this;
             delete game.cities[this.owner][this.id];
             this.owner = newOwner;
+
+            if (this.owner === config.PLAYER_ID && game.result === "inProgress") {
+                game.result = "won";
+                chromeUI.showModal("won");
+            }
         };
         return City;
     })();
