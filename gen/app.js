@@ -897,6 +897,7 @@ var MapUI = (function () {
                     this.context.lineTo(pixels[0], pixels[1]);
                 }
 
+                // Draw path
                 if (units.defender) {
                     // Path ends in enemy, so show red
                     this.context.strokeStyle = "#f00";
@@ -907,6 +908,45 @@ var MapUI = (function () {
                 this.context.setLineDash([5]);
                 this.context.stroke();
                 this.context.setLineDash([]); // Reset dash state
+
+                // Draw move numbers on top of path
+                (function () {
+                    var currentMovement, i, movement, movementCost, numTurns, pixels;
+
+                    // Initialize with current values
+                    movement = game.activeUnit.movement;
+                    currentMovement = game.activeUnit.currentMovement;
+
+                    // If no movement left now, it takes an extra turn to get anywhere
+                    if (currentMovement === 0) {
+                        numTurns = 1;
+                        currentMovement = movement;
+                    } else {
+                        numTurns = 0;
+                    }
+
+                    for (i = 1; i < path.length; i++) {
+                        movementCost = game.map.tileMovementCost(path[i - 1], path[i]);
+                        currentMovement -= movementCost;
+                        if (currentMovement <= 0) {
+                            numTurns += 1;
+                            currentMovement = movement;
+
+                            pixels = this.coordsToPixels(path[i][0], path[i][1]);
+
+                            if (units.defender && i === path.length - 1) {
+                                this.context.fillStyle = "#f00";
+                            } else {
+                                this.context.fillStyle = "#444";
+                            }
+                            this.context.textAlign = "center";
+                            this.context.textBaseline = "middle";
+                            this.context.font = "30px sans-serif";
+                            this.context.fillText(numTurns, pixels[0], pixels[1]);
+                        }
+                    }
+                    ;
+                }.bind(this)());
             }
         }.bind(this));
     };
@@ -1014,7 +1054,7 @@ var MapUI = (function () {
                     this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
                 }
 
-                // Text - list units
+                // Show units on tile
                 units = tile.units;
                 if (units.length > 0) {
                     // Pick which unit to show on top of tile
@@ -1047,9 +1087,6 @@ var MapUI = (function () {
                         }
                     }
 
-                    //                    this.context.fillStyle = this.terrainFontColors[tile.terrain];
-                    //                    this.context.textBaseline = "top";
-                    //                    this.context.fillText(unit.type, x * this.TILE_SIZE - tileOffsetX + 2, y * this.TILE_SIZE - tileOffsetY);
                     if (unit.owner === config.BARB_ID) {
                         unitImage = assets["Black" + unit.type];
                     } else {
@@ -1364,11 +1401,12 @@ var MapMaker;
             });
         };
 
+        // Cost (in "movement") of moving from coordsFrom to coordsTo
         Map.prototype.tileMovementCost = function (coordsFrom, coordsTo) {
             var tileTo;
 
             tileTo = game.getTile(coordsTo);
-            if (tileTo.features.indexOf("hills") > 0 || tileTo.features.indexOf("forest") > 0) {
+            if (tileTo.features.indexOf("hills") >= 0 || tileTo.features.indexOf("forest") >= 0) {
                 return 2;
             }
 

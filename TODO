@@ -1,18 +1,11 @@
 # Major current tasks
 
-pathfinding glitch
-  point towards water off screen, and it'll actually go there! need to cancel routes when it becomes clear target is not reachable
+show turn count on last tile, even if some movement is left
 
 modals
   close with close button or esc
   How to do instructions/new game for new users?
     new game on separate html page, instructions auto show on first game
-
-show move numbers on top of path
-  in MapUI.drawPath
-  calculate # moves for each step in the path
-  simulate movement over path
-  when new move number, show
 
 some UI display of battle results
   sound
@@ -124,6 +117,7 @@ UI POLISH
   Map.pathFinding will cancel if an enemy blocks the path... but not when the enemy blocks the last tile! in that case, it'll auto-attack
     should there be any auto-attack? even for unit right outside city the turn before, should it just generally wake up unit that is near enemy?
   when moving through units in Game.moveUnits, should always go through all the units on the current tile before moving on to other units
+  When moving to a new tile, fog of war should dissipate immediately, not after delay
 
 fog of war
   range should change depending on hills/forests/peaks in view or slightly out of view
@@ -168,6 +162,10 @@ monetization ideas
   adsense panel on the side of the screen. put intro/manual content in HTML as divs to hide/show in game, for both SEO and adsense
 
 # Nice to have
+
+pathfinding
+  point towards water off screen, and it'll actually go there! need to cancel routes when it becomes clear target is not reachable
+  doesn't correctly handle multi-unit tiles, since pathfinding algorithm doesn't know about the discreteness of turns (if you have 0.5 moves left, doesn't matter if you move onto grassland or hills)
 
 should I make Units.Group.units and Tile.units lists of objects with ID keys, like game.units and game.groups?
 

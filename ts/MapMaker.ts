@@ -154,7 +154,7 @@ module MapMaker {
             var tileTo : Tile;
 
             tileTo = game.getTile(coordsTo);
-            if (tileTo.features.indexOf("hills") > 0 || tileTo.features.indexOf("forest") > 0) {
+            if (tileTo.features.indexOf("hills") >= 0 || tileTo.features.indexOf("forest") >= 0) {
                 return 2;
             }
 
