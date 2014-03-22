@@ -6,6 +6,7 @@ class Game {
     names: string[] = [];
     units : {[id : number] : Units.Unit}[] = []; // One object in array for each player. Then in object, can use unit ID as key
     groups : {[id : number] : Units.Group}[] = []; // Same as above
+    cities : {[id : number] : Cities.City}[] = [];
     activeUnit : Units.UnitOrGroup = null;
     turn : number = 0;
     turnID : number; // ID number of the user whose turn it is
@@ -25,6 +26,7 @@ class Game {
 
             this.units.push({});
             this.groups.push({});
+            this.cities.push({});
         }
     }
 
@@ -49,7 +51,8 @@ class Game {
                     return {
                         terrain: "unseen",
                         features: [],
-                        units: []
+                        units: [],
+                        city: null
                     };
                 } else {
                     // Seen before, show last seen state

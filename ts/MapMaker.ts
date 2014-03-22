@@ -5,10 +5,12 @@ module MapMaker {
         terrain : string;
         features : string[];
         units : Units.Unit[];
+        city : Cities.City
         lastSeenState? : {
             terrain : string;
             features : string[];
             units : Units.Unit[]; // This should never get anything in it! Just a placeholder empty array!
+            city : Cities.City;
         };
     }
 
@@ -138,7 +140,8 @@ module MapMaker {
                             this.tiles[i][j].lastSeenState = {
                                 terrain: this.tiles[i][j].terrain,
                                 features: this.tiles[i][j].features,
-                                units: []
+                                units: [],
+                                city: this.tiles[i][j].city
                             };
                         }
                     }
@@ -191,6 +194,7 @@ module MapMaker {
                         terrain: Random.choice(Object.keys(types)),
                         features: [],
                         units: [],
+                        city: null,
                         lastSeenState: null
                     };
                     if (Math.random() < 0.5 && types[this.tiles[i][j].terrain].length > 0) {
@@ -227,6 +231,7 @@ module MapMaker {
                             terrain: "grassland",
                             features: [],
                             units: [],
+                            city: null,
                             lastSeenState: null
                         };
 
@@ -242,6 +247,7 @@ module MapMaker {
                             terrain: "sea",
                             features: [],
                             units: [],
+                            city: null,
                             lastSeenState: null
                         };
                     }

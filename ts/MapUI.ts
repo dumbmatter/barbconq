@@ -2,7 +2,7 @@
 
 class MapUI {
     // Constants
-    TILE_SIZE : number = 50;
+    TILE_SIZE : number = 70;
     terrainColors: any;
     terrainFontColors: any;
 
@@ -256,7 +256,7 @@ class MapUI {
 
             // First pass: draw tiles and units
             drawViewport(function (i : number, j : number, x : number, y : number) {
-                var k : number, maxStrength : number, tile : MapMaker.Tile, unit : Units.Unit, unitImage : HTMLImageElement, units : Units.Unit[];
+                var cityImage : HTMLImageElement, k : number, maxStrength : number, tile : MapMaker.Tile, unit : Units.Unit, unitImage : HTMLImageElement, units : Units.Unit[];
 
                 tile = game.getTile([i, j]);
 
@@ -282,6 +282,16 @@ class MapUI {
                 if (!game.map.visibility[i][j] && tile.terrain !== "unseen") {
                     this.context.fillStyle = this.terrainColors.shadow;
                     this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
+                }
+
+                // Show city on tile
+                if (tile.city) {
+                    if (tile.city.owner === config.PLAYER_ID) {
+                        cityImage = assets.CityCaptured;
+                    } else {
+                        cityImage = assets.City;
+                    }
+                    this.context.drawImage(cityImage, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
                 }
 
                 // Show units on tile
@@ -322,7 +332,7 @@ class MapUI {
                     } else {
                         unitImage = assets["White" + unit.type];
                     }
-                    this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+                    this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX + 10, y * this.TILE_SIZE - tileOffsetY + 10);
                 }
             }.bind(this));
 

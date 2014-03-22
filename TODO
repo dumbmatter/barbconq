@@ -8,6 +8,9 @@ rate of barb generation in non-visible tiles
 
 barb city
   barb AI: if in city, stay there
+  capture city if non-owner moves onto it
+    City.capture(newOwner)
+  change city image to assets.CityCaptured when it is taken by player
 
 unit tests for grouped units?
   mock Controller, MapUI, ChromeUI?

@@ -5,6 +5,7 @@
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
+///<reference path='Cities.ts'/>
 ///<reference path='Combat.ts'/>
 
 // Load easystar.js
@@ -89,8 +90,9 @@ function init() {
 /*    new Units.Spearman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
-    new Units.Warrior(config.BARB_ID, [10, 21]);
-    new Units.Chariot(config.BARB_ID, [10, 21]);*/
+    new Units.Warrior(config.BARB_ID, [10, 21]);*/
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Cities.City(config.BARB_ID, [10, 21]);
 
     game.newTurn();
 }
@@ -98,6 +100,8 @@ function init() {
 loadAssets({
     hills: "terrain/hills.png",
     forest: "terrain/forest.png",
+    City: "white-tower.png",
+    CityCaptured: "tower-fall.png",
     WhiteScout: "units/white/tread.png",
     WhiteWarrior: "units/white/stone-axe.png",
     WhiteArcher: "units/white/high-shot.png",

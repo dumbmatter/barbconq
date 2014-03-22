@@ -814,7 +814,7 @@ var ChromeUI = (function () {
 var MapUI = (function () {
     function MapUI() {
         // Constants
-        this.TILE_SIZE = 50;
+        this.TILE_SIZE = 70;
         this.pathFindingSearch = false;
         // Colors!
         this.terrainColors = {
@@ -1050,7 +1050,7 @@ var MapUI = (function () {
 
             // First pass: draw tiles and units
             drawViewport(function (i, j, x, y) {
-                var k, maxStrength, tile, unit, unitImage, units;
+                var cityImage, k, maxStrength, tile, unit, unitImage, units;
 
                 tile = game.getTile([i, j]);
 
@@ -1076,6 +1076,16 @@ var MapUI = (function () {
                 if (!game.map.visibility[i][j] && tile.terrain !== "unseen") {
                     this.context.fillStyle = this.terrainColors.shadow;
                     this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
+                }
+
+                // Show city on tile
+                if (tile.city) {
+                    if (tile.city.owner === config.PLAYER_ID) {
+                        cityImage = assets.CityCaptured;
+                    } else {
+                        cityImage = assets.City;
+                    }
+                    this.context.drawImage(cityImage, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
                 }
 
                 // Show units on tile
@@ -1116,7 +1126,7 @@ var MapUI = (function () {
                     } else {
                         unitImage = assets["White" + unit.type];
                     }
-                    this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
+                    this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX + 10, y * this.TILE_SIZE - tileOffsetY + 10);
                 }
             }.bind(this));
 
@@ -1413,7 +1423,8 @@ var MapMaker;
                             this.tiles[i][j].lastSeenState = {
                                 terrain: this.tiles[i][j].terrain,
                                 features: this.tiles[i][j].features,
-                                units: []
+                                units: [],
+                                city: this.tiles[i][j].city
                             };
                         }
                     }
@@ -1471,6 +1482,7 @@ var MapMaker;
                         terrain: Random.choice(Object.keys(types)),
                         features: [],
                         units: [],
+                        city: null,
                         lastSeenState: null
                     };
                     if (Math.random() < 0.5 && types[this.tiles[i][j].terrain].length > 0) {
@@ -1510,6 +1522,7 @@ var MapMaker;
                             terrain: "grassland",
                             features: [],
                             units: [],
+                            city: null,
                             lastSeenState: null
                         };
                         // Features
@@ -1524,6 +1537,7 @@ var MapMaker;
                             terrain: "sea",
                             features: [],
                             units: [],
+                            city: null,
                             lastSeenState: null
                         };
                     }
@@ -1541,6 +1555,7 @@ var Game = (function () {
         this.names = [];
         this.units = [];
         this.groups = [];
+        this.cities = [];
         this.activeUnit = null;
         this.turn = 0;
         var i;
@@ -1556,6 +1571,7 @@ var Game = (function () {
 
             this.units.push({});
             this.groups.push({});
+            this.cities.push({});
         }
     }
     // Returns null if coords are not valid. Otherwise, returns tile info while factoring in visibility
@@ -1580,7 +1596,8 @@ var Game = (function () {
                     return {
                         terrain: "unseen",
                         features: [],
-                        units: []
+                        units: [],
+                        city: null
                     };
                 } else {
                     // Seen before, show last seen state
@@ -2641,6 +2658,33 @@ var Units;
     }
     Units.addUnitsWithTypeToNewGroup = addUnitsWithTypeToNewGroup;
 })(Units || (Units = {}));
+// Cities
+var Cities;
+(function (Cities) {
+    // Things that both individual units and groups of units have in common
+    var City = (function () {
+        function City(owner, coords) {
+            this.id = game.maxId;
+            game.maxId += 1;
+
+            this.owner = owner;
+
+            // Set coordinates of city and put a reference to the city in the map
+            this.coords = coords;
+            game.getTile(coords, false).city = this;
+
+            // Store reference to unit in game.units
+            game.cities[this.owner][this.id] = this;
+        }
+        City.prototype.capture = function (newOwner) {
+            game.cities[newOwner][this.id] = this;
+            delete game.cities[this.owner][this.id];
+            this.owner = newOwner;
+        };
+        return City;
+    })();
+    Cities.City = City;
+})(Cities || (Cities = {}));
 // Combat - battle between two units
 var Combat;
 (function (Combat) {
@@ -2846,6 +2890,7 @@ var Combat;
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
 ///<reference path='Units.ts'/>
+///<reference path='Cities.ts'/>
 ///<reference path='Combat.ts'/>
 var easystar = new EasyStar.js();
 
@@ -2926,14 +2971,18 @@ function init() {
     /*    new Units.Spearman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
-    new Units.Warrior(config.BARB_ID, [10, 21]);
-    new Units.Chariot(config.BARB_ID, [10, 21]);*/
+    new Units.Warrior(config.BARB_ID, [10, 21]);*/
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Cities.City(config.BARB_ID, [10, 21]);
+
     game.newTurn();
 }
 
 loadAssets({
     hills: "terrain/hills.png",
     forest: "terrain/forest.png",
+    City: "white-tower.png",
+    CityCaptured: "tower-fall.png",
     WhiteScout: "units/white/tread.png",
     WhiteWarrior: "units/white/stone-axe.png",
     WhiteArcher: "units/white/high-shot.png",
