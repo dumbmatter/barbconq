@@ -1679,7 +1679,6 @@ var Game = (function () {
                     unit = this.units[i][j];
                     if (unit.currentMovement > 0 && !unit.skippedTurn) {
                         centerViewport = !(game.activeUnit && game.activeUnit.id === unit.id); // Don't center viewport if unit is already active (multi-move)
-                        console.log(centerViewport);
                         unit.activate(centerViewport);
 
                         // Attack with >25% chance of winning
@@ -2007,11 +2006,9 @@ var Units;
                 }, config.UNIT_MOVEMENT_UI_DELAY);
             } else if (game.turnID !== config.PLAYER_ID) {
                 // For AI units, need to force move again, even if currentMovement > 0
+                // No UI_DELAY needed here
                 atEnd();
-
-                //                setTimeout(function () {
                 game.moveUnits();
-                //                }, config.UNIT_MOVEMENT_UI_DELAY);
             } else {
                 atEnd();
             }
@@ -2828,7 +2825,7 @@ var config = {
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
-    DISABLE_FOG_OF_WAR: true
+    DISABLE_FOG_OF_WAR: false
 };
 
 /*var assets : any = {};

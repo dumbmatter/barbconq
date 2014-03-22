@@ -6,6 +6,10 @@ basic barb AI
 barb UI
   don't allow user to move them
   pause UI before moving
+  how to handle barbs off screen? need a way to not show on map and just move instantly
+    only show active unit highlight in MapUI if active unit is on visible tile
+    only have delay after movement if unit is either moving to or from a visible tile
+  Units.countMovementToCoords is getting really messy and has too much UI stuff there. need a better general concept of delays/movement/UI updating
 
 rate of barb generation in non-visible tiles
   should increase with turns?
