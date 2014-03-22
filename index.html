@@ -21,104 +21,107 @@
     </div>
     <canvas id="map"></canvas>
 
-    <div id="modal-wrapper" class="modal-inactive">
-      <div id="instructions" class="modal modal-inactive">
-        <h1>Barbarian Conquest - Instructions</h1>
-        <p>Your goal is to find and capture the barbarian city. You lose if all your units are killed by barbarians.</p>
-        <p>There are six types of units in the game:</p>
-        <table>
-          <tr>
-            <td class="instructions-unit">
-              <div class="instructions-unit-icon">
-                <img src="assets/units/white/tread.png" width="50" height="50">
-              </div>
-              <h2>Scout</h2>
-              <div class="instructions-unit-desc">
-                <p>Strength: 1<br>
-                Movement: 2</p>
-                <p>Scouts can't attack.</p>
-              </div>
-            </td>
-            <td class="instructions-unit">
-              <div class="instructions-unit-icon">
-                <img src="assets/units/white/stone-axe.png" width="50" height="50">
-              </div>
-              <h2>Warrior</h2>
-              <div class="instructions-unit-desc">
-                <p>Strength: 2<br>
-                Movement: 1</p>
-              </div>
-            </td>
-            <td class="instructions-unit">
-              <div class="instructions-unit-icon">
-                <img src="assets/units/white/high-shot.png" width="50" height="50">
-              </div>
-              <h2>Archer</h2>
-              <div class="instructions-unit-desc">
-                <p>Strength: 3<br>
-                Movement: 1</p>
-                <p>Archers get bonuses defending hills and cities.</p>
-              </div>
-            </td>
-              </tr><tr>
-            <td class="instructions-unit">
-              <div class="instructions-unit-icon">
-                <img src="assets/units/white/horse-head.png" width="50" height="50">
-              </div>
-              <h2>Chariot</h2>
-              <div class="instructions-unit-desc">
-                <p>Strength: 4<br>
-                Movement: 2</p>
-                <p>Chariots get bonuses attacking axemen.</p>
-              </div>
-            </td>
-            <td class="instructions-unit">
-              <div class="instructions-unit-icon">
-                <img src="assets/units/white/spears.png" width="50" height="50">
-              </div>
-              <h2>Spearman</h2>
-              <div class="instructions-unit-desc">
-                <p>Strength: 4<br>
-                Movement: 1</p>
-                <p>Spearmen get bonuses against chariots.</p>
-              </div>
-            </td>
-            <td class="instructions-unit">
-              <div class="instructions-unit-icon">
-                <img src="assets/units/white/battle-axe.png" width="50" height="50">
-              </div>
-              <h2>Axeman</h2>
-              <div class="instructions-unit-desc">
-                <p>Strength: 5<br>
-                Movement: 1</p>
-                <p>Axemen get bonuses against warriors and spearmen.</p>
-              </div>
-            </td>
-          </tr>
-        </table>
-        <p>In addition to the strengths and weaknesses of the units listed above, there are also bonuses depending on the terrain: hills and forests provide defensive bonuses.</p>
-        <p>Each turn, every one of your units can move. Move the active unit by <b>right clicking with your mouse</b> or by <b>using the numpad on your keyboard</b>.</p>
-        <p>To fight a barbarian unit, move onto its tile (or wait for it to move onto yours).</p>
-        <h2>Strategy</h2>
-        <p>You can stack your units in the same tile and move them together. This provides better defense, since when a stack is attacked, the best defender against the attacking unit is chosen for battle. But if you keep your units together all the time, you won't be able to explore the island and find the barbarian capital quickly. And the barbarians are constantly training new units to fight you, especially in areas out of sight of your troops. The longer it takes you to find the capital, the better defenses it will have.</p>
-      </div>
+    <div id="modal-background" class="modal-inactive">
+      <div id="modal-wrapper">
+        <div id="modal-close">&times;</div>
+        <div id="instructions" class="modal modal-inactive">
+          <h1>Barbarian Conquest - Instructions</h1>
+          <p>Your goal is to find and capture the barbarian city. You lose if all your units are killed by barbarians.</p>
+          <p>There are six types of units in the game:</p>
+          <table>
+            <tr>
+              <td class="instructions-unit">
+                <div class="instructions-unit-icon">
+                  <img src="assets/units/white/tread.png" width="50" height="50">
+                </div>
+                <h2>Scout</h2>
+                <div class="instructions-unit-desc">
+                  <p>Strength: 1<br>
+                  Movement: 2</p>
+                  <p>Scouts can't attack.</p>
+                </div>
+              </td>
+              <td class="instructions-unit">
+                <div class="instructions-unit-icon">
+                  <img src="assets/units/white/stone-axe.png" width="50" height="50">
+                </div>
+                <h2>Warrior</h2>
+                <div class="instructions-unit-desc">
+                  <p>Strength: 2<br>
+                  Movement: 1</p>
+                </div>
+              </td>
+              <td class="instructions-unit">
+                <div class="instructions-unit-icon">
+                  <img src="assets/units/white/high-shot.png" width="50" height="50">
+                </div>
+                <h2>Archer</h2>
+                <div class="instructions-unit-desc">
+                  <p>Strength: 3<br>
+                  Movement: 1</p>
+                  <p>Archers get bonuses defending hills and cities.</p>
+                </div>
+              </td>
+                </tr><tr>
+              <td class="instructions-unit">
+                <div class="instructions-unit-icon">
+                  <img src="assets/units/white/horse-head.png" width="50" height="50">
+                </div>
+                <h2>Chariot</h2>
+                <div class="instructions-unit-desc">
+                  <p>Strength: 4<br>
+                  Movement: 2</p>
+                  <p>Chariots get bonuses attacking axemen.</p>
+                </div>
+              </td>
+              <td class="instructions-unit">
+                <div class="instructions-unit-icon">
+                  <img src="assets/units/white/spears.png" width="50" height="50">
+                </div>
+                <h2>Spearman</h2>
+                <div class="instructions-unit-desc">
+                  <p>Strength: 4<br>
+                  Movement: 1</p>
+                  <p>Spearmen get bonuses against chariots.</p>
+                </div>
+              </td>
+              <td class="instructions-unit">
+                <div class="instructions-unit-icon">
+                  <img src="assets/units/white/battle-axe.png" width="50" height="50">
+                </div>
+                <h2>Axeman</h2>
+                <div class="instructions-unit-desc">
+                  <p>Strength: 5<br>
+                  Movement: 1</p>
+                  <p>Axemen get bonuses against warriors and spearmen.</p>
+                </div>
+              </td>
+            </tr>
+          </table>
+          <p>In addition to the strengths and weaknesses of the units listed above, there are also bonuses depending on the terrain: hills and forests provide defensive bonuses.</p>
+          <p>Each turn, every one of your units can move. Move the active unit by <b>right clicking with your mouse</b> or by <b>using the numpad on your keyboard</b>.</p>
+          <p>To fight a barbarian unit, move onto its tile (or wait for it to move onto yours).</p>
+          <h2>Strategy</h2>
+          <p>You can stack your units in the same tile and move them together. This provides better defense, since when a stack is attacked, the best defender against the attacking unit is chosen for battle. But if you keep your units together all the time, you won't be able to explore the island and find the barbarian capital quickly. And the barbarians are constantly training new units to fight you, especially in areas out of sight of your troops. The longer it takes you to find the capital, the better defenses it will have.</p>
+        </div>
 
-      <div id="about" class="modal modal-inactive">
-        <h1>Barbarian Conquest - About</h1>
-        <p>Barbarian Conquest is a free game built on a browser-based reimplementation of the combat system of Civilization 4 (a.k.a. The Greatest Video Game of All Time). I have this completely crazy idea of completely reimplementing Civ4 in a similar manner. If you're interested in helping, please <a href="mailto:jdscheff@gmail.com">email me</a>. I'm particularly in need of help from people with any of the following skills:</p>
-        <ul>
-          <li>Deep understanding of Civ4</li>
-          <li>Experience with video game AI</li>
-          <li>Design/artwork talent</li>
-        </ul>
-        <p>I want to thank the following open source projects that Barbarian Conquest relies on (in no particular order):</p>
-        <ul>
-          <li><a href="http://www.typescriptlang.org/">TypeScript</a> for the fantastic programming language</li>
-          <li><a href="http://easystarjs.com/">EasyStar.js</a> for a very easy-to-use pathfinding library</li>
-          <li><a href="https://www.mozilla.org/firefox/">Firefox</a> and <a href="http://www.chromium.org/Home">Chromium</a> for pushing the web forward</li>
-        </ul>
-        <p>The unit icons were made by <a href="http://lorcblog.blogspot.com/">Lorc</a> from <a href="http://game-icons.net/">Game-icons.net</a></p>
-        <p>And finally, if you like basketball, check out my other video game <a href="http://basketball-gm.com/">Basketball GM</a>. It is also completely free to play from your web browser.</p>
+        <div id="about" class="modal modal-inactive">
+          <h1>Barbarian Conquest - About</h1>
+          <p>Barbarian Conquest is a free game built on a browser-based reimplementation of the combat system of Civilization 4 (a.k.a. The Greatest Video Game of All Time). I have this completely crazy idea of completely reimplementing Civ4 in a similar manner. If you're interested in helping, please <a href="mailto:jdscheff@gmail.com">email me</a>. I'm particularly in need of help from people with any of the following skills:</p>
+          <ul>
+            <li>Deep understanding of Civ4</li>
+            <li>Experience with video game AI</li>
+            <li>Design/artwork talent</li>
+          </ul>
+          <p>I want to thank the following open source projects that Barbarian Conquest relies on (in no particular order):</p>
+          <ul>
+            <li><a href="http://www.typescriptlang.org/">TypeScript</a> for the fantastic programming language</li>
+            <li><a href="http://easystarjs.com/">EasyStar.js</a> for a very easy-to-use pathfinding library</li>
+            <li><a href="https://www.mozilla.org/firefox/">Firefox</a> and <a href="http://www.chromium.org/Home">Chromium</a> for pushing the web forward</li>
+          </ul>
+          <p>The unit icons were made by <a href="http://lorcblog.blogspot.com/">Lorc</a> from <a href="http://game-icons.net/">Game-icons.net</a></p>
+          <p>And finally, if you like basketball, check out my other video game <a href="http://basketball-gm.com/">Basketball GM</a>. It is also completely free to play from your web browser.</p>
+        </div>
       </div>
     </div>
 
