@@ -515,6 +515,7 @@ var ChromeUI = (function () {
         this.elBottomActions = document.getElementById("bottom-actions");
         this.elBottomText = document.getElementById("bottom-text");
         this.elBottomUnits = document.getElementById("bottom-units");
+        this.elEvents = document.getElementById("events");
     }
     ChromeUI.prototype.strengthFraction = function (unit) {
         if (unit.strength === unit.currentStrength) {
@@ -807,6 +808,24 @@ var ChromeUI = (function () {
         modal.addEventListener("click", preventCloseModal);
         modalBackground.addEventListener("click", closeModal);
         document.addEventListener("keydown", closeModalEsc);
+    };
+
+    ChromeUI.prototype.eventLog = function (msg, goodOrBad) {
+        if (typeof goodOrBad === "undefined") { goodOrBad = null; }
+        var event;
+
+        event = document.createElement("li");
+        event.innerHTML = msg;
+        if (goodOrBad === "good") {
+            event.classList.add("event-good");
+        } else if (goodOrBad === "bad") {
+            event.classList.add("event-bad");
+        }
+        this.elEvents.appendChild(event);
+
+        window.setTimeout(function () {
+            this.elEvents.removeChild(event);
+        }.bind(this), 3000);
     };
     return ChromeUI;
 })();
@@ -2203,7 +2222,7 @@ var Units;
             // Update map visibility
             game.map.updateVisibility();
 
-            if (this.owner === config.PLAYER_ID && game.result === "inProgress") {
+            if (this.owner === config.PLAYER_ID && game.result === "inProgress" && Object.keys(game.units[config.PLAYER_ID]).length === 0) {
                 game.result = "lost";
                 chromeUI.showModal("lost");
             }
@@ -2773,11 +2792,13 @@ var Combat;
             this.winner = i === 0 ? "attacker" : "defender";
             this.loser = j === 0 ? "attacker" : "defender";
 
-            // Play sound
+            // Play sound and show event
             if (this.units[i].owner === config.PLAYER_ID) {
                 assets.battleWon.play();
+                chromeUI.eventLog("Your _ killed a barbarian _.", "good");
             } else {
                 assets.battleLost.play();
+                chromeUI.eventLog("Your _ was killed by a barbarian _.", "bad");
             }
 
             // Loser gets deleted
@@ -3007,12 +3028,22 @@ function init() {
     /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
 
     /*    new Units.Spearman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Warrior(config.BARB_ID, [10, 21]);*/
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
     new Units.Archer(config.BARB_ID, [10, 21]);
     new Cities.City(config.BARB_ID, [10, 21]);
 

@@ -7,6 +7,7 @@ class ChromeUI {
     elBottomActions : HTMLDivElement;
     elBottomText : HTMLDivElement;
     elBottomUnits : HTMLDivElement;
+    elEvents : HTMLUListElement;
 
     constructor() {
         this.elHoverBox = <HTMLDivElement> document.getElementById("hover-box");
@@ -15,6 +16,7 @@ class ChromeUI {
         this.elBottomActions = <HTMLDivElement> document.getElementById("bottom-actions");
         this.elBottomText = <HTMLDivElement> document.getElementById("bottom-text");
         this.elBottomUnits = <HTMLDivElement> document.getElementById("bottom-units");
+        this.elEvents = <HTMLUListElement> document.getElementById("events");
     }
 
     strengthFraction(unit : Units.Unit) {
@@ -313,5 +315,22 @@ class ChromeUI {
         modal.addEventListener("click", preventCloseModal);
         modalBackground.addEventListener("click", closeModal);
         document.addEventListener("keydown", closeModalEsc);
+    }
+
+    eventLog(msg : string, goodOrBad : string = null) {
+        var event;
+
+        event = document.createElement("li")
+        event.innerHTML = msg;
+        if (goodOrBad === "good") {
+            event.classList.add("event-good");
+        } else if (goodOrBad === "bad") {
+            event.classList.add("event-bad");
+        }
+        this.elEvents.appendChild(event);
+
+        window.setTimeout(function () {
+            this.elEvents.removeChild(event);
+        }.bind(this), 3000);
     }
 }

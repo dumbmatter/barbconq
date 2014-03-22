@@ -72,11 +72,13 @@ console.log(this.log);
             this.winner = i === 0 ? "attacker" : "defender";
             this.loser = j === 0 ? "attacker" : "defender";
 
-            // Play sound
+            // Play sound and show event
             if (this.units[i].owner === config.PLAYER_ID) {
                 assets.battleWon.play();
+                chromeUI.eventLog("Your _ killed a barbarian _.", "good");
             } else {
                 assets.battleLost.play();
+                chromeUI.eventLog("Your _ was killed by a barbarian _.", "bad");
             }
 
             // Loser gets deleted

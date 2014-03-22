@@ -181,6 +181,28 @@ a:hover {
   80% { opacity: 1; }
 }
 
+#events {
+  position: absolute;
+  width: 100%;
+  top: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
+  padding: 5px;
+  pointer-events: none;
+  text-align: center;
+  z-index: 10; /* Always on top */
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+#events .event-good {
+  color: #8eff66;
+}
+#events .event-bad {
+  color: red;
+}
+
 #bottom-units {
   position: absolute;
   left: 300px;

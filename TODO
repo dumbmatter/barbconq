@@ -1,7 +1,6 @@
 # Major current tasks
 
-some UI display of battle results
-  not necessarily full battle details, but some text
+"Waiting for barbarians to move"
 
 basic barb AI
   Game.moveUnits
@@ -25,6 +24,8 @@ unit tests for grouped units?
           NO, problem is not source-map. it's the input to source-map: karma's reporter.js isn't getting column numbers. why? not sure. maybe it'll work if i can make it error-free until real tests run?
 
 # Minor current tasks
+
+battle win probabilities seem off. 60% is more like 90%
 
 How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game

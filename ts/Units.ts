@@ -394,7 +394,7 @@ console.log("FORTIFY")
             // Update map visibility
             game.map.updateVisibility();
 
-            if (this.owner === config.PLAYER_ID && game.result === "inProgress") {
+            if (this.owner === config.PLAYER_ID && game.result === "inProgress" && Object.keys(game.units[config.PLAYER_ID]).length === 0) {
                 game.result = "lost";
                 chromeUI.showModal("lost");
             }

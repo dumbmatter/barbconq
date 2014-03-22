@@ -99,11 +99,21 @@ function init() {
 /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
 /*    new Units.Spearman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Warrior(config.BARB_ID, [10, 21]);*/
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
     new Units.Archer(config.BARB_ID, [10, 21]);
     new Cities.City(config.BARB_ID, [10, 21]);
 
