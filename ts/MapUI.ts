@@ -235,7 +235,7 @@ class MapUI {
 
         // Function to loop over all tiles, call cb on each tile in the viewport
         var drawViewport = function (cb) {
-            var i, j, x, y;
+            var i : number, j : number, x : number, y : number;
 
             for (x = 0; x < this.VIEW_TILE_WIDTH; x++) {
                 for (y = 0; y < this.VIEW_TILE_HEIGHT; y++) {
@@ -255,8 +255,8 @@ class MapUI {
             var x : number, y : number;
 
             // First pass: draw tiles and units
-            drawViewport(function (i, j, x, y) {
-                var k, maxStrength, tile : MapMaker.Tile, unit, unitImage, units;
+            drawViewport(function (i : number, j : number, x : number, y : number) {
+                var k : number, maxStrength : number, tile : MapMaker.Tile, unit : Units.Unit, unitImage : HTMLImageElement, units : Units.Unit[];
 
                 tile = game.getTile([i, j]);
 
@@ -304,7 +304,7 @@ class MapUI {
                             }
                         } else {
                             // Individual is active, show it
-                            unit = game.activeUnit;
+                            unit = <Units.Unit> game.activeUnit;
                         }
                     } else {
                         // Nothing active here, show highest currentStrength
@@ -339,7 +339,7 @@ class MapUI {
                 if (game.activeUnit.targetCoords) {
                     // If there is a pathfinding search occurring (like from the user holding down the right click button), don't draw active path
                     if (!this.pathFindingSearch) {
-                        game.map.pathFinding(game.activeUnit, game.activeUnit.targetCoords, function (path) {
+                        game.map.pathFinding(game.activeUnit, game.activeUnit.targetCoords, function (path : number[][]) {
                             // This is to prevent an infinite loop of render() being called
                             this.drawPath(path, false);
                         }.bind(this));

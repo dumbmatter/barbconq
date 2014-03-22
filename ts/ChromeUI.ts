@@ -289,7 +289,7 @@ class ChromeUI {
         window.addEventListener("resize", resizeModal);
 
         // Close modal with a click outside of it, or escape key
-        closeModal = function (e) {
+        closeModal = function (e : Event) {
             e.stopPropagation();
 
             modal.classList.remove("modal-active");
@@ -302,12 +302,12 @@ class ChromeUI {
             modal.removeEventListener("click", preventCloseModal);
             document.removeEventListener("keydown", closeModalEsc);
         }
-        closeModalEsc = function (e) {
+        closeModalEsc = function (e : KeyboardEvent) {
             if (e.keyCode === 27) { // escape
                 closeModal(e);
             }
         };
-        preventCloseModal = function (e) {
+        preventCloseModal = function (e : Event) {
             e.stopPropagation();
         }
         modal.addEventListener("click", preventCloseModal);

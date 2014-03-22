@@ -1332,14 +1332,16 @@ var MapMaker;
 
             // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
             easystar.findPath(unit.coords[1], unit.coords[0], targetCoords[1], targetCoords[0], function (path) {
-                var i;
+                var i, pathArray;
 
                 if (path) {
+                    // Fix coord labels
+                    pathArray = [];
                     for (i = 0; i < path.length; i++) {
-                        path[i] = [path[i].y, path[i].x]; // Swap back rows/cols from easystar
+                        pathArray[i] = [path[i].y, path[i].x]; // Swap back rows/cols from easystar
                     }
                 }
-                cb(path);
+                cb(pathArray);
             });
 
             // Not sure why the setTimeout is necessary (the easystar readme says to do it), but I get weird errors from easystar if it's not like this

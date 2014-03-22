@@ -3,11 +3,11 @@
 basic barb AI
   Game.moveUnits
 
-barb UI
-  Units.countMovementToCoords is getting really messy and has too much UI stuff there. need a better general concept of delays/movement/UI updating
-
 rate of barb generation in non-visible tiles
   should increase with turns?
+
+barb city
+  barb AI: if in city, stay there
 
 unit tests for grouped units?
   mock Controller, MapUI, ChromeUI?
@@ -41,10 +41,6 @@ terrain effects
 keyboard shortcuts
   enter: if not end of turn, cycle through units
     should allow you to let unit continue on path
-
-typescript live compile
-  typescript -w
-  "Watch input files."
 
 typescript --noImplicitAny
 
@@ -122,9 +118,6 @@ UI POLISH
   currently, all click events pass through transparency. in civ4, it's only dragging when right click is held. allowing normal left and right clicks can lead to a lot of mis-clicks.
   limit number of entries that can be shown in hover-box
 
-fog of war
-  range should change depending on hills/forests/peaks in view or slightly out of view
-
 # Barbarian Conquest (barbconq)
 
 Mode with just your units, barbarian units, and one barbarian city
@@ -165,6 +158,11 @@ monetization ideas
   adsense panel on the side of the screen. put intro/manual content in HTML as divs to hide/show in game, for both SEO and adsense
 
 # Nice to have
+
+fog of war
+  range should change depending on hills/forests/peaks in view or slightly out of view
+
+Units.countMovementToCoords is getting really messy and has too much UI stuff there. need a better general concept of delays/movement/UI updating
 
 pathfinding
   point towards water off screen, and it'll actually go there! need to cancel routes when it becomes clear target is not reachable

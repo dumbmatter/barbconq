@@ -55,16 +55,17 @@ module MapMaker {
             easystar.setTileCost(2, 2);
 
             // Note that easystar coords are (x=col, y=row), so I have to switch things around since all the c4c internal coords are the opposite.
-            easystar.findPath(unit.coords[1], unit.coords[0], targetCoords[1], targetCoords[0], function (path) {
-                var i : number;
+            easystar.findPath(unit.coords[1], unit.coords[0], targetCoords[1], targetCoords[0], function (path : {x : number; y : number}[]) {
+                var i : number, pathArray : number[][];
 
                 if (path) {
                     // Fix coord labels
+                    pathArray = [];
                     for (i = 0; i < path.length; i++) {
-                        path[i] = [path[i].y, path[i].x]; // Swap back rows/cols from easystar
+                        pathArray[i] = [path[i].y, path[i].x]; // Swap back rows/cols from easystar
                     }
                 }
-                cb(path);
+                cb(pathArray);
             });
 
             // Not sure why the setTimeout is necessary (the easystar readme says to do it), but I get weird errors from easystar if it's not like this
@@ -115,7 +116,7 @@ module MapMaker {
             }
 
             // Loop through units, set visibility
-            Object.keys(game.units[config.PLAYER_ID]).forEach(function (id) {
+            Object.keys(game.units[config.PLAYER_ID]).forEach(function (id : number) {
                 var i : number, j : number, radius : number, unit : Units.Unit;
 
                 unit = game.units[config.PLAYER_ID][id];
