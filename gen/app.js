@@ -1121,7 +1121,7 @@ var MapUI = (function () {
             }.bind(this));
 
             // Highlight active unit
-            if (game.activeUnit && game.map.visibility[game.activeUnit.coords[0]][game.activeUnit.coords[1]]) {
+            if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
                 x = game.activeUnit.coords[1] - leftTile;
                 y = game.activeUnit.coords[0] - topTile;
 
