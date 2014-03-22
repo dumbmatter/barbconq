@@ -73,6 +73,7 @@ class Game {
         }
 
         this.turn++;
+        this.turnID = 0;
         chromeUI.onNewTurn();
         this.map.updateVisibility();
 
@@ -80,7 +81,7 @@ class Game {
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
-                if (!this.map.visibility[i][j] && Math.random() < 0.5) {
+                if (!this.map.visibility[i][j] && Math.random() < 0.01) {
                     tile = this.getTile([i, j], false);
 
                     // Span land unit
@@ -157,14 +158,23 @@ class Game {
                 // INDIVIDUAL UNITS
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
+                    if (unit.currentMovement > 0 && !unit.skippedTurn) {
+                        unit.activate();
 
-                    // Attack with >25% chance of winning
-                    // Move towards weaker unit
-                    // Move away from stronger unit
-                    // Hurt, so fortify until healed
-                    // Move randomly
-                    unit.activate();
-                    unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                        // Attack with >25% chance of winning
+
+                        // Move towards weaker unit
+
+                        // Move away from stronger unit
+
+                        // Hurt, so fortify until healed
+
+                        // Move randomly
+                        setTimeout(function () {
+                            unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                        }, config.UNIT_MOVEMENT_UI_DELAY);
+                        return true;
+                    }
                 }
             } else {
                 // Should auto-move non-barb AI units here

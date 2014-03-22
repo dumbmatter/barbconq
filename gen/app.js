@@ -1510,14 +1510,13 @@ var MapMaker;
                             units: [],
                             lastSeenState: null
                         };
-
                         // Features
-                        if (Math.random() < 0.2) {
-                            this.tiles[i][j].features.push("hills");
+                        /*                        if (Math.random() < 0.2) {
+                        this.tiles[i][j].features.push("hills");
                         }
                         if (Math.random() < 0.3) {
-                            this.tiles[i][j].features.push("forest");
-                        }
+                        this.tiles[i][j].features.push("forest");
+                        }*/
                     } else {
                         this.tiles[i][j] = {
                             terrain: "sea",
@@ -1603,6 +1602,7 @@ var Game = (function () {
         }
 
         this.turn++;
+        this.turnID = 0;
         chromeUI.onNewTurn();
         this.map.updateVisibility();
 
@@ -1610,7 +1610,7 @@ var Game = (function () {
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
-                if (!this.map.visibility[i][j] && Math.random() < 0.5) {
+                if (!this.map.visibility[i][j] && Math.random() < 0.01) {
                     tile = this.getTile([i, j], false);
 
                     // Span land unit
@@ -1677,14 +1677,19 @@ var Game = (function () {
             } else if (i === config.BARB_ID) {
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
+                    if (unit.currentMovement > 0 && !unit.skippedTurn) {
+                        unit.activate();
 
-                    // Attack with >25% chance of winning
-                    // Move towards weaker unit
-                    // Move away from stronger unit
-                    // Hurt, so fortify until healed
-                    // Move randomly
-                    unit.activate();
-                    unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                        // Attack with >25% chance of winning
+                        // Move towards weaker unit
+                        // Move away from stronger unit
+                        // Hurt, so fortify until healed
+                        // Move randomly
+                        setTimeout(function () {
+                            unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                        }, config.UNIT_MOVEMENT_UI_DELAY);
+                        return true;
+                    }
                 }
             } else {
                 // Should auto-move non-barb AI units here
@@ -1975,13 +1980,34 @@ var Units;
                     if (!attacker || !attacker.group) {
                         // After delay, move to next unit
                         game.activeUnit = null;
-                        game.moveUnits();
+
+                        // Handle user and AI units differently
+                        if (game.turnID === config.PLAYER_ID) {
+                            game.moveUnits();
+                        } else {
+                            // Move only after a delay
+                            setTimeout(function () {
+                                game.moveUnits();
+                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                        }
                     } else {
                         // If unit is in a group and moves are used up after an attack while enemies still remain on attacked tile, leave the group
                         attacker.group.remove(attacker.id); // Will activate rest of group
-                    }
 
+                        // Handle user and AI units differently
+                        if (game.turnID !== config.PLAYER_ID) {
+                            setTimeout(function () {
+                                game.moveUnits();
+                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                        }
+                    }
                     atEnd();
+                }, config.UNIT_MOVEMENT_UI_DELAY);
+            } else if (game.turnID !== config.PLAYER_ID) {
+                // For AI units, need to force move again, even if currentMovement > 0
+                atEnd();
+                setTimeout(function () {
+                    game.moveUnits();
                 }, config.UNIT_MOVEMENT_UI_DELAY);
             } else {
                 atEnd();

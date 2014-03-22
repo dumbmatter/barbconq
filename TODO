@@ -1,9 +1,12 @@
 # Major current tasks
 
 basic barb AI
-  in Game.moveUnits
-  Game.moveUnits is currently broken - need more robust turn system
-  Don't call Game.moveUnits inline without checking if game.turnID === config.PLAYER_ID?
+  Game.moveUnits
+    handle case for re-activating unit with 2 moves-  don't center map
+
+barb UI
+  don't allow user to move them
+  pause UI before moving
 
 rate of barb generation in non-visible tiles
   should increase with turns?

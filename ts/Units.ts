@@ -193,13 +193,33 @@ module Units {
                     if (!attacker || !attacker.group) {
                         // After delay, move to next unit
                         game.activeUnit = null;
-                        game.moveUnits();
+
+                        // Handle user and AI units differently
+                        if (game.turnID === config.PLAYER_ID) {
+                            game.moveUnits();
+                        } else {
+                            // Move only after a delay
+                            setTimeout(function () {
+                                game.moveUnits();
+                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                        }
                     } else {
                         // If unit is in a group and moves are used up after an attack while enemies still remain on attacked tile, leave the group
                         attacker.group.remove(attacker.id); // Will activate rest of group
+                        // Handle user and AI units differently
+                        if (game.turnID !== config.PLAYER_ID) {
+                            setTimeout(function () {
+                                game.moveUnits();
+                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                        }
                     }
-
                     atEnd();
+                }, config.UNIT_MOVEMENT_UI_DELAY);
+            } else if (game.turnID !== config.PLAYER_ID) {
+                // For AI units, need to force move again, even if currentMovement > 0
+                atEnd();
+                setTimeout(function () {
+                    game.moveUnits();
                 }, config.UNIT_MOVEMENT_UI_DELAY);
             } else {
                 atEnd();
