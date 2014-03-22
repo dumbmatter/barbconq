@@ -9,7 +9,6 @@ modals
     new game on separate html page, instructions auto show on first game
 
 show move numbers on top of path
-  first, count movement depending on tile correctly in Unit.countMovementToCoords
 
 some UI display of battle results
   sound

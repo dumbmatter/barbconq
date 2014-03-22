@@ -1851,10 +1851,17 @@ var Units;
         // Last two arguments are only for the special case of attacking with a group but not taking the tile because more enemies remain. "attacker" should be the same as "this", but "this" is UnitOrGroup so the types don't match up.
         UnitOrGroup.prototype.countMovementToCoords = function (coords, attacker) {
             if (typeof attacker === "undefined") { attacker = null; }
-            var atEnd;
+            var atEnd, movementCost, tile;
+
+            // Movement cost based on terrain
+            tile = game.getTile(coords);
+            movementCost = 1;
+            if (tile.features.indexOf("hills") > 0 || tile.features.indexOf("forest") > 0) {
+                movementCost = 2;
+            }
 
             // Keep track of unit movement (applies even if the unit fights but does not move)
-            this.currentMovement -= 1; // Should depend on terrain/improvements
+            this.currentMovement -= movementCost;
 
             // To update UI stuff after all movement things are done
             atEnd = function () {
