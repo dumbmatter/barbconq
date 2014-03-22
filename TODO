@@ -1,12 +1,13 @@
 # Major current tasks
 
-barb generation in non-visible tiles
-
 basic barb AI
   is there anyone i can attack with >25% chance of winning? if so, attack
   is there any move that will bring me closer/further from someone i am stronger/weaker than? if so, make it
   am i hurt? if so, fortify/rest
   otherwise, move randomly
+
+rate of barb generation in non-visible tiles
+  should increase with turns?
 
 unit tests for grouped units?
   mock Controller, MapUI, ChromeUI?

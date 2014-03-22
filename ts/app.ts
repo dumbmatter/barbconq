@@ -82,18 +82,15 @@ function init() {
     [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
 
-    new Units.Scout(config.PLAYER_ID, [10, 20]);
+/*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);
+    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Spearman(config.PLAYER_ID, [10, 20]);
+/*    new Units.Spearman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
-    new Units.Chariot(config.BARB_ID, [10, 21]);
-
-    //var c = new Combat.Battle(u1, u2);
-    //c.fight();
+    new Units.Chariot(config.BARB_ID, [10, 21]);*/
 
     game.newTurn();
 }

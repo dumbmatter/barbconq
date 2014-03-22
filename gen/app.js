@@ -1595,26 +1595,41 @@ var Game = (function () {
     };
 
     Game.prototype.newTurn = function () {
-        var i, j, unit, group;
+        var group, i, j, u, unit, unitTypes, tile;
 
         // See if anything still has to be moved, after the initial turn
-        if (game.turn > 0 && this.moveUnits()) {
+        if (this.turn > 0 && this.moveUnits()) {
             return;
         }
 
-        game.turn++;
+        this.turn++;
         chromeUI.onNewTurn();
-        game.map.updateVisibility();
+        this.map.updateVisibility();
+
+        // Randomly spawn barbs on non-visible tiles
+        unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
+        for (i = 0; i < this.map.rows; i++) {
+            for (j = 0; j < this.map.cols; j++) {
+                if (!this.map.visibility[i][j] && Math.random() < 0.5) {
+                    tile = this.getTile([i, j], false);
+
+                    // Span land unit
+                    if (tile.terrain === "snow" || tile.terrain === "desert" || tile.terrain === "tundra" || tile.terrain === "grassland" || tile.terrain === "plains") {
+                        new Units[Random.choice(unitTypes)](config.BARB_ID, [i, j]);
+                    }
+                }
+            }
+        }
 
         for (i = 0; i < this.units.length; i++) {
-            for (j in this.units[i]) {
-                unit = this.units[i][j];
+            for (u in this.units[i]) {
+                unit = this.units[i][u];
                 unit.skippedTurn = false;
                 unit.attacked = false;
                 unit.currentMovement = unit.movement;
             }
-            for (j in this.groups[i]) {
-                group = this.groups[i][j];
+            for (u in this.groups[i]) {
+                group = this.groups[i][u];
                 group.skippedTurn = false;
                 group.currentMovement = group.movement;
             }
@@ -1627,7 +1642,7 @@ var Game = (function () {
         var i, j, unit, group;
 
         for (i = 0; i < this.names.length; i++) {
-            game.turnID = i;
+            this.turnID = i;
 
             // User
             if (i === config.PLAYER_ID) {
@@ -2834,18 +2849,16 @@ function init() {
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
     [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
-    new Units.Scout(config.PLAYER_ID, [10, 20]);
+    /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);
+    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Spearman(config.PLAYER_ID, [10, 20]);
+
+    /*    new Units.Spearman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
-    new Units.Chariot(config.BARB_ID, [10, 21]);
-
-    //var c = new Combat.Battle(u1, u2);
-    //c.fight();
+    new Units.Chariot(config.BARB_ID, [10, 21]);*/
     game.newTurn();
 }
 
