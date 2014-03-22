@@ -75,10 +75,10 @@ console.log(this.log);
             // Play sound and show event
             if (this.units[i].owner === config.PLAYER_ID) {
                 assets.battleWon.play();
-                chromeUI.eventLog("Your _ killed a barbarian _.", "good");
+                chromeUI.eventLog("Your " + this.units[i].type + " killed a barbarian " + this.units[j].type + ".", "good");
             } else {
                 assets.battleLost.play();
-                chromeUI.eventLog("Your _ was killed by a barbarian _.", "bad");
+                chromeUI.eventLog("Your " + this.units[j].type + " was killed by a barbarian " + this.units[i].type + ".", "bad");
             }
 
             // Loser gets deleted
