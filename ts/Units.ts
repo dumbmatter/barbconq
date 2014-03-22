@@ -70,7 +70,7 @@ module Units {
         }
 
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
-        activate(centerDisplay : boolean = true, autoMoveTowardsTarget : boolean = false) {
+        activate(centerViewport : boolean = true, autoMoveTowardsTarget : boolean = false) {
             // Deactivate current active unit, if there is one
             if (game.activeUnit) {
                 game.activeUnit.active = false;
@@ -87,7 +87,7 @@ module Units {
             // Activate this unit
             this.active = true;
             game.activeUnit = this;
-            if (centerDisplay) {
+            if (centerViewport) {
                 mapUI.goToCoords(this.coords);
             }
 
@@ -217,10 +217,9 @@ module Units {
                 }, config.UNIT_MOVEMENT_UI_DELAY);
             } else if (game.turnID !== config.PLAYER_ID) {
                 // For AI units, need to force move again, even if currentMovement > 0
+                // No UI_DELAY needed here
                 atEnd();
-                setTimeout(function () {
-                    game.moveUnits();
-                }, config.UNIT_MOVEMENT_UI_DELAY);
+                game.moveUnits();
             } else {
                 atEnd();
             }

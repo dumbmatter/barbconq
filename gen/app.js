@@ -1639,7 +1639,7 @@ var Game = (function () {
     };
 
     Game.prototype.moveUnits = function () {
-        var i, j, unit, group;
+        var centerViewport, i, j, unit, group;
 
         for (i = this.turnID; i < this.names.length; i++) {
             if (i === config.PLAYER_ID) {
@@ -1678,7 +1678,9 @@ var Game = (function () {
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
                     if (unit.currentMovement > 0 && !unit.skippedTurn) {
-                        unit.activate();
+                        centerViewport = !(game.activeUnit && game.activeUnit.id === unit.id); // Don't center viewport if unit is already active (multi-move)
+                        console.log(centerViewport);
+                        unit.activate(centerViewport);
 
                         // Attack with >25% chance of winning
                         // Move towards weaker unit
@@ -1854,8 +1856,8 @@ var Units;
         });
 
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
-        UnitOrGroup.prototype.activate = function (centerDisplay, autoMoveTowardsTarget) {
-            if (typeof centerDisplay === "undefined") { centerDisplay = true; }
+        UnitOrGroup.prototype.activate = function (centerViewport, autoMoveTowardsTarget) {
+            if (typeof centerViewport === "undefined") { centerViewport = true; }
             if (typeof autoMoveTowardsTarget === "undefined") { autoMoveTowardsTarget = false; }
             // Deactivate current active unit, if there is one
             if (game.activeUnit) {
@@ -1873,7 +1875,7 @@ var Units;
             // Activate this unit
             this.active = true;
             game.activeUnit = this;
-            if (centerDisplay) {
+            if (centerViewport) {
                 mapUI.goToCoords(this.coords);
             }
 
@@ -2006,9 +2008,10 @@ var Units;
             } else if (game.turnID !== config.PLAYER_ID) {
                 // For AI units, need to force move again, even if currentMovement > 0
                 atEnd();
-                setTimeout(function () {
-                    game.moveUnits();
-                }, config.UNIT_MOVEMENT_UI_DELAY);
+
+                //                setTimeout(function () {
+                game.moveUnits();
+                //                }, config.UNIT_MOVEMENT_UI_DELAY);
             } else {
                 atEnd();
             }

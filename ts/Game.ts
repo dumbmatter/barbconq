@@ -111,7 +111,7 @@ class Game {
     }
 
     moveUnits() : boolean {
-        var i : number, j : string, unit : Units.Unit, group : Units.Group;
+        var centerViewport : boolean, i : number, j : string, unit : Units.Unit, group : Units.Group;
 
         for (i = this.turnID; i < this.names.length; i++) {
             if (i === config.PLAYER_ID) {
@@ -159,7 +159,8 @@ class Game {
                 for (j in this.units[i]) {
                     unit = this.units[i][j];
                     if (unit.currentMovement > 0 && !unit.skippedTurn) {
-                        unit.activate();
+                        centerViewport = !(game.activeUnit && game.activeUnit.id === unit.id); // Don't center viewport if unit is already active (multi-move)
+                        unit.activate(centerViewport);
 
                         // Attack with >25% chance of winning
 
