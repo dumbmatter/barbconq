@@ -157,6 +157,8 @@ module Units {
 
         // Check for valid coords before calling. Returns true when successful, false when "maybe successful" (battle takes over because enemy is on coords)
         moveToCoords(coords : number[]) : boolean {
+            var city : Cities.City;
+
             // Reset skippedTurn status
             this.skippedTurn = false;
 
@@ -166,6 +168,12 @@ module Units {
 
             // Move the unit(s) in the map data structure
             this.moveOnMap(coords);
+
+            // City to capture?
+            city = game.getTile(coords).city;
+            if (city && city.owner !== this.owner) {
+                city.capture(this.owner);
+            }
 
             // Keep track of movement locally
             this.coords = coords;

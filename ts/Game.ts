@@ -76,7 +76,7 @@ class Game {
         }
 
         this.turn++;
-        this.turnID = 0;
+        this.turnID = this.turn === 1 ? 1 : 0; // Skip barbs first turn
         chromeUI.onNewTurn();
         this.map.updateVisibility();
 
