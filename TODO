@@ -1,10 +1,9 @@
 # Major current tasks
 
 basic barb AI
-  is there anyone i can attack with >25% chance of winning? if so, attack
-  is there any move that will bring me closer/further from someone i am stronger/weaker than? if so, make it
-  am i hurt? if so, fortify/rest
-  otherwise, move randomly
+  in Game.moveUnits
+  Game.moveUnits is currently broken - need more robust turn system
+  Don't call Game.moveUnits inline without checking if game.turnID === config.PLAYER_ID?
 
 rate of barb generation in non-visible tiles
   should increase with turns?
@@ -107,6 +106,9 @@ minify assets
 modularize css better
   use one of those newfangled preprocessors?
 
+get rid of mini-islands (unreachable tiles)
+  in map generator, run pathfinder from each land tile to the center. if can't find, turn it to water.
+
 UI POLISH
   center minimap on its canvas when it is not the correct aspect ratio
   mapUI.goToCoords should be smooth
@@ -116,6 +118,7 @@ UI POLISH
   when moving through units in Game.moveUnits, should always go through all the units on the current tile before moving on to other units
   When moving to a new tile, fog of war should dissipate immediately, not after delay
   currently, all click events pass through transparency. in civ4, it's only dragging when right click is held. allowing normal left and right clicks can lead to a lot of mis-clicks.
+  limit number of entries that can be shown in hover-box
 
 fog of war
   range should change depending on hills/forests/peaks in view or slightly out of view

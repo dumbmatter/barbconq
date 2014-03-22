@@ -112,11 +112,10 @@ class Game {
     moveUnits() : boolean {
         var i : number, j : string, unit : Units.Unit, group : Units.Group;
 
-        for (i = 0; i < this.names.length; i++) {
-            this.turnID = i;
-
-            // User
+        for (i = this.turnID; i < this.names.length; i++) {
             if (i === config.PLAYER_ID) {
+                // User
+
                 // UNIT GROUPS
                 // First look for ones not on a path towards targetCoords
                 for (j in this.groups[i]) {
@@ -154,12 +153,27 @@ class Game {
                         return true;
                     }
                 }
+            } else if (i === config.BARB_ID) {
+                // INDIVIDUAL UNITS
+                for (j in this.units[i]) {
+                    unit = this.units[i][j];
+
+                    // Attack with >25% chance of winning
+                    // Move towards weaker unit
+                    // Move away from stronger unit
+                    // Hurt, so fortify until healed
+                    // Move randomly
+                    unit.activate();
+                    unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                }
             } else {
-                // Should auto-move AI units here
+                // Should auto-move non-barb AI units here
             }
+
+            this.turnID += 1;
         }
 
-        // If we made it this far, everybody has moved
+        // If we made it this far, all of the user's units have moved
         chromeUI.onMovesDone();
         mapUI.render();
         return false;

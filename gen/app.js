@@ -1641,10 +1641,7 @@ var Game = (function () {
     Game.prototype.moveUnits = function () {
         var i, j, unit, group;
 
-        for (i = 0; i < this.names.length; i++) {
-            this.turnID = i;
-
-            // User
+        for (i = this.turnID; i < this.names.length; i++) {
             if (i === config.PLAYER_ID) {
                 for (j in this.groups[i]) {
                     group = this.groups[i][j];
@@ -1677,12 +1674,26 @@ var Game = (function () {
                         return true;
                     }
                 }
+            } else if (i === config.BARB_ID) {
+                for (j in this.units[i]) {
+                    unit = this.units[i][j];
+
+                    // Attack with >25% chance of winning
+                    // Move towards weaker unit
+                    // Move away from stronger unit
+                    // Hurt, so fortify until healed
+                    // Move randomly
+                    unit.activate();
+                    unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                }
             } else {
-                // Should auto-move AI units here
+                // Should auto-move non-barb AI units here
             }
+
+            this.turnID += 1;
         }
 
-        // If we made it this far, everybody has moved
+        // If we made it this far, all of the user's units have moved
         chromeUI.onMovesDone();
         mapUI.render();
         return false;
@@ -2788,7 +2799,7 @@ var config = {
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
-    DISABLE_FOG_OF_WAR: false
+    DISABLE_FOG_OF_WAR: true
 };
 
 /*var assets : any = {};
