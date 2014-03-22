@@ -60,6 +60,9 @@ a:hover {
   border-width: 0 0 5px 2px;
   padding-top: 5px; /* Match with +5 margin-top in p */
 }
+#top-right-box p {
+  pointer-events: auto;
+}
 
 #bottom-info {
   position: absolute;

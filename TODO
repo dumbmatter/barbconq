@@ -1,12 +1,12 @@
 # Major current tasks
 
-modals
-  How to do instructions/new game for new users?
-    new game on separate html page, instructions auto show on first game
+barb generation in non-visible tiles
 
-some UI display of battle results
-  sound
-  not necessarily full battle details, but some text
+basic barb AI
+  is there anyone i can attack with >25% chance of winning? if so, attack
+  is there any move that will bring me closer/further from someone i am stronger/weaker than? if so, make it
+  am i hurt? if so, fortify/rest
+  otherwise, move randomly
 
 unit tests for grouped units?
   mock Controller, MapUI, ChromeUI?
@@ -23,15 +23,14 @@ unit tests for grouped units?
           https://github.com/mozilla/source-map/issues/106
           NO, problem is not source-map. it's the input to source-map: karma's reporter.js isn't getting column numbers. why? not sure. maybe it'll work if i can make it error-free until real tests run?
 
-basic barb AI
-  is there anyone i can attack with >25% chance of winning? if so, attack
-  is there any move that will bring me closer/further from someone i am stronger/weaker than? if so, make it
-  am i hurt? if so, fortify/rest
-  otherwise, move randomly
-
-barb generation in non-visible tiles
-
 # Minor current tasks
+
+How to do instructions/new game for new users?
+  new game on separate html page, instructions auto show on first game
+
+some UI display of battle results
+  sound
+  not necessarily full battle details, but some text
 
 terrain effects
   movement
@@ -115,6 +114,7 @@ UI POLISH
     should there be any auto-attack? even for unit right outside city the turn before, should it just generally wake up unit that is near enemy?
   when moving through units in Game.moveUnits, should always go through all the units on the current tile before moving on to other units
   When moving to a new tile, fog of war should dissipate immediately, not after delay
+  currently, all click events pass through transparency. in civ4, it's only dragging when right click is held. allowing normal left and right clicks can lead to a lot of mis-clicks.
 
 fog of war
   range should change depending on hills/forests/peaks in view or slightly out of view
