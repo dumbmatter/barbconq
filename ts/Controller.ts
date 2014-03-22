@@ -115,7 +115,7 @@ class Controller {
             e.preventDefault();
         });
         mapUI.canvas.addEventListener("mousedown", function (e : MouseEvent) {
-            var coords : number[], mouseMoveWhileDown, mouseUp;
+            var coords : number[], mouseMoveWhileDown : (e : MouseEvent) => void, mouseUp : (e : MouseEvent) => void;
 
             if (e.button === 2 && game.activeUnit) { // Right click only! Active unit only!
                 e.preventDefault();
@@ -285,7 +285,7 @@ class Controller {
         });
 
         mapUI.miniCanvas.addEventListener("mousedown", function (e : MouseEvent) {
-            var coords : number[], miniMapPan, miniMapPanStop;
+            var coords : number[], miniMapPan : (e : MouseEvent) => void, miniMapPanStop : (e : MouseEvent) => void;
 
             if (e.button === 0) { // Left click only!
                 e.preventDefault();

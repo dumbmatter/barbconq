@@ -265,7 +265,7 @@ class ChromeUI {
     }
 
     showModal(id : string) {
-        var closeModal, closeModalEsc, modal, modalBackground, modalCloseX, preventCloseModal, resizeModal;
+        var closeModal : (e : Event) => void, closeModalEsc : (e : KeyboardEvent) => void, modal : HTMLElement, modalBackground : HTMLElement, modalCloseX : HTMLElement, preventCloseModal : (e : Event) => void, resizeModal : () => void;
 
         // Modal content
         modal = document.getElementById(id);
