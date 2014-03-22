@@ -267,6 +267,15 @@ a:hover {
   background: rgba(0, 0, 0, 0.6);
   z-index: 100;
 }
+.modal-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0 10px;
+  cursor: pointer;
+  font-size: 36px;
+  color: #99e6ff;
+}
 .modal-inactive {
   display: none;
 }
@@ -274,6 +283,7 @@ a:hover {
   display: block;
 }
 .modal {
+  position: relative;
   overflow-y: auto;
   max-width: 600px;
   margin: 20px auto;
