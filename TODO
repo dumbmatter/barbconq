@@ -4,8 +4,20 @@ basic barb AI
   Game.moveUnits
 
 barb UI
+  shouldn't show unit icons if it's not the user's turn
   don't allow user to move them
   pause UI before moving
+  seems they sometimes get desynchronized from tiles?
+    for (i = 0; i < game.map.rows; i++) {
+        for (j = 0; j < game.map.cols; j++) {
+            tile = game.getTile([i, j], false);
+            tile.units.forEach(function (unit) {
+                console.log(unit);
+                console.log(unit.coords);
+                console.log([i, j]);
+            });
+        }
+    }
   how to handle barbs off screen? need a way to not show on map and just move instantly
     only show active unit highlight in MapUI if active unit is on visible tile
     only have delay after movement if unit is either moving to or from a visible tile

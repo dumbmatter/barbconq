@@ -1121,7 +1121,7 @@ var MapUI = (function () {
             }.bind(this));
 
             // Highlight active unit
-            if (game.activeUnit) {
+            if (game.activeUnit && game.map.visibility[game.activeUnit.coords[0]][game.activeUnit.coords[1]]) {
                 x = game.activeUnit.coords[1] - leftTile;
                 y = game.activeUnit.coords[0] - topTile;
 
@@ -1613,7 +1613,7 @@ var Game = (function () {
                 if (!this.map.visibility[i][j] && Math.random() < 0.01) {
                     tile = this.getTile([i, j], false);
 
-                    // Span land unit
+                    // Spawn land unit
                     if (tile.terrain === "snow" || tile.terrain === "desert" || tile.terrain === "tundra" || tile.terrain === "grassland" || tile.terrain === "plains") {
                         new Units[Random.choice(unitTypes)](config.BARB_ID, [i, j]);
                     }
@@ -1687,7 +1687,11 @@ var Game = (function () {
                         // Hurt, so fortify until healed
                         // Move randomly
                         setTimeout(function () {
-                            unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                            if (Math.random() < 0.75) {
+                                unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                            } else {
+                                unit.skipTurn();
+                            }
                         }, config.UNIT_MOVEMENT_UI_DELAY);
                         return true;
                     }
@@ -1885,7 +1889,7 @@ var Units;
         // Should be able to make this general enough to handle all units
         // Handle fight initiation here, if move goes to tile with enemy on it
         UnitOrGroup.prototype.move = function (direction) {
-            var newCoords;
+            var newCoords, newTerrain;
 
             // Short circuit if no moves are available
             if (this.currentMovement <= 0) {
@@ -1923,7 +1927,17 @@ var Units;
 
             // Don't walk off the map!
             if (game.map.validCoords(newCoords)) {
-                this.moveToCoords(newCoords);
+                // Stay on land!
+                newTerrain = game.getTile(newCoords, false).terrain;
+                if (newTerrain === "snow" || newTerrain === "desert" || newTerrain === "tundra" || newTerrain === "grassland" || newTerrain === "plains") {
+                    this.moveToCoords(newCoords);
+                    return;
+                }
+            }
+
+            // If made it this far, no move was made
+            if (game.turnID !== config.PLAYER_ID) {
+                game.moveUnits();
             }
         };
 
@@ -2825,7 +2839,7 @@ var config = {
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
-    DISABLE_FOG_OF_WAR: false
+    DISABLE_FOG_OF_WAR: true
 };
 
 /*var assets : any = {};

@@ -327,7 +327,7 @@ class MapUI {
             }.bind(this));
 
             // Highlight active unit
-            if (game.activeUnit) {
+            if (game.activeUnit && game.map.visibility[game.activeUnit.coords[0]][game.activeUnit.coords[1]]) {
                 x = game.activeUnit.coords[1] - leftTile;
                 y = game.activeUnit.coords[0] - topTile;
 

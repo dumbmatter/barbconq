@@ -98,7 +98,7 @@ module Units {
         // Should be able to make this general enough to handle all units
         // Handle fight initiation here, if move goes to tile with enemy on it
         move(direction : string) {
-            var newCoords : number[];
+            var newCoords : number[], newTerrain : string;
 
             // Short circuit if no moves are available
             if (this.currentMovement <= 0) {
@@ -136,8 +136,18 @@ module Units {
 
             // Don't walk off the map!
             if (game.map.validCoords(newCoords)) {
-                this.moveToCoords(newCoords);
+                // Stay on land!
+                newTerrain = game.getTile(newCoords, false).terrain;
+                if (newTerrain === "snow" || newTerrain === "desert" || newTerrain === "tundra" || newTerrain === "grassland" || newTerrain === "plains") {
+                    this.moveToCoords(newCoords);
+                    return;
+                }
             }
+
+            // If made it this far, no move was made
+            if (game.turnID !== config.PLAYER_ID) {
+                game.moveUnits();
+            }            
         }
 
         // Needs to be defined separately for individual and group

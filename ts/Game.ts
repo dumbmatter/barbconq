@@ -84,7 +84,7 @@ class Game {
                 if (!this.map.visibility[i][j] && Math.random() < 0.01) {
                     tile = this.getTile([i, j], false);
 
-                    // Span land unit
+                    // Spawn land unit
                     if (tile.terrain === "snow" || tile.terrain === "desert" || tile.terrain === "tundra" || tile.terrain === "grassland" || tile.terrain === "plains") {
                         new Units[Random.choice(unitTypes)](config.BARB_ID, [i, j]);
                     }
@@ -172,7 +172,11 @@ class Game {
 
                         // Move randomly
                         setTimeout(function () {
-                            unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                            if (Math.random() < 0.75) {
+                                unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                            } else {
+                                unit.skipTurn();
+                            }
                         }, config.UNIT_MOVEMENT_UI_DELAY);
                         return true;
                     }
