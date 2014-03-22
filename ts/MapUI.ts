@@ -131,7 +131,7 @@ class MapUI {
 
                 // Draw move numbers on top of path
                 (function () {
-                    var currentMovement : number, i : number, movement : number, movementCost : number, numTurns : number, pixels : number[];
+                    var currentMovement : number, drawNumber : (i : number) => void, i : number, movement : number, movementCost : number, numTurns : number;
 
                     // Initialize with current values
                     movement = game.activeUnit.movement;
@@ -149,6 +149,18 @@ class MapUI {
                     this.context.textAlign = "center";
                     this.context.textBaseline = "middle";
                     this.context.font = "30px sans-serif";
+                    drawNumber = function (i : number) {
+                        var pixels : number[]
+
+                        pixels = this.coordsToPixels(path[i][0], path[i][1]);
+
+                        if (units.defender && i === path.length - 1) {
+                            this.context.fillStyle = "#f00";
+                        } else {
+                            this.context.fillStyle = "#ccc";
+                        }
+                        this.context.fillText(numTurns, pixels[0], pixels[1]);
+                    }.bind(this);
 
                     for (i = 1; i < path.length; i++) { // Skip the first one
                         movementCost = game.map.tileMovementCost(path[i - 1], path[i]);
@@ -156,17 +168,15 @@ class MapUI {
                         if (currentMovement <= 0) {
                             numTurns += 1;
                             currentMovement = movement;
-
-                            pixels = this.coordsToPixels(path[i][0], path[i][1]);
-
-                            if (units.defender && i === path.length - 1) {
-                                this.context.fillStyle = "#f00";
-                            } else {
-                                this.context.fillStyle = "#ccc";
-                            }
-                            this.context.fillText(numTurns, pixels[0], pixels[1]);
+                            drawNumber(i);
                         }
-                    };
+                    }
+
+                    // Add turns on the last tile if there is still remaining movement
+                    if (currentMovement < movement) { // Because they will be equal if currentMovement was reset in the last loop iteration above
+                        numTurns += 1;
+                        drawNumber(i - 1);
+                    }
                 }.bind(this)());
             }
         }.bind(this));

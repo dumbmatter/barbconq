@@ -911,7 +911,7 @@ var MapUI = (function () {
 
                 // Draw move numbers on top of path
                 (function () {
-                    var currentMovement, i, movement, movementCost, numTurns, pixels;
+                    var currentMovement, drawNumber, i, movement, movementCost, numTurns;
 
                     // Initialize with current values
                     movement = game.activeUnit.movement;
@@ -925,27 +925,38 @@ var MapUI = (function () {
                         numTurns = 0;
                     }
 
+                    // Universal text options
+                    this.context.textAlign = "center";
+                    this.context.textBaseline = "middle";
+                    this.context.font = "30px sans-serif";
+                    drawNumber = function (i) {
+                        var pixels;
+
+                        pixels = this.coordsToPixels(path[i][0], path[i][1]);
+
+                        if (units.defender && i === path.length - 1) {
+                            this.context.fillStyle = "#f00";
+                        } else {
+                            this.context.fillStyle = "#ccc";
+                        }
+                        this.context.fillText(numTurns, pixels[0], pixels[1]);
+                    }.bind(this);
+
                     for (i = 1; i < path.length; i++) {
                         movementCost = game.map.tileMovementCost(path[i - 1], path[i]);
                         currentMovement -= movementCost;
                         if (currentMovement <= 0) {
                             numTurns += 1;
                             currentMovement = movement;
-
-                            pixels = this.coordsToPixels(path[i][0], path[i][1]);
-
-                            if (units.defender && i === path.length - 1) {
-                                this.context.fillStyle = "#f00";
-                            } else {
-                                this.context.fillStyle = "#444";
-                            }
-                            this.context.textAlign = "center";
-                            this.context.textBaseline = "middle";
-                            this.context.font = "30px sans-serif";
-                            this.context.fillText(numTurns, pixels[0], pixels[1]);
+                            drawNumber(i);
                         }
                     }
-                    ;
+
+                    // Add turns on the last tile if there is still remaining movement
+                    if (currentMovement < movement) {
+                        numTurns += 1;
+                        drawNumber(i - 1);
+                    }
                 }.bind(this)());
             }
         }.bind(this));
