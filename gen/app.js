@@ -645,7 +645,7 @@ var ChromeUI = (function () {
         this.elBottomInfo.innerHTML = "";
         this.elBottomUnits.innerHTML = "";
 
-        if (game.activeUnit) {
+        if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
             // Update bottom-info
             if (activeUnit instanceof Units.Unit) {
                 this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
