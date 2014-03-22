@@ -270,7 +270,7 @@ a:hover {
 #modal-close {
   position: absolute;
   top: 5px;
-  right: 15px;
+  right: 15px; /* Reset via JS in ChromeUI.showModal to account for scrollbar on .modal */
   padding: 0 10px;
   cursor: pointer;
   font-size: 36px;

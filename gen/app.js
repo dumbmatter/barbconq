@@ -759,22 +759,28 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.showModal = function (id) {
-        var closeModal, closeModalEsc, modal, modalBackground, preventCloseModal, resizeModal;
+        var closeModal, closeModalEsc, modal, modalBackground, modalCloseX, preventCloseModal, resizeModal;
 
+        // Modal content
         modal = document.getElementById(id);
         modal.classList.add("modal-active");
         modal.classList.remove("modal-inactive");
 
-        // Set maximum height dynamically
-        resizeModal = function () {
-            modal.style.maxHeight = (window.innerHeight - 40) + "px";
-        };
-        resizeModal();
-        window.addEventListener("resize", resizeModal);
-
+        // Make visible
         modalBackground = document.getElementById("modal-background");
         modalBackground.classList.add("modal-active");
         modalBackground.classList.remove("modal-inactive");
+
+        // Close icon - position relative to scrollbar
+        modalCloseX = document.getElementById("modal-close");
+
+        // Set maximum height dynamically
+        resizeModal = function () {
+            modal.style.maxHeight = (window.innerHeight - 40) + "px";
+            modalCloseX.style.right = (modal.offsetWidth - modal.clientWidth - 2) + "px";
+        };
+        resizeModal();
+        window.addEventListener("resize", resizeModal);
 
         // Close modal with a click outside of it, or escape key
         closeModal = function (e) {
