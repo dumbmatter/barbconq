@@ -72,6 +72,13 @@ console.log(this.log);
             this.winner = i === 0 ? "attacker" : "defender";
             this.loser = j === 0 ? "attacker" : "defender";
 
+            // Play sound
+            if (this.units[i].owner === config.PLAYER_ID) {
+                assets.battleWon.play();
+            } else {
+                assets.battleLost.play();
+            }
+
             // Loser gets deleted
             this.units[j].delete(); // Delete the references we can
             this.units[j].currentStrength = 0; // So any outstanding references can see it's dead

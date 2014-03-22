@@ -8,7 +8,8 @@
 ///<reference path='Cities.ts'/>
 ///<reference path='Combat.ts'/>
 
-// Load easystar.js
+// JS libs
+declare var Howl : any;
 declare var EasyStar : any;
 var easystar : any = new EasyStar.js();
 
@@ -41,19 +42,31 @@ assets.hills.onload = function () {
 };*/
 
 function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
-    var name : string, numAssetsRemaining : number;
+    var afterEachAsset : () => void, name : string, numAssetsRemaining : number;
 
     numAssetsRemaining = Object.keys(assetsToLoad).length;
 
+    afterEachAsset = function () {
+        numAssetsRemaining -= 1;
+        if (numAssetsRemaining === 0) {
+            cb();
+        }
+    }
+
     assets = {};
+    assets.battleWon = new Howl({
+        urls: ["assets/battle-won.ogg", "assets/battle-won.mp3"]
+    });
+    assets.battleLost = new Howl({
+        urls: ["assets/battle-lost.ogg", "assets/battle-lost.mp3"]
+    });
+
     for (name in assetsToLoad) {
-        assets[name] = new Image();
-        assets[name].src = "assets/" + assetsToLoad[name];
-        assets[name].onload = function () {
-            numAssetsRemaining -= 1;
-            if (numAssetsRemaining === 0) {
-                cb();
-            }
+        if (assetsToLoad[name].indexOf(".png") >= 0) {
+            assets[name] = new Image();
+            assets[name].src = "assets/" + assetsToLoad[name];
+            assets[name].onload = afterEachAsset;
+        } else {
         }
     }
 }
@@ -100,18 +113,18 @@ function init() {
 loadAssets({
     hills: "terrain/hills.png",
     forest: "terrain/forest.png",
-    City: "white-tower.png",
-    CityCaptured: "tower-fall.png",
-    WhiteScout: "units/white/tread.png",
-    WhiteWarrior: "units/white/stone-axe.png",
-    WhiteArcher: "units/white/high-shot.png",
-    WhiteChariot: "units/white/horse-head.png",
-    WhiteSpearman: "units/white/spears.png",
-    WhiteAxeman: "units/white/battle-axe.png",
-    BlackScout: "units/black/tread.png",
-    BlackWarrior: "units/black/stone-axe.png",
-    BlackArcher: "units/black/high-shot.png",
-    BlackChariot: "units/black/horse-head.png",
-    BlackSpearman: "units/black/spears.png",
-    BlackAxeman: "units/black/battle-axe.png"
+    city: "white-tower.png",
+    cityCaptured: "tower-fall.png",
+    whiteScout: "units/white/tread.png",
+    whiteWarrior: "units/white/stone-axe.png",
+    whiteArcher: "units/white/high-shot.png",
+    whiteChariot: "units/white/horse-head.png",
+    whiteSpearman: "units/white/spears.png",
+    whiteAxeman: "units/white/battle-axe.png",
+    blackScout: "units/black/tread.png",
+    blackWarrior: "units/black/stone-axe.png",
+    blackArcher: "units/black/high-shot.png",
+    blackChariot: "units/black/horse-head.png",
+    blackSpearman: "units/black/spears.png",
+    blackAxeman: "units/black/battle-axe.png"
 }, init);

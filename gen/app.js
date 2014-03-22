@@ -1081,9 +1081,9 @@ var MapUI = (function () {
                 // Show city on tile
                 if (tile.city) {
                     if (tile.city.owner === config.PLAYER_ID) {
-                        cityImage = assets.CityCaptured;
+                        cityImage = assets.cityCaptured;
                     } else {
-                        cityImage = assets.City;
+                        cityImage = assets.city;
                     }
                     this.context.drawImage(cityImage, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
                 }
@@ -1122,9 +1122,9 @@ var MapUI = (function () {
                     }
 
                     if (unit.owner === config.BARB_ID) {
-                        unitImage = assets["Black" + unit.type];
+                        unitImage = assets["black" + unit.type];
                     } else {
-                        unitImage = assets["White" + unit.type];
+                        unitImage = assets["white" + unit.type];
                     }
                     this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX + 10, y * this.TILE_SIZE - tileOffsetY + 10);
                 }
@@ -2773,6 +2773,13 @@ var Combat;
             this.winner = i === 0 ? "attacker" : "defender";
             this.loser = j === 0 ? "attacker" : "defender";
 
+            // Play sound
+            if (this.units[i].owner === config.PLAYER_ID) {
+                assets.battleWon.play();
+            } else {
+                assets.battleLost.play();
+            }
+
             // Loser gets deleted
             this.units[j].delete(); // Delete the references we can
             this.units[j].currentStrength = 0; // So any outstanding references can see it's dead
@@ -2913,6 +2920,7 @@ var Combat;
 ///<reference path='Units.ts'/>
 ///<reference path='Cities.ts'/>
 ///<reference path='Combat.ts'/>
+
 var easystar = new EasyStar.js();
 
 // assets : {[name: string] : HTMLImageElement}
@@ -2943,20 +2951,32 @@ assets.Chariot.onload = init;
 };
 };*/
 function loadAssets(assetsToLoad, cb) {
-    var name, numAssetsRemaining;
+    var afterEachAsset, name, numAssetsRemaining;
 
     numAssetsRemaining = Object.keys(assetsToLoad).length;
 
+    afterEachAsset = function () {
+        numAssetsRemaining -= 1;
+        if (numAssetsRemaining === 0) {
+            cb();
+        }
+    };
+
     assets = {};
+    assets.battleWon = new Howl({
+        urls: ["assets/battle-won.ogg", "assets/battle-won.mp3"]
+    });
+    assets.battleLost = new Howl({
+        urls: ["assets/battle-lost.ogg", "assets/battle-lost.mp3"]
+    });
+
     for (name in assetsToLoad) {
-        assets[name] = new Image();
-        assets[name].src = "assets/" + assetsToLoad[name];
-        assets[name].onload = function () {
-            numAssetsRemaining -= 1;
-            if (numAssetsRemaining === 0) {
-                cb();
-            }
-        };
+        if (assetsToLoad[name].indexOf(".png") >= 0) {
+            assets[name] = new Image();
+            assets[name].src = "assets/" + assetsToLoad[name];
+            assets[name].onload = afterEachAsset;
+        } else {
+        }
     }
 }
 
@@ -3002,19 +3022,19 @@ function init() {
 loadAssets({
     hills: "terrain/hills.png",
     forest: "terrain/forest.png",
-    City: "white-tower.png",
-    CityCaptured: "tower-fall.png",
-    WhiteScout: "units/white/tread.png",
-    WhiteWarrior: "units/white/stone-axe.png",
-    WhiteArcher: "units/white/high-shot.png",
-    WhiteChariot: "units/white/horse-head.png",
-    WhiteSpearman: "units/white/spears.png",
-    WhiteAxeman: "units/white/battle-axe.png",
-    BlackScout: "units/black/tread.png",
-    BlackWarrior: "units/black/stone-axe.png",
-    BlackArcher: "units/black/high-shot.png",
-    BlackChariot: "units/black/horse-head.png",
-    BlackSpearman: "units/black/spears.png",
-    BlackAxeman: "units/black/battle-axe.png"
+    city: "white-tower.png",
+    cityCaptured: "tower-fall.png",
+    whiteScout: "units/white/tread.png",
+    whiteWarrior: "units/white/stone-axe.png",
+    whiteArcher: "units/white/high-shot.png",
+    whiteChariot: "units/white/horse-head.png",
+    whiteSpearman: "units/white/spears.png",
+    whiteAxeman: "units/white/battle-axe.png",
+    blackScout: "units/black/tread.png",
+    blackWarrior: "units/black/stone-axe.png",
+    blackArcher: "units/black/high-shot.png",
+    blackChariot: "units/black/horse-head.png",
+    blackSpearman: "units/black/spears.png",
+    blackAxeman: "units/black/battle-axe.png"
 }, init);
 //# sourceMappingURL=app.js.map

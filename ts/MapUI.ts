@@ -287,9 +287,9 @@ class MapUI {
                 // Show city on tile
                 if (tile.city) {
                     if (tile.city.owner === config.PLAYER_ID) {
-                        cityImage = assets.CityCaptured;
+                        cityImage = assets.cityCaptured;
                     } else {
-                        cityImage = assets.City;
+                        cityImage = assets.city;
                     }
                     this.context.drawImage(cityImage, x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY);
                 }
@@ -328,9 +328,9 @@ class MapUI {
                     }
 
                     if (unit.owner === config.BARB_ID) {
-                        unitImage = assets["Black" + unit.type];
+                        unitImage = assets["black" + unit.type];
                     } else {
-                        unitImage = assets["White" + unit.type];
+                        unitImage = assets["white" + unit.type];
                     }
                     this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX + 10, y * this.TILE_SIZE - tileOffsetY + 10);
                 }
