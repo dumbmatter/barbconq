@@ -88,7 +88,7 @@ module MapMaker {
             var i : number, tileUnits : Units.Unit[];
 
             // Delete old unit in map
-            tileUnits = game.getTile(unit.coords).units;
+            tileUnits = game.getTile(unit.coords, false).units;
             for (i = 0; i < tileUnits.length; i++) {
                 if (tileUnits[i].id === unit.id) {
                     tileUnits.splice(i, 1);
@@ -97,7 +97,7 @@ module MapMaker {
             }
 
             // Add unit at new tile
-            game.getTile(coords).units.push(unit);
+            game.getTile(coords, false).units.push(unit);
         }
 
         // Entries in output matrix are visible (1) or not visible (0).

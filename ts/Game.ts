@@ -177,7 +177,7 @@ class Game {
                             } else {
                                 unit.skipTurn();
                             }
-                        }, config.UNIT_MOVEMENT_UI_DELAY);
+                        }, unit.movementDelay());
                         return true;
                     }
                 }

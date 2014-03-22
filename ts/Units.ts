@@ -81,13 +81,13 @@ module Units {
             if (autoMoveTowardsTarget && this.targetCoords && this.currentMovement > 0) {
                 setTimeout(function () {
                     this.moveTowardsTarget();
-                }.bind(this), config.UNIT_MOVEMENT_UI_DELAY);
+                }.bind(this), this.movementDelay());
             }
 
             // Activate this unit
             this.active = true;
             game.activeUnit = this;
-            if (centerViewport) {
+            if (centerViewport && this.isVisible()) {
                 mapUI.goToCoords(this.coords);
             }
 
@@ -211,7 +211,7 @@ module Units {
                             // Move only after a delay
                             setTimeout(function () {
                                 game.moveUnits();
-                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                            }, this.movementDelay());
                         }
                     } else {
                         // If unit is in a group and moves are used up after an attack while enemies still remain on attacked tile, leave the group
@@ -220,11 +220,11 @@ module Units {
                         if (game.turnID !== config.PLAYER_ID) {
                             setTimeout(function () {
                                 game.moveUnits();
-                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                            }, this.movementDelay());
                         }
                     }
                     atEnd();
-                }, config.UNIT_MOVEMENT_UI_DELAY);
+                }.bind(this), this.movementDelay());
             } else if (game.turnID !== config.PLAYER_ID) {
                 // For AI units, need to force move again, even if currentMovement > 0
                 // No UI_DELAY needed here
@@ -271,7 +271,7 @@ module Units {
                                 // Delay so that the map can update before the next move
                                 setTimeout(function () {
                                     tryToMove(cb);
-                                }, config.UNIT_MOVEMENT_UI_DELAY);
+                                }, this.movementDelay());
                             }
                         } else {
                             cb();
@@ -303,7 +303,7 @@ module Units {
             setTimeout(function () {
                 game.activeUnit = null;
                 game.moveUnits();
-            }, config.UNIT_MOVEMENT_UI_DELAY);
+            }, this.movementDelay());
 
             // Clear any saved path
             this.targetCoords = null;
@@ -313,6 +313,19 @@ module Units {
 
         fortify() {
 console.log("FORTIFY")
+        }
+
+        isVisible() : boolean {
+            return Boolean(game.map.visibility[this.coords[0]][this.coords[1]]);
+        }
+
+        // If unit is visible, add movement delay. If not, don't.
+        movementDelay() : number {
+            if (this.isVisible()) {
+                return config.UNIT_MOVEMENT_UI_DELAY;
+            } else {
+                return 0;
+            }
         }
     }
 

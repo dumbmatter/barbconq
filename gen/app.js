@@ -1363,7 +1363,7 @@ var MapMaker;
             var i, tileUnits;
 
             // Delete old unit in map
-            tileUnits = game.getTile(unit.coords).units;
+            tileUnits = game.getTile(unit.coords, false).units;
             for (i = 0; i < tileUnits.length; i++) {
                 if (tileUnits[i].id === unit.id) {
                     tileUnits.splice(i, 1);
@@ -1372,7 +1372,7 @@ var MapMaker;
             }
 
             // Add unit at new tile
-            game.getTile(coords).units.push(unit);
+            game.getTile(coords, false).units.push(unit);
         };
 
         // Entries in output matrix are visible (1) or not visible (0).
@@ -1692,7 +1692,7 @@ var Game = (function () {
                             } else {
                                 unit.skipTurn();
                             }
-                        }, config.UNIT_MOVEMENT_UI_DELAY);
+                        }, unit.movementDelay());
                         return true;
                     }
                 }
@@ -1872,13 +1872,13 @@ var Units;
             if (autoMoveTowardsTarget && this.targetCoords && this.currentMovement > 0) {
                 setTimeout(function () {
                     this.moveTowardsTarget();
-                }.bind(this), config.UNIT_MOVEMENT_UI_DELAY);
+                }.bind(this), this.movementDelay());
             }
 
             // Activate this unit
             this.active = true;
             game.activeUnit = this;
-            if (centerViewport) {
+            if (centerViewport && this.isVisible()) {
                 mapUI.goToCoords(this.coords);
             }
 
@@ -2003,7 +2003,7 @@ var Units;
                             // Move only after a delay
                             setTimeout(function () {
                                 game.moveUnits();
-                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                            }, this.movementDelay());
                         }
                     } else {
                         // If unit is in a group and moves are used up after an attack while enemies still remain on attacked tile, leave the group
@@ -2013,11 +2013,11 @@ var Units;
                         if (game.turnID !== config.PLAYER_ID) {
                             setTimeout(function () {
                                 game.moveUnits();
-                            }, config.UNIT_MOVEMENT_UI_DELAY);
+                            }, this.movementDelay());
                         }
                     }
                     atEnd();
-                }, config.UNIT_MOVEMENT_UI_DELAY);
+                }.bind(this), this.movementDelay());
             } else if (game.turnID !== config.PLAYER_ID) {
                 // For AI units, need to force move again, even if currentMovement > 0
                 // No UI_DELAY needed here
@@ -2064,7 +2064,7 @@ var Units;
                                 // Delay so that the map can update before the next move
                                 setTimeout(function () {
                                     tryToMove(cb);
-                                }, config.UNIT_MOVEMENT_UI_DELAY);
+                                }, this.movementDelay());
                             }
                         } else {
                             cb();
@@ -2096,7 +2096,7 @@ var Units;
             setTimeout(function () {
                 game.activeUnit = null;
                 game.moveUnits();
-            }, config.UNIT_MOVEMENT_UI_DELAY);
+            }, this.movementDelay());
 
             // Clear any saved path
             this.targetCoords = null;
@@ -2106,6 +2106,19 @@ var Units;
 
         UnitOrGroup.prototype.fortify = function () {
             console.log("FORTIFY");
+        };
+
+        UnitOrGroup.prototype.isVisible = function () {
+            return Boolean(game.map.visibility[this.coords[0]][this.coords[1]]);
+        };
+
+        // If unit is visible, add movement delay. If not, don't.
+        UnitOrGroup.prototype.movementDelay = function () {
+            if (this.isVisible()) {
+                return config.UNIT_MOVEMENT_UI_DELAY;
+            } else {
+                return 0;
+            }
         };
         return UnitOrGroup;
     })();
@@ -2842,7 +2855,7 @@ var config = {
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
-    DISABLE_FOG_OF_WAR: true
+    DISABLE_FOG_OF_WAR: false
 };
 
 /*var assets : any = {};
