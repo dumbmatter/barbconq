@@ -148,6 +148,18 @@ module MapMaker {
         enemyUnits(player_id : number, coords : number[]) : Units.Unit[] {
             return game.getTile(coords).units.filter(function (unit) { return unit.owner !== player_id; });
         }
+
+        // Cost (in "movement") of moving from coordsFrom to coordsTo
+        tileMovementCost(coordsFrom : number[], coordsTo : number[]) : number {
+            var tileTo : Tile;
+
+            tileTo = game.getTile(coordsTo);
+            if (tileTo.features.indexOf("hills") > 0 || tileTo.features.indexOf("forest") > 0) {
+                return 2;
+            }
+
+            return 1;
+        }
     }
 
     export class TotallyRandom extends Map {

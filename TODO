@@ -9,6 +9,10 @@ modals
     new game on separate html page, instructions auto show on first game
 
 show move numbers on top of path
+  in MapUI.drawPath
+  calculate # moves for each step in the path
+  simulate movement over path
+  when new move number, show
 
 some UI display of battle results
   sound

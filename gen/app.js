@@ -1363,6 +1363,17 @@ var MapMaker;
                 return unit.owner !== player_id;
             });
         };
+
+        Map.prototype.tileMovementCost = function (coordsFrom, coordsTo) {
+            var tileTo;
+
+            tileTo = game.getTile(coordsTo);
+            if (tileTo.features.indexOf("hills") > 0 || tileTo.features.indexOf("forest") > 0) {
+                return 2;
+            }
+
+            return 1;
+        };
         return Map;
     })();
     MapMaker.Map = Map;
@@ -1851,14 +1862,10 @@ var Units;
         // Last two arguments are only for the special case of attacking with a group but not taking the tile because more enemies remain. "attacker" should be the same as "this", but "this" is UnitOrGroup so the types don't match up.
         UnitOrGroup.prototype.countMovementToCoords = function (coords, attacker) {
             if (typeof attacker === "undefined") { attacker = null; }
-            var atEnd, movementCost, tile;
+            var atEnd, movementCost;
 
             // Movement cost based on terrain
-            tile = game.getTile(coords);
-            movementCost = 1;
-            if (tile.features.indexOf("hills") > 0 || tile.features.indexOf("forest") > 0) {
-                movementCost = 2;
-            }
+            movementCost = game.map.tileMovementCost(this.coords, coords);
 
             // Keep track of unit movement (applies even if the unit fights but does not move)
             this.currentMovement -= movementCost;
