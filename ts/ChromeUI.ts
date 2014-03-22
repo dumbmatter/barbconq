@@ -265,7 +265,7 @@ class ChromeUI {
     }
 
     showModal(id : string) {
-        var closeModal, modal, modalWrapper, preventCloseModal, resizeModal;
+        var closeModal, closeModalEsc, modal, modalWrapper, preventCloseModal, resizeModal;
 
         modal = document.getElementById(id);
         modal.classList.add("modal-active");
@@ -282,7 +282,7 @@ class ChromeUI {
         modalWrapper.classList.add("modal-active");
         modalWrapper.classList.remove("modal-inactive");
 
-        // Close modal with a click outside of it
+        // Close modal with a click outside of it, or escape key
         closeModal = function (e) {
             e.stopPropagation();
 
@@ -294,11 +294,18 @@ class ChromeUI {
             modalWrapper.removeEventListener("click", closeModal);
             modal.removeEventListener("click", preventCloseModal);
             window.removeEventListener("resize", resizeModal);
+            document.removeEventListener("keydown", closeModalEsc);
         }
+        closeModalEsc = function (e) {
+            if (e.keyCode === 27) { // escape
+                closeModal(e);
+            }
+        };
         preventCloseModal = function (e) {
             e.stopPropagation();
         }
         modal.addEventListener("click", preventCloseModal);
         modalWrapper.addEventListener("click", closeModal);
+        document.addEventListener("keydown", closeModalEsc);
     }
 }

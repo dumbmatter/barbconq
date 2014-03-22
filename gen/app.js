@@ -759,7 +759,7 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.showModal = function (id) {
-        var closeModal, modal, modalWrapper, preventCloseModal, resizeModal;
+        var closeModal, closeModalEsc, modal, modalWrapper, preventCloseModal, resizeModal;
 
         modal = document.getElementById(id);
         modal.classList.add("modal-active");
@@ -776,7 +776,7 @@ var ChromeUI = (function () {
         modalWrapper.classList.add("modal-active");
         modalWrapper.classList.remove("modal-inactive");
 
-        // Close modal with a click outside of it
+        // Close modal with a click outside of it, or escape key
         closeModal = function (e) {
             e.stopPropagation();
 
@@ -788,12 +788,19 @@ var ChromeUI = (function () {
             modalWrapper.removeEventListener("click", closeModal);
             modal.removeEventListener("click", preventCloseModal);
             window.removeEventListener("resize", resizeModal);
+            document.removeEventListener("keydown", closeModalEsc);
+        };
+        closeModalEsc = function (e) {
+            if (e.keyCode === 27) {
+                closeModal(e);
+            }
         };
         preventCloseModal = function (e) {
             e.stopPropagation();
         };
         modal.addEventListener("click", preventCloseModal);
         modalWrapper.addEventListener("click", closeModal);
+        document.addEventListener("keydown", closeModalEsc);
     };
     return ChromeUI;
 })();
