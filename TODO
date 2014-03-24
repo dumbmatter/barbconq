@@ -6,6 +6,8 @@ unit promotions
     Unit.getBonuses
   show promotions when appropriate
     Unit.availablePromotions to get options, Unit.promote to apply
+    show in hover
+    highlight/oscillate border
   group should get/set available promotions, but not current promotions
     wrap around Unit.availablePromotions for Group.availablePromotions
     stub UnitOrGroup.availablePromotions

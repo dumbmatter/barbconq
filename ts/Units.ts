@@ -388,6 +388,12 @@ console.log("FORTIFY")
                 return 0;
             }
         }
+
+        // Needs to be defined separately for individual and group
+        availablePromotions() : string[] {
+            throw new Error('"availablePromotions" needs to be redefined by each derived class.');
+            return [];
+        }
     }
 
     export class Unit extends UnitOrGroup {

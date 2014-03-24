@@ -668,7 +668,7 @@ var ChromeUI = (function () {
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
     ChromeUI.prototype.updateActiveUnit = function () {
-        var activeUnit, actionName, addCommas, content, counts, i, units, type;
+        var activeUnit, addCommas, content, counts, i, units, type;
 
         activeUnit = game.activeUnit; // Really should have separate variables for unit and group, like in unit icon click handling
 
@@ -712,13 +712,8 @@ var ChromeUI = (function () {
                 this.elBottomInfo.innerHTML = content;
             }
 
-            for (i = 0; i < activeUnit.actions.length; i++) {
-                // Convert camel case to title case
-                actionName = activeUnit.actions[i].replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2"); // http://stackoverflow.com/a/7225474
-                actionName = actionName.charAt(0).toUpperCase() + actionName.slice(1); // Fix first character
-
-                this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + actionName + '</button>';
-            }
+            // Update bottom-actions
+            this.updateActiveUnitActions();
 
             // Update bottom-units
             units = game.getTile(game.activeUnit.coords).units;
@@ -726,6 +721,26 @@ var ChromeUI = (function () {
                 this.elBottomUnits.appendChild(this.unitIcon(units[i]));
             }
         }
+    };
+
+    // this.elBottomActions.innerHTML should be emptied before calling this
+    ChromeUI.prototype.updateActiveUnitActions = function () {
+        var actionName, availablePromotions, i;
+
+        for (i = 0; i < game.activeUnit.actions.length; i++) {
+            // Convert camel case to title case
+            actionName = game.activeUnit.actions[i].replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2"); // http://stackoverflow.com/a/7225474
+            actionName = actionName.charAt(0).toUpperCase() + actionName.slice(1); // Fix first character
+
+            this.elBottomActions.innerHTML += '<button class="action" data-action="' + game.activeUnit.actions[i] + '">' + actionName + '</button>';
+        }
+
+        // Second, the promotions
+        availablePromotions = game.activeUnit.availablePromotions();
+        for (i = 0; i < availablePromotions.length; i++) {
+            this.elBottomActions.innerHTML += '<button class="action" data-action="promote" data-arg="' + availablePromotions[i] + '">' + Units.promotions[availablePromotions[i]].name + '</button>';
+        }
+        // Third, the automated tasks
     };
 
     ChromeUI.prototype.unitIcon = function (unit) {
@@ -2247,6 +2262,12 @@ var Units;
             } else {
                 return 0;
             }
+        };
+
+        // Needs to be defined separately for individual and group
+        UnitOrGroup.prototype.availablePromotions = function () {
+            throw new Error('"availablePromotions" needs to be redefined by each derived class.');
+            return [];
         };
         return UnitOrGroup;
     })();

@@ -141,7 +141,7 @@ class ChromeUI {
 
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
     private updateActiveUnit() {
-        var activeUnit, actionName : string, addCommas : boolean, content : string, counts : {[type: string]: number}, i : number, units : Units.Unit[], type : string;
+        var activeUnit, addCommas : boolean, content : string, counts : {[type: string]: number}, i : number, units : Units.Unit[], type : string;
 
         activeUnit = game.activeUnit; // Really should have separate variables for unit and group, like in unit icon click handling
 
@@ -195,13 +195,7 @@ class ChromeUI {
             }
 
             // Update bottom-actions
-            for (i = 0; i < activeUnit.actions.length; i++) {
-                // Convert camel case to title case
-                actionName = activeUnit.actions[i].replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2"); // http://stackoverflow.com/a/7225474
-                actionName = actionName.charAt(0).toUpperCase() + actionName.slice(1); // Fix first character
-
-                this.elBottomActions.innerHTML += '<button class="action" data-action="' + activeUnit.actions[i] + '">' + actionName + '</button>'
-            }
+            this.updateActiveUnitActions();
 
             // Update bottom-units
             units = game.getTile(game.activeUnit.coords).units;
@@ -210,6 +204,29 @@ class ChromeUI {
             }
         }
     }
+
+    // this.elBottomActions.innerHTML should be emptied before calling this
+    updateActiveUnitActions() {
+        var actionName : string, availablePromotions : string[], i : number;
+
+        // First, the actions
+        for (i = 0; i < game.activeUnit.actions.length; i++) {
+            // Convert camel case to title case
+            actionName = game.activeUnit.actions[i].replace(/([A-Z]+)*([A-Z][a-z])/g, "$1 $2"); // http://stackoverflow.com/a/7225474
+            actionName = actionName.charAt(0).toUpperCase() + actionName.slice(1); // Fix first character
+
+            this.elBottomActions.innerHTML += '<button class="action" data-action="' + game.activeUnit.actions[i] + '">' + actionName + '</button>';
+        }
+
+        // Second, the promotions
+        availablePromotions = game.activeUnit.availablePromotions();
+        for (i = 0; i < availablePromotions.length; i++) {
+            this.elBottomActions.innerHTML += '<button class="action promote" data-action="promote" data-arg="' + availablePromotions[i] + '">' + Units.promotions[availablePromotions[i]].name + '</button>';
+        }
+
+        // Third, the automated tasks
+    }
+
 
     private unitIcon(unit : Units.Unit) : HTMLDivElement {
         var healthPct : number, healthBar : HTMLDivElement, icon : HTMLDivElement, iconWrapper, movementIndicator : HTMLDivElement;
