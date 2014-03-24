@@ -113,6 +113,8 @@ class ChromeUI {
     bonusText(name : string, amount : number) {
         if (name === "cityDefense") {
             return "+" + amount + "% City Defense";
+        } else if (name === "melee") {
+            return "+" + amount + "% vs. Melee Units";
         }
     }
 

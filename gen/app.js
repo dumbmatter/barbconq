@@ -232,7 +232,8 @@ var Controller = (function () {
             el = e.target;
             if (el && el.dataset.action) {
                 e.preventDefault();
-                game.activeUnit[el.dataset.action]();
+                game.activeUnit[el.dataset.action](el.dataset.arg);
+                chromeUI.onHoverAction(); // Reset hover display, since stuff might have changed
             }
         });
         chromeUI.elBottomActions.addEventListener("mouseover", function (e) {
@@ -250,6 +251,7 @@ var Controller = (function () {
             el = e.target;
             if (el && el.dataset.action) {
                 e.preventDefault();
+
                 chromeUI.onHoverAction();
             }
         });
@@ -639,6 +641,8 @@ var ChromeUI = (function () {
     ChromeUI.prototype.bonusText = function (name, amount) {
         if (name === "cityDefense") {
             return "+" + amount + "% City Defense";
+        } else if (name === "melee") {
+            return "+" + amount + "% vs. Melee Units";
         }
     };
 
@@ -2434,6 +2438,9 @@ var Units;
             if (this.canPromoteToLevel > this.level && this.availablePromotions().indexOf(promotionName) >= 0) {
                 this.promotions.push(promotionName);
                 this.level += 1;
+                if (this.owner === config.PLAYER_ID) {
+                    chromeUI.onUnitActivated();
+                }
             } else {
                 throw new Error('Unit is not allowed to get the ' + promotionName + ' promotion now.');
             }

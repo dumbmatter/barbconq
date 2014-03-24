@@ -4,12 +4,12 @@ unit promotions
   Units.promotions - contains metadata
   use bonuses in battle
     Unit.getBonuses
-  show promotions when appropriate
-    Unit.availablePromotions to get options, Unit.promote to apply
-    highlight/oscillate border
+  highlight/oscillate border of promotion action buttons
+  icons for the promotions a unit has
+    show in hover-box and bottom-info
+    can they be text?
   group should get/set available promotions, but not current promotions
     wrap around Unit.availablePromotions for Group.availablePromotions
-    stub UnitOrGroup.availablePromotions
   confirm
     promotions shouldn't be availabe until the turn after XP crosses threshold - done by Unit.canPromoteToLevel
     unit is healed halfway on promotion

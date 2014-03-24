@@ -183,7 +183,8 @@ class Controller {
             el = <HTMLElement> e.target;
             if (el && el.dataset.action) {
                 e.preventDefault();
-                game.activeUnit[el.dataset.action]();
+                game.activeUnit[el.dataset.action](el.dataset.arg);
+                chromeUI.onHoverAction(); // Reset hover display, since stuff might have changed
             }
         });
         chromeUI.elBottomActions.addEventListener("mouseover", function (e : MouseEvent) {
@@ -201,6 +202,7 @@ class Controller {
             el = <HTMLElement> e.target;
             if (el && el.dataset.action) {
                 e.preventDefault();
+                
                 chromeUI.onHoverAction();
             }
         });

@@ -551,6 +551,9 @@ console.log("FORTIFY")
             if (this.canPromoteToLevel > this.level && this.availablePromotions().indexOf(promotionName) >= 0) {
                 this.promotions.push(promotionName);
                 this.level += 1;
+                if (this.owner === config.PLAYER_ID) {
+                    chromeUI.onUnitActivated();
+                }
             } else {
                 throw new Error('Unit is not allowed to get the ' + promotionName + ' promotion now.')
             }
