@@ -3,7 +3,10 @@
 unit promotions
   Units.promotions - contains metadata
   use bonuses in battle
-    Unit.getBonuses
+    Battle.defenderBonus should be used for...
+      show bonuses in battle hover
+      list bonuses under unit in hoverBox, both for ChromeUI.onHoverMoveEnemy and ChromeUI.hoverBoxUnitSummary
+    should bonuses be included in the displayed unit strengths?
   highlight/oscillate border of promotion action buttons
   icons for the promotions a unit has
     show in hover-box and bottom-info
@@ -11,13 +14,14 @@ unit promotions
   group should get/set available promotions, but not current promotions
     wrap around Unit.availablePromotions for Group.availablePromotions
   confirm
-    promotions shouldn't be availabe until the turn after XP crosses threshold - done by Unit.canPromoteToLevel
     unit is healed halfway on promotion
     unit is unfortified when promoted
     make sure all unitBonuses are applied in battle
   to add promotion...
     add to Units.promotions
     add to ChromeUI.bonusText
+    make sure bonus types apply in their relevant area
+      mostly, Combat.Battle.defenderBonus
 
 add highlighting of two units that are fighting, or maybe red dashed path in between?
   particularly important for when AI attacks
@@ -65,6 +69,7 @@ keyboard shortcuts
 
 right click to move
   right click on map -> drag off map -> drag back onto edge tile... path doesn't show up until drag onto another tile!
+  by default, show "strongest" unit. but when right click hovering, show the strongest for defending against the impending attack
 
 unit actions
   fortify
@@ -79,9 +84,6 @@ Combat
     http://www.civfanatics.com/civ4/strategy/combat_explained.php
     http://home.comcast.net/~proc/civ4/combat_calc.htm
     BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-    unit strength modifiers
-      include in modifiedStrength formula
-      list under unit in hoverBox, both for ChromeUI.onHoverMoveEnemy and ChromeUI.hoverBoxUnitSummary
     first strikes
       archer gets 1 by default
     retreat/withdraw
@@ -192,6 +194,8 @@ scroll wheel zoom by increasing TILE_SIZE
 
 Friendly civs
   big problem: units of multiple civs can be on same tile.
+
+Does cityDefense bonus apply for other civ's cities? Like a neutral city, or an ally's city?
 
 Import civ4 maps
 

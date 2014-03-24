@@ -16,6 +16,8 @@ module Combat {
         loser : string = null;
 
         constructor(attacker : Units.Unit, defender : Units.Unit) {
+            var defenderBonus : number;
+
             this.units = [attacker, defender];
 
             // Hit points
@@ -27,6 +29,12 @@ module Combat {
 
             // Defender's modified strength
             this.D = defender.strength * (this.hps[1] / 100);
+            defenderBonus = this.defenderBonus();
+            if (defenderBonus > 0) {
+                this.D *= 1 + defenderBonus / 100;
+            } else if (defenderBonus < 0) {
+                this.D /= 1 - defenderBonus / 100;
+            }
 
             // Damage per hit
             this.damagePerHit[0] = Util.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
@@ -37,6 +45,70 @@ module Combat {
             // Names
             this.names[0] = game.names[this.units[0].owner] + "'s " + this.units[0].type;
             this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
+        }
+
+        // Returns the bonus (as a percentage) to apply to the defender's modified strength.
+        // Both attacker and defender bonuses are done here.
+        // http://www.civfanatics.com/civ4/strategy/combat_explained.php
+        defenderBonus() {
+            var attacker : Units.Unit, attackerTile : MapMaker.Tile, bonus : number, bonuses : {[name: string] : number}, defender : Units.Unit, defenderTile : MapMaker.Tile, name : string;
+
+            bonus = 0;
+
+            attacker = this.units[0];
+            defender = this.units[1];
+//            attackerTile = game.getTile(attacker.coords, false);
+            defenderTile = game.getTile(defender.coords, false);
+
+            // See which bonuses from the attacker apply
+            bonuses = attacker.getBonuses();
+            for (name in bonuses) {
+                if (name === "cityDefense" || name === "hillsDefense") {
+                    // Don't apply to attackers
+                } else if (name === "attackAxeman") {
+                    if (defender.type === "Axeman") {
+                        bonus -= bonuses[name];
+                    }
+                } else if (name === "melee") {
+                    if (defender.category === "melee") {
+                        bonus -= bonuses[name];
+                    }
+                } else if (name === "mounted") {
+                    if (defender.category === "mounted") {
+                        bonus -= bonuses[name];
+                    }
+                } else {
+                    throw new Error('Unknown bonus type "' + name + '".');
+                }
+            }
+
+            // See which bonuses from the defender apply
+            bonuses = defender.getBonuses();
+            for (name in bonuses) {
+                if (name === "attackAxeman") {
+                    // Don't apply to defenders
+                } else if (name === "cityDefense") {
+                    if (defenderTile.city && defenderTile.city.owner === defender.owner) {
+                        bonus += bonuses[name];
+                    }
+                } else if (name === "hillsDefense") {
+                    if (defenderTile.features.indexOf("hills") >= 0) {
+                        bonus += bonuses[name];
+                    }
+                } else if (name === "melee") {
+                    if (attacker.category === "melee") {
+                        bonus += bonuses[name];
+                    }
+                } else if (name === "mounted") {
+                    if (attacker.category === "mounted") {
+                        bonus += bonuses[name];
+                    }
+                } else {
+                    throw new Error('Unknown bonus type "' + name + '".');
+                }
+            }
+
+            return bonus;
         }
 
         factorial(n : number) : number {
@@ -72,6 +144,7 @@ module Combat {
         fight() {
             var baseXP : number, i : number, j : number;
 
+console.log(this.defenderBonus());
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
 
