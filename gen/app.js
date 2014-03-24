@@ -1799,6 +1799,38 @@ units, like move counting, and others don't).
 */
 var Units;
 (function (Units) {
+    ;
+
+    ;
+
+    Units.promotions = {
+        cityGarrison1: {
+            name: "City Garrison I",
+            bonuses: {
+                cityDefense: 20
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: []
+        },
+        cityGarrison2: {
+            name: "City Garrison II",
+            bonuses: {
+                cityDefense: 25
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: [["cityGarrison1"]]
+        },
+        cityGarrison3: {
+            name: "City Garrison III",
+            bonuses: {
+                cityDefense: 30,
+                melee: 10
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: [["cityGarrison2"]]
+        }
+    };
+
     // Things that both individual units and groups of units have in common
     var UnitOrGroup = (function () {
         function UnitOrGroup() {
@@ -2301,6 +2333,46 @@ var Units;
 
             return bonuses;
         };
+
+        Unit.prototype.hasPrereqs = function (prereqs) {
+            var i, j, success;
+
+            // No prereqs
+            if (prereqs.length === 0) {
+                return true;
+            }
+
+            for (i = 0; i < prereqs.length; i++) {
+                success = true;
+
+                for (j = 0; j < prereqs[i].length; j++) {
+                    // Assume an entry in a string refers to a promotion, unless there is some special logic here to handle other scenarios
+                    if (this.promotions.indexOf(prereqs[i][j]) < 0) {
+                        success = false;
+                    }
+                }
+
+                if (success) {
+                    return true;
+                }
+            }
+
+            // If no return by now, prereqs were not met
+            return false;
+        };
+
+        Unit.prototype.availablePromotions = function () {
+            var result;
+
+            result = [];
+            for (name in Units.promotions) {
+                if (Units.promotions[name].categories.indexOf(this.category) >= 0 && this.promotions.indexOf(name) < 0 && this.hasPrereqs(Units.promotions[name].prereqs)) {
+                    result.push(name);
+                }
+            }
+
+            return result;
+        };
         return Unit;
     })(UnitOrGroup);
     Units.Unit = Unit;
@@ -2768,36 +2840,6 @@ var Units;
         }
     }
     Units.addUnitsWithTypeToNewGroup = addUnitsWithTypeToNewGroup;
-
-    ;
-
-    Units.promotions = {
-        cityGarrison1: {
-            name: "City Garrison I",
-            bonuses: {
-                cityDefense: 20
-            },
-            categories: ["archery", "gunpowder"],
-            prereqs: []
-        },
-        cityGarrison2: {
-            name: "City Garrison II",
-            bonuses: {
-                cityDefense: 25
-            },
-            categories: ["archery", "gunpowder"],
-            prereqs: [["cityGarrison1"]]
-        },
-        cityGarrison3: {
-            name: "City Garrison III",
-            bonuses: {
-                cityDefense: 30,
-                melee: 10
-            },
-            categories: ["archery", "gunpowder"],
-            prereqs: [["cityGarrison2"]]
-        }
-    };
 })(Units || (Units = {}));
 // Cities
 var Cities;
@@ -3160,7 +3202,7 @@ function init() {
     /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Archer(config.PLAYER_ID, [10, 20]);
     u1.promotions.push("cityGarrison1");
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);

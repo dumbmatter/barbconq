@@ -1,9 +1,18 @@
 # Major current tasks
 
+xp
+  http://www.civfanatics.com/civ4/strategy/combat_explained.php
+  when new level is available
+    http://forums.civfanatics.com/showthread.php?t=291650
+    does level get assigned only when promotion is applied, or when xp is earned?
+
 unit promotions
   Units.promotions - contains metadata
-  available promotions should be calculated dynamically from Units.promotions based on prereqs
+  Unit.getBonuses
+  Unit.availablePromotions
   group should get/set available promotions, but not current promotions
+    wrap around Unit.availablePromotions for Group.availablePromotions
+    stub UnitOrGroup.availablePromotions
   make sure all unitBonuses are applied
 
 add highlighting of two units that are fighting, or maybe red dashed path in between?
@@ -32,9 +41,6 @@ unit tests for grouped units?
           NO, problem is not source-map. it's the input to source-map: karma's reporter.js isn't getting column numbers. why? not sure. maybe it'll work if i can make it error-free until real tests run?
 
 # Minor current tasks
-
-battle win probabilities http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-  test against real civ4
 
 How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game

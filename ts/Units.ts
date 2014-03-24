@@ -14,6 +14,56 @@ units, like move counting, and others don't).
 */
 
 module Units {
+    export interface Promotion {
+        name : string;
+
+        // Bonuses given by the promotion
+        bonuses : {[name : string] : number};
+
+        // Categories of units (like "melee", "archery", etc) that can get this promotion
+        categories : string[];
+
+        // Prerequisites for the promotion.
+        // Each entry in the array contains an array of requirements that enable the promotion.
+        // So "and" prereqs can be encoded like:
+        //     [["combat3", "militaryScience"]]
+        // and "or" prereqs can be encoded like:
+        //     [["combat2"], ["drill2"]]
+        prereqs : string[][];
+    };
+
+    export interface Promotions {
+        [slug : string] : Promotion;
+    };
+
+    export var promotions : Promotions = {
+        cityGarrison1: {
+            name: "City Garrison I",
+            bonuses: {
+                cityDefense: 20
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: []
+        },
+        cityGarrison2: {
+            name: "City Garrison II",
+            bonuses: {
+                cityDefense: 25
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: [["cityGarrison1"]]
+        },
+        cityGarrison3: {
+            name: "City Garrison III",
+            bonuses: {
+                cityDefense: 30,
+                melee: 10
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: [["cityGarrison2"]]
+        }
+    };
+
     // Things that both individual units and groups of units have in common
     export class UnitOrGroup {
         // Identification
@@ -343,6 +393,7 @@ console.log("FORTIFY")
     export class Unit extends UnitOrGroup {
         // Identification
         type : string;
+        category : string;
         group : Group;
 
         // Key attributes
@@ -430,6 +481,48 @@ console.log("FORTIFY")
             }
 
             return bonuses;
+        }
+
+        hasPrereqs(prereqs : string[][]) : boolean {
+            var i : number, j : number, success : boolean;
+
+            // No prereqs
+            if (prereqs.length === 0) {
+                return true;
+            }
+
+            // Loop over all possible "OR" prereqs
+            for (i = 0; i < prereqs.length; i++) {
+                success = true;
+
+                // Loop over all the "AND" prereqs are met
+                for (j = 0; j < prereqs[i].length; j++) {
+                    // Assume an entry in a string refers to a promotion, unless there is some special logic here to handle other scenarios
+                    if (this.promotions.indexOf(prereqs[i][j]) < 0) {
+                        success = false;
+                    }
+                }
+
+                if (success) {
+                    return true;
+                }
+            }
+
+            // If no return by now, prereqs were not met
+            return false;
+        }
+
+        availablePromotions() {
+            var result : string[];
+
+            result = [];
+            for (name in promotions) {
+                if (promotions[name].categories.indexOf(this.category) >= 0 && this.promotions.indexOf(name) < 0 && this.hasPrereqs(promotions[name].prereqs)) {
+                    result.push(name);
+                }
+            }
+
+            return result;
         }
     }
 
@@ -802,52 +895,4 @@ console.log("FORTIFY")
             newGroup.activate(false);
         }
     }
-
-    export interface Promotions {
-        [slug : string] : {
-            name : string;
-
-            // Bonuses given by the promotion
-            bonuses : {[name : string] : number};
-
-            // Categories of units (like "melee", "archery", etc) that can get this promotion
-            categories : string[];
-
-            // Prerequisites for the promotion.
-            // Each entry in the array contains an array of requirements that enable the promotion.
-            // So "and" prereqs can be encoded like:
-            //     [["combat3", "militaryScience"]]
-            // and "or" prereqs can be encoded like:
-            //     [["combat2"], ["drill2"]]
-            prereqs : string[][];
-        };
-    };
-
-    export var promotions : Promotions = {
-        cityGarrison1: {
-            name: "City Garrison I",
-            bonuses: {
-                cityDefense: 20
-            },
-            categories: ["archery", "gunpowder"],
-            prereqs: []
-        },
-        cityGarrison2: {
-            name: "City Garrison II",
-            bonuses: {
-                cityDefense: 25
-            },
-            categories: ["archery", "gunpowder"],
-            prereqs: [["cityGarrison1"]]
-        },
-        cityGarrison3: {
-            name: "City Garrison III",
-            bonuses: {
-                cityDefense: 30,
-                melee: 10
-            },
-            categories: ["archery", "gunpowder"],
-            prereqs: [["cityGarrison2"]]
-        }
-    };
 }
