@@ -4,7 +4,8 @@ xp
   http://www.civfanatics.com/civ4/strategy/combat_explained.php
   when new level is available
     http://forums.civfanatics.com/showthread.php?t=291650
-    does level get assigned only when promotion is applied, or when xp is earned?
+    level is incremented when promotion is applied. so numPromotions could be calculated as diff between formula linked above and current level
+  in unit info, show XP/nextLevelXP
 
 unit promotions
   Units.promotions - contains metadata
@@ -14,6 +15,8 @@ unit promotions
     wrap around Unit.availablePromotions for Group.availablePromotions
     stub UnitOrGroup.availablePromotions
   make sure all unitBonuses are applied
+  "When a unit takes a promotion, there are several effects. First, it immediately gains the promotion, and thus the promotion's effects. Thus you may take a promotion and then attack in the same turn. Second, it is unfortified -- any fortification bonus it gets from immobility is lost. Finally, it is healed half of its hitpoint deficit."
+  shouldn't be availabe until the turn after XP crosses threshold
 
 add highlighting of two units that are fighting, or maybe red dashed path in between?
   particularly important for when AI attacks

@@ -2939,7 +2939,7 @@ var Combat;
         };
 
         Battle.prototype.fight = function () {
-            var i, j;
+            var baseXP, i, j;
 
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
@@ -2981,6 +2981,10 @@ var Combat;
 
             // Winner gets damaged
             this.units[i].currentStrength *= this.hps[i] / 100;
+
+            // Winner gets XP
+            baseXP = this.winner === "attacker" ? 4 * this.D / this.A : 2 * this.A / this.D;
+            this.units[i].xp += Util.bound(Math.floor(baseXP), 1, Infinity);
         };
         return Battle;
     })();
