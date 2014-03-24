@@ -23,4 +23,24 @@ module Util {
         }
         return x;
     }
+
+    /**
+     * Clones an object.
+     * 
+     * Taken from http://stackoverflow.com/a/3284324/786644
+     */
+    export function deepCopy(obj) {
+        var key, retVal;
+
+        if (typeof obj !== "object" || obj === null) { return obj; }
+        if (obj.constructor === RegExp) { return obj; }
+
+        retVal = new obj.constructor();
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                retVal[key] = deepCopy(obj[key]);
+            }
+        }
+        return retVal;
+    }
 }

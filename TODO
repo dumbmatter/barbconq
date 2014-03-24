@@ -2,12 +2,9 @@
 
 unit promotions
   Units.promotions - contains metadata
-  when a unit is given a promotion, keep track of bonuses directly within the unit object
-    same structure as "bonuses" object in Units.promotions. should have some utility function to display nicely
-    NO! how would this work if you have an axeman (with inherent bonus) who is upgraded? bonuses need to be dynamic, i guess? think about it
-      get default bonuses from super(), add on unit-specific ones
   available promotions should be calculated dynamically from Units.promotions based on prereqs
   group should get/set available promotions, but not current promotions
+  make sure all unitBonuses are applied
 
 add highlighting of two units that are fighting, or maybe red dashed path in between?
   particularly important for when AI attacks
@@ -65,7 +62,7 @@ unit actions
     healing
     top right indicator in unit icon
   sleep/fortify difference?
-  are some of these universal? can move up to root and concat always like Unit.promotions
+  are some of these universal? can move up to root Unit?
 
 Combat
   combat complexity
@@ -76,7 +73,9 @@ Combat
       include in modifiedStrength formula
       list under unit in hoverBox, both for ChromeUI.onHoverMoveEnemy and ChromeUI.hoverBoxUnitSummary
     first strikes
-    retreat
+      archer gets 1 by default
+    retreat/withdraw
+      apply as a bonus, default 0
     collateral damage
     experience points
 

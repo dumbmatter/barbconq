@@ -27,6 +27,31 @@ var Util;
         return x;
     }
     Util.bound = bound;
+
+    /**
+    * Clones an object.
+    *
+    * Taken from http://stackoverflow.com/a/3284324/786644
+    */
+    function deepCopy(obj) {
+        var key, retVal;
+
+        if (typeof obj !== "object" || obj === null) {
+            return obj;
+        }
+        if (obj.constructor === RegExp) {
+            return obj;
+        }
+
+        retVal = new obj.constructor();
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                retVal[key] = deepCopy(obj[key]);
+            }
+        }
+        return retVal;
+    }
+    Util.deepCopy = deepCopy;
 })(Util || (Util = {}));
 // Handle user input from keyboard and mouse, and route it to the appropriate place based on the state of the game
 var Controller = (function () {
@@ -2204,6 +2229,7 @@ var Units;
             this.landOrSea = "land";
             this.canAttack = true;
             this.canDefend = true;
+            this.unitBonuses = {};
 
             this.owner = owner;
 
@@ -2254,6 +2280,26 @@ var Units;
             } else {
                 mapUI.render();
             }
+        };
+
+        // Merge together unitBonuses (from unit type) and bonuses from promotions
+        Unit.prototype.getBonuses = function () {
+            var bonuses, i, name, promotionBonuses;
+
+            bonuses = Util.deepCopy(this.unitBonuses);
+
+            for (i = 0; i < this.promotions.length; i++) {
+                promotionBonuses = Units.promotions[this.promotions[i]].bonuses;
+                for (name in promotionBonuses) {
+                    if (bonuses.hasOwnProperty(name)) {
+                        bonuses[name] += promotionBonuses[name];
+                    } else {
+                        bonuses[name] = promotionBonuses[name];
+                    }
+                }
+            }
+
+            return bonuses;
         };
         return Unit;
     })(UnitOrGroup);
@@ -2616,6 +2662,7 @@ var Units;
             this.currentMovement = 1;
             this.landOrSea = "land";
             this.actions = ["fortify", "skipTurn"];
+            this.unitBonuses = { cityDefense: 50, hillsDefense: 25 };
         }
         return Archer;
     })(Unit);
@@ -2633,6 +2680,7 @@ var Units;
             this.currentMovement = 2;
             this.landOrSea = "land";
             this.actions = ["fortify", "skipTurn"];
+            this.unitBonuses = { attackAxeman: 100 };
         }
         return Chariot;
     })(Unit);
@@ -2650,6 +2698,7 @@ var Units;
             this.currentMovement = 1;
             this.landOrSea = "land";
             this.actions = ["fortify", "skipTurn"];
+            this.unitBonuses = { mounted: 100 };
         }
         return Spearman;
     })(Unit);
@@ -2667,6 +2716,7 @@ var Units;
             this.currentMovement = 1;
             this.landOrSea = "land";
             this.actions = ["fortify", "skipTurn"];
+            this.unitBonuses = { melee: 50 };
         }
         return Axeman;
     })(Unit);
@@ -3111,6 +3161,7 @@ function init() {
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    u1.promotions.push("cityGarrison1");
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);

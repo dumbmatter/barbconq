@@ -355,6 +355,7 @@ console.log("FORTIFY")
         landOrSea = "land";
         canAttack = true;
         canDefend = true;
+        unitBonuses : any = {}; // {[name : string] : number} // These are bonuses inherent to a unit type, regardless of promotions
 
         constructor(owner : number, coords : number[]) {
             super();
@@ -409,6 +410,26 @@ console.log("FORTIFY")
             } else {
                 mapUI.render();
             }
+        }
+
+        // Merge together unitBonuses (from unit type) and bonuses from promotions
+        getBonuses() : {[name : string] : number} {
+            var bonuses : {[name : string] : number}, i : number, name : string, promotionBonuses : {[name : string] : number};
+
+            bonuses = Util.deepCopy(this.unitBonuses);
+
+            for (i = 0; i < this.promotions.length; i++) {
+                promotionBonuses = promotions[this.promotions[i]].bonuses;
+                for (name in promotionBonuses) {
+                    if (bonuses.hasOwnProperty(name)) {
+                        bonuses[name] += promotionBonuses[name];
+                    } else {
+                        bonuses[name] = promotionBonuses[name];
+                    }
+                }
+            }
+
+            return bonuses;
         }
     }
 
@@ -691,6 +712,7 @@ console.log("FORTIFY")
 
         landOrSea = "land";
         actions = ["fortify", "skipTurn"];
+        unitBonuses = {cityDefense: 50, hillsDefense: 25};
     }
 
     export class Chariot extends Unit {
@@ -704,6 +726,7 @@ console.log("FORTIFY")
 
         landOrSea = "land";
         actions = ["fortify", "skipTurn"];
+        unitBonuses = {attackAxeman: 100};
     }
 
     export class Spearman extends Unit {
@@ -717,6 +740,7 @@ console.log("FORTIFY")
 
         landOrSea = "land";
         actions = ["fortify", "skipTurn"];
+        unitBonuses = {mounted: 100};
     }
 
     export class Axeman extends Unit {
@@ -730,6 +754,7 @@ console.log("FORTIFY")
 
         landOrSea = "land";
         actions = ["fortify", "skipTurn"];
+        unitBonuses = {melee: 50};
     }
 
     // Functions for working with units or groups of units

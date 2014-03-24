@@ -101,6 +101,7 @@ function init() {
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    u1.promotions.push("cityGarrison1");
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
