@@ -3,10 +3,8 @@
 unit promotions
   Units.promotions - contains metadata
   use bonuses in battle
-    Battle.defenderBonus should be used for...
-      show bonuses in battle hover
-      list bonuses under unit in hoverBox, both for ChromeUI.onHoverMoveEnemy and ChromeUI.hoverBoxUnitSummary
-      gather in Battle.defenderBonus, transform with bonusText
+    onHoverTile should show bonuses (via hoverBoxUnitSummary) only for first unit
+      how to define first unit? same as tile icon display
     should bonuses be included in the displayed unit strengths?
   highlight/oscillate border of promotion action buttons
   icons for the promotions a unit has

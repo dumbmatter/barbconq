@@ -110,7 +110,7 @@ class ChromeUI {
     }
 
     private hoverBoxUnitSummary(unit : Units.Unit) {
-        var content : string;
+        var bonuses : {[name: string] : number}, content : string, name : string;
 
         content = "";
         content += '<p><span class="unit-name">' + unit.type + '</span>, ';
@@ -120,6 +120,14 @@ class ChromeUI {
         content += game.names[unit.owner];
         content += '</p>';
 
+        // Combat bonuses
+        bonuses = unit.getBonuses();
+        content += '<ul>';
+        for (name in bonuses) {
+            content += '<li>' + this.bonusText(name, bonuses[name]) + '</li>'
+        }
+        content += '</ul>';
+
         return content;
     }
 
@@ -128,6 +136,10 @@ class ChromeUI {
             return "+" + amount + "% City Defense";
         } else if (name === "melee") {
             return "+" + amount + "% vs. Melee Units";
+        } else if (name === "mounted") {
+            return "+" + amount + "% vs. Mounted Units";
+        } else {
+            throw new Error('Unknown bonus type "' + name + '".');
         }
     }
 

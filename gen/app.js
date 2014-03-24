@@ -622,10 +622,8 @@ var ChromeUI = (function () {
 
         // Combat bonuses
         appliedBonuses = battle.getAppliedBonuses();
-        console.log(appliedBonuses);
         content += '<ul class="text-good">';
         for (name in appliedBonuses[0]) {
-            console.log(name);
             content += '<li>' + this.bonusText(name, appliedBonuses[0][name]) + '</li>';
         }
         content += '</ul>';
@@ -640,7 +638,7 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.hoverBoxUnitSummary = function (unit) {
-        var content;
+        var bonuses, content, name;
 
         content = "";
         content += '<p><span class="unit-name">' + unit.type + '</span>, ';
@@ -650,6 +648,14 @@ var ChromeUI = (function () {
         content += game.names[unit.owner];
         content += '</p>';
 
+        // Combat bonuses
+        bonuses = unit.getBonuses();
+        content += '<ul>';
+        for (name in bonuses) {
+            content += '<li>' + this.bonusText(name, bonuses[name]) + '</li>';
+        }
+        content += '</ul>';
+
         return content;
     };
 
@@ -658,6 +664,10 @@ var ChromeUI = (function () {
             return "+" + amount + "% City Defense";
         } else if (name === "melee") {
             return "+" + amount + "% vs. Melee Units";
+        } else if (name === "mounted") {
+            return "+" + amount + "% vs. Mounted Units";
+        } else {
+            throw new Error('Unknown bonus type "' + name + '".');
         }
     };
 
