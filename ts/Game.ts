@@ -102,6 +102,7 @@ class Game {
                 unit.skippedTurn = false;
                 unit.attacked = false;
                 unit.currentMovement = unit.movement;
+                unit.updateCanPromoteToLevel();
             }
             for (u in this.groups[i]) {
                 group = this.groups[i][u];

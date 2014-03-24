@@ -2,14 +2,18 @@
 
 unit promotions
   Units.promotions - contains metadata
-  Unit.getBonuses
-  Unit.availablePromotions
+  use bonuses in battle
+    Unit.getBonuses
+  show promotions when appropriate
+    Unit.availablePromotions
   group should get/set available promotions, but not current promotions
     wrap around Unit.availablePromotions for Group.availablePromotions
     stub UnitOrGroup.availablePromotions
-  make sure all unitBonuses are applied
-  "When a unit takes a promotion, there are several effects. First, it immediately gains the promotion, and thus the promotion's effects. Thus you may take a promotion and then attack in the same turn. Second, it is unfortified -- any fortification bonus it gets from immobility is lost. Finally, it is healed half of its hitpoint deficit."
-  shouldn't be availabe until the turn after XP crosses threshold
+  confirm
+    promotions shouldn't be availabe until the turn after XP crosses threshold - done by Unit.canPromoteToLevel
+    unit is healed halfway on promotion
+    unit is unfortified when promoted
+    make sure all unitBonuses are applied in battle
 
 add highlighting of two units that are fighting, or maybe red dashed path in between?
   particularly important for when AI attacks

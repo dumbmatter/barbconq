@@ -398,6 +398,7 @@ console.log("FORTIFY")
 
         // Key attributes
         level : number = 1;
+        canPromoteToLevel : number = 1; // Set at the beginning of each turn, so you can't use XP generated this turn to promote
         xp : number = 0;
         strength : number;
         currentStrength : number;
@@ -512,21 +513,32 @@ console.log("FORTIFY")
             return false;
         }
 
-        availablePromotions() {
+        availablePromotions() : string[] {
             var result : string[];
 
             result = [];
-            for (name in promotions) {
-                if (promotions[name].categories.indexOf(this.category) >= 0 && this.promotions.indexOf(name) < 0 && this.hasPrereqs(promotions[name].prereqs)) {
-                    result.push(name);
+
+            if (this.canPromoteToLevel > this.level) {
+                for (name in promotions) {
+                    if (promotions[name].categories.indexOf(this.category) >= 0 && this.promotions.indexOf(name) < 0 && this.hasPrereqs(promotions[name].prereqs)) {
+                        result.push(name);
+                    }
                 }
             }
 
             return result;
         }
 
-        xpForNextLevel() {
+        xpForNextLevel() : number {
             return Math.pow(this.level, 2) + 1;
+        }
+
+        updateCanPromoteToLevel() {
+            if (this.xp < 1) {
+                this.canPromoteToLevel = 1;
+            } else {
+                this.canPromoteToLevel = Math.floor(Math.sqrt(this.xp - 1)) + 1;
+            }
         }
     }
 

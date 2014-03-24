@@ -1696,6 +1696,7 @@ var Game = (function () {
                 unit.skippedTurn = false;
                 unit.attacked = false;
                 unit.currentMovement = unit.movement;
+                unit.updateCanPromoteToLevel();
             }
             for (u in this.groups[i]) {
                 group = this.groups[i][u];
@@ -2257,6 +2258,7 @@ var Units;
             _super.call(this);
             // Key attributes
             this.level = 1;
+            this.canPromoteToLevel = 1;
             this.xp = 0;
             // Set some defaults for special unit properties
             this.landOrSea = "land";
@@ -2366,9 +2368,12 @@ var Units;
             var result;
 
             result = [];
-            for (name in Units.promotions) {
-                if (Units.promotions[name].categories.indexOf(this.category) >= 0 && this.promotions.indexOf(name) < 0 && this.hasPrereqs(Units.promotions[name].prereqs)) {
-                    result.push(name);
+
+            if (this.canPromoteToLevel > this.level) {
+                for (name in Units.promotions) {
+                    if (Units.promotions[name].categories.indexOf(this.category) >= 0 && this.promotions.indexOf(name) < 0 && this.hasPrereqs(Units.promotions[name].prereqs)) {
+                        result.push(name);
+                    }
                 }
             }
 
@@ -2377,6 +2382,14 @@ var Units;
 
         Unit.prototype.xpForNextLevel = function () {
             return Math.pow(this.level, 2) + 1;
+        };
+
+        Unit.prototype.updateCanPromoteToLevel = function () {
+            if (this.xp < 1) {
+                this.canPromoteToLevel = 1;
+            } else {
+                this.canPromoteToLevel = Math.floor(Math.sqrt(this.xp - 1)) + 1;
+            }
         };
         return Unit;
     })(UnitOrGroup);
