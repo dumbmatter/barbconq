@@ -108,9 +108,9 @@ function init() {
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Warrior(config.BARB_ID, [10, 21]);*/
     new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Spearman(config.BARB_ID, [10, 21]);
+    new Units.Axeman(config.BARB_ID, [10, 21]);
+    new Units.Chariot(config.BARB_ID, [10, 21]);
     new Units.Archer(config.BARB_ID, [10, 21]);
     new Units.Archer(config.BARB_ID, [10, 21]);
     new Units.Archer(config.BARB_ID, [10, 21]);

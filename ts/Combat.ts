@@ -7,6 +7,7 @@ module Combat {
         D : number; // Defender's modified strength
         hps : number[] = [null, null]; // Hid points for attacker and defender
         damagePerHit : number[] = [null, null]; // Damage done for a hit by attacker and defender
+        hitsNeededToWin : number[] = [null, null]; // Number of successful hits by attacker and defender to win battle
         names : string[] = [null, null]; // Unit names
         log : string[] = [];
 
@@ -30,14 +31,38 @@ module Combat {
             // Damage per hit
             this.damagePerHit[0] = Util.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
             this.damagePerHit[1] = Util.bound(Math.floor(20 * (3 * this.D + this.A) / (3 * this.A + this.D)), 6, 60);
+            this.hitsNeededToWin[0] = Math.ceil(100 / this.damagePerHit[0]);
+            this.hitsNeededToWin[1] = Math.ceil(100 / this.damagePerHit[1]);
 
             // Names
             this.names[0] = game.names[this.units[0].owner] + "'s " + this.units[0].type;
             this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
         }
 
+        factorial(n : number) : number {
+            if (n === 0 || n === 1) {
+                return 1;
+            }
+            return n * this.factorial(n - 1);
+        }
+
+        // Based on http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
         oddsAttackerWinsFight() : number {
-            return this.A / (this.A + this.D);
+            var i : number, maxRounds : number, odds : number, p : number;
+
+            maxRounds = this.hitsNeededToWin[0] + this.hitsNeededToWin[1] - 1; // Somebody is dead by this time
+
+            p = this.A / (this.A + this.D); // Probability attacker wins round
+
+            odds = 0
+            for (i = this.hitsNeededToWin[0]; i <= maxRounds; i++) {
+                //odds += f(i, maxRounds, p);
+                //odds += C(maxRounds, i) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
+                odds += this.factorial(maxRounds) / (this.factorial(i) * this.factorial(maxRounds - i)) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
+            }
+
+//            return this.A / (this.A + this.D);
+            return odds;
         }
 
         attackerWinsRound() : boolean {

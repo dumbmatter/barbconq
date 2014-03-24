@@ -12,6 +12,7 @@ rate of barb generation in non-visible tiles
 unit tests for grouped units?
   mock Controller, MapUI, ChromeUI?
   karma/mocha/chai
+    karma/jasmine?
   install all with npm
     need karma-mocha and karma-chai?
   how to either organize code so index.html is not needed, or include index.html as fixture?
@@ -26,7 +27,9 @@ unit tests for grouped units?
 
 # Minor current tasks
 
-battle win probabilities seem off. 60% is more like 90%
+battle win probabilities http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
+  test against real civ4
+
 
 How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game
@@ -38,8 +41,6 @@ terrain effects
 keyboard shortcuts
   enter: if not end of turn, cycle through units
     should allow you to let unit continue on path
-
-typescript --noImplicitAny
 
 "End turn early" green button and "end turn" red button, next to minimap
   if end turn early, make sure to move units on path towards targetCoords first!
@@ -73,12 +74,11 @@ Combat
     collateral damage
     experience points
 
-unit design as weapons
-  club, bow+arrow, spear, axe, horse
-  monotone
-  color represents civ
-  how to do infinite stacking? how do civ 2/3/4/5 do it?
-    show highest strength one on top, and "+ X more" in text below it
+unit stacking UI options
+  show highest strength one on top, and "+ X more" in text below it
+  series of vertical lines at the bottom
+
+unit health indicator on tile
 
 tile improvements? maybe roads and forts
 
@@ -161,6 +161,7 @@ Data
 
 TypeScript
   Reevaluate all uses of "any"
+  tsc --noImplicitAny
 
 # Future
 
