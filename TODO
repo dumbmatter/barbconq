@@ -6,6 +6,7 @@ unit promotions
     Battle.defenderBonus should be used for...
       show bonuses in battle hover
       list bonuses under unit in hoverBox, both for ChromeUI.onHoverMoveEnemy and ChromeUI.hoverBoxUnitSummary
+      gather in Battle.defenderBonus, transform with bonusText
     should bonuses be included in the displayed unit strengths?
   highlight/oscillate border of promotion action buttons
   icons for the promotions a unit has
@@ -109,6 +110,7 @@ get rid of mini-islands (unreachable tiles)
   in map generator, run pathfinder from each land tile to the center. if can't find, turn it to water.
 
 UI POLISH
+  when moving a unit to explore fogged space, newly visible stuff should "pop" into view instantly
   center minimap on its canvas when it is not the correct aspect ratio
   mapUI.goToCoords should be smooth
     draw a line between current coords and future coords. if it's long enough, discretize it and use setTimeout to move to each point along the way. uneven discretization can make it decelerate smoothly at the end

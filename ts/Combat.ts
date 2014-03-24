@@ -47,18 +47,16 @@ module Combat {
             this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
         }
 
-        // Returns the bonus (as a percentage) to apply to the defender's modified strength.
-        // Both attacker and defender bonuses are done here.
-        // http://www.civfanatics.com/civ4/strategy/combat_explained.php
-        defenderBonus() {
-            var attacker : Units.Unit, attackerTile : MapMaker.Tile, bonus : number, bonuses : {[name: string] : number}, defender : Units.Unit, defenderTile : MapMaker.Tile, name : string;
-
-            bonus = 0;
+        getAppliedBonuses() : {[name: string] : number}[] {
+            var appliedBonuses : {[name: string] : number}[], bonuses : {[name: string] : number}, attacker : Units.Unit, attackerTile : MapMaker.Tile, defender : Units.Unit, defenderTile : MapMaker.Tile, name : string;
 
             attacker = this.units[0];
             defender = this.units[1];
 //            attackerTile = game.getTile(attacker.coords, false);
             defenderTile = game.getTile(defender.coords, false);
+
+            // Attacker, defender
+            appliedBonuses = [{}, {}];
 
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
@@ -67,15 +65,15 @@ module Combat {
                     // Don't apply to attackers
                 } else if (name === "attackAxeman") {
                     if (defender.type === "Axeman") {
-                        bonus -= bonuses[name];
+                        appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "melee") {
                     if (defender.category === "melee") {
-                        bonus -= bonuses[name];
+                        appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "mounted") {
                     if (defender.category === "mounted") {
-                        bonus -= bonuses[name];
+                        appliedBonuses[0][name] = bonuses[name];
                     }
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
@@ -89,23 +87,46 @@ module Combat {
                     // Don't apply to defenders
                 } else if (name === "cityDefense") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
-                        bonus += bonuses[name];
+                        appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "hillsDefense") {
                     if (defenderTile.features.indexOf("hills") >= 0) {
-                        bonus += bonuses[name];
+                        appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "melee") {
                     if (attacker.category === "melee") {
-                        bonus += bonuses[name];
+                        appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "mounted") {
                     if (attacker.category === "mounted") {
-                        bonus += bonuses[name];
+                        appliedBonuses[1][name] = bonuses[name];
                     }
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
                 }
+            }
+
+            return appliedBonuses;
+        }
+
+        // Returns the bonus (as a percentage) to apply to the defender's modified strength.
+        // Both attacker and defender bonuses are done here.
+        // http://www.civfanatics.com/civ4/strategy/combat_explained.php
+        defenderBonus() {
+            var appliedBonuses : {[name: string] : number}[], bonus : number, name : string;
+
+            appliedBonuses = this.getAppliedBonuses();
+
+            bonus = 0;
+
+            // Attacker bonuses
+            for (name in appliedBonuses[0]) {
+                bonus -= appliedBonuses[0][name];
+            }
+
+            // Defender bonuses
+            for (name in appliedBonuses[1]) {
+                bonus += appliedBonuses[1][name];
             }
 
             return bonus;
@@ -144,6 +165,7 @@ module Combat {
         fight() {
             var baseXP : number, i : number, j : number;
 
+console.log(JSON.stringify(this.getAppliedBonuses()));
 console.log(this.defenderBonus());
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");

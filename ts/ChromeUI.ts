@@ -87,10 +87,23 @@ class ChromeUI {
     }
 
     onHoverMoveEnemy(battle : Combat.Battle) {
-        var content : string;
+        var appliedBonuses : {[name: string] : number}[], content : string, name : string;
 
         content = "<p>Combat Odds: " + Util.round(battle.oddsAttackerWinsFight() * 100, 1) + "%</p>";
-        content += "<p>" + Util.round(battle.A, 2) + " vs. " + Util.round(battle.D, 2) + "</p>";
+        content += '<p><span class="text-good">' + Util.round(battle.A, 2) + '</span> vs. <span class="text-bad">' + Util.round(battle.D, 2) + '</span></p>';
+
+        // Combat bonuses
+        appliedBonuses = battle.getAppliedBonuses();
+        content += '<ul class="text-good">';
+        for (name in appliedBonuses[0]) {
+            content += '<li>' + this.bonusText(name, appliedBonuses[0][name]) + '</li>'
+        }
+        content += '</ul>';
+        content += '<ul class="text-bad">';
+        for (name in appliedBonuses[1]) {
+            content += '<li>' + this.bonusText(name, appliedBonuses[1][name]) + '</li>'
+        }
+        content += '</ul>';
 
         this.elHoverBox.innerHTML = content;
         this.elHoverBox.style.display = "block";
@@ -119,7 +132,7 @@ class ChromeUI {
     }
 
     onHoverAction(action : string = null, arg : string = null) {
-        var promotion : Units.Promotion;
+        var name : string, promotion : Units.Promotion;
 
         if (action === "fortify") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.</p>';
@@ -364,9 +377,9 @@ class ChromeUI {
         event = document.createElement("li")
         event.innerHTML = msg;
         if (goodOrBad === "good") {
-            event.classList.add("event-good");
+            event.classList.add("text-good");
         } else if (goodOrBad === "bad") {
-            event.classList.add("event-bad");
+            event.classList.add("text-bad");
         }
         this.elEvents.appendChild(event);
 

@@ -615,10 +615,25 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.onHoverMoveEnemy = function (battle) {
-        var content;
+        var appliedBonuses, content, name;
 
         content = "<p>Combat Odds: " + Util.round(battle.oddsAttackerWinsFight() * 100, 1) + "%</p>";
-        content += "<p>" + Util.round(battle.A, 2) + " vs. " + Util.round(battle.D, 2) + "</p>";
+        content += '<p><span class="text-good">' + Util.round(battle.A, 2) + '</span> vs. <span class="text-bad">' + Util.round(battle.D, 2) + '</span></p>';
+
+        // Combat bonuses
+        appliedBonuses = battle.getAppliedBonuses();
+        console.log(appliedBonuses);
+        content += '<ul class="text-good">';
+        for (name in appliedBonuses[0]) {
+            console.log(name);
+            content += '<li>' + this.bonusText(name, appliedBonuses[0][name]) + '</li>';
+        }
+        content += '</ul>';
+        content += '<ul class="text-bad">';
+        for (name in appliedBonuses[1]) {
+            content += '<li>' + this.bonusText(name, appliedBonuses[1][name]) + '</li>';
+        }
+        content += '</ul>';
 
         this.elHoverBox.innerHTML = content;
         this.elHoverBox.style.display = "block";
@@ -649,7 +664,7 @@ var ChromeUI = (function () {
     ChromeUI.prototype.onHoverAction = function (action, arg) {
         if (typeof action === "undefined") { action = null; }
         if (typeof arg === "undefined") { arg = null; }
-        var promotion;
+        var name, promotion;
 
         if (action === "fortify") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.</p>';
@@ -884,9 +899,9 @@ var ChromeUI = (function () {
         event = document.createElement("li");
         event.innerHTML = msg;
         if (goodOrBad === "good") {
-            event.classList.add("event-good");
+            event.classList.add("text-good");
         } else if (goodOrBad === "bad") {
-            event.classList.add("event-bad");
+            event.classList.add("text-bad");
         }
         this.elEvents.appendChild(event);
 
@@ -2988,19 +3003,17 @@ var Combat;
             this.names[0] = game.names[this.units[0].owner] + "'s " + this.units[0].type;
             this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
         }
-        // Returns the bonus (as a percentage) to apply to the defender's modified strength.
-        // Both attacker and defender bonuses are done here.
-        // http://www.civfanatics.com/civ4/strategy/combat_explained.php
-        Battle.prototype.defenderBonus = function () {
-            var attacker, attackerTile, bonus, bonuses, defender, defenderTile, name;
-
-            bonus = 0;
+        Battle.prototype.getAppliedBonuses = function () {
+            var appliedBonuses, bonuses, attacker, attackerTile, defender, defenderTile, name;
 
             attacker = this.units[0];
             defender = this.units[1];
 
             //            attackerTile = game.getTile(attacker.coords, false);
             defenderTile = game.getTile(defender.coords, false);
+
+            // Attacker, defender
+            appliedBonuses = [{}, {}];
 
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
@@ -3009,15 +3022,15 @@ var Combat;
                     // Don't apply to attackers
                 } else if (name === "attackAxeman") {
                     if (defender.type === "Axeman") {
-                        bonus -= bonuses[name];
+                        appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "melee") {
                     if (defender.category === "melee") {
-                        bonus -= bonuses[name];
+                        appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "mounted") {
                     if (defender.category === "mounted") {
-                        bonus -= bonuses[name];
+                        appliedBonuses[0][name] = bonuses[name];
                     }
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
@@ -3031,23 +3044,44 @@ var Combat;
                     // Don't apply to defenders
                 } else if (name === "cityDefense") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
-                        bonus += bonuses[name];
+                        appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "hillsDefense") {
                     if (defenderTile.features.indexOf("hills") >= 0) {
-                        bonus += bonuses[name];
+                        appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "melee") {
                     if (attacker.category === "melee") {
-                        bonus += bonuses[name];
+                        appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "mounted") {
                     if (attacker.category === "mounted") {
-                        bonus += bonuses[name];
+                        appliedBonuses[1][name] = bonuses[name];
                     }
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
                 }
+            }
+
+            return appliedBonuses;
+        };
+
+        // Returns the bonus (as a percentage) to apply to the defender's modified strength.
+        // Both attacker and defender bonuses are done here.
+        // http://www.civfanatics.com/civ4/strategy/combat_explained.php
+        Battle.prototype.defenderBonus = function () {
+            var appliedBonuses, bonus, name;
+
+            appliedBonuses = this.getAppliedBonuses();
+
+            bonus = 0;
+
+            for (name in appliedBonuses[0]) {
+                bonus -= appliedBonuses[0][name];
+            }
+
+            for (name in appliedBonuses[1]) {
+                bonus += appliedBonuses[1][name];
             }
 
             return bonus;
@@ -3086,6 +3120,7 @@ var Combat;
         Battle.prototype.fight = function () {
             var baseXP, i, j;
 
+            console.log(JSON.stringify(this.getAppliedBonuses()));
             console.log(this.defenderBonus());
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
