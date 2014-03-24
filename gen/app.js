@@ -629,6 +629,7 @@ var ChromeUI = (function () {
         content += '<p><span class="unit-name">' + unit.type + '</span>, ';
         content += this.strengthFraction(unit) + ', ';
         content += this.movementFraction(unit) + ', ';
+        content += 'XP: (' + unit.xp + '/' + unit.xpForNextLevel() + '), ';
         content += game.names[unit.owner];
         content += '</p>';
 
@@ -679,7 +680,7 @@ var ChromeUI = (function () {
         if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
             // Update bottom-info
             if (activeUnit instanceof Units.Unit) {
-                this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "</td></tr>" + "</table>";
+                this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" + "<table>" + "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" + "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" + "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" + "<tr><td>Experience:</td><td>" + activeUnit.xp + "/" + activeUnit.xpForNextLevel() + "</td></tr>" + "</table>";
             } else if (activeUnit instanceof Units.Group) {
                 content = "<h1>Unit Group (" + activeUnit.units.length + ")</h1>" + "<table>" + "<tr><td>Movement: " + this.movementFraction(activeUnit) + "</td></tr>" + '<tr><td><div class="group-types">Units: ';
 
@@ -2372,6 +2373,10 @@ var Units;
             }
 
             return result;
+        };
+
+        Unit.prototype.xpForNextLevel = function () {
+            return Math.pow(this.level, 2) + 1;
         };
         return Unit;
     })(UnitOrGroup);

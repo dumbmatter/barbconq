@@ -524,6 +524,10 @@ console.log("FORTIFY")
 
             return result;
         }
+
+        xpForNextLevel() {
+            return Math.pow(this.level, 2) + 1;
+        }
     }
 
     export class Group extends UnitOrGroup {
