@@ -192,7 +192,7 @@ class Controller {
             el = <HTMLElement> e.target;
             if (el && el.dataset.action) {
                 e.preventDefault();
-                chromeUI.onHoverAction(el.dataset.action);
+                chromeUI.onHoverAction(el.dataset.action, el.dataset.arg);
             }
         });
         chromeUI.elBottomActions.addEventListener("mouseout", function (e : MouseEvent) {

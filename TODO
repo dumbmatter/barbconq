@@ -6,7 +6,6 @@ unit promotions
     Unit.getBonuses
   show promotions when appropriate
     Unit.availablePromotions to get options, Unit.promote to apply
-    show in hover
     highlight/oscillate border
   group should get/set available promotions, but not current promotions
     wrap around Unit.availablePromotions for Group.availablePromotions
@@ -16,6 +15,9 @@ unit promotions
     unit is healed halfway on promotion
     unit is unfortified when promoted
     make sure all unitBonuses are applied in battle
+  to add promotion...
+    add to Units.promotions
+    add to ChromeUI.bonusText
 
 add highlighting of two units that are fighting, or maybe red dashed path in between?
   particularly important for when AI attacks
@@ -114,6 +116,7 @@ UI POLISH
   When moving to a new tile, fog of war should dissipate immediately, not after delay
   currently, all click events pass through transparency. in civ4, it's only dragging when right click is held. allowing normal left and right clicks can lead to a lot of mis-clicks.
   limit number of entries that can be shown in hover-box
+  CTRL and ALT messages in hover box should only be shown when applicable (>1 unit or >1 unit of a type)
 
 # Barbarian Conquest (barbconq)
 

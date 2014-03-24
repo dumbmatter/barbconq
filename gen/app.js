@@ -241,7 +241,7 @@ var Controller = (function () {
             el = e.target;
             if (el && el.dataset.action) {
                 e.preventDefault();
-                chromeUI.onHoverAction(el.dataset.action);
+                chromeUI.onHoverAction(el.dataset.action, el.dataset.arg);
             }
         });
         chromeUI.elBottomActions.addEventListener("mouseout", function (e) {
@@ -636,8 +636,17 @@ var ChromeUI = (function () {
         return content;
     };
 
-    ChromeUI.prototype.onHoverAction = function (action) {
+    ChromeUI.prototype.bonusText = function (name, amount) {
+        if (name === "cityDefense") {
+            return "+" + amount + "% City Defense";
+        }
+    };
+
+    ChromeUI.prototype.onHoverAction = function (action, arg) {
         if (typeof action === "undefined") { action = null; }
+        if (typeof arg === "undefined") { arg = null; }
+        var promotion;
+
         if (action === "fortify") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.</p>';
             this.elHoverBox.style.display = "block";
@@ -646,6 +655,14 @@ var ChromeUI = (function () {
             this.elHoverBox.style.display = "block";
         } else if (action === "separate") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the group so you can move each unit individually.</p>';
+            this.elHoverBox.style.display = "block";
+        } else if (action === "promote") {
+            promotion = Units.promotions[arg];
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Promote Unit (' + promotion.name + ')</span></p><ul>';
+            for (name in promotion.bonuses) {
+                this.elHoverBox.innerHTML += '<li>' + this.bonusText(name, promotion.bonuses[name]) + '</li>';
+            }
+            this.elHoverBox.innerHTML += '</ul>';
             this.elHoverBox.style.display = "block";
         } else {
             this.elHoverBox.style.display = "none";
@@ -738,7 +755,7 @@ var ChromeUI = (function () {
         // Second, the promotions
         availablePromotions = game.activeUnit.availablePromotions();
         for (i = 0; i < availablePromotions.length; i++) {
-            this.elBottomActions.innerHTML += '<button class="action" data-action="promote" data-arg="' + availablePromotions[i] + '">' + Units.promotions[availablePromotions[i]].name + '</button>';
+            this.elBottomActions.innerHTML += '<button class="action promote" data-action="promote" data-arg="' + availablePromotions[i] + '">' + Units.promotions[availablePromotions[i]].name + '</button>';
         }
         // Third, the automated tasks
     };

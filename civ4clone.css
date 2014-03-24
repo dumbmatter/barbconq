@@ -46,6 +46,18 @@ a:hover {
 #hover-box .action-shortcut {
   color: #8eff66;
 }
+#hover-box ul {
+  margin: 0;
+}
+#hover-box li {
+  margin-top: 5px; /* Match with -5 padding-top in #hover-box, #top-right-box */
+  list-style: none;
+}
+#hover-box li:before {
+  content: '\2022';
+  margin: 0 4px 0 2px;
+  color: #888;
+}
 
 #top-right-box {
   position: absolute;

@@ -110,7 +110,15 @@ class ChromeUI {
         return content;
     }
 
-    onHoverAction(action : string = null) {
+    bonusText(name : string, amount : number) {
+        if (name === "cityDefense") {
+            return "+" + amount + "% City Defense";
+        }
+    }
+
+    onHoverAction(action : string = null, arg : string = null) {
+        var promotion : Units.Promotion;
+
         if (action === "fortify") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.</p>';
             this.elHoverBox.style.display = "block";
@@ -119,6 +127,14 @@ class ChromeUI {
             this.elHoverBox.style.display = "block";
         } else if (action === "separate") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the group so you can move each unit individually.</p>';
+            this.elHoverBox.style.display = "block";
+        } else if (action === "promote") {
+            promotion = Units.promotions[arg];
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Promote Unit (' + promotion.name + ')</span></p><ul>';
+            for (name in promotion.bonuses) {
+                this.elHoverBox.innerHTML += '<li>' + this.bonusText(name, promotion.bonuses[name]) + '</li>'
+            }
+            this.elHoverBox.innerHTML += '</ul>';
             this.elHoverBox.style.display = "block";
         } else {
             this.elHoverBox.style.display = "none";
