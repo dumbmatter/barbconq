@@ -2391,6 +2391,15 @@ var Units;
                 this.canPromoteToLevel = Math.floor(Math.sqrt(this.xp - 1)) + 1;
             }
         };
+
+        Unit.prototype.promote = function (promotionName) {
+            if (this.canPromoteToLevel > this.level && this.availablePromotions().indexOf(promotionName) >= 0) {
+                this.promotions.push(promotionName);
+                this.level += 1;
+            } else {
+                throw new Error('Unit is not allowed to get the ' + promotionName + ' promotion now.');
+            }
+        };
         return Unit;
     })(UnitOrGroup);
     Units.Unit = Unit;
@@ -3226,6 +3235,7 @@ function init() {
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     u1 = new Units.Archer(config.PLAYER_ID, [10, 20]);
     u1.promotions.push("cityGarrison1");
+    u1.xp += 10;
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);

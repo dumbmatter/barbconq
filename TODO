@@ -5,7 +5,7 @@ unit promotions
   use bonuses in battle
     Unit.getBonuses
   show promotions when appropriate
-    Unit.availablePromotions
+    Unit.availablePromotions to get options, Unit.promote to apply
   group should get/set available promotions, but not current promotions
     wrap around Unit.availablePromotions for Group.availablePromotions
     stub UnitOrGroup.availablePromotions

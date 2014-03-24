@@ -540,6 +540,15 @@ console.log("FORTIFY")
                 this.canPromoteToLevel = Math.floor(Math.sqrt(this.xp - 1)) + 1;
             }
         }
+
+        promote(promotionName : string) {
+            if (this.canPromoteToLevel > this.level && this.availablePromotions().indexOf(promotionName) >= 0) {
+                this.promotions.push(promotionName);
+                this.level += 1;
+            } else {
+                throw new Error('Unit is not allowed to get the ' + promotionName + ' promotion now.')
+            }
+        }
     }
 
     export class Group extends UnitOrGroup {
