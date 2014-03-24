@@ -1,5 +1,14 @@
 # Major current tasks
 
+unit promotions
+  Units.promotions - contains metadata
+  when a unit is given a promotion, keep track of bonuses directly within the unit object
+    same structure as "bonuses" object in Units.promotions. should have some utility function to display nicely
+    NO! how would this work if you have an axeman (with inherent bonus) who is upgraded? bonuses need to be dynamic, i guess? think about it
+      get default bonuses from super(), add on unit-specific ones
+  available promotions should be calculated dynamically from Units.promotions based on prereqs
+  group should get/set available promotions, but not current promotions
+
 add highlighting of two units that are fighting, or maybe red dashed path in between?
   particularly important for when AI attacks
 
@@ -30,7 +39,6 @@ unit tests for grouped units?
 battle win probabilities http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
   test against real civ4
 
-
 How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game
   maybe instead of instructions showing, show a "mini-instructions" with a link to the full one
@@ -57,15 +65,13 @@ unit actions
     healing
     top right indicator in unit icon
   sleep/fortify difference?
-
-unit promotions
-  with "Blitz" promotion, never "attacked" set to True
+  are some of these universal? can move up to root and concat always like Unit.promotions
 
 Combat
   combat complexity
     http://www.civfanatics.com/civ4/strategy/combat_explained.php
     http://home.comcast.net/~proc/civ4/combat_calc.htm
-    http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
+    BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
     unit strength modifiers
       include in modifiedStrength formula
       list under unit in hoverBox, both for ChromeUI.onHoverMoveEnemy and ChromeUI.hoverBoxUnitSummary

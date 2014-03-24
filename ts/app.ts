@@ -71,6 +71,7 @@ function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
     }
 }
 
+var u1;
 function init() {
     game = new Game(1, 20, 40);
     chromeUI = new ChromeUI();
@@ -99,7 +100,7 @@ function init() {
 /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);

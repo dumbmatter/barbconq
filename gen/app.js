@@ -1778,6 +1778,7 @@ var Units;
     var UnitOrGroup = (function () {
         function UnitOrGroup() {
             this._targetCoords = null;
+            this._promotions = [];
             // Turn stuff
             this._active = false;
             this._skippedTurn = false;
@@ -1873,6 +1874,16 @@ var Units;
             },
             set: function (value) {
                 this._actions = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(UnitOrGroup.prototype, "promotions", {
+            get: function () {
+                return this._promotions;
+            },
+            set: function (value) {
+                this._promotions = value;
             },
             enumerable: true,
             configurable: true
@@ -2564,6 +2575,7 @@ var Units;
         function Scout() {
             _super.apply(this, arguments);
             this.type = "Scout";
+            this.category = "recon";
             this.strength = 1;
             this.currentStrength = 1;
             this.movement = 2;
@@ -2580,6 +2592,7 @@ var Units;
         function Warrior() {
             _super.apply(this, arguments);
             this.type = "Warrior";
+            this.category = "melee";
             this.strength = 2;
             this.currentStrength = 2;
             this.movement = 1;
@@ -2596,6 +2609,7 @@ var Units;
         function Archer() {
             _super.apply(this, arguments);
             this.type = "Archer";
+            this.category = "archery";
             this.strength = 3;
             this.currentStrength = 3;
             this.movement = 1;
@@ -2612,6 +2626,7 @@ var Units;
         function Chariot() {
             _super.apply(this, arguments);
             this.type = "Chariot";
+            this.category = "mounted";
             this.strength = 4;
             this.currentStrength = 4;
             this.movement = 2;
@@ -2628,6 +2643,7 @@ var Units;
         function Spearman() {
             _super.apply(this, arguments);
             this.type = "Spearman";
+            this.category = "melee";
             this.strength = 4;
             this.currentStrength = 4;
             this.movement = 1;
@@ -2644,6 +2660,7 @@ var Units;
         function Axeman() {
             _super.apply(this, arguments);
             this.type = "Axeman";
+            this.category = "melee";
             this.strength = 5;
             this.currentStrength = 5;
             this.movement = 1;
@@ -2701,6 +2718,36 @@ var Units;
         }
     }
     Units.addUnitsWithTypeToNewGroup = addUnitsWithTypeToNewGroup;
+
+    ;
+
+    Units.promotions = {
+        cityGarrison1: {
+            name: "City Garrison I",
+            bonuses: {
+                cityDefense: 20
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: []
+        },
+        cityGarrison2: {
+            name: "City Garrison II",
+            bonuses: {
+                cityDefense: 25
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: [["cityGarrison1"]]
+        },
+        cityGarrison3: {
+            name: "City Garrison III",
+            bonuses: {
+                cityDefense: 30,
+                melee: 10
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: [["cityGarrison2"]]
+        }
+    };
 })(Units || (Units = {}));
 // Cities
 var Cities;
@@ -3035,6 +3082,7 @@ function loadAssets(assetsToLoad, cb) {
     }
 }
 
+var u1;
 function init() {
     game = new Game(1, 20, 40);
     chromeUI = new ChromeUI();
@@ -3062,7 +3110,7 @@ function init() {
     /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);

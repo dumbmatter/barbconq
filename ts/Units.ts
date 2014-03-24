@@ -31,6 +31,7 @@ module Units {
         _canAttack : boolean;
         _canDefend : boolean;
         _actions : string[];
+        _promotions : string[] = [];
 
         // Turn stuff
         _active : boolean = false; // When set, show UI options for this unit
@@ -56,6 +57,8 @@ module Units {
         get canDefend() : boolean { return this._canDefend; }
         set actions(value : string[]) { this._actions = value; }
         get actions() : string[] { return this._actions; }
+        set promotions(value : string[]) { this._promotions = value; }
+        get promotions() : string[] { return this._promotions; }
         set active(value : boolean) { this._active = value; }
         get active() : boolean { return this._active; }
         set skippedTurn(value : boolean) { this._skippedTurn = value; }
@@ -653,6 +656,7 @@ console.log("FORTIFY")
 
     export class Scout extends Unit {
         type = "Scout";
+        category = "recon";
 
         strength = 1;
         currentStrength = 1;
@@ -665,6 +669,7 @@ console.log("FORTIFY")
 
     export class Warrior extends Unit {
         type = "Warrior";
+        category = "melee";
 
         strength = 2;
         currentStrength = 2;
@@ -677,6 +682,7 @@ console.log("FORTIFY")
 
     export class Archer extends Unit {
         type = "Archer";
+        category = "archery";
 
         strength = 3;
         currentStrength = 3;
@@ -689,6 +695,7 @@ console.log("FORTIFY")
 
     export class Chariot extends Unit {
         type = "Chariot";
+        category = "mounted";
 
         strength = 4;
         currentStrength = 4;
@@ -701,6 +708,7 @@ console.log("FORTIFY")
 
     export class Spearman extends Unit {
         type = "Spearman";
+        category = "melee";
 
         strength = 4;
         currentStrength = 4;
@@ -713,6 +721,7 @@ console.log("FORTIFY")
 
     export class Axeman extends Unit {
         type = "Axeman";
+        category = "melee";
 
         strength = 5;
         currentStrength = 5;
@@ -768,4 +777,52 @@ console.log("FORTIFY")
             newGroup.activate(false);
         }
     }
+
+    export interface Promotions {
+        [slug : string] : {
+            name : string;
+
+            // Bonuses given by the promotion
+            bonuses : {[name : string] : number};
+
+            // Categories of units (like "melee", "archery", etc) that can get this promotion
+            categories : string[];
+
+            // Prerequisites for the promotion.
+            // Each entry in the array contains an array of requirements that enable the promotion.
+            // So "and" prereqs can be encoded like:
+            //     [["combat3", "militaryScience"]]
+            // and "or" prereqs can be encoded like:
+            //     [["combat2"], ["drill2"]]
+            prereqs : string[][];
+        };
+    };
+
+    export var promotions : Promotions = {
+        cityGarrison1: {
+            name: "City Garrison I",
+            bonuses: {
+                cityDefense: 20
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: []
+        },
+        cityGarrison2: {
+            name: "City Garrison II",
+            bonuses: {
+                cityDefense: 25
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: [["cityGarrison1"]]
+        },
+        cityGarrison3: {
+            name: "City Garrison III",
+            bonuses: {
+                cityDefense: 30,
+                melee: 10
+            },
+            categories: ["archery", "gunpowder"],
+            prereqs: [["cityGarrison2"]]
+        }
+    };
 }

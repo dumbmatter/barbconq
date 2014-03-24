@@ -336,9 +336,11 @@ a:hover {
   width: 33%;
   vertical-align: top;
 }
-.instructions-unit h2 {
+.instructions-unit .type {
   color: #fff;
-  margin: 15px 0;
+  margin: 7px 0;
+}
+.instructions-unit .type b {
   font-size: 16px;
 }
 .instructions-unit-icon {
