@@ -100,9 +100,9 @@ function init() {
 /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    u1 = new Units.Archer(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
     u1.promotions.push("cityGarrison1");
-    u1.xp += 10;
+    u1.xp += 5;
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);

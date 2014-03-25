@@ -134,14 +134,24 @@ class ChromeUI {
     }
 
     bonusText(name : string, amount : number) {
-        if (name === "cityDefense") {
+        if (name === "strength") {
+            return "+" + amount + "% Strength";
+        } else if (name === "cityDefense") {
             return "+" + amount + "% City Defense";
         } else if (name === "hillsDefense") {
             return "+" + amount + "% Hills Defense";
+        } else if (name === "cityAttack") {
+            return "+" + amount + "% City Attack";
+        } else if (name === "attackAxeman") {
+            return "+" + amount + "% Attack vs. Axeman";
+        } else if (name === "archery") {
+            return "+" + amount + "% vs. Archery Units";
         } else if (name === "melee") {
             return "+" + amount + "% vs. Melee Units";
         } else if (name === "mounted") {
             return "+" + amount + "% vs. Mounted Units";
+        } else if (name === "gunpowder") {
+            return "+" + amount + "% vs. Gunpowder Units";
         } else if (name === "tile") {
             return "+" + amount + "% Tile Defense";
         } else {

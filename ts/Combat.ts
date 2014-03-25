@@ -63,8 +63,18 @@ module Combat {
             for (name in bonuses) {
                 if (name === "cityDefense" || name === "hillsDefense") {
                     // Don't apply to attackers
+                } else if (name === "strength") {
+                    appliedBonuses[0][name] = bonuses[name];
+                } else if (name === "cityAttack") {
+                    if (defenderTile.city && defenderTile.city.owner === defender.owner) {
+                        appliedBonuses[0][name] = bonuses[name];
+                    }
                 } else if (name === "attackAxeman") {
                     if (defender.type === "Axeman") {
+                        appliedBonuses[0][name] = bonuses[name];
+                    }
+                } else if (name === "archery") {
+                    if (defender.category === "archery") {
                         appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "melee") {
@@ -85,12 +95,18 @@ module Combat {
             for (name in bonuses) {
                 if (name === "attackAxeman") {
                     // Don't apply to defenders
+                } else if (name === "strength") {
+                    appliedBonuses[1][name] = bonuses[name];
                 } else if (name === "cityDefense") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
                         appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "hillsDefense") {
                     if (defenderTile.features.indexOf("hills") >= 0) {
+                        appliedBonuses[1][name] = bonuses[name];
+                    }
+                } else if (name === "archery") {
+                    if (attacker.category === "archery") {
                         appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "melee") {

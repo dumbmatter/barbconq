@@ -663,14 +663,24 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.bonusText = function (name, amount) {
-        if (name === "cityDefense") {
+        if (name === "strength") {
+            return "+" + amount + "% Strength";
+        } else if (name === "cityDefense") {
             return "+" + amount + "% City Defense";
         } else if (name === "hillsDefense") {
             return "+" + amount + "% Hills Defense";
+        } else if (name === "cityAttack") {
+            return "+" + amount + "% City Attack";
+        } else if (name === "attackAxeman") {
+            return "+" + amount + "% Attack vs. Axeman";
+        } else if (name === "archery") {
+            return "+" + amount + "% vs. Archery Units";
         } else if (name === "melee") {
             return "+" + amount + "% vs. Melee Units";
         } else if (name === "mounted") {
             return "+" + amount + "% vs. Mounted Units";
+        } else if (name === "gunpowder") {
+            return "+" + amount + "% vs. Gunpowder Units";
         } else if (name === "tile") {
             return "+" + amount + "% Tile Defense";
         } else {
@@ -1875,6 +1885,31 @@ var Units;
     ;
 
     Units.promotions = {
+        cityRaider1: {
+            name: "City Raider I",
+            bonuses: {
+                cityAttack: 20
+            },
+            categories: ["melee", "siege", "armored"],
+            prereqs: []
+        },
+        cityRaider2: {
+            name: "City Raider II",
+            bonuses: {
+                cityAttack: 25
+            },
+            categories: ["melee", "siege", "armored"],
+            prereqs: [["cityRaider1"]]
+        },
+        cityRaider3: {
+            name: "City Raider III",
+            bonuses: {
+                cityAttack: 30,
+                gunpowder: 10
+            },
+            categories: ["melee", "siege", "armored"],
+            prereqs: [["cityRaider2"]]
+        },
         cityGarrison1: {
             name: "City Garrison I",
             bonuses: {
@@ -1899,6 +1934,38 @@ var Units;
             },
             categories: ["archery", "gunpowder"],
             prereqs: [["cityGarrison2"]]
+        },
+        combat1: {
+            name: "Combat I",
+            bonuses: {
+                strength: 10
+            },
+            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+            prereqs: []
+        },
+        combat2: {
+            name: "Combat II",
+            bonuses: {
+                strength: 10
+            },
+            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+            prereqs: [["combat1"]]
+        },
+        combat3: {
+            name: "Combat III",
+            bonuses: {
+                strength: 10
+            },
+            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+            prereqs: [["combat2"]]
+        },
+        cover: {
+            name: "Cover",
+            bonuses: {
+                archery: 25
+            },
+            categories: ["archery", "melee", "gunpowder"],
+            prereqs: [["combat1"]]
         }
     };
 
@@ -3057,8 +3124,18 @@ var Combat;
             for (name in bonuses) {
                 if (name === "cityDefense" || name === "hillsDefense") {
                     // Don't apply to attackers
+                } else if (name === "strength") {
+                    appliedBonuses[0][name] = bonuses[name];
+                } else if (name === "cityAttack") {
+                    if (defenderTile.city && defenderTile.city.owner === defender.owner) {
+                        appliedBonuses[0][name] = bonuses[name];
+                    }
                 } else if (name === "attackAxeman") {
                     if (defender.type === "Axeman") {
+                        appliedBonuses[0][name] = bonuses[name];
+                    }
+                } else if (name === "archery") {
+                    if (defender.category === "archery") {
                         appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "melee") {
@@ -3079,12 +3156,18 @@ var Combat;
             for (name in bonuses) {
                 if (name === "attackAxeman") {
                     // Don't apply to defenders
+                } else if (name === "strength") {
+                    appliedBonuses[1][name] = bonuses[name];
                 } else if (name === "cityDefense") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
                         appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "hillsDefense") {
                     if (defenderTile.features.indexOf("hills") >= 0) {
+                        appliedBonuses[1][name] = bonuses[name];
+                    }
+                } else if (name === "archery") {
+                    if (attacker.category === "archery") {
                         appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "melee") {
@@ -3433,9 +3516,9 @@ function init() {
     /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    u1 = new Units.Archer(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
     u1.promotions.push("cityGarrison1");
-    u1.xp += 10;
+    u1.xp += 5;
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);

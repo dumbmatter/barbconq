@@ -37,6 +37,31 @@ module Units {
     };
 
     export var promotions : Promotions = {
+        cityRaider1: {
+            name: "City Raider I",
+            bonuses: {
+                cityAttack: 20
+            },
+            categories: ["melee", "siege", "armored"],
+            prereqs: []
+        },
+        cityRaider2: {
+            name: "City Raider II",
+            bonuses: {
+                cityAttack: 25
+            },
+            categories: ["melee", "siege", "armored"],
+            prereqs: [["cityRaider1"]]
+        },
+        cityRaider3: {
+            name: "City Raider III",
+            bonuses: {
+                cityAttack: 30,
+                gunpowder: 10
+            },
+            categories: ["melee", "siege", "armored"],
+            prereqs: [["cityRaider2"]]
+        },
         cityGarrison1: {
             name: "City Garrison I",
             bonuses: {
@@ -61,7 +86,39 @@ module Units {
             },
             categories: ["archery", "gunpowder"],
             prereqs: [["cityGarrison2"]]
-        }
+        },
+        combat1: {
+            name: "Combat I",
+            bonuses: {
+                strength: 10
+            },
+            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+            prereqs: []
+        },
+        combat2: {
+            name: "Combat II",
+            bonuses: {
+                strength: 10
+            },
+            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+            prereqs: [["combat1"]]
+        },
+        combat3: {
+            name: "Combat III",
+            bonuses: {
+                strength: 10
+            },
+            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+            prereqs: [["combat2"]]
+        },
+        cover: {
+            name: "Cover",
+            bonuses: {
+                archery: 25
+            },
+            categories: ["archery", "melee", "gunpowder"],
+            prereqs: [["combat1"]]
+        },
     };
 
     // Things that both individual units and groups of units have in common

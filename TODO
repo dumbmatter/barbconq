@@ -21,11 +21,18 @@ unit promotions
     unit is healed halfway on promotion
     unit is unfortified when promoted
     make sure all unitBonuses are applied in battle
+    battle odds match real game and http://home.comcast.net/~proc/civ4/combat_calc.htm
   to add promotion...
     add to Units.promotions
     add to ChromeUI.bonusText
     make sure bonus types apply in their relevant area
-      mostly, Combat.Battle.defenderBonus
+      mostly, Combat.Battle.getAppliedBonuses
+  remaining promotions for barbconq
+    http://www.civfanatics.com/civ4/info/promotions/
+    start with drill, continue alphabetical and pick relevant ones
+  remaining promotions for after barbconq
+    combat 4+
+    lots of irrelevant ones
 
 add highlighting of two units that are fighting, or maybe red dashed path in between?
   particularly important for when AI attacks
@@ -114,6 +121,7 @@ get rid of mini-islands (unreachable tiles)
   in map generator, run pathfinder from each land tile to the center. if can't find, turn it to water.
 
 UI POLISH
+  show city name somewhere, both on map and on tile hover
   center minimap on its canvas when it is not the correct aspect ratio
   mapUI.goToCoords should be smooth
     draw a line between current coords and future coords. if it's long enough, discretize it and use setTimeout to move to each point along the way. uneven discretization can make it decelerate smoothly at the end
