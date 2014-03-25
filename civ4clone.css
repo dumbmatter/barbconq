@@ -332,9 +332,8 @@ a:hover {
   margin: 20px auto;
 }
 .modal {
-  background: rgba(0, 0, 0, 0.75);
+  background: #000;
   color: #fff;
-  text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.4em black;
   padding: 0 14px;
   border: solid #99e6ff;
   border-width: 5px 2px;
@@ -351,7 +350,7 @@ a:hover {
   margin: 14px 0;
 }
 .instructions-unit {
-  background-color: rgba(0, 255, 0, 0.15);
+  background-color: #030;
   margin: 2px;
   width: 33%;
   vertical-align: top;
