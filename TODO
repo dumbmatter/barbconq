@@ -58,9 +58,6 @@ How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game
   maybe instead of instructions showing, show a "mini-instructions" with a link to the full one
 
-terrain effects
-  defensive bonuses
-
 keyboard shortcuts
   enter: if not end of turn, cycle through units
     should allow you to let unit continue on path
