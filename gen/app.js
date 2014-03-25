@@ -671,7 +671,7 @@ var ChromeUI = (function () {
             return "+" + amount + "% vs. Melee Units";
         } else if (name === "mounted") {
             return "+" + amount + "% vs. Mounted Units";
-        } else if (name === "terrain") {
+        } else if (name === "tile") {
             return "+" + amount + "% Tile Defense";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
@@ -2952,6 +2952,8 @@ var Cities;
     // Things that both individual units and groups of units have in common
     var City = (function () {
         function City(owner, coords) {
+            var i, tile;
+
             this.id = game.maxId;
             game.maxId += 1;
 
@@ -2959,10 +2961,27 @@ var Cities;
 
             // Set coordinates of city and put a reference to the city in the map
             this.coords = coords;
-            game.getTile(coords, false).city = this;
+            tile = game.getTile(coords, false);
+            tile.city = this;
 
             // Store reference to unit in game.units
             game.cities[this.owner][this.id] = this;
+
+            // If tile contains forest or jungle, get rid of it
+            if (tile.features.indexOf("forest") >= 0) {
+                for (i = 0; i < tile.features.length; i++) {
+                    if (tile.features[i] === "forest") {
+                        tile.features.splice(i, 1);
+                    }
+                }
+            }
+            if (tile.features.indexOf("jungle") >= 0) {
+                for (i = 0; i < tile.features.length; i++) {
+                    if (tile.features[i] === "jungle") {
+                        tile.features.splice(i, 1);
+                    }
+                }
+            }
         }
         City.prototype.capture = function (newOwner) {
             game.cities[newOwner][this.id] = this;
@@ -3081,13 +3100,13 @@ var Combat;
                 }
             }
 
-            // Add terrain bonuses to the defender category
-            appliedBonuses[1]["terrain"] = 0;
+            // Add tile bonuses (terrain, improvements, culture) to the defender category
+            appliedBonuses[1]["tile"] = 0;
             if (defenderTile.features.indexOf("hills") >= 0) {
-                appliedBonuses[1]["terrain"] += 25;
+                appliedBonuses[1]["tile"] += 25;
             }
             if (defenderTile.features.indexOf("forest") >= 0 || defenderTile.features.indexOf("jungle") >= 0) {
-                appliedBonuses[1]["terrain"] += 50;
+                appliedBonuses[1]["tile"] += 50;
             }
 
             return appliedBonuses;

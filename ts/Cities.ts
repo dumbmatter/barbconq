@@ -8,6 +8,8 @@ module Cities {
         coords : number[];
 
         constructor(owner : number, coords : number[]) {
+            var i : number, tile : MapMaker.Tile;
+
             this.id = game.maxId;
             game.maxId += 1;
 
@@ -15,10 +17,27 @@ module Cities {
 
             // Set coordinates of city and put a reference to the city in the map
             this.coords = coords;
-            game.getTile(coords, false).city = this;
+            tile = game.getTile(coords, false);
+            tile.city = this;
 
             // Store reference to unit in game.units
             game.cities[this.owner][this.id] = this;
+
+            // If tile contains forest or jungle, get rid of it
+            if (tile.features.indexOf("forest") >= 0) {
+                for (i = 0; i < tile.features.length; i++) {
+                    if (tile.features[i] === "forest") {
+                        tile.features.splice(i, 1);
+                    }
+                }
+            }
+            if (tile.features.indexOf("jungle") >= 0) {
+                for (i = 0; i < tile.features.length; i++) {
+                    if (tile.features[i] === "jungle") {
+                        tile.features.splice(i, 1);
+                    }
+                }
+            }
         }
 
         capture(newOwner : number) {
