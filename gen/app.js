@@ -577,7 +577,7 @@ var ChromeUI = (function () {
             content = "";
 
             for (i = 0; i < tile.units.length; i++) {
-                content += this.hoverBoxUnitSummary(tile.units[i]);
+                content += this.hoverBoxUnitSummary(tile.units[i], i === 0);
             }
 
             // Capitalize feature names
@@ -637,7 +637,8 @@ var ChromeUI = (function () {
         this.elHoverBox.style.display = "block";
     };
 
-    ChromeUI.prototype.hoverBoxUnitSummary = function (unit) {
+    ChromeUI.prototype.hoverBoxUnitSummary = function (unit, showCombatBonuses) {
+        if (typeof showCombatBonuses === "undefined") { showCombatBonuses = true; }
         var bonuses, content, name;
 
         content = "";
@@ -649,12 +650,14 @@ var ChromeUI = (function () {
         content += '</p>';
 
         // Combat bonuses
-        bonuses = unit.getBonuses();
-        content += '<ul>';
-        for (name in bonuses) {
-            content += '<li>' + this.bonusText(name, bonuses[name]) + '</li>';
+        if (showCombatBonuses) {
+            bonuses = unit.getBonuses();
+            content += '<ul>';
+            for (name in bonuses) {
+                content += '<li>' + this.bonusText(name, bonuses[name]) + '</li>';
+            }
+            content += '</ul>';
         }
-        content += '</ul>';
 
         return content;
     };
@@ -662,6 +665,8 @@ var ChromeUI = (function () {
     ChromeUI.prototype.bonusText = function (name, amount) {
         if (name === "cityDefense") {
             return "+" + amount + "% City Defense";
+        } else if (name === "hillsDefense") {
+            return "+" + amount + "% Hills Defense";
         } else if (name === "melee") {
             return "+" + amount + "% vs. Melee Units";
         } else if (name === "mounted") {

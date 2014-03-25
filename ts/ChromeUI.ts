@@ -51,7 +51,7 @@ class ChromeUI {
             content = "";
 
             for (i = 0; i < tile.units.length; i++) {
-                content += this.hoverBoxUnitSummary(tile.units[i]);
+                content += this.hoverBoxUnitSummary(tile.units[i], i === 0);
             }
 
             // Capitalize feature names
@@ -109,7 +109,7 @@ class ChromeUI {
         this.elHoverBox.style.display = "block";
     }
 
-    private hoverBoxUnitSummary(unit : Units.Unit) {
+    private hoverBoxUnitSummary(unit : Units.Unit, showCombatBonuses : boolean = true) {
         var bonuses : {[name: string] : number}, content : string, name : string;
 
         content = "";
@@ -121,12 +121,14 @@ class ChromeUI {
         content += '</p>';
 
         // Combat bonuses
-        bonuses = unit.getBonuses();
-        content += '<ul>';
-        for (name in bonuses) {
-            content += '<li>' + this.bonusText(name, bonuses[name]) + '</li>'
+        if (showCombatBonuses) {
+            bonuses = unit.getBonuses();
+            content += '<ul>';
+            for (name in bonuses) {
+                content += '<li>' + this.bonusText(name, bonuses[name]) + '</li>'
+            }
+            content += '</ul>';
         }
-        content += '</ul>';
 
         return content;
     }
@@ -134,6 +136,8 @@ class ChromeUI {
     bonusText(name : string, amount : number) {
         if (name === "cityDefense") {
             return "+" + amount + "% City Defense";
+        } else if (name === "hillsDefense") {
+            return "+" + amount + "% Hills Defense";
         } else if (name === "melee") {
             return "+" + amount + "% vs. Melee Units";
         } else if (name === "mounted") {

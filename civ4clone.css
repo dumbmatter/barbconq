@@ -48,10 +48,10 @@ a:hover {
 }
 #hover-box ul {
   margin: 0;
+  margin-top: 5px; /* Match with -5 padding-top in #hover-box, #top-right-box */
   padding: 0;
 }
 #hover-box li {
-  margin-top: 5px; /* Match with -5 padding-top in #hover-box, #top-right-box */
   list-style: none;
 }
 #hover-box li:before {
