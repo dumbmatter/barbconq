@@ -236,12 +236,12 @@ module MapMaker {
                         };
 
                         // Features
-/*                        if (Math.random() < 0.2) {
+                        if (Math.random() < 0.2) {
                             this.tiles[i][j].features.push("hills");
                         }
                         if (Math.random() < 0.3) {
                             this.tiles[i][j].features.push("forest");
-                        }*/
+                        }
                     } else {
                         this.tiles[i][j] = {
                             terrain: "sea",

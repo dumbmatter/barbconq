@@ -1,10 +1,7 @@
 describe("A test suite", function() {
-  beforeEach(function() {
-  });
-  afterEach(function() {
-  });
- 
-  it('should fail', function() {
-    expect(false).to.be.false;
-  });
+    it('should fail', function() {
+        game = new Game(1, 20, 40);
+console.log(game);
+        expect(document.getElementById("map")).not.toBeNull();
+    });
 });

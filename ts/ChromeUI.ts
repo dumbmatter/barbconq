@@ -142,6 +142,8 @@ class ChromeUI {
             return "+" + amount + "% vs. Melee Units";
         } else if (name === "mounted") {
             return "+" + amount + "% vs. Mounted Units";
+        } else if (name === "tile") {
+            return "+" + amount + "% Tile Defense";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }

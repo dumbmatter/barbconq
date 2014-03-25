@@ -10,16 +10,22 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha'],
+    frameworks: ['jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: 'index.html', watched: false},
+      {pattern: 'assets/**/*', watched: false, included: false},
       'node_modules/easystarjs/bin/easystar-0.1.6.js',
+      'js-lib/howler.js',
       'gen/app.js',
       'test/*.js'
     ],
+
+    // http://stackoverflow.com/a/21262098/786644
+    proxies: {
+      '/assets': 'http://localhost:9876/base/assets'
+    },
 
 
     // list of files to exclude
@@ -60,7 +66,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
 
 
     // Continuous Integration mode

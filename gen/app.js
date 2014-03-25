@@ -671,6 +671,8 @@ var ChromeUI = (function () {
             return "+" + amount + "% vs. Melee Units";
         } else if (name === "mounted") {
             return "+" + amount + "% vs. Mounted Units";
+        } else if (name === "terrain") {
+            return "+" + amount + "% Tile Defense";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }
@@ -1641,13 +1643,14 @@ var MapMaker;
                             city: null,
                             lastSeenState: null
                         };
+
                         // Features
-                        /*                        if (Math.random() < 0.2) {
-                        this.tiles[i][j].features.push("hills");
+                        if (Math.random() < 0.2) {
+                            this.tiles[i][j].features.push("hills");
                         }
                         if (Math.random() < 0.3) {
-                        this.tiles[i][j].features.push("forest");
-                        }*/
+                            this.tiles[i][j].features.push("forest");
+                        }
                     } else {
                         this.tiles[i][j] = {
                             terrain: "sea",
@@ -3076,6 +3079,15 @@ var Combat;
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
                 }
+            }
+
+            // Add terrain bonuses to the defender category
+            appliedBonuses[1]["terrain"] = 0;
+            if (defenderTile.features.indexOf("hills") >= 0) {
+                appliedBonuses[1]["terrain"] += 25;
+            }
+            if (defenderTile.features.indexOf("forest") >= 0 || defenderTile.features.indexOf("jungle") >= 0) {
+                appliedBonuses[1]["terrain"] += 50;
             }
 
             return appliedBonuses;

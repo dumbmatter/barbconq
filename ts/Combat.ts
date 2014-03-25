@@ -106,6 +106,15 @@ module Combat {
                 }
             }
 
+            // Add tile bonuses (terrain, improvements, culture) to the defender category
+            appliedBonuses[1]["tile"] = 0;
+            if (defenderTile.features.indexOf("hills") >= 0) {
+                appliedBonuses[1]["tile"] += 25;
+            }
+            if (defenderTile.features.indexOf("forest") >= 0 || defenderTile.features.indexOf("jungle") >= 0) {
+                appliedBonuses[1]["tile"] += 50;
+            }
+
             return appliedBonuses;
         }
 
