@@ -148,23 +148,23 @@ a:hover {
   border-color: #ffde00;
 }
 #bottom-actions .promote {
-  -webkit-animation: promote-flash 3s linear infinite;
-  animation: promote-flash 3s linear infinite;
+  -webkit-animation: promote-flash 1s linear infinite;
+  animation: promote-flash 1s linear infinite;
 }
 #bottom-actions .promote:hover {
-  background-color: #4d4300;
+  background-color: #1a1600;
   -webkit-animation: none;
   animation: none;
 }
 @keyframes promote-flash {  
   0% { background-color: #000; border-color: #99e6ff; }
-  25% { background-color: #4d4300; border-color: #ffde00; }
-  75% { background-color: #000; border-color: #99e6ff; }
+  33% { background-color: #1a1600; border-color: #ffde00; }
+  67% { background-color: #1a1600; border-color: #ffde00; }
 }
 @-webkit-keyframes promote-flash {
   0% { background-color: #000; border-color: #99e6ff; }
-  25% { background-color: #4d4300; border-color: #ffde00; }
-  75% { background-color: #000; border-color: #99e6ff; }
+  33% { background-color: #1a1600; border-color: #ffde00; }
+  67% { background-color: #1a1600; border-color: #ffde00; }
 }
 
 #bottom-minimap {
