@@ -1892,7 +1892,8 @@ var Units;
 
     // IMPORTANT:
     // When adding a promotion here, make sure you also add support for it in ChromeUI.bonusText,
-    // Combat.Battle.getAppliedBonuses, and anywhere else that the effect of the bonus is applied.
+    // Combat.Battle.getAppliedBonuses, Combat.Battle.defenderBonus, and anywhere else that the
+    // effect of the bonus is applied.
     Units.promotions = {
         cityRaider1: {
             name: "City Raider I",
@@ -3081,6 +3082,7 @@ var Combat;
             this.hps = [null, null];
             this.damagePerHit = [null, null];
             this.hitsNeededToWin = [null, null];
+            this.firstStrikes = [0, 0];
             this.names = [null, null];
             this.log = [];
             // "attacker" or "defender"
@@ -3221,14 +3223,33 @@ var Combat;
 
             appliedBonuses = this.getAppliedBonuses();
 
+            // First, handle first strikes
+            if (appliedBonuses[0].hasOwnProperty("firstStrikes")) {
+                if (appliedBonuses[1].hasOwnProperty("firstStrikes")) {
+                    if (appliedBonuses[0]["firstStrikes"] > appliedBonuses[1]["firstStrikes"]) {
+                        this.firstStrikes = [appliedBonuses[0]["firstStrikes"] - appliedBonuses[1]["firstStrikes"], 0];
+                    } else if (appliedBonuses[1]["firstStrikes"] > appliedBonuses[0]["firstStrikes"]) {
+                        this.firstStrikes = [0, appliedBonuses[1]["firstStrikes"] - appliedBonuses[0]["firstStrikes"]];
+                    }
+                } else {
+                    this.firstStrikes = [appliedBonuses[0]["firstStrikes"], 0];
+                }
+            } else if (appliedBonuses[1].hasOwnProperty("firstStrikes")) {
+                this.firstStrikes = [0, appliedBonuses[1]["firstStrikes"]];
+            }
+
             bonus = 0;
 
             for (name in appliedBonuses[0]) {
-                bonus -= appliedBonuses[0][name];
+                if (name !== "firstStrikes") {
+                    bonus -= appliedBonuses[0][name];
+                }
             }
 
             for (name in appliedBonuses[1]) {
-                bonus += appliedBonuses[1][name];
+                if (name !== "firstStrikes") {
+                    bonus += appliedBonuses[1][name];
+                }
             }
 
             return bonus;
@@ -3269,6 +3290,7 @@ var Combat;
 
             console.log(JSON.stringify(this.getAppliedBonuses()));
             console.log(this.defenderBonus());
+            console.log(this.firstStrikes);
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
 

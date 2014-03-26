@@ -15,6 +15,8 @@ Combat
         apolyton formula - another loop
       ranges of first strikes (see high drill promotions)
         add another parameter for random ones, like extraFirstStrikes
+        how to display with ChromeUI.bonusText?
+          if extraFirstStrikes !== firstStrikes, do firstStrikes + "-" + bonusText(extra...)
     retreat/withdraw
       apply as a bonus, default 0
     collateral damage

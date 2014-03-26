@@ -8,6 +8,7 @@ module Combat {
         hps : number[] = [null, null]; // Hid points for attacker and defender
         damagePerHit : number[] = [null, null]; // Damage done for a hit by attacker and defender
         hitsNeededToWin : number[] = [null, null]; // Number of successful hits by attacker and defender to win battle
+        firstStrikes : number[] = [0, 0]; // Number of first strikes by attacker and defender
         names : string[] = [null, null]; // Unit names
         log : string[] = [];
 
@@ -147,16 +148,35 @@ module Combat {
 
             appliedBonuses = this.getAppliedBonuses();
 
+            // First, handle first strikes
+            if (appliedBonuses[0].hasOwnProperty("firstStrikes")) {
+                if (appliedBonuses[1].hasOwnProperty("firstStrikes")) {
+                    if (appliedBonuses[0]["firstStrikes"] > appliedBonuses[1]["firstStrikes"]) {
+                        this.firstStrikes = [appliedBonuses[0]["firstStrikes"] - appliedBonuses[1]["firstStrikes"], 0];
+                    } else if (appliedBonuses[1]["firstStrikes"] > appliedBonuses[0]["firstStrikes"]) {
+                        this.firstStrikes = [0, appliedBonuses[1]["firstStrikes"] - appliedBonuses[0]["firstStrikes"]];
+                    }
+                } else {
+                    this.firstStrikes = [appliedBonuses[0]["firstStrikes"], 0];
+                }
+            } else if (appliedBonuses[1].hasOwnProperty("firstStrikes")) {
+                this.firstStrikes = [0, appliedBonuses[1]["firstStrikes"]];
+            }
+
             bonus = 0;
 
             // Attacker bonuses
             for (name in appliedBonuses[0]) {
-                bonus -= appliedBonuses[0][name];
+                if (name !== "firstStrikes") {
+                    bonus -= appliedBonuses[0][name];
+                }
             }
 
             // Defender bonuses
             for (name in appliedBonuses[1]) {
-                bonus += appliedBonuses[1][name];
+                if (name !== "firstStrikes") {
+                    bonus += appliedBonuses[1][name];
+                }
             }
 
             return bonus;
@@ -197,6 +217,7 @@ module Combat {
 
 console.log(JSON.stringify(this.getAppliedBonuses()));
 console.log(this.defenderBonus());
+console.log(this.firstStrikes);
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
 
