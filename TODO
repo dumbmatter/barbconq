@@ -1,5 +1,17 @@
 # Major current tasks
 
+Combat
+  combat complexity
+    http://www.civfanatics.com/civ4/strategy/combat_explained.php
+    http://home.comcast.net/~proc/civ4/combat_calc.htm
+    BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
+    first strikes
+      archer gets 1 by default
+    retreat/withdraw
+      apply as a bonus, default 0
+    collateral damage
+    experience points
+
 unit promotions
   Units.promotions - contains metadata
   onHoverTile bonuses for first unit
@@ -9,9 +21,6 @@ unit promotions
         if no activeUnit, should be best defender against a "generic" unit, without bonuses for unit type but with other bonuses
       abstract into some general function that orders a list of units by strength
         like Combat.findBestDefender, but return sorted list of defenders
-  use bonuses in battle
-    should bonuses be included in the displayed unit strengths?
-  highlight/oscillate border of promotion action buttons
   icons for the promotions a unit has
     show in hover-box and bottom-info
     can they be text?
@@ -22,11 +31,6 @@ unit promotions
     unit is unfortified when promoted
     make sure all unitBonuses are applied in battle
     battle odds match real game and http://home.comcast.net/~proc/civ4/combat_calc.htm
-  to add promotion...
-    add to Units.promotions
-    add to ChromeUI.bonusText
-    make sure bonus types apply in their relevant area
-      mostly, Combat.Battle.getAppliedBonuses
   remaining promotions for barbconq
     http://www.civfanatics.com/civ4/info/promotions/
     start with drill, continue alphabetical and pick relevant ones
@@ -90,18 +94,6 @@ unit actions
     top right indicator in unit icon
   sleep/fortify difference?
   are some of these universal? can move up to root Unit?
-
-Combat
-  combat complexity
-    http://www.civfanatics.com/civ4/strategy/combat_explained.php
-    http://home.comcast.net/~proc/civ4/combat_calc.htm
-    BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-    first strikes
-      archer gets 1 by default
-    retreat/withdraw
-      apply as a bonus, default 0
-    collateral damage
-    experience points
 
 unit stacking UI options
   show highest strength one on top, and "+ X more" in text below it

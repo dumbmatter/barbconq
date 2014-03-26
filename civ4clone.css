@@ -147,6 +147,25 @@ a:hover {
 #bottom-actions .action:hover {
   border-color: #ffde00;
 }
+#bottom-actions .promote {
+  -webkit-animation: promote-flash 3s linear infinite;
+  animation: promote-flash 3s linear infinite;
+}
+#bottom-actions .promote:hover {
+  background-color: #4d4300;
+  -webkit-animation: none;
+  animation: none;
+}
+@keyframes promote-flash {  
+  0% { background-color: #000; border-color: #99e6ff; }
+  25% { background-color: #4d4300; border-color: #ffde00; }
+  75% { background-color: #000; border-color: #99e6ff; }
+}
+@-webkit-keyframes promote-flash {
+  0% { background-color: #000; border-color: #99e6ff; }
+  25% { background-color: #4d4300; border-color: #ffde00; }
+  75% { background-color: #000; border-color: #99e6ff; }
+}
 
 #bottom-minimap {
   position: absolute;
