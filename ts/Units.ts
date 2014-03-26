@@ -899,7 +899,7 @@ console.log("FORTIFY")
 
         landOrSea = "land";
         actions = ["fortify", "skipTurn"];
-        unitBonuses = {cityDefense: 50, hillsDefense: 25};
+        unitBonuses = {cityDefense: 50, hillsDefense: 25, firstStrikes: 1};
     }
 
     export class Chariot extends Unit {

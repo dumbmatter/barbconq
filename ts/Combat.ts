@@ -85,6 +85,8 @@ module Combat {
                     if (defender.category === "mounted") {
                         appliedBonuses[0][name] = bonuses[name];
                     }
+                } else if (name === "firstStrikes") {
+                    appliedBonuses[0][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
                 }
@@ -117,17 +119,20 @@ module Combat {
                     if (attacker.category === "mounted") {
                         appliedBonuses[1][name] = bonuses[name];
                     }
+                } else if (name === "firstStrikes") {
+                    appliedBonuses[1][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
                 }
             }
 
             // Add tile bonuses (terrain, improvements, culture) to the defender category
-            appliedBonuses[1]["tile"] = 0;
             if (defenderTile.features.indexOf("hills") >= 0) {
+                if (!appliedBonuses[1].hasOwnProperty("tile")) { appliedBonuses[1]["tile"] = 0; }
                 appliedBonuses[1]["tile"] += 25;
             }
             if (defenderTile.features.indexOf("forest") >= 0 || defenderTile.features.indexOf("jungle") >= 0) {
+                if (!appliedBonuses[1].hasOwnProperty("tile")) { appliedBonuses[1]["tile"] = 0; }
                 appliedBonuses[1]["tile"] += 50;
             }
 

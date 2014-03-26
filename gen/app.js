@@ -683,6 +683,12 @@ var ChromeUI = (function () {
             return "+" + amount + "% vs. Gunpowder Units";
         } else if (name === "tile") {
             return "+" + amount + "% Tile Defense";
+        } else if (name === "firstStrikes") {
+            if (amount === 1) {
+                return "1 First Strike";
+            } else {
+                return amount + " First Strikes";
+            }
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }
@@ -1884,6 +1890,9 @@ var Units;
 
     ;
 
+    // IMPORTANT:
+    // When adding a promotion here, make sure you also add support for it in ChromeUI.bonusText,
+    // Combat.Battle.getAppliedBonuses, and anywhere else that the effect of the bonus is applied.
     Units.promotions = {
         cityRaider1: {
             name: "City Raider I",
@@ -2906,7 +2915,7 @@ var Units;
             this.currentMovement = 1;
             this.landOrSea = "land";
             this.actions = ["fortify", "skipTurn"];
-            this.unitBonuses = { cityDefense: 50, hillsDefense: 25 };
+            this.unitBonuses = { cityDefense: 50, hillsDefense: 25, firstStrikes: 1 };
         }
         return Archer;
     })(Unit);
@@ -3146,6 +3155,8 @@ var Combat;
                     if (defender.category === "mounted") {
                         appliedBonuses[0][name] = bonuses[name];
                     }
+                } else if (name === "firstStrikes") {
+                    appliedBonuses[0][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
                 }
@@ -3178,17 +3189,24 @@ var Combat;
                     if (attacker.category === "mounted") {
                         appliedBonuses[1][name] = bonuses[name];
                     }
+                } else if (name === "firstStrikes") {
+                    appliedBonuses[1][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
                 }
             }
 
             // Add tile bonuses (terrain, improvements, culture) to the defender category
-            appliedBonuses[1]["tile"] = 0;
             if (defenderTile.features.indexOf("hills") >= 0) {
+                if (!appliedBonuses[1].hasOwnProperty("tile")) {
+                    appliedBonuses[1]["tile"] = 0;
+                }
                 appliedBonuses[1]["tile"] += 25;
             }
             if (defenderTile.features.indexOf("forest") >= 0 || defenderTile.features.indexOf("jungle") >= 0) {
+                if (!appliedBonuses[1].hasOwnProperty("tile")) {
+                    appliedBonuses[1]["tile"] = 0;
+                }
                 appliedBonuses[1]["tile"] += 50;
             }
 
@@ -3519,7 +3537,7 @@ function init() {
     u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
     u1.promotions.push("cityGarrison1");
     u1.xp += 5;
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Archer(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
 

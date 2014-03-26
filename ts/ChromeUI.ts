@@ -154,6 +154,12 @@ class ChromeUI {
             return "+" + amount + "% vs. Gunpowder Units";
         } else if (name === "tile") {
             return "+" + amount + "% Tile Defense";
+        } else if (name === "firstStrikes") {
+            if (amount === 1) {
+                return "1 First Strike";
+            } else {
+                return amount + " First Strikes";
+            }
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }

@@ -6,7 +6,15 @@ Combat
     http://home.comcast.net/~proc/civ4/combat_calc.htm
     BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
     first strikes
-      archer gets 1 by default
+      http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
+      implement in Battle.fight
+        calculate random first strikes
+        take difference of first strikes
+        add initial first strike rounds
+      implement in odds prediction
+        apolyton formula - another loop
+      ranges of first strikes (see high drill promotions)
+        add another parameter for random ones, like extraFirstStrikes
     retreat/withdraw
       apply as a bonus, default 0
     collateral damage
@@ -199,6 +207,8 @@ scroll wheel zoom by increasing TILE_SIZE
 
 Friendly civs
   big problem: units of multiple civs can be on same tile.
+
+some units are immune to first strikes
 
 Does cityDefense bonus apply for other civ's cities? Like a neutral city, or an ally's city?
 
