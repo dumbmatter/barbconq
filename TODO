@@ -3,13 +3,11 @@
 Combat
   combat complexity
     http://www.civfanatics.com/civ4/strategy/combat_explained.php
-    http://home.comcast.net/~proc/civ4/combat_calc.htm
+    http://home.comcast.net/~proc/civ4/combat_calc.htm - seems weird with injured units
     BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
     first strikes
       http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-      implement in odds prediction
-        apolyton formula - another loop
-        test http://home.comcast.net/~proc/civ4/combat_calc.htm
+      test odds prediction against real civ4
       ranges of possible first strikes (see high drill promotions)
         add another parameter for random ones, like extraFirstStrikes
         how to display with ChromeUI.bonusText?

@@ -191,20 +191,57 @@ module Combat {
 
         // Based on http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
         oddsAttackerWinsFight() : number {
-            var i : number, maxRounds : number, odds : number, p : number;
-
-            maxRounds = this.hitsNeededToWin[0] + this.hitsNeededToWin[1] - 1; // Somebody is dead by this time
+            var f, i : number, iFS : number, odds : number, oddsAfterFirstStrikes, p : number;
 
             p = this.A / (this.A + this.D); // Probability attacker wins round
 
-            odds = 0
-            for (i = this.hitsNeededToWin[0]; i <= maxRounds; i++) {
-                //odds += f(i, maxRounds, p);
-                //odds += C(maxRounds, i) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
-                odds += this.factorial(maxRounds) / (this.factorial(i) * this.factorial(maxRounds - i)) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
+            // Binomial distribution
+            f = function (k, n, p) {
+                return this.factorial(n) / (this.factorial(k) * this.factorial(n - k)) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+            }.bind(this);
+
+            // iFS: 0 if attacker has first strikes, 1 if defender has first strikes
+            // numHits: Number of successful first strikes
+            oddsAfterFirstStrikes = function (iFS : number, numHits : number) : number {
+                var hitsNeededToWinAttacker : number, i : number, maxRounds : number, odds : number;
+
+                maxRounds = this.hitsNeededToWin[0] + this.hitsNeededToWin[1] - 1; // Somebody is dead by this time
+
+                // Each successful first strike means one less possible round after first strikes
+                maxRounds -= numHits;
+
+                // Apply first strikes for attacker, if appropriate
+                hitsNeededToWinAttacker = this.hitsNeededToWin[0];
+                if (iFS === 0) {
+                    hitsNeededToWinAttacker -= numHits;
+                }
+
+                odds = 0
+
+                // Each successful first strike means one less possible round after first strikes
+                for (i = hitsNeededToWinAttacker; i <= maxRounds; i++) {
+                    odds += f(i, maxRounds, p);
+                    //odds += C(maxRounds, i) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
+                    //odds += this.factorial(maxRounds) / (this.factorial(i) * this.factorial(maxRounds - i)) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
+                }
+
+                return odds;
+            }.bind(this);
+
+            // Who gets first strikes?
+            if (this.firstStrikes[0] > 0) {
+                iFS = 0;
+            } else {
+                iFS = 1;
             }
 
-//            return this.A / (this.A + this.D);
+            // Calculate odds.
+            odds = 0;
+            for (i = 0; i <= this.firstStrikes[iFS]; i++) {
+//console.log([i, f(i, this.firstStrikes[iFS], p), oddsAfterFirstStrikes(iFS, i)])
+                odds += f(i, this.firstStrikes[iFS], p) * oddsAfterFirstStrikes(iFS, i);
+            }
+
             return odds;
         }
 
