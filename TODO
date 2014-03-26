@@ -7,16 +7,14 @@ Combat
     BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
     first strikes
       http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-      implement in Battle.fight
-        calculate random first strikes
-        take difference of first strikes
-        add initial first strike rounds
       implement in odds prediction
         apolyton formula - another loop
-      ranges of first strikes (see high drill promotions)
+        test http://home.comcast.net/~proc/civ4/combat_calc.htm
+      ranges of possible first strikes (see high drill promotions)
         add another parameter for random ones, like extraFirstStrikes
         how to display with ChromeUI.bonusText?
           if extraFirstStrikes !== firstStrikes, do firstStrikes + "-" + bonusText(extra...)
+        implement in Battle.fight
     retreat/withdraw
       apply as a bonus, default 0
     collateral damage

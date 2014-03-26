@@ -232,8 +232,20 @@ console.log(this.firstStrikes);
                     i = 1; // Winner
                     j = 0; // Loser
                 }
-                this.hps[j] = Util.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
-                this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
+
+                // If this is a first strike, only one party can win. So if the loser has first strikes left, no damage is done
+                if (this.firstStrikes[j] === 0) {
+                    this.hps[j] = Util.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
+                    this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
+                }
+
+                // Decrement first strikes
+                if (this.firstStrikes[0] > 0) {
+                    this.firstStrikes[0] -= 1;
+                }
+                if (this.firstStrikes[1] > 0) {
+                    this.firstStrikes[1] -= 1;
+                }
             }
 
             this.log.push(this.names[i] + " defeated " + this.names[j] + "!");
