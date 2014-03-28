@@ -74,8 +74,8 @@ console.log(params);
             }
         }
 
-console.log(expectedAttackerWins / numFights);
-console.log(attackerWins / numFights);
+console.log("Expected: " + expectedAttackerWins / numFights);
+console.log("Observed: " + attackerWins / numFights);
 
         expect(Math.abs((attackerWins - expectedAttackerWins) / numFights)).toBeLessThan(0.01);
     });

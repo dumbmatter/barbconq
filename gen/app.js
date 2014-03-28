@@ -3113,8 +3113,8 @@ var Combat;
             // Damage per hit
             this.damagePerHit[0] = Util.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
             this.damagePerHit[1] = Util.bound(Math.floor(20 * (3 * this.D + this.A) / (3 * this.A + this.D)), 6, 60);
-            this.hitsNeededToWin[0] = Math.ceil(100 / this.damagePerHit[0]);
-            this.hitsNeededToWin[1] = Math.ceil(100 / this.damagePerHit[1]);
+            this.hitsNeededToWin[0] = Math.ceil(this.hps[1] / this.damagePerHit[0]);
+            this.hitsNeededToWin[1] = Math.ceil(this.hps[0] / this.damagePerHit[1]);
 
             // Names
             this.names[0] = game.names[this.units[0].owner] + "'s " + this.units[0].type;
