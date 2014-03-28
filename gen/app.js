@@ -2549,6 +2549,10 @@ var Units;
             if ((this.canPromoteToLevel > this.level && this.availablePromotions().indexOf(promotionName) >= 0) || forceAccept) {
                 this.promotions.push(promotionName);
                 this.level += 1;
+
+                // Restore half of HP
+                this.currentStrength = (this.currentStrength + this.strength) / 2;
+
                 if (this.owner === config.PLAYER_ID) {
                     chromeUI.onUnitActivated();
                 }

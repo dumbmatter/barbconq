@@ -34,10 +34,9 @@ unit promotions
   group should get/set available promotions, but not current promotions
     wrap around Unit.availablePromotions for Group.availablePromotions
   confirm
-    unit is healed halfway on promotion
     unit is unfortified when promoted
     make sure all unitBonuses are applied in battle
-    battle odds match real game and http://home.comcast.net/~proc/civ4/combat_calc.htm
+    battle odds match real game
   remaining promotions for barbconq
     http://www.civfanatics.com/civ4/info/promotions/
     start with drill, continue alphabetical and pick relevant ones
