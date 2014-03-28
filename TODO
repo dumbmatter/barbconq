@@ -56,19 +56,6 @@ rate of barb generation in non-visible tiles
 
 unit tests for grouped units?
   mock Controller, MapUI, ChromeUI?
-  karma/mocha/chai
-    karma/jasmine?
-  install all with npm
-    need karma-mocha and karma-chai?
-  how to either organize code so index.html is not needed, or include index.html as fixture?
-  source maps for karma output
-    https://github.com/karma-runner/karma/issues/594
-      need to run tsc in preprocessor?
-      or https://github.com/demerzel3/karma-sourcemap-loader
-        tried it, but doesn't seem to work
-        problem seems to be in source-map package. works with version 0.1.32, but not 0.1.33
-          https://github.com/mozilla/source-map/issues/106
-          NO, problem is not source-map. it's the input to source-map: karma's reporter.js isn't getting column numbers. why? not sure. maybe it'll work if i can make it error-free until real tests run?
 
 # Minor current tasks
 
