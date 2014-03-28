@@ -86,6 +86,10 @@ module Combat {
                     if (defender.category === "mounted") {
                         appliedBonuses[0][name] = bonuses[name];
                     }
+                } else if (name === "gunpowder") {
+                    if (defender.category === "gunpowder") {
+                        appliedBonuses[0][name] = bonuses[name];
+                    }
                 } else if (name === "firstStrikes") {
                     appliedBonuses[0][name] = bonuses[name];
                 } else {
@@ -96,7 +100,7 @@ module Combat {
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman") {
+                if (name === "attackAxeman" || name === "cityAttack") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
                     appliedBonuses[1][name] = bonuses[name];
@@ -118,6 +122,10 @@ module Combat {
                     }
                 } else if (name === "mounted") {
                     if (attacker.category === "mounted") {
+                        appliedBonuses[1][name] = bonuses[name];
+                    }
+                } else if (name === "gunpowder") {
+                    if (attacker.category === "gunpowder") {
                         appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "firstStrikes") {

@@ -980,7 +980,6 @@ var MapUI = (function () {
         this.X = game.map.cols * this.TILE_SIZE / 2;
         this.Y = game.map.rows * this.TILE_SIZE / 2;
 
-        console.log("AAA");
         this.canvas = document.getElementById("map");
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
@@ -2546,8 +2545,9 @@ var Units;
             }
         };
 
-        Unit.prototype.promote = function (promotionName) {
-            if (this.canPromoteToLevel > this.level && this.availablePromotions().indexOf(promotionName) >= 0) {
+        Unit.prototype.promote = function (promotionName, forceAccept) {
+            if (typeof forceAccept === "undefined") { forceAccept = false; }
+            if ((this.canPromoteToLevel > this.level && this.availablePromotions().indexOf(promotionName) >= 0) || forceAccept) {
                 this.promotions.push(promotionName);
                 this.level += 1;
                 if (this.owner === config.PLAYER_ID) {
@@ -3159,6 +3159,10 @@ var Combat;
                     if (defender.category === "mounted") {
                         appliedBonuses[0][name] = bonuses[name];
                     }
+                } else if (name === "gunpowder") {
+                    if (defender.category === "gunpowder") {
+                        appliedBonuses[0][name] = bonuses[name];
+                    }
                 } else if (name === "firstStrikes") {
                     appliedBonuses[0][name] = bonuses[name];
                 } else {
@@ -3169,7 +3173,7 @@ var Combat;
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman") {
+                if (name === "attackAxeman" || name === "cityAttack") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
                     appliedBonuses[1][name] = bonuses[name];
@@ -3191,6 +3195,10 @@ var Combat;
                     }
                 } else if (name === "mounted") {
                     if (attacker.category === "mounted") {
+                        appliedBonuses[1][name] = bonuses[name];
+                    }
+                } else if (name === "gunpowder") {
+                    if (attacker.category === "gunpowder") {
                         appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "firstStrikes") {

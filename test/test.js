@@ -4,12 +4,12 @@ var assets = {
     battleLost: jasmine.createSpyObj("asset", ["play"]),
     battleWon: jasmine.createSpyObj("asset", ["play"])
 };
-var chromeUI = jasmine.createSpyObj("chromeUI", ["eventLog", "showModal"]);
+var chromeUI = jasmine.createSpyObj("chromeUI", ["eventLog", "onUnitActivated", "showModal"]);
 var mapUI = jasmine.createSpyObj("mapUI", ["render"]);
 
 describe("A test suite", function() {
     it('should fail', function() {
-        var attackerWins, expectedAttackerWins, i, numFights, rand, params;
+        var attackerWins, expectedAttackerWins, i, numFights, rand, params, u1, u2;
 
         attackerWins = 0;
         numFights = 100000;
@@ -34,9 +34,12 @@ describe("A test suite", function() {
         params.u2Type = Random.choice(["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"]);
 
         // Randomize promotions
+        params.u1Promotions = [Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions))];
+        params.u2Promotions = [Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions))];
 
         // Randomize health
-
+        params.u1HP = Math.round(Math.random() * 100);
+        params.u2HP = Math.round(Math.random() * 100);
 console.log(params);
 
         for (i = 0; i < numFights; i++) {
@@ -48,10 +51,21 @@ console.log(params);
             game.map.tiles[0][1].terrain = params.tileTerrain;
             game.map.tiles[0][1].features = params.tileFeatures;
 
+            // Same units every time
             u1 = new Units[params.u1Type](config.PLAYER_ID, [0, 0]);
             u2 = new Units[params.u2Type](config.BARB_ID, [0, 1]);
+            params.u1Promotions.forEach(function (promotion) {
+                u1.promote(promotion, true);
+            });
+            params.u2Promotions.forEach(function (promotion) {
+                u2.promote(promotion, true);
+            });
+            u1.currentStrength *= params.u1HP / 100;
+            u2.currentStrength *= params.u2HP / 100;
+
             b = new Combat.Battle(u1, u2);
 
+            // Save prediction for later
             if (i === 0) { expectedAttackerWins = b.oddsAttackerWinsFight() * numFights; }
 
             b.fight();

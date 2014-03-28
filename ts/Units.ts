@@ -609,8 +609,8 @@ console.log("FORTIFY")
             }
         }
 
-        promote(promotionName : string) {
-            if (this.canPromoteToLevel > this.level && this.availablePromotions().indexOf(promotionName) >= 0) {
+        promote(promotionName : string, forceAccept : boolean = false) {
+            if ((this.canPromoteToLevel > this.level && this.availablePromotions().indexOf(promotionName) >= 0) || forceAccept) {
                 this.promotions.push(promotionName);
                 this.level += 1;
                 if (this.owner === config.PLAYER_ID) {
