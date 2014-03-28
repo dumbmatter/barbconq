@@ -308,7 +308,7 @@ module Units {
             // Keep track of unit movement (applies even if the unit fights but does not move)
             this.currentMovement -= movementCost;
 
-            // To update UI stuff after all movement things are done
+            // To update UI stuff
             atEnd = function () {
                 // Update visibility, since something moved this could have changed
                 game.map.updateVisibility();
@@ -321,6 +321,7 @@ module Units {
 
                 this.active = false;
 
+                atEnd();
                 setTimeout(function () {
                     if (!attacker || !attacker.group) {
                         // After delay, move to next unit

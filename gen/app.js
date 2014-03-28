@@ -2252,7 +2252,7 @@ var Units;
             // Keep track of unit movement (applies even if the unit fights but does not move)
             this.currentMovement -= movementCost;
 
-            // To update UI stuff after all movement things are done
+            // To update UI stuff
             atEnd = function () {
                 // Update visibility, since something moved this could have changed
                 game.map.updateVisibility();
@@ -2265,6 +2265,7 @@ var Units;
 
                 this.active = false;
 
+                atEnd();
                 setTimeout(function () {
                     if (!attacker || !attacker.group) {
                         // After delay, move to next unit
@@ -3604,7 +3605,7 @@ function init() {
     /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
     u1.promotions.push("cityGarrison1");
     u1.xp += 5;
     new Units.Archer(config.PLAYER_ID, [10, 20]);

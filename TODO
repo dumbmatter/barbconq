@@ -7,7 +7,9 @@ Combat
     BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
     first strikes
       http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-      test odds prediction against real civ4
+      test odds prediction
+        against real civ4
+        against a bunch of random battles in unit tests
       ranges of possible first strikes (see high drill promotions)
         add another parameter for random ones, like extraFirstStrikes
         how to display with ChromeUI.bonusText?
@@ -71,9 +73,14 @@ unit tests for grouped units?
 
 # Minor current tasks
 
+onNewTurn called in wrong spot in Game?
+
 UI lag caused by UNIT_MOVEMENT_UI_DELAY
   when moving a unit to explore fogged space, newly visible stuff should "pop" into view instantly
   lag on numpad movement
+  should render before and after settimeout. settimeout shouldn't be used as a render-wait
+  in Units.countMovementToCoords, it calls atEnd after a delay, and that is where visibility is updated.
+    call atEnd() before setTimeout too.
 
 How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game
