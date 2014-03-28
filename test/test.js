@@ -40,8 +40,6 @@ describe("Combat.Battle.oddsAttackerWinsFight()", function() {
         // Randomize health
         params.u1HP = Math.round(Math.random() * 100);
         params.u2HP = Math.round(Math.random() * 100);
-// First strikes not handled correctly?
-params =  {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Spearman', u2Type: 'Archer', u1Promotions: [], u2Promotions: [], u1HP: 100, u2HP: 100};
 console.log(params);
 
         for (i = 0; i < numFights; i++) {

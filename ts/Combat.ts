@@ -199,7 +199,7 @@ module Combat {
 
         // Based on http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
         oddsAttackerWinsFight() : number {
-            var f, i : number, iFS : number, odds : number, oddsAfterFirstStrikes, p : number;
+            var f, i : number, iFS : number, odds : number, oddsAfterFirstStrikes, p : number, pFS : number;
 
             p = this.A / (this.A + this.D); // Probability attacker wins round
 
@@ -218,7 +218,8 @@ module Combat {
                 // Each successful first strike means one less possible round after first strikes
                 maxRounds -= numHits;
 
-                // Apply first strikes for attacker, if appropriate
+                // Apply first strikes for attacker, if appropriate.
+                // Otherwise, defender gets first strikes.
                 hitsNeededToWinAttacker = this.hitsNeededToWin[0];
                 if (iFS === 0) {
                     hitsNeededToWinAttacker -= numHits;
@@ -237,17 +238,22 @@ module Combat {
             }.bind(this);
 
             // Who gets first strikes?
+            // pFS is the probability of a first strike succeeding. Above, p is the probability of
+            // the attacker winning a round. The normal p is used in oddsAfterFirstStrikes, but pFS
+            // is needed to calculate the weights of oddsAfterFirstStrikes calls below.
             if (this.firstStrikes[0] > 0) {
                 iFS = 0;
+                pFS = p;
             } else {
                 iFS = 1;
+                pFS = 1 - p;
             }
 
             // Calculate odds.
             odds = 0;
             for (i = 0; i <= this.firstStrikes[iFS]; i++) {
-//console.log([i, f(i, this.firstStrikes[iFS], p), oddsAfterFirstStrikes(iFS, i)])
-                odds += f(i, this.firstStrikes[iFS], p) * oddsAfterFirstStrikes(iFS, i);
+//console.log([i, f(i, this.firstStrikes[iFS], pFS), oddsAfterFirstStrikes(iFS, i)]);
+                odds += f(i, this.firstStrikes[iFS], pFS) * oddsAfterFirstStrikes(iFS, i);
             }
 
             return odds;
@@ -264,7 +270,7 @@ module Combat {
 console.log(this.defenderBonus());
 console.log(this.firstStrikes);*/
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
-            this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
+//            this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
 
             this.units[0].attacked = true;
 
