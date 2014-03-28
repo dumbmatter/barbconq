@@ -123,21 +123,23 @@ function init() {
     game.newTurn();
 }
 
-loadAssets({
-    hills: "terrain/hills.png",
-    forest: "terrain/forest.png",
-    city: "white-tower.png",
-    cityCaptured: "tower-fall.png",
-    whiteScout: "units/white/tread.png",
-    whiteWarrior: "units/white/stone-axe.png",
-    whiteArcher: "units/white/high-shot.png",
-    whiteChariot: "units/white/horse-head.png",
-    whiteSpearman: "units/white/spears.png",
-    whiteAxeman: "units/white/battle-axe.png",
-    blackScout: "units/black/tread.png",
-    blackWarrior: "units/black/stone-axe.png",
-    blackArcher: "units/black/high-shot.png",
-    blackChariot: "units/black/horse-head.png",
-    blackSpearman: "units/black/spears.png",
-    blackAxeman: "units/black/battle-axe.png"
-}, init);
+function startBarbConq() {
+    loadAssets({
+        hills: "terrain/hills.png",
+        forest: "terrain/forest.png",
+        city: "white-tower.png",
+        cityCaptured: "tower-fall.png",
+        whiteScout: "units/white/tread.png",
+        whiteWarrior: "units/white/stone-axe.png",
+        whiteArcher: "units/white/high-shot.png",
+        whiteChariot: "units/white/horse-head.png",
+        whiteSpearman: "units/white/spears.png",
+        whiteAxeman: "units/white/battle-axe.png",
+        blackScout: "units/black/tread.png",
+        blackWarrior: "units/black/stone-axe.png",
+        blackArcher: "units/black/high-shot.png",
+        blackChariot: "units/black/horse-head.png",
+        blackSpearman: "units/black/spears.png",
+        blackAxeman: "units/black/battle-axe.png"
+    }, init);
+}

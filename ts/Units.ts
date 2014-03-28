@@ -504,7 +504,7 @@ console.log("FORTIFY")
             }
 
             // Remove from map
-            tileUnits = game.getTile(this.coords).units;
+            tileUnits = game.getTile(this.coords, false).units;
             for (i = 0; i < tileUnits.length; i++) {
                 if (tileUnits[i].id === this.id) {
                     tileUnits.splice(i, 1);

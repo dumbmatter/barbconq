@@ -18,7 +18,6 @@ Combat
     retreat/withdraw
       apply as a bonus, default 0
     collateral damage
-    experience points
 
 unit promotions
   Units.promotions - contains metadata
@@ -81,6 +80,7 @@ UI lag caused by UNIT_MOVEMENT_UI_DELAY
   should render before and after settimeout. settimeout shouldn't be used as a render-wait
   in Units.countMovementToCoords, it calls atEnd after a delay, and that is where visibility is updated.
     call atEnd() before setTimeout too.
+    break up atEnd, need visibility update only in first one, right?
 
 How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game

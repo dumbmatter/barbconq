@@ -252,9 +252,9 @@ module Combat {
         fight() {
             var baseXP : number, i : number, j : number;
 
-console.log(JSON.stringify(this.getAppliedBonuses()));
+/*console.log(JSON.stringify(this.getAppliedBonuses()));
 console.log(this.defenderBonus());
-console.log(this.firstStrikes);
+console.log(this.firstStrikes);*/
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
 
@@ -286,7 +286,7 @@ console.log(this.firstStrikes);
             }
 
             this.log.push(this.names[i] + " defeated " + this.names[j] + "!");
-console.log(this.log);
+//console.log(this.log);
 
             // Process results
             this.winner = i === 0 ? "attacker" : "defender";

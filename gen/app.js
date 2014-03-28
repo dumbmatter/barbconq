@@ -980,6 +980,7 @@ var MapUI = (function () {
         this.X = game.map.cols * this.TILE_SIZE / 2;
         this.Y = game.map.rows * this.TILE_SIZE / 2;
 
+        console.log("AAA");
         this.canvas = document.getElementById("map");
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
@@ -2442,7 +2443,7 @@ var Units;
             }
 
             // Remove from map
-            tileUnits = game.getTile(this.coords).units;
+            tileUnits = game.getTile(this.coords, false).units;
             for (i = 0; i < tileUnits.length; i++) {
                 if (tileUnits[i].id === this.id) {
                     tileUnits.splice(i, 1);
@@ -3325,9 +3326,9 @@ var Combat;
         Battle.prototype.fight = function () {
             var baseXP, i, j;
 
-            console.log(JSON.stringify(this.getAppliedBonuses()));
+            /*console.log(JSON.stringify(this.getAppliedBonuses()));
             console.log(this.defenderBonus());
-            console.log(this.firstStrikes);
+            console.log(this.firstStrikes);*/
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
 
@@ -3358,8 +3359,8 @@ var Combat;
             }
 
             this.log.push(this.names[i] + " defeated " + this.names[j] + "!");
-            console.log(this.log);
 
+            //console.log(this.log);
             // Process results
             this.winner = i === 0 ? "attacker" : "defender";
             this.loser = j === 0 ? "attacker" : "defender";
@@ -3629,22 +3630,24 @@ function init() {
     game.newTurn();
 }
 
-loadAssets({
-    hills: "terrain/hills.png",
-    forest: "terrain/forest.png",
-    city: "white-tower.png",
-    cityCaptured: "tower-fall.png",
-    whiteScout: "units/white/tread.png",
-    whiteWarrior: "units/white/stone-axe.png",
-    whiteArcher: "units/white/high-shot.png",
-    whiteChariot: "units/white/horse-head.png",
-    whiteSpearman: "units/white/spears.png",
-    whiteAxeman: "units/white/battle-axe.png",
-    blackScout: "units/black/tread.png",
-    blackWarrior: "units/black/stone-axe.png",
-    blackArcher: "units/black/high-shot.png",
-    blackChariot: "units/black/horse-head.png",
-    blackSpearman: "units/black/spears.png",
-    blackAxeman: "units/black/battle-axe.png"
-}, init);
+function startBarbConq() {
+    loadAssets({
+        hills: "terrain/hills.png",
+        forest: "terrain/forest.png",
+        city: "white-tower.png",
+        cityCaptured: "tower-fall.png",
+        whiteScout: "units/white/tread.png",
+        whiteWarrior: "units/white/stone-axe.png",
+        whiteArcher: "units/white/high-shot.png",
+        whiteChariot: "units/white/horse-head.png",
+        whiteSpearman: "units/white/spears.png",
+        whiteAxeman: "units/white/battle-axe.png",
+        blackScout: "units/black/tread.png",
+        blackWarrior: "units/black/stone-axe.png",
+        blackArcher: "units/black/high-shot.png",
+        blackChariot: "units/black/horse-head.png",
+        blackSpearman: "units/black/spears.png",
+        blackAxeman: "units/black/battle-axe.png"
+    }, init);
+}
 //# sourceMappingURL=app.js.map
