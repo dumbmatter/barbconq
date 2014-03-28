@@ -204,6 +204,10 @@ class ChromeUI {
         this.updateBottomText("Waiting for barbarians to move...");
     }
 
+    onAIMovingDone() {
+        this.updateBottomText();
+    }
+
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
     private updateActiveUnit() {
         var activeUnit, addCommas : boolean, content : string, counts : {[type: string]: number}, i : number, units : Units.Unit[], type : string;

@@ -735,6 +735,10 @@ var ChromeUI = (function () {
         this.updateBottomText("Waiting for barbarians to move...");
     };
 
+    ChromeUI.prototype.onAIMovingDone = function () {
+        this.updateBottomText();
+    };
+
     // Can be called even if no unit is active, in which case it'll remove all displayed unit info
     ChromeUI.prototype.updateActiveUnit = function () {
         var activeUnit, addCommas, content, counts, i, units, type;
@@ -1759,6 +1763,7 @@ var Game = (function () {
         this.turn++;
         this.turnID = this.turn === 1 ? 1 : 0; // Skip barbs first turn
         this.map.updateVisibility();
+        chromeUI.onNewTurn();
 
         // Randomly spawn barbs on non-visible tiles
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
@@ -1798,9 +1803,6 @@ var Game = (function () {
 
         for (i = this.turnID; i < this.names.length; i++) {
             if (i === config.PLAYER_ID) {
-                // User
-                chromeUI.onNewTurn();
-
                 for (j in this.groups[i]) {
                     group = this.groups[i][j];
                     if (group.currentMovement > 0 && !group.skippedTurn && !group.targetCoords) {
@@ -1858,6 +1860,8 @@ var Game = (function () {
                         return true;
                     }
                 }
+
+                chromeUI.onAIMovingDone();
             } else {
                 // Should auto-move non-barb AI units here
             }

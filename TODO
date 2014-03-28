@@ -59,8 +59,6 @@ unit tests for grouped units?
 
 # Minor current tasks
 
-onNewTurn called in wrong spot in Game?
-
 How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game
   maybe instead of instructions showing, show a "mini-instructions" with a link to the full one

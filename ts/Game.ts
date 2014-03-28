@@ -79,6 +79,7 @@ class Game {
         this.turn++;
         this.turnID = this.turn === 1 ? 1 : 0; // Skip barbs first turn
         this.map.updateVisibility();
+        chromeUI.onNewTurn();
 
         // Randomly spawn barbs on non-visible tiles
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
@@ -120,8 +121,6 @@ class Game {
         for (i = this.turnID; i < this.names.length; i++) {
             if (i === config.PLAYER_ID) {
                 // User
-
-                chromeUI.onNewTurn();
 
                 // UNIT GROUPS
                 // First look for ones not on a path towards targetCoords
@@ -193,6 +192,8 @@ class Game {
                         return true;
                     }
                 }
+
+                chromeUI.onAIMovingDone();
             } else {
                 // Should auto-move non-barb AI units here
             }
