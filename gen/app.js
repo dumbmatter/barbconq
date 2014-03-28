@@ -2400,6 +2400,10 @@ var Units;
             throw new Error('"availablePromotions" needs to be redefined by each derived class.');
             return [];
         };
+        UnitOrGroup.prototype.promote = function (promotionName, forceAccept) {
+            if (typeof forceAccept === "undefined") { forceAccept = false; }
+            throw new Error('"promote" needs to be redefined by each derived class.');
+        };
         return UnitOrGroup;
     })();
     Units.UnitOrGroup = UnitOrGroup;
@@ -2870,6 +2874,35 @@ var Units;
             if (activateUnitAtEnd) {
                 toActivate.activate();
             }
+        };
+
+        // Promotion stuff: read from and write to individual units
+        Group.prototype.availablePromotions = function () {
+            var result;
+
+            result = [];
+
+            this.units.forEach(function (unit) {
+                var i, unitAvailablePromotions;
+
+                unitAvailablePromotions = unit.availablePromotions();
+
+                for (i = 0; i < unitAvailablePromotions.length; i++) {
+                    if (result.indexOf(unitAvailablePromotions[i]) < 0) {
+                        result.push(unitAvailablePromotions[i]);
+                    }
+                }
+            });
+
+            return result;
+        };
+        Group.prototype.promote = function (promotionName, forceAccept) {
+            if (typeof forceAccept === "undefined") { forceAccept = false; }
+            this.units.forEach(function (unit) {
+                if ((unit.canPromoteToLevel > unit.level && unit.availablePromotions().indexOf(promotionName) >= 0) || forceAccept) {
+                    unit.promote(promotionName, forceAccept);
+                }
+            });
         };
         return Group;
     })(UnitOrGroup);

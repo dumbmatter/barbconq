@@ -451,6 +451,9 @@ console.log("FORTIFY")
             throw new Error('"availablePromotions" needs to be redefined by each derived class.');
             return [];
         }
+        promote(promotionName : string, forceAccept : boolean = false) {
+            throw new Error('"promote" needs to be redefined by each derived class.')
+        }
     }
 
     export class Unit extends UnitOrGroup {
@@ -860,6 +863,34 @@ console.log("FORTIFY")
             if (activateUnitAtEnd) {
                 toActivate.activate();
             }
+        }
+
+        // Promotion stuff: read from and write to individual units
+        availablePromotions() : string[] {
+            var result : string[];
+
+            result = [];
+
+            this.units.forEach(function (unit) {
+                var i : number, unitAvailablePromotions : string[];
+
+                unitAvailablePromotions = unit.availablePromotions();
+
+                for (i = 0; i < unitAvailablePromotions.length; i++) {
+                    if (result.indexOf(unitAvailablePromotions[i]) < 0) {
+                        result.push(unitAvailablePromotions[i]);
+                    }
+                }
+            });
+
+            return result;
+        }
+        promote(promotionName : string, forceAccept : boolean = false) {
+            this.units.forEach(function (unit) {
+                if ((unit.canPromoteToLevel > unit.level && unit.availablePromotions().indexOf(promotionName) >= 0) || forceAccept) {
+                    unit.promote(promotionName, forceAccept);
+                }
+            });
         }
     }
 

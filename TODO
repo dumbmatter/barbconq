@@ -31,8 +31,9 @@ unit promotions
   icons for the promotions a unit has
     show in hover-box and bottom-info
     can they be text?
-  group should get/set available promotions, but not current promotions
-    wrap around Unit.availablePromotions for Group.availablePromotions
+  indicator of if unit has promotions
+    in unit icon
+    on tile
   confirm
     unit is unfortified when promoted
     make sure all unitBonuses are applied in battle
