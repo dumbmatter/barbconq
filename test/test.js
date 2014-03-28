@@ -12,7 +12,7 @@ describe("A test suite", function() {
         var attackerWins, expectedAttackerWins, i, numFights, rand, params, u1, u2;
 
         attackerWins = 0;
-        numFights = 100000;
+        numFights = 10000;
 
         params = {};
 
