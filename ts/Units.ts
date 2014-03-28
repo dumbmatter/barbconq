@@ -300,7 +300,7 @@ module Units {
         // Decrease currentMovement as if the unit is moving to coords (this happens during a real movement, and also after winning a battle with enemy units still on the target tile)
         // Last two arguments are only for the special case of attacking with a group but not taking the tile because more enemies remain. "attacker" should be the same as "this", but "this" is UnitOrGroup so the types don't match up.
         countMovementToCoords(coords : number[], attacker : Unit = null) {
-            var atEnd : () => void, movementCost : number;
+            var movementCost : number;
 
             // Movement cost based on terrain
             movementCost = game.map.tileMovementCost(this.coords, coords);
@@ -308,20 +308,13 @@ module Units {
             // Keep track of unit movement (applies even if the unit fights but does not move)
             this.currentMovement -= movementCost;
 
-            // To update UI stuff
-            atEnd = function () {
-                // Update visibility, since something moved this could have changed
-                game.map.updateVisibility();
-
-                mapUI.render();
-            }
-
             if (this.currentMovement <= 0) {
                 this.currentMovement = 0;
 
                 this.active = false;
 
-                atEnd();
+                game.map.updateVisibility();
+                mapUI.render();
                 setTimeout(function () {
                     if (!attacker || !attacker.group) {
                         // After delay, move to next unit
@@ -346,15 +339,17 @@ module Units {
                             }, this.movementDelay());
                         }
                     }
-                    atEnd();
+                    mapUI.render();
                 }.bind(this), this.movementDelay());
             } else if (game.turnID !== config.PLAYER_ID) {
                 // For AI units, need to force move again, even if currentMovement > 0
                 // No UI_DELAY needed here
-                atEnd();
+                game.map.updateVisibility();
+                mapUI.render();
                 game.moveUnits();
             } else {
-                atEnd();
+                game.map.updateVisibility();
+                mapUI.render();
             }
         }
 

@@ -74,14 +74,6 @@ unit tests for grouped units?
 
 onNewTurn called in wrong spot in Game?
 
-UI lag caused by UNIT_MOVEMENT_UI_DELAY
-  when moving a unit to explore fogged space, newly visible stuff should "pop" into view instantly
-  lag on numpad movement
-  should render before and after settimeout. settimeout shouldn't be used as a render-wait
-  in Units.countMovementToCoords, it calls atEnd after a delay, and that is where visibility is updated.
-    call atEnd() before setTimeout too.
-    break up atEnd, need visibility update only in first one, right?
-
 How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game
   maybe instead of instructions showing, show a "mini-instructions" with a link to the full one

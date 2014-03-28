@@ -7,8 +7,8 @@ var assets = {
 var chromeUI = jasmine.createSpyObj("chromeUI", ["eventLog", "onUnitActivated", "showModal"]);
 var mapUI = jasmine.createSpyObj("mapUI", ["render"]);
 
-describe("A test suite", function() {
-    it('should fail', function() {
+describe("Combat.Battle.oddsAttackerWinsFight()", function() {
+    it("should accurately predict battle outcomes for arbitrary combatants", function() {
         var attackerWins, expectedAttackerWins, i, numFights, rand, params, u1, u2;
 
         attackerWins = 0;

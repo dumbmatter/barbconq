@@ -2244,7 +2244,7 @@ var Units;
         // Last two arguments are only for the special case of attacking with a group but not taking the tile because more enemies remain. "attacker" should be the same as "this", but "this" is UnitOrGroup so the types don't match up.
         UnitOrGroup.prototype.countMovementToCoords = function (coords, attacker) {
             if (typeof attacker === "undefined") { attacker = null; }
-            var atEnd, movementCost;
+            var movementCost;
 
             // Movement cost based on terrain
             movementCost = game.map.tileMovementCost(this.coords, coords);
@@ -2252,20 +2252,13 @@ var Units;
             // Keep track of unit movement (applies even if the unit fights but does not move)
             this.currentMovement -= movementCost;
 
-            // To update UI stuff
-            atEnd = function () {
-                // Update visibility, since something moved this could have changed
-                game.map.updateVisibility();
-
-                mapUI.render();
-            };
-
             if (this.currentMovement <= 0) {
                 this.currentMovement = 0;
 
                 this.active = false;
 
-                atEnd();
+                game.map.updateVisibility();
+                mapUI.render();
                 setTimeout(function () {
                     if (!attacker || !attacker.group) {
                         // After delay, move to next unit
@@ -2291,15 +2284,17 @@ var Units;
                             }, this.movementDelay());
                         }
                     }
-                    atEnd();
+                    mapUI.render();
                 }.bind(this), this.movementDelay());
             } else if (game.turnID !== config.PLAYER_ID) {
                 // For AI units, need to force move again, even if currentMovement > 0
                 // No UI_DELAY needed here
-                atEnd();
+                game.map.updateVisibility();
+                mapUI.render();
                 game.moveUnits();
             } else {
-                atEnd();
+                game.map.updateVisibility();
+                mapUI.render();
             }
         };
 
