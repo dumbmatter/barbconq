@@ -41,6 +41,7 @@ describe("Combat.Battle.oddsAttackerWinsFight()", function() {
         params.u1HP = Math.round(Math.random() * 100);
         params.u2HP = Math.round(Math.random() * 100);
 console.log(params);
+//        params = {tileTerrain: 'grassland', tileFeatures: ['forest'], u1Type: 'Warrior', u2Type: 'Archer', u1Promotions: ['combat1', 'cover'], u2Promotions: [], u1HP: 100, u2HP: 100};
 
         for (i = 0; i < numFights; i++) {
             game = new Game(1, 1, 2);

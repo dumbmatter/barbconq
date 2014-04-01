@@ -1979,7 +1979,40 @@ var Units;
                 archery: 25
             },
             categories: ["archery", "melee", "gunpowder"],
-            prereqs: [["combat1"]]
+            prereqs: [["combat1"], ["drill1"]]
+        },
+        drill1: {
+            name: "Drill I",
+            bonuses: {
+                firstStrikeChances: 1
+            },
+            categories: ["archery", "siege", "armored", "helicopter", "naval"],
+            prereqs: [[]]
+        },
+        drill2: {
+            name: "Drill II",
+            bonuses: {
+                firstStrikeChances: 1
+            },
+            categories: ["archery", "siege", "armored", "helicopter", "naval"],
+            prereqs: [["drill1"]]
+        },
+        drill3: {
+            name: "Drill III",
+            bonuses: {
+                firstStrikeChances: 2
+            },
+            categories: ["archery", "siege", "armored", "helicopter", "naval"],
+            prereqs: [["drill2"]]
+        },
+        drill4: {
+            name: "Drill IV",
+            bonuses: {
+                firstStrikes: 2,
+                mounted: 10
+            },
+            categories: ["archery", "siege", "armored", "helicopter", "naval"],
+            prereqs: [["drill3"]]
         }
     };
 
@@ -3657,7 +3690,8 @@ function init() {
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    u1.promotions.push("cityGarrison1");
+    u1.promotions.push("drill1");
+    u1.promotions.push("drill2");
     u1.xp += 5;
     new Units.Archer(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);

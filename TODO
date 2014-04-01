@@ -44,6 +44,7 @@ unit promotions
   remaining promotions for after barbconq
     combat 4+
     lots of irrelevant ones
+    add collateral damage stuff to drills
 
 add highlighting of two units that are fighting, or maybe red dashed path in between?
   particularly important for when AI attacks
@@ -79,10 +80,12 @@ right click to move
 
 unit actions
   fortify
+    set Unit.skippedTurn to true/false when fortifying/waking
     defensive bonus
     healing
     top right indicator in unit icon
-  sleep/fortify difference?
+    "fortify until healed"
+    when fortified, show "wake unit" icon
   are some of these universal? can move up to root Unit?
 
 unit stacking UI options
@@ -112,7 +115,7 @@ UI POLISH
   when moving through units in Game.moveUnits, should always go through all the units on the current tile before moving on to other units
   When moving to a new tile, fog of war should dissipate immediately, not after delay
   currently, all click events pass through transparency. in civ4, it's only dragging when right click is held. allowing normal left and right clicks can lead to a lot of mis-clicks.
-  limit number of entries that can be shown in hover-box
+  limit number of entries that can be shown in hover-box?
   CTRL and ALT messages in hover box should only be shown when applicable (>1 unit or >1 unit of a type)
 
 # Barbarian Conquest (barbconq)
@@ -120,7 +123,7 @@ UI POLISH
 Mode with just your units, barbarian units, and one barbarian city
 
 Goal: Find and capture the barbarian capital!
-  
+
 somewhere: "From the makers of Basketball GM, a free single-player basketball simulation game"
 
 place barb city randomly

@@ -121,8 +121,41 @@ module Units {
                 archery: 25
             },
             categories: ["archery", "melee", "gunpowder"],
-            prereqs: [["combat1"]]
+            prereqs: [["combat1"], ["drill1"]]
         },
+        drill1: {
+            name: "Drill I",
+            bonuses: {
+                firstStrikeChances: 1
+            },
+            categories: ["archery", "siege", "armored", "helicopter", "naval"],
+            prereqs: [[]]
+        },
+        drill2: {
+            name: "Drill II",
+            bonuses: {
+                firstStrikeChances: 1
+            },
+            categories: ["archery", "siege", "armored", "helicopter", "naval"],
+            prereqs: [["drill1"]]
+        },
+        drill3: {
+            name: "Drill III",
+            bonuses: {
+                firstStrikeChances: 2
+            },
+            categories: ["archery", "siege", "armored", "helicopter", "naval"],
+            prereqs: [["drill2"]]
+        },
+        drill4: {
+            name: "Drill IV",
+            bonuses: {
+                firstStrikes: 2,
+                mounted: 10
+            },
+            categories: ["archery", "siege", "armored", "helicopter", "naval"],
+            prereqs: [["drill3"]]
+        }
     };
 
     // Things that both individual units and groups of units have in common
