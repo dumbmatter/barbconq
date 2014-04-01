@@ -30,12 +30,9 @@ module Combat {
 
             // Defender's modified strength
             this.D = defender.strength * (this.hps[1] / 100);
-            defenderBonus = this.defenderBonus();
-            if (defenderBonus > 0) {
-                this.D *= 1 + defenderBonus / 100;
-            } else if (defenderBonus < 0) {
-                this.D /= 1 - defenderBonus / 100;
-            }
+
+            // Bonuses that modify A and D
+            this.applyBonuses();
 
             // Damage per hit
             this.damagePerHit[0] = Util.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
@@ -151,8 +148,8 @@ module Combat {
         // Returns the bonus (as a percentage) to apply to the defender's modified strength.
         // Both attacker and defender bonuses are done here.
         // http://www.civfanatics.com/civ4/strategy/combat_explained.php
-        defenderBonus() {
-            var appliedBonuses : {[name: string] : number}[], bonus : number, name : string;
+        applyBonuses() {
+            var appliedBonuses : {[name: string] : number}[], defenderBonus : number, name : string;
 
             appliedBonuses = this.getAppliedBonuses();
 
@@ -171,23 +168,27 @@ module Combat {
                 this.firstStrikes = [0, appliedBonuses[1]["firstStrikes"]];
             }
 
-            bonus = 0;
+            defenderBonus = 0;
 
             // Attacker bonuses
             for (name in appliedBonuses[0]) {
                 if (name !== "firstStrikes") {
-                    bonus -= appliedBonuses[0][name];
+                    defenderBonus -= appliedBonuses[0][name];
                 }
             }
 
             // Defender bonuses
             for (name in appliedBonuses[1]) {
                 if (name !== "firstStrikes") {
-                    bonus += appliedBonuses[1][name];
+                    defenderBonus += appliedBonuses[1][name];
                 }
             }
 
-            return bonus;
+            if (defenderBonus > 0) {
+                this.D *= 1 + defenderBonus / 100;
+            } else if (defenderBonus < 0) {
+                this.D /= 1 - defenderBonus / 100;
+            }
         }
 
         factorial(n : number) : number {
@@ -267,7 +268,6 @@ module Combat {
             var baseXP : number, i : number, j : number;
 
 /*console.log(JSON.stringify(this.getAppliedBonuses()));
-console.log(this.defenderBonus());
 console.log(this.firstStrikes);*/
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
 //            this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");

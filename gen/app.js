@@ -3178,12 +3178,9 @@ var Combat;
 
             // Defender's modified strength
             this.D = defender.strength * (this.hps[1] / 100);
-            defenderBonus = this.defenderBonus();
-            if (defenderBonus > 0) {
-                this.D *= 1 + defenderBonus / 100;
-            } else if (defenderBonus < 0) {
-                this.D /= 1 - defenderBonus / 100;
-            }
+
+            // Bonuses that modify A and D
+            this.applyBonuses();
 
             // Damage per hit
             this.damagePerHit[0] = Util.bound(Math.floor(20 * (3 * this.A + this.D) / (3 * this.D + this.A)), 6, 60);
@@ -3303,8 +3300,8 @@ var Combat;
         // Returns the bonus (as a percentage) to apply to the defender's modified strength.
         // Both attacker and defender bonuses are done here.
         // http://www.civfanatics.com/civ4/strategy/combat_explained.php
-        Battle.prototype.defenderBonus = function () {
-            var appliedBonuses, bonus, name;
+        Battle.prototype.applyBonuses = function () {
+            var appliedBonuses, defenderBonus, name;
 
             appliedBonuses = this.getAppliedBonuses();
 
@@ -3323,21 +3320,25 @@ var Combat;
                 this.firstStrikes = [0, appliedBonuses[1]["firstStrikes"]];
             }
 
-            bonus = 0;
+            defenderBonus = 0;
 
             for (name in appliedBonuses[0]) {
                 if (name !== "firstStrikes") {
-                    bonus -= appliedBonuses[0][name];
+                    defenderBonus -= appliedBonuses[0][name];
                 }
             }
 
             for (name in appliedBonuses[1]) {
                 if (name !== "firstStrikes") {
-                    bonus += appliedBonuses[1][name];
+                    defenderBonus += appliedBonuses[1][name];
                 }
             }
 
-            return bonus;
+            if (defenderBonus > 0) {
+                this.D *= 1 + defenderBonus / 100;
+            } else if (defenderBonus < 0) {
+                this.D /= 1 - defenderBonus / 100;
+            }
         };
 
         Battle.prototype.factorial = function (n) {
@@ -3416,7 +3417,6 @@ var Combat;
             var baseXP, i, j;
 
             /*console.log(JSON.stringify(this.getAppliedBonuses()));
-            console.log(this.defenderBonus());
             console.log(this.firstStrikes);*/
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
 

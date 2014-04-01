@@ -40,9 +40,9 @@ describe("Combat.Battle.oddsAttackerWinsFight()", function() {
         // Randomize health
         params.u1HP = Math.round(Math.random() * 100);
         params.u2HP = Math.round(Math.random() * 100);
+params = {tileTerrain: "grassland", tileFeatures: ["forest"], u1Type: "Axeman", u2Type: "Axeman", u1Promotions: ["combat1"], u2Promotions: [], u1HP: 100, u2HP: 100}; // This gives 5/7 A/D. But civ4 gives 5.5/7.5
 console.log(params);
-//        params = {tileTerrain: 'grassland', tileFeatures: ['forest'], u1Type: 'Warrior', u2Type: 'Archer', u1Promotions: ['combat1', 'cover'], u2Promotions: [], u1HP: 100, u2HP: 100};
-
+        
         for (i = 0; i < numFights; i++) {
             game = new Game(1, 1, 2);
 
@@ -67,7 +67,7 @@ console.log(params);
             b = new Combat.Battle(u1, u2);
 
             // Save prediction for later
-            if (i === 0) { expectedAttackerWins = b.oddsAttackerWinsFight() * numFights; }
+            if (i === 0) { expectedAttackerWins = b.oddsAttackerWinsFight() * numFights; console.log(b); }
 
             b.fight();
             if (b.winner === "attacker") {
