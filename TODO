@@ -7,9 +7,6 @@ Combat
     BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
     first strikes
       http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-      test odds prediction against real civ4
-        seems odds in real civ4 tend to be lower.. why?
-          in Battle.applyBonuses, need to apply some of the attacker's bonuses towards A, as is described in http://www.civfanatics.com/civ4/strategy/combat_explained.php
       ranges of possible first strikes (see high drill promotions)
         1. implement in fight, based on guessing it's 50/50
         2. implement estimated battle odds, based on guessing it's 50/50

@@ -149,7 +149,7 @@ module Combat {
         // Both attacker and defender bonuses are done here.
         // http://www.civfanatics.com/civ4/strategy/combat_explained.php
         applyBonuses() {
-            var appliedBonuses : {[name: string] : number}[], defenderBonus : number, name : string;
+            var appliedBonuses : {[name: string] : number}[], attackerBonus : number, defenderBonus : number, name : string;
 
             appliedBonuses = this.getAppliedBonuses();
 
@@ -168,12 +168,18 @@ module Combat {
                 this.firstStrikes = [0, appliedBonuses[1]["firstStrikes"]];
             }
 
+            attackerBonus = 0;
             defenderBonus = 0;
 
             // Attacker bonuses
             for (name in appliedBonuses[0]) {
                 if (name !== "firstStrikes") {
-                    defenderBonus -= appliedBonuses[0][name];
+                    // Some go to attacker, others count against defender
+                    if (name === "strength") {
+                        attackerBonus += appliedBonuses[0][name];
+                    } else {
+                        defenderBonus -= appliedBonuses[0][name];
+                    }
                 }
             }
 
@@ -183,6 +189,9 @@ module Combat {
                     defenderBonus += appliedBonuses[1][name];
                 }
             }
+
+            // Apply bonuses to attacker and defender
+            this.A *= 1 + attackerBonus / 100;
 
             if (defenderBonus > 0) {
                 this.D *= 1 + defenderBonus / 100;
