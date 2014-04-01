@@ -160,6 +160,12 @@ class ChromeUI {
             } else {
                 return amount + " First Strikes";
             }
+        } else if (name === "firstStrikeChances") {
+            if (amount === 1) {
+                return "1 First Strike Chance";
+            } else {
+                return amount + " First Strike Chances";
+            }
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }

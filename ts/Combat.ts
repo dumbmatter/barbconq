@@ -90,7 +90,7 @@ module Combat {
                     if (defender.category === "gunpowder") {
                         appliedBonuses[0][name] = bonuses[name];
                     }
-                } else if (name === "firstStrikes") {
+                } else if (name === "firstStrikes" || name === "firstStrikeChances") {
                     appliedBonuses[0][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
@@ -128,7 +128,7 @@ module Combat {
                     if (attacker.category === "gunpowder") {
                         appliedBonuses[1][name] = bonuses[name];
                     }
-                } else if (name === "firstStrikes") {
+                } else if (name === "firstStrikes" || name === "firstStrikeChances") {
                     appliedBonuses[1][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');

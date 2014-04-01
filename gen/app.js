@@ -689,6 +689,12 @@ var ChromeUI = (function () {
             } else {
                 return amount + " First Strikes";
             }
+        } else if (name === "firstStrikeChances") {
+            if (amount === 1) {
+                return "1 First Strike Chance";
+            } else {
+                return amount + " First Strike Chances";
+            }
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }
@@ -1992,7 +1998,7 @@ var Units;
         drill2: {
             name: "Drill II",
             bonuses: {
-                firstStrikeChances: 1
+                firstStrikes: 1
             },
             categories: ["archery", "siege", "armored", "helicopter", "naval"],
             prereqs: [["drill1"]]
@@ -3232,7 +3238,7 @@ var Combat;
                     if (defender.category === "gunpowder") {
                         appliedBonuses[0][name] = bonuses[name];
                     }
-                } else if (name === "firstStrikes") {
+                } else if (name === "firstStrikes" || name === "firstStrikeChances") {
                     appliedBonuses[0][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
@@ -3270,7 +3276,7 @@ var Combat;
                     if (attacker.category === "gunpowder") {
                         appliedBonuses[1][name] = bonuses[name];
                     }
-                } else if (name === "firstStrikes") {
+                } else if (name === "firstStrikes" || name === "firstStrikeChances") {
                     appliedBonuses[1][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
@@ -3689,7 +3695,7 @@ function init() {
     /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Archer(config.PLAYER_ID, [10, 20]);
     u1.promotions.push("drill1");
     u1.promotions.push("drill2");
     u1.xp += 5;

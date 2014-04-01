@@ -11,10 +11,10 @@ Combat
         against real civ4
         against a bunch of random battles in unit tests
       ranges of possible first strikes (see high drill promotions)
-        add another parameter for random ones, like extraFirstStrikes
-        how to display with ChromeUI.bonusText?
-          if extraFirstStrikes !== firstStrikes, do firstStrikes + "-" + bonusText(extra...)
-        implement in Battle.fight
+        1. implement in fight, based on guessing it's 50/50
+        2. implement estimated battle odds, based on guessing it's 50/50
+          will need another layer of loops based on binomial prob of getting N first strikes
+        3. compare against civ4 (or that java applet) to see if the odds make sense
     retreat/withdraw
       apply as a bonus, default 0
     collateral damage

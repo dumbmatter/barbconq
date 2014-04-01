@@ -134,7 +134,7 @@ module Units {
         drill2: {
             name: "Drill II",
             bonuses: {
-                firstStrikeChances: 1
+                firstStrikes: 1
             },
             categories: ["archery", "siege", "armored", "helicopter", "naval"],
             prereqs: [["drill1"]]
