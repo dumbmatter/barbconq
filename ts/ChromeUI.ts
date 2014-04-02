@@ -87,21 +87,20 @@ class ChromeUI {
     }
 
     onHoverMoveEnemy(battle : Combat.Battle) {
-        var appliedBonuses : {[name: string] : number}[], content : string, name : string;
+        var content : string, name : string;
 
         content = "<p>Combat Odds: " + Util.round(battle.oddsAttackerWinsFight() * 100, 1) + "%</p>";
         content += '<p><span class="text-good">' + Util.round(battle.A, 2) + '</span> vs. <span class="text-bad">' + Util.round(battle.D, 2) + '</span></p>';
 
         // Combat bonuses
-        appliedBonuses = battle.getAppliedBonuses();
         content += '<ul class="text-good">';
-        for (name in appliedBonuses[0]) {
-            content += '<li>' + this.bonusText(name, appliedBonuses[0][name]) + '</li>'
+        for (name in battle.appliedBonuses[0]) {
+            content += '<li>' + this.bonusText(name, battle.appliedBonuses[0][name]) + '</li>'
         }
         content += '</ul>';
         content += '<ul class="text-bad">';
-        for (name in appliedBonuses[1]) {
-            content += '<li>' + this.bonusText(name, appliedBonuses[1][name]) + '</li>'
+        for (name in battle.appliedBonuses[1]) {
+            content += '<li>' + this.bonusText(name, battle.appliedBonuses[1][name]) + '</li>'
         }
         content += '</ul>';
 

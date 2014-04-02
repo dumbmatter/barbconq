@@ -615,21 +615,20 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.onHoverMoveEnemy = function (battle) {
-        var appliedBonuses, content, name;
+        var content, name;
 
         content = "<p>Combat Odds: " + Util.round(battle.oddsAttackerWinsFight() * 100, 1) + "%</p>";
         content += '<p><span class="text-good">' + Util.round(battle.A, 2) + '</span> vs. <span class="text-bad">' + Util.round(battle.D, 2) + '</span></p>';
 
         // Combat bonuses
-        appliedBonuses = battle.getAppliedBonuses();
         content += '<ul class="text-good">';
-        for (name in appliedBonuses[0]) {
-            content += '<li>' + this.bonusText(name, appliedBonuses[0][name]) + '</li>';
+        for (name in battle.appliedBonuses[0]) {
+            content += '<li>' + this.bonusText(name, battle.appliedBonuses[0][name]) + '</li>';
         }
         content += '</ul>';
         content += '<ul class="text-bad">';
-        for (name in appliedBonuses[1]) {
-            content += '<li>' + this.bonusText(name, appliedBonuses[1][name]) + '</li>';
+        for (name in battle.appliedBonuses[1]) {
+            content += '<li>' + this.bonusText(name, battle.appliedBonuses[1][name]) + '</li>';
         }
         content += '</ul>';
 
@@ -3180,6 +3179,8 @@ var Combat;
             this.D = defender.strength * (this.hps[1] / 100);
 
             // Bonuses that modify A and D
+            this.appliedBonuses = this.getAppliedBonuses();
+            this.assignFirstStrikes();
             this.applyBonuses();
 
             // Damage per hit
@@ -3192,6 +3193,7 @@ var Combat;
             this.names[0] = game.names[this.units[0].owner] + "'s " + this.units[0].type;
             this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
         }
+        // Generates appliedBonuses object, which can be stored in this.appliedBonuses
         Battle.prototype.getAppliedBonuses = function () {
             var appliedBonuses, bonuses, attacker, attackerTile, defender, defenderTile, name;
 
@@ -3297,57 +3299,60 @@ var Combat;
             return appliedBonuses;
         };
 
+        // Recalculate this.firstStrikes. If includeChances is false, then only "real" first strikes are used, not first strike chances
+        Battle.prototype.assignFirstStrikes = function (includeChances) {
+            if (typeof includeChances === "undefined") { includeChances = true; }
+            var i, name, rawFirstStrikes;
+
+            // First strike chances - add to firstStrikes
+            this.firstStrikes = [0, 0];
+            if (includeChances) {
+                for (i = 0; i <= 1; i++) {
+                    if (this.appliedBonuses[i].hasOwnProperty("firstStrikeChances")) {
+                        this.firstStrikes[i] = Math.round(Math.random() * this.appliedBonuses[i]["firstStrikeChances"]);
+                    }
+                }
+            }
+
+            for (i = 0; i <= 1; i++) {
+                if (this.appliedBonuses[i].hasOwnProperty("firstStrikes")) {
+                    this.firstStrikes[i] += this.appliedBonuses[i]["firstStrikes"];
+                }
+            }
+
+            // Normalize so lesser has 0
+            if (this.firstStrikes[0] > 0 && this.firstStrikes[1] > 0) {
+                if (this.firstStrikes[0] > this.firstStrikes[1]) {
+                    this.firstStrikes = [this.firstStrikes[0] - this.firstStrikes[1], 0];
+                } else {
+                    this.firstStrikes = [0, this.firstStrikes[1] - this.firstStrikes[0]];
+                }
+            }
+        };
+
         // Returns the bonus (as a percentage) to apply to the defender's modified strength.
         // Both attacker and defender bonuses are done here.
         // http://www.civfanatics.com/civ4/strategy/combat_explained.php
         Battle.prototype.applyBonuses = function () {
-            var appliedBonuses, attackerBonus, defenderBonus, i, name, toAdd;
-
-            appliedBonuses = this.getAppliedBonuses();
-
-            for (i = 0; i <= 1; i++) {
-                if (appliedBonuses[i].hasOwnProperty("firstStrikeChances")) {
-                    toAdd = Math.round(Math.random() * appliedBonuses[i]["firstStrikeChances"]);
-                    if (appliedBonuses[i].hasOwnProperty("firstStrikes")) {
-                        appliedBonuses[i]["firstStrikes"] += toAdd;
-                    } else {
-                        appliedBonuses[i]["firstStrikes"] = toAdd;
-                    }
-                }
-            }
-
-            // Overall first strikes
-            if (appliedBonuses[0].hasOwnProperty("firstStrikes")) {
-                if (appliedBonuses[1].hasOwnProperty("firstStrikes")) {
-                    if (appliedBonuses[0]["firstStrikes"] > appliedBonuses[1]["firstStrikes"]) {
-                        this.firstStrikes = [appliedBonuses[0]["firstStrikes"] - appliedBonuses[1]["firstStrikes"], 0];
-                    } else if (appliedBonuses[1]["firstStrikes"] > appliedBonuses[0]["firstStrikes"]) {
-                        this.firstStrikes = [0, appliedBonuses[1]["firstStrikes"] - appliedBonuses[0]["firstStrikes"]];
-                    }
-                } else {
-                    this.firstStrikes = [appliedBonuses[0]["firstStrikes"], 0];
-                }
-            } else if (appliedBonuses[1].hasOwnProperty("firstStrikes")) {
-                this.firstStrikes = [0, appliedBonuses[1]["firstStrikes"]];
-            }
+            var attackerBonus, defenderBonus;
 
             attackerBonus = 0;
             defenderBonus = 0;
 
-            for (name in appliedBonuses[0]) {
+            for (name in this.appliedBonuses[0]) {
                 if (name !== "firstStrikes") {
                     // Some go to attacker, others count against defender
                     if (name === "strength") {
-                        attackerBonus += appliedBonuses[0][name];
+                        attackerBonus += this.appliedBonuses[0][name];
                     } else {
-                        defenderBonus -= appliedBonuses[0][name];
+                        defenderBonus -= this.appliedBonuses[0][name];
                     }
                 }
             }
 
-            for (name in appliedBonuses[1]) {
+            for (name in this.appliedBonuses[1]) {
                 if (name !== "firstStrikes") {
-                    defenderBonus += appliedBonuses[1][name];
+                    defenderBonus += this.appliedBonuses[1][name];
                 }
             }
 
@@ -3407,6 +3412,8 @@ var Combat;
                 return odds;
             }.bind(this);
 
+            this.assignFirstStrikes();
+
             // Who gets first strikes?
             // pFS is the probability of a first strike succeeding. Above, p is the probability of
             // the attacker winning a round. The normal p is used in oddsAfterFirstStrikes, but pFS
@@ -3419,7 +3426,7 @@ var Combat;
                 pFS = 1 - p;
             }
 
-            // Calculate odds.
+            // Calculate odds
             odds = 0;
             for (i = 0; i <= this.firstStrikes[iFS]; i++) {
                 //console.log([i, f(i, this.firstStrikes[iFS], pFS), oddsAfterFirstStrikes(iFS, i)]);
@@ -3436,8 +3443,9 @@ var Combat;
         Battle.prototype.fight = function () {
             var baseXP, i, j;
 
-            console.log(JSON.stringify(this.getAppliedBonuses()));
-            console.log(this.firstStrikes);
+            /*console.log(JSON.stringify(this.getAppliedBonuses()));
+            console.log(JSON.stringify(this.appliedBonuses));
+            console.log(this.firstStrikes);*/
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
 
             //            this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
