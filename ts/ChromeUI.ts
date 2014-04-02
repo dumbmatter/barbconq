@@ -87,15 +87,23 @@ class ChromeUI {
     }
 
     onHoverMoveEnemy(battle : Combat.Battle) {
-        var content : string, name : string;
+        var content : string, name : string, odds : {attackerWinsFight : number; attackerRetreats? : number;};
 
-        content = "<p>Combat Odds: " + Util.round(battle.oddsAttackerWinsFight() * 100, 1) + "%</p>";
+        odds = battle.odds();
+
+        content = "<p>Combat Odds: " + Util.round(odds.attackerWinsFight * 100, 1) + "%</p>";
+        if (odds.hasOwnProperty("attackerRetreats")) {
+            content += "<p>Retreat Odds: " + Util.round(odds.attackerRetreats * 100, 1) + "%</p>";
+        }
+
         content += '<p><span class="text-good">' + Util.round(battle.A, 2) + '</span> vs. <span class="text-bad">' + Util.round(battle.D, 2) + '</span></p>';
 
         // Combat bonuses
         content += '<ul class="text-good">';
         for (name in battle.appliedBonuses[0]) {
-            content += '<li>' + this.bonusText(name, battle.appliedBonuses[0][name]) + '</li>'
+            if (name !== "retreat") {
+                content += '<li>' + this.bonusText(name, battle.appliedBonuses[0][name]) + '</li>'
+            }
         }
         content += '</ul>';
         content += '<ul class="text-bad">';
@@ -151,6 +159,8 @@ class ChromeUI {
             return "+" + amount + "% vs. Mounted Units";
         } else if (name === "gunpowder") {
             return "+" + amount + "% vs. Gunpowder Units";
+        } else if (name === "retreat") {
+            return "Withdrawal Chance: " + amount + "%";
         } else if (name === "tile") {
             return "+" + amount + "% Tile Defense";
         } else if (name === "firstStrikes") {

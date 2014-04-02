@@ -33,7 +33,7 @@ module Combat {
             this.D = defender.strength * (this.hps[1] / 100);
 
             // Bonuses that modify A and D
-            this.appliedBonuses = this.getAppliedBonuses();
+            this.assignAppliedBonuses();
             this.assignFirstStrikes();
             this.applyBonuses();
 
@@ -49,8 +49,8 @@ module Combat {
         }
 
         // Generates appliedBonuses object, which can be stored in this.appliedBonuses
-        getAppliedBonuses() : {[name: string] : number}[] {
-            var appliedBonuses : {[name: string] : number}[], bonuses : {[name: string] : number}, attacker : Units.Unit, attackerTile : MapMaker.Tile, defender : Units.Unit, defenderTile : MapMaker.Tile, name : string;
+        assignAppliedBonuses() {
+            var bonuses : {[name: string] : number}, attacker : Units.Unit, attackerTile : MapMaker.Tile, defender : Units.Unit, defenderTile : MapMaker.Tile, name : string;
 
             attacker = this.units[0];
             defender = this.units[1];
@@ -58,7 +58,7 @@ module Combat {
             defenderTile = game.getTile(defender.coords, false);
 
             // Attacker, defender
-            appliedBonuses = [{}, {}];
+            this.appliedBonuses = [{}, {}];
 
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
@@ -66,33 +66,35 @@ module Combat {
                 if (name === "cityDefense" || name === "hillsDefense") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
-                    appliedBonuses[0][name] = bonuses[name];
+                    this.appliedBonuses[0][name] = bonuses[name];
                 } else if (name === "cityAttack") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
-                        appliedBonuses[0][name] = bonuses[name];
+                        this.appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "attackAxeman") {
                     if (defender.type === "Axeman") {
-                        appliedBonuses[0][name] = bonuses[name];
+                        this.appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "archery") {
                     if (defender.category === "archery") {
-                        appliedBonuses[0][name] = bonuses[name];
+                        this.appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "melee") {
                     if (defender.category === "melee") {
-                        appliedBonuses[0][name] = bonuses[name];
+                        this.appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "mounted") {
                     if (defender.category === "mounted") {
-                        appliedBonuses[0][name] = bonuses[name];
+                        this.appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "gunpowder") {
                     if (defender.category === "gunpowder") {
-                        appliedBonuses[0][name] = bonuses[name];
+                        this.appliedBonuses[0][name] = bonuses[name];
                     }
+                } else if (name === "retreat") {
+                    this.appliedBonuses[0][name] = bonuses[name];
                 } else if (name === "firstStrikes" || name === "firstStrikeChances") {
-                    appliedBonuses[0][name] = bonuses[name];
+                    this.appliedBonuses[0][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
                 }
@@ -101,36 +103,36 @@ module Combat {
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman" || name === "cityAttack") {
+                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
-                    appliedBonuses[1][name] = bonuses[name];
+                    this.appliedBonuses[1][name] = bonuses[name];
                 } else if (name === "cityDefense") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
-                        appliedBonuses[1][name] = bonuses[name];
+                        this.appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "hillsDefense") {
                     if (defenderTile.features.indexOf("hills") >= 0) {
-                        appliedBonuses[1][name] = bonuses[name];
+                        this.appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "archery") {
                     if (attacker.category === "archery") {
-                        appliedBonuses[1][name] = bonuses[name];
+                        this.appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "melee") {
                     if (attacker.category === "melee") {
-                        appliedBonuses[1][name] = bonuses[name];
+                        this.appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "mounted") {
                     if (attacker.category === "mounted") {
-                        appliedBonuses[1][name] = bonuses[name];
+                        this.appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "gunpowder") {
                     if (attacker.category === "gunpowder") {
-                        appliedBonuses[1][name] = bonuses[name];
+                        this.appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "firstStrikes" || name === "firstStrikeChances") {
-                    appliedBonuses[1][name] = bonuses[name];
+                    this.appliedBonuses[1][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
                 }
@@ -138,18 +140,17 @@ module Combat {
 
             // Add tile bonuses (terrain, improvements, culture) to the defender category
             if (defenderTile.features.indexOf("hills") >= 0) {
-                if (!appliedBonuses[1].hasOwnProperty("tile")) { appliedBonuses[1]["tile"] = 0; }
-                appliedBonuses[1]["tile"] += 25;
+                if (!this.appliedBonuses[1].hasOwnProperty("tile")) { this.appliedBonuses[1]["tile"] = 0; }
+                this.appliedBonuses[1]["tile"] += 25;
             }
             if (defenderTile.features.indexOf("forest") >= 0 || defenderTile.features.indexOf("jungle") >= 0) {
-                if (!appliedBonuses[1].hasOwnProperty("tile")) { appliedBonuses[1]["tile"] = 0; }
-                appliedBonuses[1]["tile"] += 50;
+                if (!this.appliedBonuses[1].hasOwnProperty("tile")) { this.appliedBonuses[1]["tile"] = 0; }
+                this.appliedBonuses[1]["tile"] += 50;
             }
-
-            return appliedBonuses;
         }
 
         // Recalculate this.firstStrikes. If successfulChances is given, use this for the firstStrikeChances. Otherwise, calculate randomly
+        // This needs to be called *after* assignAppliedBonuses
         assignFirstStrikes(successfulChances : number[] = null) {
             var i : number, name : string, rawFirstStrikes : number[];
 
@@ -192,7 +193,7 @@ module Combat {
 
             // Attacker bonuses
             for (name in this.appliedBonuses[0]) {
-                if (name !== "firstStrikes" && name !== "firstStrikeChances") {
+                if (name !== "firstStrikes" && name !== "firstStrikeChances" && name !== "retreat") {
                     // Some go to attacker, others count against defender
                     if (name === "strength") {
                         attackerBonus += this.appliedBonuses[0][name];
@@ -204,7 +205,7 @@ module Combat {
 
             // Defender bonuses
             for (name in this.appliedBonuses[1]) {
-                if (name !== "firstStrikes" && name !== "firstStrikeChances") {
+                if (name !== "firstStrikes" && name !== "firstStrikeChances" && name !== "retreat") {
                     defenderBonus += this.appliedBonuses[1][name];
                 }
             }
@@ -227,8 +228,8 @@ module Combat {
         }
 
         // Based on http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-        oddsAttackerWinsFight() : number {
-            var f, fscA : number, fscD : number, i : number, iFS : number, maxFscA : number, maxFscD : number, odds : number, oddsAfterFirstStrikes, p : number, pFS : number;
+        odds() : {attackerWinsFight : number; attackerRetreats? : number;} {
+            var f, fscA : number, fscD : number, i : number, iFS : number, maxFscA : number, maxFscD : number, odds : {attackerWinsFight : number; attackerRetreats? : number;}, oddsAfterFirstStrikes, p : number, pFS : number;
 
             p = this.A / (this.A + this.D); // Probability attacker wins round
 
@@ -266,7 +267,9 @@ module Combat {
                 return odds;
             }.bind(this);
 
-            odds = 0;
+            odds = {
+                attackerWinsFight: 0
+            };
 
             // Loop over possible first strike chance combos, for attacker (fscA) and defender (fscD)
             maxFscA = this.appliedBonuses[0].hasOwnProperty("firstStrikeChances") ? this.appliedBonuses[0]["firstStrikeChances"] : 0;
@@ -292,9 +295,13 @@ module Combat {
                     for (i = 0; i <= this.firstStrikes[iFS]; i++) {
 //console.log([fscA, f(fscA, maxFscA, 0.5), fscD, f(fscD, maxFscD, 0.5), i, f(i, this.firstStrikes[iFS], pFS), oddsAfterFirstStrikes(iFS, i)]);
                         // (Product of binomials for attacker and defender first strike chances) * (binomial for first strike hitting) * (odds of winning after first strike)
-                        odds += f(fscA, maxFscA, 0.5) * f(fscD, maxFscD, 0.5) * f(i, this.firstStrikes[iFS], pFS) * oddsAfterFirstStrikes(iFS, i);
+                        odds.attackerWinsFight += f(fscA, maxFscA, 0.5) * f(fscD, maxFscD, 0.5) * f(i, this.firstStrikes[iFS], pFS) * oddsAfterFirstStrikes(iFS, i);
                     }
                 }
+            }
+
+            if (this.appliedBonuses[0].hasOwnProperty("retreat")) {
+                odds.attackerRetreats = (1 - odds.attackerWinsFight) * this.appliedBonuses[0]["retreat"] / 100;
             }
 
             return odds;
@@ -311,7 +318,7 @@ module Combat {
 console.log(JSON.stringify(this.appliedBonuses));
 console.log(this.firstStrikes);*/
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
-            this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
+            this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
 
             this.units[0].attacked = true;
 
@@ -341,7 +348,7 @@ console.log(this.firstStrikes);*/
             }
 
             this.log.push(this.names[i] + " defeated " + this.names[j] + "!");
-console.log(this.log);
+//console.log(this.log);
 
             // Process results
             this.winner = i === 0 ? "attacker" : "defender";
@@ -387,7 +394,7 @@ console.log(this.log);
             newTileUnits.forEach(function (unit) {
                 if (unit.owner !== attacker.owner) {
                     battle = new Battle(attacker, unit);
-                    oddsDefenderWinsFight = 1 - battle.oddsAttackerWinsFight();
+                    oddsDefenderWinsFight = 1 - battle.odds().attackerWinsFight;
                     if (oddsDefenderWinsFight > maxOdds) {
                         maxOdds = oddsDefenderWinsFight;
                         defender = unit;

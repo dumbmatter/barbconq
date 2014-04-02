@@ -978,7 +978,7 @@ console.log("FORTIFY")
 
         landOrSea = "land";
         actions = ["fortify", "skipTurn"];
-        unitBonuses = {attackAxeman: 100};
+        unitBonuses = {attackAxeman: 100, retreat: 10};
     }
 
     export class Spearman extends Unit {

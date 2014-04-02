@@ -5,7 +5,8 @@ Combat
   http://home.comcast.net/~proc/civ4/combat_calc.htm - seems weird with injured units
   BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
   retreat/withdraw
-    apply as a bonus, default 0
+    apply in fight
+    add to test
   collateral damage
 
 unit promotions
@@ -44,8 +45,9 @@ basic barb AI
 rate of barb generation in non-visible tiles
   should increase with turns?
 
-unit tests for grouped units?
-  mock Controller, MapUI, ChromeUI?
+unit tests
+  some civ4 attack probabilities hardcoded in (also, A and D values)
+  grouped units
 
 # Minor current tasks
 
