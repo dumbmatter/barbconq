@@ -43,4 +43,18 @@ module Util {
         }
         return retVal;
     }
+
+    var factorialCache : number[] = [];
+    export function factorial(n : number) : number {
+        if (n === 0 || n === 1) {
+            return 1;
+        }
+        if (factorialCache[n] > 0) {
+            return factorialCache[n];
+        }
+
+        factorialCache[n] = n * factorial(n - 1)
+
+        return factorialCache[n];
+    }
 }

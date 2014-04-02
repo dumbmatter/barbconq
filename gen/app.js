@@ -52,6 +52,21 @@ var Util;
         return retVal;
     }
     Util.deepCopy = deepCopy;
+
+    var factorialCache = [];
+    function factorial(n) {
+        if (n === 0 || n === 1) {
+            return 1;
+        }
+        if (factorialCache[n] > 0) {
+            return factorialCache[n];
+        }
+
+        factorialCache[n] = n * factorial(n - 1);
+
+        return factorialCache[n];
+    }
+    Util.factorial = factorial;
 })(Util || (Util = {}));
 // Handle user input from keyboard and mouse, and route it to the appropriate place based on the state of the game
 var Controller = (function () {
@@ -3378,13 +3393,6 @@ var Combat;
             }
         };
 
-        Battle.prototype.factorial = function (n) {
-            if (n === 0 || n === 1) {
-                return 1;
-            }
-            return n * this.factorial(n - 1);
-        };
-
         // Based on http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
         Battle.prototype.odds = function () {
             var f, fscA, fscD, i, iFS, maxFscA, maxFscD, odds, oddsAfterFirstStrikes, p, pFS;
@@ -3393,7 +3401,7 @@ var Combat;
 
             // Binomial distribution
             f = function (k, n, p) {
-                return this.factorial(n) / (this.factorial(k) * this.factorial(n - k)) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+                return Util.factorial(n) / (Util.factorial(k) * Util.factorial(n - k)) * Math.pow(p, k) * Math.pow(1 - p, n - k);
             }.bind(this);
 
             // iFS: 0 if attacker has first strikes, 1 if defender has first strikes
@@ -3413,12 +3421,17 @@ var Combat;
                     hitsNeededToWinAttacker -= numHits;
                 }
 
+                // Is the defender already dead from the first strikes?
+                if (hitsNeededToWinAttacker < 0) {
+                    hitsNeededToWinAttacker = 0;
+                }
+
                 odds = 0;
 
                 for (i = hitsNeededToWinAttacker; i <= maxRounds; i++) {
                     odds += f(i, maxRounds, p);
                     //odds += C(maxRounds, i) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
-                    //odds += this.factorial(maxRounds) / (this.factorial(i) * this.factorial(maxRounds - i)) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
+                    //odds += Util.factorial(maxRounds) / (Util.factorial(i) * Util.factorial(maxRounds - i)) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
                 }
 
                 return odds;

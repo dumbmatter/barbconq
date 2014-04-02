@@ -220,13 +220,6 @@ module Combat {
             }
         }
 
-        factorial(n : number) : number {
-            if (n === 0 || n === 1) {
-                return 1;
-            }
-            return n * this.factorial(n - 1);
-        }
-
         // Based on http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
         odds() : {attackerWinsFight : number; attackerRetreats? : number;} {
             var f, fscA : number, fscD : number, i : number, iFS : number, maxFscA : number, maxFscD : number, odds : {attackerWinsFight : number; attackerRetreats? : number;}, oddsAfterFirstStrikes, p : number, pFS : number;
@@ -235,7 +228,7 @@ module Combat {
 
             // Binomial distribution
             f = function (k, n, p) {
-                return this.factorial(n) / (this.factorial(k) * this.factorial(n - k)) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+                return Util.factorial(n) / (Util.factorial(k) * Util.factorial(n - k)) * Math.pow(p, k) * Math.pow(1 - p, n - k);
             }.bind(this);
 
             // iFS: 0 if attacker has first strikes, 1 if defender has first strikes
@@ -255,13 +248,18 @@ module Combat {
                     hitsNeededToWinAttacker -= numHits;
                 }
 
+                // Is the defender already dead from the first strikes?
+                if (hitsNeededToWinAttacker < 0) {
+                    hitsNeededToWinAttacker = 0;
+                }
+
                 odds = 0
 
                 // Each successful first strike means one less possible round after first strikes
                 for (i = hitsNeededToWinAttacker; i <= maxRounds; i++) {
                     odds += f(i, maxRounds, p);
                     //odds += C(maxRounds, i) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
-                    //odds += this.factorial(maxRounds) / (this.factorial(i) * this.factorial(maxRounds - i)) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
+                    //odds += Util.factorial(maxRounds) / (Util.factorial(i) * Util.factorial(maxRounds - i)) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
                 }
 
                 return odds;
