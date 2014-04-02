@@ -57,4 +57,9 @@ module Util {
 
         return factorialCache[n];
     }
+
+    // Binomial distribution
+   export function binomialProb(n, k, p) {
+        return factorial(n) / (factorial(k) * factorial(n - k)) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+    };
 }

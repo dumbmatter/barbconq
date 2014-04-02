@@ -67,6 +67,13 @@ var Util;
         return factorialCache[n];
     }
     Util.factorial = factorial;
+
+    // Binomial distribution
+    function binomialProb(n, k, p) {
+        return factorial(n) / (factorial(k) * factorial(n - k)) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+    }
+    Util.binomialProb = binomialProb;
+    ;
 })(Util || (Util = {}));
 // Handle user input from keyboard and mouse, and route it to the appropriate place based on the state of the game
 var Controller = (function () {
@@ -3205,7 +3212,6 @@ var Combat;
 
             // Bonuses that modify A and D
             this.assignAppliedBonuses();
-            this.assignFirstStrikes();
             this.applyBonuses();
 
             // Damage per hit
@@ -3337,6 +3343,7 @@ var Combat;
                 this.firstStrikes = [0, 0];
                 for (i = 0; i <= 1; i++) {
                     if (this.appliedBonuses[i].hasOwnProperty("firstStrikeChances")) {
+                        // IS THIS CORRECT? Should it instead draw from a binomial distribution?
                         this.firstStrikes[i] = Math.round(Math.random() * this.appliedBonuses[i]["firstStrikeChances"]);
                     }
                 }
@@ -3395,14 +3402,9 @@ var Combat;
 
         // Based on http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
         Battle.prototype.odds = function () {
-            var f, fscA, fscD, i, iFS, maxFscA, maxFscD, odds, oddsAfterFirstStrikes, p, pFS;
+            var fscA, fscD, i, iFS, maxFscA, maxFscD, odds, oddsAfterFirstStrikes, p, pFS;
 
             p = this.A / (this.A + this.D); // Probability attacker wins round
-
-            // Binomial distribution
-            f = function (k, n, p) {
-                return Util.factorial(n) / (Util.factorial(k) * Util.factorial(n - k)) * Math.pow(p, k) * Math.pow(1 - p, n - k);
-            }.bind(this);
 
             // iFS: 0 if attacker has first strikes, 1 if defender has first strikes
             // numHits: Number of successful first strikes
@@ -3429,7 +3431,7 @@ var Combat;
                 odds = 0;
 
                 for (i = hitsNeededToWinAttacker; i <= maxRounds; i++) {
-                    odds += f(i, maxRounds, p);
+                    odds += Util.binomialProb(maxRounds, i, p);
                     //odds += C(maxRounds, i) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
                     //odds += Util.factorial(maxRounds) / (Util.factorial(i) * Util.factorial(maxRounds - i)) * Math.pow(p, i) * Math.pow(1 - p, maxRounds - i);
                 }
@@ -3464,7 +3466,7 @@ var Combat;
                     for (i = 0; i <= this.firstStrikes[iFS]; i++) {
                         //console.log([fscA, f(fscA, maxFscA, 0.5), fscD, f(fscD, maxFscD, 0.5), i, f(i, this.firstStrikes[iFS], pFS), oddsAfterFirstStrikes(iFS, i)]);
                         // (Product of binomials for attacker and defender first strike chances) * (binomial for first strike hitting) * (odds of winning after first strike)
-                        odds.attackerWinsFight += f(fscA, maxFscA, 0.5) * f(fscD, maxFscD, 0.5) * f(i, this.firstStrikes[iFS], pFS) * oddsAfterFirstStrikes(iFS, i);
+                        odds.attackerWinsFight += Util.binomialProb(maxFscA, fscA, 0.5) * Util.binomialProb(maxFscD, fscD, 0.5) * Util.binomialProb(this.firstStrikes[iFS], i, pFS) * oddsAfterFirstStrikes(iFS, i);
                     }
                 }
             }
@@ -3483,11 +3485,14 @@ var Combat;
         Battle.prototype.fight = function () {
             var baseXP, i, j, newHP;
 
-            /*console.log(JSON.stringify(this.appliedBonuses));
-            console.log(this.firstStrikes);*/
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
 
+            // Calculate first strikes here, since it could have been perturbed by odds() call if first strikes were set previously
+            this.assignFirstStrikes();
+
+            /*console.log(JSON.stringify(this.appliedBonuses));
+            console.log(this.firstStrikes);*/
             this.units[0].attacked = true;
 
             while (this.hps[0] > 0 && this.hps[1] > 0) {

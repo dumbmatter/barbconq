@@ -1,9 +1,5 @@
 # Major current tasks
 
-combat odds
-  high first strikes
-    expected odds seem correct (match civ4), observed odds don't
-
 unit tests
   some civ4 attack probabilities hardcoded in (also, A and D values)
     injured units, different promotion combinations, different terrains, etc
