@@ -38,7 +38,7 @@ module Units {
 
     // IMPORTANT:
     // When adding a promotion here, make sure you also add support for it in ChromeUI.bonusText,
-    // Combat.Battle.getAppliedBonuses, Combat.Battle.defenderBonus, and anywhere else that the
+    // Combat.Battle.getAppliedBonuses, Combat.Battle.applyBonuses, and anywhere else that the
     // effect of the bonus is applied.
     export var promotions : Promotions = {
         cityRaider1: {

@@ -1901,7 +1901,7 @@ var Units;
 
     // IMPORTANT:
     // When adding a promotion here, make sure you also add support for it in ChromeUI.bonusText,
-    // Combat.Battle.getAppliedBonuses, Combat.Battle.defenderBonus, and anywhere else that the
+    // Combat.Battle.getAppliedBonuses, Combat.Battle.applyBonuses, and anywhere else that the
     // effect of the bonus is applied.
     Units.promotions = {
         cityRaider1: {
@@ -3330,8 +3330,7 @@ var Combat;
             }
         };
 
-        // Returns the bonus (as a percentage) to apply to the defender's modified strength.
-        // Both attacker and defender bonuses are done here.
+        // Applies the bonus (as a percentage) to apply to the attacjer's and defender's modified strengths.
         // http://www.civfanatics.com/civ4/strategy/combat_explained.php
         Battle.prototype.applyBonuses = function () {
             var attackerBonus, defenderBonus;
@@ -3340,7 +3339,7 @@ var Combat;
             defenderBonus = 0;
 
             for (name in this.appliedBonuses[0]) {
-                if (name !== "firstStrikes") {
+                if (name !== "firstStrikes" && name !== "firstStrikeChances") {
                     // Some go to attacker, others count against defender
                     if (name === "strength") {
                         attackerBonus += this.appliedBonuses[0][name];
@@ -3351,7 +3350,7 @@ var Combat;
             }
 
             for (name in this.appliedBonuses[1]) {
-                if (name !== "firstStrikes") {
+                if (name !== "firstStrikes" && name !== "firstStrikeChances") {
                     defenderBonus += this.appliedBonuses[1][name];
                 }
             }
@@ -3412,7 +3411,7 @@ var Combat;
                 return odds;
             }.bind(this);
 
-            this.assignFirstStrikes();
+            this.assignFirstStrikes(false);
 
             // Who gets first strikes?
             // pFS is the probability of a first strike succeeding. Above, p is the probability of

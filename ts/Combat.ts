@@ -180,8 +180,7 @@ module Combat {
             }
         }
 
-        // Returns the bonus (as a percentage) to apply to the defender's modified strength.
-        // Both attacker and defender bonuses are done here.
+        // Applies the bonus (as a percentage) to apply to the attacjer's and defender's modified strengths.
         // http://www.civfanatics.com/civ4/strategy/combat_explained.php
         applyBonuses() {
             var attackerBonus : number, defenderBonus : number;
@@ -191,7 +190,7 @@ module Combat {
 
             // Attacker bonuses
             for (name in this.appliedBonuses[0]) {
-                if (name !== "firstStrikes") {
+                if (name !== "firstStrikes" && name !== "firstStrikeChances") {
                     // Some go to attacker, others count against defender
                     if (name === "strength") {
                         attackerBonus += this.appliedBonuses[0][name];
@@ -203,7 +202,7 @@ module Combat {
 
             // Defender bonuses
             for (name in this.appliedBonuses[1]) {
-                if (name !== "firstStrikes") {
+                if (name !== "firstStrikes" && name !== "firstStrikeChances") {
                     defenderBonus += this.appliedBonuses[1][name];
                 }
             }
@@ -265,7 +264,7 @@ module Combat {
                 return odds;
             }.bind(this);
 
-            this.assignFirstStrikes();
+            this.assignFirstStrikes(false);
 
             // Who gets first strikes?
             // pFS is the probability of a first strike succeeding. Above, p is the probability of

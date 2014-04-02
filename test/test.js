@@ -40,8 +40,8 @@ describe("Combat.Battle.oddsAttackerWinsFight()", function() {
         // Randomize health
         params.u1HP = Math.round(Math.random() * 100);
         params.u2HP = Math.round(Math.random() * 100);
-params = {tileTerrain: "grassland", tileFeatures: ["forest"], u1Type: "Axeman", u2Type: "Archer", u1Promotions: ["combat1"], u2Promotions: ["drill1", "drill2", "drill3", "drill4"], u1HP: 100, u2HP: 100};
-console.log(params);
+params = {tileTerrain: "grassland", tileFeatures: ["forest"], u1Type: "Axeman", u2Type: "Archer", u1Promotions: [], u2Promotions: ["drill1", "drill2", "drill3", "drill4"], u1HP: 100, u2HP: 100};
+//console.log(params);
         
         for (i = 0; i < numFights; i++) {
             game = new Game(1, 1, 2);
@@ -67,7 +67,7 @@ console.log(params);
             b = new Combat.Battle(u1, u2);
 
             // Save prediction for later
-            if (i === 0) { expectedAttackerWins = b.oddsAttackerWinsFight() * numFights; console.log(b); }
+            if (i === 0) { expectedAttackerWins = b.oddsAttackerWinsFight() * numFights; console.log(b.appliedBonuses); }
 
             b.fight();
             if (b.winner === "attacker") {
