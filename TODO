@@ -5,7 +5,6 @@ Combat
   http://home.comcast.net/~proc/civ4/combat_calc.htm - seems weird with injured units
   BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
   retreat/withdraw
-    apply in fight
     add to test
   collateral damage
 
@@ -47,6 +46,7 @@ rate of barb generation in non-visible tiles
 
 unit tests
   some civ4 attack probabilities hardcoded in (also, A and D values)
+    injured units, different promotion combinations, different terrains, etc
   grouped units
 
 # Minor current tasks

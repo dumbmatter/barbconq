@@ -3468,10 +3468,9 @@ var Combat;
         };
 
         Battle.prototype.fight = function () {
-            var baseXP, i, j;
+            var baseXP, i, j, newHP;
 
-            /*console.log(JSON.stringify(this.getAppliedBonuses()));
-            console.log(JSON.stringify(this.appliedBonuses));
+            /*console.log(JSON.stringify(this.appliedBonuses));
             console.log(this.firstStrikes);*/
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
@@ -3489,7 +3488,31 @@ var Combat;
 
                 // If this is a first strike, only one party can win. So if the loser has first strikes left, no damage is done
                 if (this.firstStrikes[j] === 0) {
-                    this.hps[j] = Util.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
+                    newHP = Util.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
+
+                    // Check for withdrawal, if it's not a first strike and it would kill the loser
+                    if (this.firstStrikes[i] === 0 && newHP === 0) {
+                        if (this.appliedBonuses[j].hasOwnProperty("retreat") && 100 * Math.random() < this.appliedBonuses[j]["retreat"]) {
+                            // Both get damaged
+                            this.units[i].currentStrength = this.units[i].strength * this.hps[i] / 100;
+                            this.units[j].currentStrength = this.units[j].strength * this.hps[j] / 100;
+
+                            // Show event
+                            if (this.units[j].owner === config.PLAYER_ID) {
+                                assets.battleWon.play();
+                                chromeUI.eventLog("Your " + this.units[j].type + " withdrew from combat with a " + this.units[i].type + ".", "good");
+                            } else {
+                                assets.battleLost.play();
+                                chromeUI.eventLog("A " + this.units[i].type + " withdrew from combat with your " + this.units[j].type + ".", "bad");
+                            }
+
+                            // Stop the fight
+                            return;
+                        }
+                    }
+
+                    // Apply damage
+                    this.hps[j] = newHP;
                     this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
                 }
 
@@ -3524,7 +3547,7 @@ var Combat;
             this.units[j].currentMovement = 0; // So any outstanding references can see it's dead
 
             // Winner gets damaged
-            this.units[i].currentStrength *= this.hps[i] / 100;
+            this.units[i].currentStrength = this.units[i].strength * this.hps[i] / 100;
 
             // Winner gets XP
             baseXP = this.winner === "attacker" ? 4 * this.D / this.A : 2 * this.A / this.D;
@@ -3632,9 +3655,13 @@ var Combat;
                     // Enemies left on tile, don't take it
                     attacker.countMovementToCoords(coords, attacker); // Only count for attacker, not whole group
                 }
-            } else {
+            } else if (battle.winner === "defender") {
                 // Attacker died, so on to the next one
                 game.moveUnits();
+            } else {
+                // Withdrew from battle
+                // Enemies left on tile, don't take it
+                attacker.countMovementToCoords(coords, attacker); // Only count for attacker, not whole group
             }
 
             // Update hover tile, since this could change, particularly for right click attack when defending tile is hovered over
@@ -3754,11 +3781,50 @@ function init() {
     u1.promotions.push("drill1");
     u1.promotions.push("drill2");
     u1.xp += 5;
-    new Units.Archer(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Chariot(config.PLAYER_ID, [10, 20]);
 
-    /*    new Units.Spearman(config.PLAYER_ID, [10, 20]);
+    /*    new Units.Archer(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Spearman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Warrior(config.BARB_ID, [10, 21]);*/
@@ -3766,6 +3832,48 @@ function init() {
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Chariot(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
+    new Units.Archer(config.BARB_ID, [10, 21]);
     new Units.Archer(config.BARB_ID, [10, 21]);
     new Units.Archer(config.BARB_ID, [10, 21]);
     new Units.Archer(config.BARB_ID, [10, 21]);
