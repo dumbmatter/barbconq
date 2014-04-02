@@ -1,12 +1,13 @@
 # Major current tasks
 
-Combat
-  http://www.civfanatics.com/civ4/strategy/combat_explained.php
-  http://home.comcast.net/~proc/civ4/combat_calc.htm - seems weird with injured units
-  BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-  retreat/withdraw
-    add to test
-  collateral damage
+combat odds
+  high first strikes
+    expected odds seem correct (match civ4), observed odds don't
+
+unit tests
+  some civ4 attack probabilities hardcoded in (also, A and D values)
+    injured units, different promotion combinations, different terrains, etc
+  grouped unit actions
 
 unit promotions
   Units.promotions - contains metadata
@@ -43,11 +44,6 @@ basic barb AI
 
 rate of barb generation in non-visible tiles
   should increase with turns?
-
-unit tests
-  some civ4 attack probabilities hardcoded in (also, A and D values)
-    injured units, different promotion combinations, different terrains, etc
-  grouped units
 
 # Minor current tasks
 
@@ -186,6 +182,12 @@ scroll wheel zoom by increasing TILE_SIZE
 
 Friendly civs
   big problem: units of multiple civs can be on same tile.
+
+Combat
+  http://www.civfanatics.com/civ4/strategy/combat_explained.php
+  http://home.comcast.net/~proc/civ4/combat_calc.htm - seems weird with injured units
+  BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
+  collateral damage
 
 some units are immune to first strikes
 
