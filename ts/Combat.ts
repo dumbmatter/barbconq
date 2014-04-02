@@ -149,11 +149,23 @@ module Combat {
         // Both attacker and defender bonuses are done here.
         // http://www.civfanatics.com/civ4/strategy/combat_explained.php
         applyBonuses() {
-            var appliedBonuses : {[name: string] : number}[], attackerBonus : number, defenderBonus : number, name : string;
+            var appliedBonuses : {[name: string] : number}[], attackerBonus : number, defenderBonus : number, i : number, name : string, toAdd : number;
 
             appliedBonuses = this.getAppliedBonuses();
 
-            // First, handle first strikes
+            // First strike chances - add to firstStrikes
+            for (i = 0; i <= 1; i++) {
+                if (appliedBonuses[i].hasOwnProperty("firstStrikeChances")) {
+                    toAdd = Math.round(Math.random() * appliedBonuses[i]["firstStrikeChances"]);
+                    if (appliedBonuses[i].hasOwnProperty("firstStrikes")) {
+                        appliedBonuses[i]["firstStrikes"] += toAdd;
+                    } else {
+                        appliedBonuses[i]["firstStrikes"] = toAdd;
+                    }
+                }
+            }
+
+            // Overall first strikes
             if (appliedBonuses[0].hasOwnProperty("firstStrikes")) {
                 if (appliedBonuses[1].hasOwnProperty("firstStrikes")) {
                     if (appliedBonuses[0]["firstStrikes"] > appliedBonuses[1]["firstStrikes"]) {
@@ -276,8 +288,8 @@ module Combat {
         fight() {
             var baseXP : number, i : number, j : number;
 
-/*console.log(JSON.stringify(this.getAppliedBonuses()));
-console.log(this.firstStrikes);*/
+console.log(JSON.stringify(this.getAppliedBonuses()));
+console.log(this.firstStrikes);
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
 //            this.log.push("Combat odds for attacker: " + Math.round(this.oddsAttackerWinsFight() * 100) + "%");
 
