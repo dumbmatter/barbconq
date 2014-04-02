@@ -3,6 +3,7 @@
 unit tests
   some civ4 attack probabilities hardcoded in (also, A and D values)
     injured units, different promotion combinations, different terrains, etc
+    testBattleOdds should compare predicted odds too. compare all 3: civ4, predicted, observed
   grouped unit actions
 
 unit promotions

@@ -52,7 +52,6 @@ function testBattleOdds(params, expectedOddsAttackerWins, expectedOddsAttackerRe
         }
     }
 
-console.log([expectedOddsAttackerWins, expectedOddsAttackerRetreats])
     expectedAttackerWins = expectedOddsAttackerWins * numFights;
     expectedAttackerRetreats = expectedOddsAttackerRetreats * numFights;
 
@@ -103,12 +102,27 @@ console.log(params);
 
         // Calculate odds for battle
         odds = b.odds();
-console.log(b.appliedBonuses);
+/*console.log(b.appliedBonuses);
 console.log(b.firstStrikes);
-console.log(odds);
+console.log(odds);*/
         expectedOddsAttackerWins = odds.attackerWinsFight;
         expectedOddsAttackerRetreats = odds.hasOwnProperty("attackerRetreats") ? odds.attackerRetreats : 0;
 
         testBattleOdds(params, expectedOddsAttackerWins, expectedOddsAttackerRetreats);
+    });
+    it("should match results from civ4", function() {
+        var params;
+
+        params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Axeman', u2Type: 'Axeman', u1Promotions: ['drill1', 'drill2', 'drill3', 'drill4'], u2Promotions: [], u1HP: 100, u2HP: 100};
+        testBattleOdds(params, 0.787, 0);
+
+        params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Axeman', u2Type: 'Axeman', u1Promotions: ['drill1', 'drill2', 'drill3'], u2Promotions: [], u1HP: 100, u2HP: 100};
+        testBattleOdds(params, 0.667, 0);
+
+        params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Archer', u2Type: 'Chariot', u1Promotions: [], u2Promotions: ['drill2', 'drill3', 'drill4'], u1HP: 100, u2HP: 100};
+        testBattleOdds(params, 0.096, 0);
+
+        params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Chariot', u2Type: 'Chariot', u1Promotions: ['drill4'], u2Promotions: ['drill2', 'drill3', 'drill4'], u1HP: 100, u2HP: 100};
+        testBattleOdds(params, 0.364, 0.064);
     });
 });
