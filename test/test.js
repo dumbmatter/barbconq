@@ -34,14 +34,14 @@ describe("Combat.Battle.oddsAttackerWinsFight()", function() {
         params.u2Type = Random.choice(["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"]);
 
         // Randomize promotions
-        params.u1Promotions = [Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions))];
-        params.u2Promotions = [Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions))];
+        params.u1Promotions = [Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions))];
+        params.u2Promotions = [Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions))];
 
         // Randomize health
         params.u1HP = Math.round(Math.random() * 100);
         params.u2HP = Math.round(Math.random() * 100);
-params = {tileTerrain: "grassland", tileFeatures: ["forest"], u1Type: "Axeman", u2Type: "Archer", u1Promotions: [], u2Promotions: ["drill1", "drill2", "drill3", "drill4"], u1HP: 100, u2HP: 100};
-//console.log(params);
+//params = {tileTerrain: "grassland", tileFeatures: ["forest"], u1Type: "Axeman", u2Type: "Archer", u1Promotions: ["combat1"], u2Promotions: ["drill1", "drill2", "drill3"], u1HP: 100, u2HP: 100};
+console.log(params);
         
         for (i = 0; i < numFights; i++) {
             game = new Game(1, 1, 2);

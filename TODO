@@ -1,20 +1,12 @@
 # Major current tasks
 
 Combat
-  combat complexity
-    http://www.civfanatics.com/civ4/strategy/combat_explained.php
-    http://home.comcast.net/~proc/civ4/combat_calc.htm - seems weird with injured units
-    BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-    first strikes
-      http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
-      ranges of possible first strikes (see high drill promotions)
-        1. implement in fight, based on guessing it's 50/50
-        2. implement estimated battle odds, based on guessing it's 50/50
-          will need another layer of loops based on binomial prob of getting N first strikes
-        3. compare against civ4 (or that java applet) to see if the odds make sense
-    retreat/withdraw
-      apply as a bonus, default 0
-    collateral damage
+  http://www.civfanatics.com/civ4/strategy/combat_explained.php
+  http://home.comcast.net/~proc/civ4/combat_calc.htm - seems weird with injured units
+  BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
+  retreat/withdraw
+    apply as a bonus, default 0
+  collateral damage
 
 unit promotions
   Units.promotions - contains metadata
@@ -28,7 +20,7 @@ unit promotions
   icons for the promotions a unit has
     show in hover-box and bottom-info
     can they be text?
-  indicator of if unit has promotions
+  indicator of if unit has promotions available
     in unit icon
     on tile
   confirm
@@ -83,6 +75,9 @@ unit actions
     top right indicator in unit icon
     "fortify until healed"
     when fortified, show "wake unit" icon
+    how to handle group?
+    how to handle unit that has already used up its moves, fully or partially?
+      shouldn't be able to heal right away. what about defensive bonus?
   are some of these universal? can move up to root Unit?
 
 unit stacking UI options
