@@ -286,7 +286,7 @@ module Combat {
 
                     // Calculate odds
                     for (i = 0; i <= this.firstStrikes[iFS]; i++) {
-//console.log([fscA, f(fscA, maxFscA, 0.5), fscD, f(fscD, maxFscD, 0.5), i, f(i, this.firstStrikes[iFS], pFS), oddsAfterFirstStrikes(iFS, i)]);
+//console.log([fscA, Util.binomialProb(maxFscA, fscA, 0.5), fscD,  Util.binomialProb(maxFscD, fscD, 0.5), i, Util.binomialProb(this.firstStrikes[iFS], i, pFS), oddsAfterFirstStrikes(iFS, i)]);
                         // (Product of binomials for attacker and defender first strike chances) * (binomial for first strike hitting) * (odds of winning after first strike)
                         odds.attackerWinsFight += Util.binomialProb(maxFscA, fscA, 0.5) * Util.binomialProb(maxFscD, fscD, 0.5) * Util.binomialProb(this.firstStrikes[iFS], i, pFS) * oddsAfterFirstStrikes(iFS, i);
                     }
