@@ -182,7 +182,7 @@ var Controller = (function () {
                 } else if (e.keyCode === this.KEYS.G && activeUnit.actions.indexOf("goTo") >= 0) {
                     console.log("GOTO");
                     console.log(this.hoveredTile);
-                    this.initPathFindingSearch(this.hoveredTile, { el: mapUI.canvas, event: "mousedown" });
+                    this.initPathFindingSearch(this.hoveredTile, { el: mapUI.canvas, event: "click" });
                 }
             }
         }.bind(this));
@@ -252,6 +252,9 @@ var Controller = (function () {
         // Let mapUI know that we're searching for paths, so it doesn't draw any others (like current paths)
         mapUI.pathFindingSearch = true;
 
+        // Disable normal left click actions until pathFinding is done
+        mapUI.canvas.removeEventListener("click", this.leftClickOnMap);
+
         // Find paths to hovered tile as button remains down
         mouseMoveWhileDown = function (e) {
             var coordsNew;
@@ -270,6 +273,8 @@ var Controller = (function () {
         // Move unit to the tile hovered over when the setPathOn event occurs
         setPath = function (e) {
             var coordsNew;
+
+            e.preventDefault();
 
             mapUI.pathFindingSearch = false;
 
@@ -290,7 +295,10 @@ var Controller = (function () {
 
             mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
             setPathOn.el.removeEventListener(setPathOn.event, setPath);
-        };
+
+            // Re-enable normal left click functions
+            mapUI.canvas.addEventListener("click", this.leftClickOnMap);
+        }.bind(this);
         setPathOn.el.addEventListener(setPathOn.event, setPath);
     };
 
@@ -321,60 +329,62 @@ var Controller = (function () {
         }.bind(this));
     };
 
+    Controller.prototype.leftClickOnMap = function (e) {
+        var i, coords, currentMetric, maxMetric, unit, units;
+        console.log("clickOnMap");
+
+        if (e.button === 0) {
+            console.log("leftClickOnMap");
+            coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
+
+            if (game.map.validCoords(coords)) {
+                units = game.getTile(coords).units;
+
+                // Find the strongest unit with moves left
+                maxMetric = -Infinity;
+                for (i = 0; i < units.length; i++) {
+                    // Sort by criteria: 1. if active already; 2. if currentMovement > 0; 3. currentStrength
+                    currentMetric = units[i].currentStrength;
+                    if (units[i].currentMovement > 0) {
+                        currentMetric += 100;
+                    }
+                    if (units[i].active || (units[i].group && units[i].group.active)) {
+                        currentMetric += 1000;
+                    }
+
+                    if (currentMetric > maxMetric && units[i].owner === config.PLAYER_ID) {
+                        unit = units[i];
+                        maxMetric = currentMetric;
+                    }
+                }
+
+                if (unit) {
+                    if (e.altKey) {
+                        // Create group of all units on tile with moves and activate it
+                        Units.addUnitsToNewGroup(config.PLAYER_ID, units);
+                    } else if (e.ctrlKey) {
+                        // Create group of all units on tile with moves and same type as top unit and activate it
+                        Units.addUnitsWithTypeToNewGroup(config.PLAYER_ID, units, unit.type);
+                    } else {
+                        // Normal left click: select top unit or group
+                        if (unit.group) {
+                            unit.group.activate(false);
+                        } else {
+                            unit.activate(false);
+                        }
+                    }
+                } else {
+                    // None of the user's units are on this tile, so pan to it
+                    mapUI.goToCoords(coords);
+                }
+            }
+        }
+    };
+
     // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
     // if one of your units is not on the clicked tile, center the map
     Controller.prototype.initMapClick = function () {
-        mapUI.canvas.addEventListener("click", function (e) {
-            var i, coords, currentMetric, maxMetric, unit, units;
-
-            if (e.button === 0) {
-                e.preventDefault();
-
-                coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
-
-                if (game.map.validCoords(coords)) {
-                    units = game.getTile(coords).units;
-
-                    // Find the strongest unit with moves left
-                    maxMetric = -Infinity;
-                    for (i = 0; i < units.length; i++) {
-                        // Sort by criteria: 1. if active already; 2. if currentMovement > 0; 3. currentStrength
-                        currentMetric = units[i].currentStrength;
-                        if (units[i].currentMovement > 0) {
-                            currentMetric += 100;
-                        }
-                        if (units[i].active || (units[i].group && units[i].group.active)) {
-                            currentMetric += 1000;
-                        }
-
-                        if (currentMetric > maxMetric && units[i].owner === config.PLAYER_ID) {
-                            unit = units[i];
-                            maxMetric = currentMetric;
-                        }
-                    }
-
-                    if (unit) {
-                        if (e.altKey) {
-                            // Create group of all units on tile with moves and activate it
-                            Units.addUnitsToNewGroup(config.PLAYER_ID, units);
-                        } else if (e.ctrlKey) {
-                            // Create group of all units on tile with moves and same type as top unit and activate it
-                            Units.addUnitsWithTypeToNewGroup(config.PLAYER_ID, units, unit.type);
-                        } else {
-                            // Normal left click: select top unit or group
-                            if (unit.group) {
-                                unit.group.activate(false);
-                            } else {
-                                unit.activate(false);
-                            }
-                        }
-                    } else {
-                        // None of the user's units are on this tile, so pan to it
-                        mapUI.goToCoords(coords);
-                    }
-                }
-            }
-        });
+        mapUI.canvas.addEventListener("click", this.leftClickOnMap);
 
         mapUI.miniCanvas.addEventListener("mousedown", function (e) {
             var coords, miniMapPan, miniMapPanStop;
@@ -1414,6 +1424,8 @@ var MapUI = (function () {
     };
 
     MapUI.prototype.goToCoords = function (coords) {
+        console.log("goToCoords: " + coords);
+
         // ith row, jth column, 0 indexed
         this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
         this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;

@@ -110,7 +110,7 @@ class Controller {
                 } else if (e.keyCode === this.KEYS.G && activeUnit.actions.indexOf("goTo") >= 0) {
 console.log("GOTO");
 console.log(this.hoveredTile)
-                    this.initPathFindingSearch(this.hoveredTile, {el: mapUI.canvas, event: "mousedown"});
+                    this.initPathFindingSearch(this.hoveredTile, {el: mapUI.canvas, event: "click"});
                 }
             }
         }.bind(this));
@@ -180,6 +180,9 @@ console.log(this.hoveredTile)
         // Let mapUI know that we're searching for paths, so it doesn't draw any others (like current paths)
         mapUI.pathFindingSearch = true;
 
+        // Disable normal left click actions until pathFinding is done
+        mapUI.canvas.removeEventListener("click", this.leftClickOnMap);
+
         // Find paths to hovered tile as button remains down
         mouseMoveWhileDown = function (e : MouseEvent) {
             var coordsNew : number[];
@@ -198,6 +201,8 @@ console.log(this.hoveredTile)
         // Move unit to the tile hovered over when the setPathOn event occurs
         setPath = function (e : MouseEvent) {
             var coordsNew : number[];
+
+            e.preventDefault();
 
             mapUI.pathFindingSearch = false;
 
@@ -219,7 +224,10 @@ console.log(this.hoveredTile)
 
             mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
             setPathOn.el.removeEventListener(setPathOn.event, setPath);
-        };
+
+            // Re-enable normal left click functions
+            mapUI.canvas.addEventListener("click", this.leftClickOnMap);
+        }.bind(this);
         setPathOn.el.addEventListener(setPathOn.event, setPath);
     }
 
@@ -250,56 +258,58 @@ console.log(this.hoveredTile)
         }.bind(this));
     }
 
+    private leftClickOnMap (e : MouseEvent) {
+        var i : number, coords : number[], currentMetric : number, maxMetric : number, unit, units : Units.Unit[];
+console.log("clickOnMap")
+
+        if (e.button === 0) { // Left click only!
+console.log("leftClickOnMap")
+            coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
+
+            if (game.map.validCoords(coords)) {
+                units = game.getTile(coords).units;
+
+                // Find the strongest unit with moves left
+                maxMetric = -Infinity;
+                for (i = 0; i < units.length; i++) {
+                     // Sort by criteria: 1. if active already; 2. if currentMovement > 0; 3. currentStrength
+                    currentMetric = units[i].currentStrength;
+                    if (units[i].currentMovement > 0) { currentMetric += 100; }
+                    if (units[i].active || (units[i].group && units[i].group.active)) { currentMetric += 1000; }
+
+                    if (currentMetric > maxMetric && units[i].owner === config.PLAYER_ID) { // Only select user's units
+                        unit = units[i];
+                        maxMetric = currentMetric;
+                    }
+                }
+
+                if (unit) {
+                    if (e.altKey) { // In GNOME, alt+click is captured for window dragging, but alt+ctrl+click works for this
+                        // Create group of all units on tile with moves and activate it
+                        Units.addUnitsToNewGroup(config.PLAYER_ID, units);
+                    } else if (e.ctrlKey) {
+                        // Create group of all units on tile with moves and same type as top unit and activate it
+                        Units.addUnitsWithTypeToNewGroup(config.PLAYER_ID, units, unit.type);
+                    } else {
+                        // Normal left click: select top unit or group
+                        if (unit.group) {
+                            unit.group.activate(false);
+                        } else {
+                            unit.activate(false);
+                        }
+                    }
+                } else {
+                    // None of the user's units are on this tile, so pan to it
+                    mapUI.goToCoords(coords);
+                }
+            }
+        }
+    }
+
     // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
     // if one of your units is not on the clicked tile, center the map
     initMapClick() {
-        mapUI.canvas.addEventListener("click", function (e : MouseEvent) {
-            var i : number, coords : number[], currentMetric : number, maxMetric : number, unit, units : Units.Unit[];
-
-            if (e.button === 0) { // Left click only!
-                e.preventDefault();
-
-                coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
-
-                if (game.map.validCoords(coords)) {
-                    units = game.getTile(coords).units;
-
-                    // Find the strongest unit with moves left
-                    maxMetric = -Infinity;
-                    for (i = 0; i < units.length; i++) {
-                         // Sort by criteria: 1. if active already; 2. if currentMovement > 0; 3. currentStrength
-                        currentMetric = units[i].currentStrength;
-                        if (units[i].currentMovement > 0) { currentMetric += 100; }
-                        if (units[i].active || (units[i].group && units[i].group.active)) { currentMetric += 1000; }
-
-                        if (currentMetric > maxMetric && units[i].owner === config.PLAYER_ID) { // Only select user's units
-                            unit = units[i];
-                            maxMetric = currentMetric;
-                        }
-                    }
-
-                    if (unit) {
-                        if (e.altKey) { // In GNOME, alt+click is captured for window dragging, but alt+ctrl+click works for this
-                            // Create group of all units on tile with moves and activate it
-                            Units.addUnitsToNewGroup(config.PLAYER_ID, units);
-                        } else if (e.ctrlKey) {
-                            // Create group of all units on tile with moves and same type as top unit and activate it
-                            Units.addUnitsWithTypeToNewGroup(config.PLAYER_ID, units, unit.type);
-                        } else {
-                            // Normal left click: select top unit or group
-                            if (unit.group) {
-                                unit.group.activate(false);
-                            } else {
-                                unit.activate(false);
-                            }
-                        }
-                    } else {
-                        // None of the user's units are on this tile, so pan to it
-                        mapUI.goToCoords(coords);
-                    }
-                }
-            }
-        });
+        mapUI.canvas.addEventListener("click", this.leftClickOnMap);
 
         mapUI.miniCanvas.addEventListener("mousedown", function (e : MouseEvent) {
             var coords : number[], miniMapPan : (e : MouseEvent) => void, miniMapPanStop : (e : MouseEvent) => void;

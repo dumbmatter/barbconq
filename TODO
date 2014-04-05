@@ -6,8 +6,7 @@
   initPathFindingSearch needs to handle null input, which could happen for goto mode
     should remove path display, but keep search active, like when right click is held and it moves off screen
   weird stuff when you right click after pressing G
-    "go to" moves faster than right click - no delay?
-    units remain active on minimap
+    basically, this activates pathfinding again. should recognize it's already active
 
 unit tests
   grouped unit actions
