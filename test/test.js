@@ -86,7 +86,7 @@ describe("Combat.Battle.odds()", function() {
     it("should accurately predict outcome for random battle", function() {
         var i, params, rand;
 
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < 1; i++) {
             params = {};
 
             // Randomize tile
@@ -113,7 +113,7 @@ describe("Combat.Battle.odds()", function() {
             // Randomize health
             params.u1HP = Math.round(Math.random() * 100);
             params.u2HP = Math.round(Math.random() * 100);
-params = {tileTerrain: 'grassland', tileFeatures: ['forest', 'hills'], u1Type: 'Spearman', u2Type: 'Scout', u1Promotions: ['cityGarrison1', 'drill1', 'drill4', 'combat2'], u2Promotions: ['cityGarrison2', 'cityGarrison1', 'cityRaider3', 'cityGarrison2'], u1HP: 12, u2HP: 13};
+//params = {tileTerrain: 'grassland', tileFeatures: ['forest', 'hills'], u1Type: 'Axeman', u2Type: 'Chariot', u1Promotions: ['drill2', 'combat2', 'drill2', 'cityGarrison2'], u2Promotions: ['combat1', 'cityRaider2', 'combat3', 'drill1'], u1HP: 21, u2HP: 17};
 console.log(params);
 
             testBattleOdds(params);

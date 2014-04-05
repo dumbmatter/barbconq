@@ -246,6 +246,7 @@ module Combat {
                 // Is the defender already dead from the first strikes?
                 if (hitsNeededToWinAttacker < 0) {
                     hitsNeededToWinAttacker = 0;
+                    maxRounds = 0;
                 }
 
                 odds = 0

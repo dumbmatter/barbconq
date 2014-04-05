@@ -2,10 +2,6 @@
 
 unit tests
   look into further:
-    {tileTerrain: 'grassland', tileFeatures: ['forest', 'hills'], u1Type: 'Spearman', u2Type: 'Scout', u1Promotions: ['cityGarrison1', 'drill1', 'drill4', 'combat2'], u2Promotions: ['cityGarrison2', 'cityGarrison1', 'cityRaider3', 'cityGarrison2'], u1HP: 12, u2HP: 13}
-    {tileTerrain: 'grassland', tileFeatures: ['forest', 'hills'], u1Type: 'Axeman', u2Type: 'Chariot', u1Promotions: ['drill2', 'combat2', 'drill2', 'cityGarrison2'], u2Promotions: ['combat1', 'cityRaider2', 'combat3', 'drill1'], u1HP: 21, u2HP: 17}
-    {tileTerrain: 'grassland', tileFeatures: ['hills'], u1Type: 'Chariot', u2Type: 'Archer', u1Promotions: ['drill3', 'cityGarrison3', 'drill4', 'cityGarrison1'], u2Promotions: ['cityGarrison1', 'drill1', 'drill2', 'cover'], u1HP: 63, u2HP: 93}
-    {tileTerrain: 'grassland', tileFeatures: ['forest'], u1Type: 'Archer', u2Type: 'Axeman', u1Promotions: ['cityGarrison3', 'drill3', 'cover', 'cityRaider3'], u2Promotions: ['drill3', 'drill1', 'drill3', 'combat2'], u1HP: 73, u2HP: 86}
   grouped unit actions
 
 unit promotions
