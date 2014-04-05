@@ -2318,7 +2318,9 @@ var Units;
             throw new Error('"moveOnMap" needs to be redefined by each derived class.');
         };
 
-        // Check for valid coords before calling. Returns true when successful, false when "maybe successful" (battle takes over because enemy is on coords)
+        // Check for valid coords before calling. Returns true when successful, false when "maybe
+        // successful" (battle takes over because enemy is on coords). Note that the battle code is
+        // async!!!!
         UnitOrGroup.prototype.moveToCoords = function (coords) {
             var city;
 
@@ -3691,7 +3693,9 @@ var Combat;
     Combat.findBestDefender = findBestDefender;
     ;
 
-    // If tile has enemy unit on it, initiate combat (if appropriate) and return true. Otherwise, do nothing and return false.
+    // If tile has enemy unit on it, initiate combat (if appropriate) and return true. Otherwise, do
+    // nothing and return false. WARNING: If returning false, some async stuff might still going on
+    // in the background!!!
     function fightIfTileHasEnemy(attackerUnitOrGroup, coords) {
         var attacker, battle, defender, newTileUnits, units;
 
@@ -3705,25 +3709,29 @@ var Combat;
             // Delete path
             attackerUnitOrGroup.targetCoords = null;
 
-            // We have a valid attacker and defender! Fight!
-            battle = new Battle(attacker, defender);
-            battle.fight();
-            if (battle.winner === "attacker") {
-                if (game.map.enemyUnits(attackerUnitOrGroup.owner, coords).length === 0) {
-                    // No enemies left on tile, take it.
-                    attackerUnitOrGroup.moveToCoords(coords); // Move entire group, if it's a group
+            console.log("starting fight");
+            setTimeout(function () {
+                // We have a valid attacker and defender! Fight!
+                battle = new Battle(attacker, defender);
+                battle.fight();
+                if (battle.winner === "attacker") {
+                    if (game.map.enemyUnits(attackerUnitOrGroup.owner, coords).length === 0) {
+                        // No enemies left on tile, take it.
+                        attackerUnitOrGroup.moveToCoords(coords); // Move entire group, if it's a group
+                    } else {
+                        // Enemies left on tile, don't take it
+                        attacker.countMovementToCoords(coords, attacker); // Only count for attacker, not whole group
+                    }
+                } else if (battle.winner === "defender") {
+                    // Attacker died, so on to the next one
+                    game.moveUnits();
                 } else {
+                    // Withdrew from battle
                     // Enemies left on tile, don't take it
                     attacker.countMovementToCoords(coords, attacker); // Only count for attacker, not whole group
                 }
-            } else if (battle.winner === "defender") {
-                // Attacker died, so on to the next one
-                game.moveUnits();
-            } else {
-                // Withdrew from battle
-                // Enemies left on tile, don't take it
-                attacker.countMovementToCoords(coords, attacker); // Only count for attacker, not whole group
-            }
+                console.log("ending fight");
+            }, 1000);
 
             // Update hover tile, since this could change, particularly for right click attack when defending tile is hovered over
             chromeUI.onHoverTile(game.getTile(controller.hoveredTile));
@@ -3838,7 +3846,7 @@ function init() {
     /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    u1 = new Units.Chariot(config.PLAYER_ID, [1, 20]);
+    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
     u1.promotions.push("drill1");
     u1.promotions.push("drill2");
     u1.xp += 5;

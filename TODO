@@ -1,5 +1,26 @@
 # Major current tasks
 
+animate unit movement
+  see below about "let it ride" - would need to do that with Unit.moveToCoords
+
+add highlighting of two units that are fighting, or maybe red dashed path in between?
+  particularly important for when AI attacks
+  zoom in? popup?
+  see how civ2/3/freeciv do it
+  implementation
+    Combat.fightIfTileHasEnemy is what actually calls the fight code. needs to be async?
+      or can i just "let it ride" is this returns false?
+    Unit.moveToCoords calls fightIfTileHasEnemy and would also need to be made async?
+      or can i just "let it ride" is this returns false?
+    FIRST ATTEMPT: try "let it ride" strategy
+      have unit "hit" (animate move into other unit's tile, then come back) for each round won
+      should integrate nicely with unit health indicator on tile and animated unit movement (see below)
+      compute whole battle first, and animate based on log?
+        but how will this handle units dying? could move all that stuff to another function
+  if async stuff is going on, need to prevent any user input during battle
+    similarly, should prevent any user input during AI turns
+    implement as some flag that Controller reads
+
 unit tests
   grouped unit actions
 
@@ -30,10 +51,8 @@ unit promotions
     lots of irrelevant ones
     add collateral damage stuff to drills
 
-add highlighting of two units that are fighting, or maybe red dashed path in between?
-  particularly important for when AI attacks
-  zoom in?
-  see how civ2/3/freeciv do it
+unit health indicator on tile
+
 
 basic barb AI
   Game.moveUnits
@@ -77,8 +96,6 @@ unit actions
 unit stacking UI options
   show highest strength one on top, and "+ X more" in text below it
   series of vertical lines at the bottom
-
-unit health indicator on tile
 
 tile improvements? maybe roads and forts
 
@@ -166,10 +183,6 @@ TypeScript
   tsc --noImplicitAny
 
 # Future
-
-animate unit movement
-  any built-in canvas animation support? like hinted at in http://www.sitepoint.com/html5-canvas-tutorial-introduction/ or maybe http://bdadam.com/blog/panning-and-scrolling-background-images-using-the-canvas-element.html
-  maybe add a transparent canvas on top and use that to animate movement before redrawing map
 
 scroll wheel zoom by increasing TILE_SIZE
   but this won't scale the contents of the tiles... so instead have some variable MapUI.scale which scales everything

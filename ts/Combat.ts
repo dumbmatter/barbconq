@@ -478,7 +478,9 @@ console.log(this.firstStrikes);*/
         };
     };
 
-    // If tile has enemy unit on it, initiate combat (if appropriate) and return true. Otherwise, do nothing and return false.
+    // If tile has enemy unit on it, initiate combat (if appropriate) and return true. Otherwise, do
+    // nothing and return false. WARNING: If returning false, some async stuff might still going on
+    // in the background!!!
     export function fightIfTileHasEnemy(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : boolean {
         var attacker : Units.Unit, battle : Battle, defender : Units.Unit, newTileUnits : Units.Unit[], units : {attacker : Units.Unit; defender : Units.Unit};
 
@@ -492,6 +494,8 @@ console.log(this.firstStrikes);*/
             // Delete path
             attackerUnitOrGroup.targetCoords = null;
 
+console.log("starting fight");
+setTimeout(function () {
             // We have a valid attacker and defender! Fight!
             battle = new Battle(attacker, defender);
             battle.fight();
@@ -512,6 +516,8 @@ console.log(this.firstStrikes);*/
                 // Enemies left on tile, don't take it
                 attacker.countMovementToCoords(coords, attacker); // Only count for attacker, not whole group
             }
+console.log("ending fight");
+}, 1000);
 
             // Update hover tile, since this could change, particularly for right click attack when defending tile is hovered over
             chromeUI.onHoverTile(game.getTile(controller.hoveredTile));

@@ -302,7 +302,9 @@ module Units {
             throw new Error('"moveOnMap" needs to be redefined by each derived class.');
         }
 
-        // Check for valid coords before calling. Returns true when successful, false when "maybe successful" (battle takes over because enemy is on coords)
+        // Check for valid coords before calling. Returns true when successful, false when "maybe
+        // successful" (battle takes over because enemy is on coords). Note that the battle code is
+        // async!!!!
         moveToCoords(coords : number[]) : boolean {
             var city : Cities.City;
 
