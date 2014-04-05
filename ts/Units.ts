@@ -937,7 +937,7 @@ console.log("FORTIFY")
         currentMovement = 2;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn"];
+        actions = ["fortify", "skipTurn", "goTo"];
     }
 
     export class Warrior extends Unit {
@@ -950,7 +950,7 @@ console.log("FORTIFY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn"];
+        actions = ["fortify", "skipTurn", "goTo"];
     }
 
     export class Archer extends Unit {
@@ -963,7 +963,7 @@ console.log("FORTIFY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn"];
+        actions = ["fortify", "skipTurn", "goTo"];
         unitBonuses = {cityDefense: 50, hillsDefense: 25, firstStrikes: 1};
     }
 
@@ -977,7 +977,7 @@ console.log("FORTIFY")
         currentMovement = 2;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn"];
+        actions = ["fortify", "skipTurn", "goTo"];
         unitBonuses = {attackAxeman: 100, retreat: 10};
     }
 
@@ -991,7 +991,7 @@ console.log("FORTIFY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn"];
+        actions = ["fortify", "skipTurn", "goTo"];
         unitBonuses = {mounted: 100};
     }
 
@@ -1005,7 +1005,7 @@ console.log("FORTIFY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn"];
+        actions = ["fortify", "skipTurn", "goTo"];
         unitBonuses = {melee: 50};
     }
 

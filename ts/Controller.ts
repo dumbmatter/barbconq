@@ -16,6 +16,7 @@ class Controller {
         NUMPAD_9: 105,
         C: 67,
         F: 70,
+        G: 71,
         S: 83,
         ENTER: 13,
         SPACE_BAR: 32
@@ -106,6 +107,8 @@ class Controller {
                     activeUnit.fortify();
                 } else if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
                     activeUnit.skipTurn();
+                } else if (e.keyCode === this.KEYS.G && activeUnit.actions.indexOf("goTo") >= 0) {
+console.log("GOTO");
                 }
             }
         }.bind(this));

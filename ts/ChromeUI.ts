@@ -189,6 +189,9 @@ class ChromeUI {
         } else if (action === "skipTurn") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Skip Turn</span> <span class="action-shortcut">&lt;Space Bar&gt;</span></p><p>The unit does nothing this turn, but will ask for orders again next turn.</p>';
             this.elHoverBox.style.display = "block";
+        } else if (action === "goTo") {
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Go To Mode</span> <span class="action-shortcut">&lt;G&gt;</span> or <span class="action-shortcut">&lt;Right Click&gt;</span></p><p>Move the selected unit to a tile.</p>';
+            this.elHoverBox.style.display = "block";
         } else if (action === "separate") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the group so you can move each unit individually.</p>';
             this.elHoverBox.style.display = "block";
