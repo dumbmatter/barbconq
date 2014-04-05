@@ -180,9 +180,7 @@ var Controller = (function () {
                 } else if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
                     activeUnit.skipTurn();
                 } else if (e.keyCode === this.KEYS.G && activeUnit.actions.indexOf("goTo") >= 0) {
-                    console.log("GOTO");
-                    console.log(this.hoveredTile);
-                    this.initPathFindingSearch(this.hoveredTile, { el: mapUI.canvas, event: "click" });
+                    this.initPathFindingSearch(this.hoveredTile, { el: mapUI.canvas, event: "mousedown" });
                 }
             }
         }.bind(this));
@@ -191,10 +189,11 @@ var Controller = (function () {
         window.addEventListener("contextmenu", function (e) {
             e.preventDefault();
         });
+
         mapUI.canvas.addEventListener("mousedown", function (e) {
             var coords;
 
-            if (e.button === 2 && game.activeUnit) {
+            if (e.button === 2 && game.activeUnit && !mapUI.pathFindingSearch) {
                 e.preventDefault();
 
                 // Find path to clicked tile
@@ -246,6 +245,11 @@ var Controller = (function () {
     // for right click and hold, it's "mouseup".
     Controller.prototype.initPathFindingSearch = function (coords, setPathOn) {
         var mouseMoveWhileDown, setPath;
+
+        // Don't activate twice
+        if (mapUI.pathFindingSearch) {
+            return;
+        }
 
         game.map.pathFinding(game.activeUnit, coords);
 
@@ -331,10 +335,8 @@ var Controller = (function () {
 
     Controller.prototype.leftClickOnMap = function (e) {
         var i, coords, currentMetric, maxMetric, unit, units;
-        console.log("clickOnMap");
 
         if (e.button === 0) {
-            console.log("leftClickOnMap");
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
             if (game.map.validCoords(coords)) {
@@ -1424,8 +1426,6 @@ var MapUI = (function () {
     };
 
     MapUI.prototype.goToCoords = function (coords) {
-        console.log("goToCoords: " + coords);
-
         // ith row, jth column, 0 indexed
         this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
         this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;

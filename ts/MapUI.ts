@@ -429,7 +429,6 @@ class MapUI {
     }
 
     goToCoords(coords : number[]) {
-console.log("goToCoords: " + coords)
         // ith row, jth column, 0 indexed
         this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
         this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;

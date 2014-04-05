@@ -108,9 +108,7 @@ class Controller {
                 } else if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
                     activeUnit.skipTurn();
                 } else if (e.keyCode === this.KEYS.G && activeUnit.actions.indexOf("goTo") >= 0) {
-console.log("GOTO");
-console.log(this.hoveredTile)
-                    this.initPathFindingSearch(this.hoveredTile, {el: mapUI.canvas, event: "click"});
+                    this.initPathFindingSearch(this.hoveredTile, {el: mapUI.canvas, event: "mousedown"});
                 }
             }
         }.bind(this));
@@ -119,10 +117,11 @@ console.log(this.hoveredTile)
         window.addEventListener("contextmenu", function (e : MouseEvent) {
             e.preventDefault();
         });
+
         mapUI.canvas.addEventListener("mousedown", function (e : MouseEvent) {
             var coords : number[];
 
-            if (e.button === 2 && game.activeUnit) { // Right click only! Active unit only!
+            if (e.button === 2 && game.activeUnit && !mapUI.pathFindingSearch) { // Right click only! Active unit only! But not if Go To mode is already active
                 e.preventDefault();
 
                 // Find path to clicked tile
@@ -174,6 +173,9 @@ console.log(this.hoveredTile)
     // for right click and hold, it's "mouseup".
     private initPathFindingSearch(coords : number[], setPathOn : {el; event : string;}) {
         var mouseMoveWhileDown : (e : MouseEvent) => void, setPath : (e : MouseEvent) => void;
+
+        // Don't activate twice
+        if (mapUI.pathFindingSearch) { return; }
 
         game.map.pathFinding(game.activeUnit, coords);
 
@@ -260,10 +262,8 @@ console.log(this.hoveredTile)
 
     private leftClickOnMap (e : MouseEvent) {
         var i : number, coords : number[], currentMetric : number, maxMetric : number, unit, units : Units.Unit[];
-console.log("clickOnMap")
 
         if (e.button === 0) { // Left click only!
-console.log("leftClickOnMap")
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
             if (game.map.validCoords(coords)) {
