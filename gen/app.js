@@ -3402,7 +3402,7 @@ var Combat;
 
         // Based on http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
         Battle.prototype.odds = function () {
-            var fscA, fscD, i, iFS, maxFscA, maxFscD, odds, oddsAfterFirstStrikes, p, pFS;
+            var fscA, fscD, i, iFS, maxFscA, maxFscD, odds, oddsAfterFirstStrikes, oddsDefenderWinsInFirstStrikes, p, pFS;
 
             p = this.A / (this.A + this.D); // Probability attacker wins round
 
@@ -3442,6 +3442,9 @@ var Combat;
             odds = {
                 attackerWinsFight: 0
             };
+            if (this.appliedBonuses[0].hasOwnProperty("retreat")) {
+                oddsDefenderWinsInFirstStrikes = 0;
+            }
 
             // Loop over possible first strike chance combos, for attacker (fscA) and defender (fscD)
             maxFscA = this.appliedBonuses[0].hasOwnProperty("firstStrikeChances") ? this.appliedBonuses[0]["firstStrikeChances"] : 0;
@@ -3467,14 +3470,21 @@ var Combat;
                         //console.log([fscA, Util.binomialProb(maxFscA, fscA, 0.5), fscD,  Util.binomialProb(maxFscD, fscD, 0.5), i, Util.binomialProb(this.firstStrikes[iFS], i, pFS), oddsAfterFirstStrikes(iFS, i)]);
                         // (Product of binomials for attacker and defender first strike chances) * (binomial for first strike hitting) * (odds of winning after first strike)
                         odds.attackerWinsFight += Util.binomialProb(maxFscA, fscA, 0.5) * Util.binomialProb(maxFscD, fscD, 0.5) * Util.binomialProb(this.firstStrikes[iFS], i, pFS) * oddsAfterFirstStrikes(iFS, i);
+
+                        // Retreat can't happen during first strikes, so keep track of the odds that the battle ends due to first strikes hitting more than hitsNeededToWin times
+                        // Also, retreat only applies to the attacker
+                        if (this.appliedBonuses[0].hasOwnProperty("retreat") && iFS === 1 && i >= this.hitsNeededToWin[iFS]) {
+                            oddsDefenderWinsInFirstStrikes += Util.binomialProb(maxFscA, fscA, 0.5) * Util.binomialProb(maxFscD, fscD, 0.5) * Util.binomialProb(this.firstStrikes[iFS], i, pFS);
+                        }
                     }
                 }
             }
 
             if (this.appliedBonuses[0].hasOwnProperty("retreat")) {
-                odds.attackerRetreats = (1 - odds.attackerWinsFight) * this.appliedBonuses[0]["retreat"] / 100;
+                odds.attackerRetreats = (1 - oddsDefenderWinsInFirstStrikes - odds.attackerWinsFight) * this.appliedBonuses[0]["retreat"] / 100;
             }
 
+            //console.log(odds.QQQ);
             return odds;
         };
 
