@@ -38,7 +38,7 @@ function createBattle(params) {
 function testBattleOdds(params, civ4OddsAttackerWins, civ4OddsAttackerRetreats) {
     var attackerRetreats, attackerWins, b, expectedAttackerRetreats, expectedAttackerWins, expectedOddsAttackerRetreats, expectedOddsAttackerWins, i, numFights, odds;
 
-    numFights = 10000;
+    numFights = 20000;
 
     attackerWins = 0;
     attackerRetreats = 0;
@@ -86,7 +86,7 @@ describe("Combat.Battle.odds()", function() {
     it("should accurately predict outcome for random battle", function() {
         var i, params, rand;
 
-        for (i = 0; i < 1; i++) {
+        for (i = 0; i < 10; i++) {
             params = {};
 
             // Randomize tile
@@ -111,9 +111,9 @@ describe("Combat.Battle.odds()", function() {
             params.u2Promotions = [Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions))];
 
             // Randomize health
-            params.u1HP = Math.round(Math.random() * 100);
-            params.u2HP = Math.round(Math.random() * 100);
-//params = {tileTerrain: 'grassland', tileFeatures: ['forest', 'hills'], u1Type: 'Axeman', u2Type: 'Chariot', u1Promotions: ['drill2', 'combat2', 'drill2', 'cityGarrison2'], u2Promotions: ['combat1', 'cityRaider2', 'combat3', 'drill1'], u1HP: 21, u2HP: 17};
+            params.u1HP = 1 + Math.round(Math.random() * 99);
+            params.u2HP = 1 + Math.round(Math.random() * 99);
+//params = {tileTerrain: 'grassland', tileFeatures: ['hills'], u1Type: 'Warrior', u2Type: 'Chariot', u1Promotions: ['drill2', 'combat1', 'combat2', 'cityRaider2'], u2Promotions: ['cityGarrison3', 'drill4', 'cityGarrison3', 'cityRaider3'], u1HP: 77, u2HP: 37};
 console.log(params);
 
             testBattleOdds(params);
@@ -122,7 +122,7 @@ console.log(params);
     it("should match results from civ4", function() {
         var params;
 
-/*        params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Axeman', u2Type: 'Axeman', u1Promotions: ['drill1', 'drill2', 'drill3', 'drill4'], u2Promotions: [], u1HP: 100, u2HP: 100};
+        params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Axeman', u2Type: 'Axeman', u1Promotions: ['drill1', 'drill2', 'drill3', 'drill4'], u2Promotions: [], u1HP: 100, u2HP: 100};
         testBattleOdds(params, 0.787, 0);
 
         params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Axeman', u2Type: 'Axeman', u1Promotions: ['drill1', 'drill2', 'drill3'], u2Promotions: [], u1HP: 100, u2HP: 100};
@@ -138,6 +138,6 @@ console.log(params);
         testBattleOdds(params, 0.093, 0);
 
         params = {tileTerrain: 'grassland', tileFeatures: ["forest", "hills"], u1Type: 'Spearman', u2Type: 'Archer', u1Promotions: ['cover'], u2Promotions: ['combat1'], u1HP: 100, u2HP: 2.5/3 * 100};
-        testBattleOdds(params, 0.341, 0);*/
+        testBattleOdds(params, 0.341, 0);
     });
 });
