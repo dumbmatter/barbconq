@@ -192,8 +192,10 @@ class Controller {
             coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
             if (!coordsNew) {
-                game.map.pathFinding(); // Delete currently displayed path
-            } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
+                // Delete currently displayed path
+                coords = null;
+                game.map.pathFinding();
+            } else if (!coords || (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
                 coords = coordsNew;
                 game.map.pathFinding(game.activeUnit, coords);
             }
@@ -216,7 +218,7 @@ class Controller {
             // Don't need to render map here at all (like by calling game.map.pathFinding)
             // because that'll happen in game.activeUnit.initiatePath no matter what
 
-            if (coordsNew && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
+            if (coordsNew && (!coords || (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]))) {
                 coords = coordsNew;
             }
 

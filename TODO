@@ -1,11 +1,5 @@
 # Major current tasks
 
-"go to" button and keyboard shortcut
-  activate the same goto mode as right clicking
-  when in that mode, on right click or left click, go to tile
-  initPathFindingSearch needs to handle null input, which could happen for goto mode
-    should remove path display, but keep search active, like when right click is held and it moves off screen
-
 unit tests
   grouped unit actions
 
