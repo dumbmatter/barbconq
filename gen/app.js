@@ -181,6 +181,8 @@ var Controller = (function () {
                     activeUnit.skipTurn();
                 } else if (e.keyCode === this.KEYS.G && activeUnit.actions.indexOf("goTo") >= 0) {
                     console.log("GOTO");
+                    console.log(this.hoveredTile);
+                    this.initPathFindingSearch(this.hoveredTile, { el: mapUI.canvas, event: "mousedown" });
                 }
             }
         }.bind(this));
@@ -190,65 +192,22 @@ var Controller = (function () {
             e.preventDefault();
         });
         mapUI.canvas.addEventListener("mousedown", function (e) {
-            var coords, mouseMoveWhileDown, mouseUp;
+            var coords;
 
             if (e.button === 2 && game.activeUnit) {
                 e.preventDefault();
 
                 // Find path to clicked tile
                 coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
-                game.map.pathFinding(game.activeUnit, coords);
 
                 // If click doesn't start on map, ignore it
                 if (!game.map.validCoords(coords)) {
                     return;
                 }
 
-                // Let mapUI know that we're searching for paths, so it doesn't draw any others (like current paths)
-                mapUI.pathFindingSearch = true;
-
-                // Find paths to hovered tile as button remains down
-                mouseMoveWhileDown = function (e) {
-                    var coordsNew;
-
-                    coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
-
-                    if (!coordsNew) {
-                        game.map.pathFinding(); // Delete currently displayed path
-                    } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
-                        coords = coordsNew;
-                        game.map.pathFinding(game.activeUnit, coords);
-                    }
-                };
-                mapUI.canvas.addEventListener("mousemove", mouseMoveWhileDown);
-
-                // Move unit to the tile hovered over when the button is released
-                mouseUp = function (e) {
-                    var coordsNew;
-
-                    mapUI.pathFindingSearch = false;
-
-                    // Only update coordinates if the target is the map (i.e. not minimap, action buttons, etc, which would have different coordinates)
-                    if (e.target === mapUI.canvas) {
-                        coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
-                    }
-
-                    // Don't need to render map here at all (like by calling game.map.pathFinding)
-                    // because that'll happen in game.activeUnit.initiatePath no matter what
-                    if (coordsNew && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
-                        coords = coordsNew;
-                    }
-
-                    if (game.activeUnit) {
-                        game.activeUnit.initiatePath(coords); // Set unit on path
-                    }
-
-                    mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
-                    document.removeEventListener("mouseup", mouseUp);
-                };
-                document.addEventListener("mouseup", mouseUp);
+                this.initPathFindingSearch(coords, { el: document, event: "mouseup" });
             }
-        });
+        }.bind(this));
 
         // Actions bar at the bottom
         chromeUI.elBottomActions.addEventListener("click", function (e) {
@@ -280,6 +239,59 @@ var Controller = (function () {
                 chromeUI.onHoverAction();
             }
         });
+    };
+
+    // Handles path finding search for "Go To" button, "G" and "Right Click"
+    // setPathOn is the event to listen on for actually starting the unit on the selected path. So
+    // for right click and hold, it's "mouseup".
+    Controller.prototype.initPathFindingSearch = function (coords, setPathOn) {
+        var mouseMoveWhileDown, setPath;
+
+        game.map.pathFinding(game.activeUnit, coords);
+
+        // Let mapUI know that we're searching for paths, so it doesn't draw any others (like current paths)
+        mapUI.pathFindingSearch = true;
+
+        // Find paths to hovered tile as button remains down
+        mouseMoveWhileDown = function (e) {
+            var coordsNew;
+
+            coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
+
+            if (!coordsNew) {
+                game.map.pathFinding(); // Delete currently displayed path
+            } else if (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1]) {
+                coords = coordsNew;
+                game.map.pathFinding(game.activeUnit, coords);
+            }
+        };
+        mapUI.canvas.addEventListener("mousemove", mouseMoveWhileDown);
+
+        // Move unit to the tile hovered over when the setPathOn event occurs
+        setPath = function (e) {
+            var coordsNew;
+
+            mapUI.pathFindingSearch = false;
+
+            // Only update coordinates if the target is the map (i.e. not minimap, action buttons, etc, which would have different coordinates)
+            if (e.target === mapUI.canvas) {
+                coordsNew = mapUI.pixelsToCoords(e.layerX, e.layerY);
+            }
+
+            // Don't need to render map here at all (like by calling game.map.pathFinding)
+            // because that'll happen in game.activeUnit.initiatePath no matter what
+            if (coordsNew && (coords[0] !== coordsNew[0] || coords[1] !== coordsNew[1])) {
+                coords = coordsNew;
+            }
+
+            if (game.activeUnit) {
+                game.activeUnit.initiatePath(coords); // Set unit on path
+            }
+
+            mapUI.canvas.removeEventListener("mousemove", mouseMoveWhileDown);
+            setPathOn.el.removeEventListener(setPathOn.event, setPath);
+        };
+        setPathOn.el.addEventListener(setPathOn.event, setPath);
     };
 
     Controller.prototype.initHoverTile = function () {
