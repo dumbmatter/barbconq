@@ -5,15 +5,6 @@
   when in that mode, on right click or left click, go to tile
   initPathFindingSearch needs to handle null input, which could happen for goto mode
     should remove path display, but keep search active, like when right click is held and it moves off screen
-  UI POLISH
-    this will be ugly to fix, probably:
-      if i set initPathFindingSearch to operate on "mousedown"
-        good: will capture right clicks too, not just left clicks
-          ...BUT SHOULDN'T "CLICK" ALSO WORK WITH RIGHT CLICKS????
-        bad: won't prevent "click" event, so mapUI.goToCoords is called by normal left click handler
-          this is because the "click" event handler is added back at the end of the "mousedown" event, which apparently is still fast enough for the "click" to happen. any way to get around this? maybe go to SO
-          or do i even want to be using "click" for the other thing, or mousedown?
-      if i set initPathFindingSearch to operate on "click", opposite
 
 unit tests
   grouped unit actions

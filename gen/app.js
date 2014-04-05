@@ -257,7 +257,7 @@ var Controller = (function () {
         mapUI.pathFindingSearch = true;
 
         // Disable normal left click actions until pathFinding is done
-        mapUI.canvas.removeEventListener("click", this.leftClickOnMap);
+        mapUI.canvas.removeEventListener("mousedown", this.leftClickOnMap);
 
         // Find paths to hovered tile as button remains down
         mouseMoveWhileDown = function (e) {
@@ -301,7 +301,7 @@ var Controller = (function () {
             setPathOn.el.removeEventListener(setPathOn.event, setPath);
 
             // Re-enable normal left click functions
-            mapUI.canvas.addEventListener("click", this.leftClickOnMap);
+            mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap);
         }.bind(this);
         setPathOn.el.addEventListener(setPathOn.event, setPath);
     };
@@ -386,7 +386,7 @@ var Controller = (function () {
     // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
     // if one of your units is not on the clicked tile, center the map
     Controller.prototype.initMapClick = function () {
-        mapUI.canvas.addEventListener("click", this.leftClickOnMap);
+        mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap);
 
         mapUI.miniCanvas.addEventListener("mousedown", function (e) {
             var coords, miniMapPan, miniMapPanStop;
