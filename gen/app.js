@@ -3586,10 +3586,8 @@ var Combat;
 
                     // Show event
                     if (this.units[j].owner === config.PLAYER_ID) {
-                        assets.battleWon.play();
                         chromeUI.eventLog("Your " + this.units[j].type + " withdrew from combat with a " + this.units[i].type + ".", "good");
                     } else {
-                        assets.battleLost.play();
                         chromeUI.eventLog("A " + this.units[i].type + " withdrew from combat with your " + this.units[j].type + ".", "bad");
                     }
 
