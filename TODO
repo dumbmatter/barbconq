@@ -1,9 +1,6 @@
 # Major current tasks
 
 add highlighting of two units that are fighting
-  red dashed line between them?
-    why does it flicker? requestAnimationFrame in drawPath?
-  boxes around them, like active units?
   implementation
     have unit "hit" (animate move into other unit's tile, then come back) for each round won
       make some function that wraps mapUI.render and calls it repeatedly with an offset for the combat?

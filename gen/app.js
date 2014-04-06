@@ -1092,11 +1092,14 @@ var MapUI = (function () {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     };
 
-    MapUI.prototype.drawPath = function (path, renderMapFirst, showMoveNumbers) {
+    MapUI.prototype.drawPath = function (path, renderMapFirst, animationFrameAlreadyRequested, showMoveNumbers) {
         if (typeof path === "undefined") { path = []; }
         if (typeof renderMapFirst === "undefined") { renderMapFirst = true; }
+        if (typeof animationFrameAlreadyRequested === "undefined") { animationFrameAlreadyRequested = false; }
         if (typeof showMoveNumbers === "undefined") { showMoveNumbers = true; }
-        window.requestAnimationFrame(function () {
+        var cb;
+
+        cb = function () {
             var battle, i, pixels, units;
 
             if (renderMapFirst) {
@@ -1185,7 +1188,13 @@ var MapUI = (function () {
                     }.bind(this)());
                 }
             }
-        }.bind(this));
+        }.bind(this);
+
+        if (animationFrameAlreadyRequested) {
+            cb();
+        } else {
+            window.requestAnimationFrame(cb);
+        }
     };
 
     // If already requested an animation frame, set animationFrameAlreadyRequested to true to avoid race conditions.
@@ -1383,7 +1392,7 @@ var MapUI = (function () {
 
             if (game.activeBattle) {
                 // Highlight active battle
-                this.drawPath([game.activeBattle.units[0].coords, game.activeBattle.units[1].coords], true, false);
+                this.drawPath([game.activeBattle.units[0].coords, game.activeBattle.units[1].coords], false, true, false);
             } else if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
                 // Highlight active unit
                 x = game.activeUnit.coords[1] - leftTile;
@@ -1399,7 +1408,7 @@ var MapUI = (function () {
                     if (!this.pathFindingSearch) {
                         game.map.pathFinding(game.activeUnit, game.activeUnit.targetCoords, function (path) {
                             // This is to prevent an infinite loop of render() being called
-                            this.drawPath(path, false);
+                            this.drawPath(path, false, true);
                         }.bind(this));
                     }
                 }
