@@ -18,6 +18,7 @@ add highlighting of two units that are fighting, or maybe red dashed path in bet
         make some function that wraps mapUI.render and calls it repeatedly with an offset for the combat
           maybe not necessary?
         needs to display the two fighting units on top, always
+          should dominate showing "active" unit/group or showing strongest defender
           necessary!
   if async stuff is going on, need to prevent any user input during battle
     similarly, should prevent any user input during AI turns

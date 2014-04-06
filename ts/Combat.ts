@@ -337,11 +337,8 @@ module Combat {
 
             // Loser gets deleted
             this.units[j].delete(); // Delete the references we can
-            this.units[j].currentStrength = 0; // So any outstanding references can see it's dead
+            this.units[j].currentStrength = 0; // So any outstanding references can see it's dead - should already be 0 by now, but why not be sure?
             this.units[j].currentMovement = 0; // So any outstanding references can see it's dead
-
-            // Winner gets damaged
-            this.units[i].currentStrength = this.units[i].strength * this.hps[i] / 100;
 
             // Winner gets XP
             baseXP = this.winner === "attacker" ? 4 * this.D / this.A : 2 * this.A / this.D;
@@ -367,10 +364,6 @@ module Combat {
 
                 // Check for withdrawal, if it's not a first strike and it would kill the loser
                 if (this.firstStrikes[i] === 0 && newHP === 0 && this.appliedBonuses[j].hasOwnProperty("retreat") && 100 * Math.random() < this.appliedBonuses[j]["retreat"]) {
-                    // Both get damaged
-                    this.units[i].currentStrength = this.units[i].strength * this.hps[i] / 100;
-                    this.units[j].currentStrength = this.units[j].strength * this.hps[j] / 100;
-
                     // Show event
                     if (this.units[j].owner === config.PLAYER_ID) {
                         chromeUI.eventLog("Your " + this.units[j].type + " withdrew from combat with a " + this.units[i].type + ".", "good");
@@ -382,6 +375,7 @@ module Combat {
                 } else {
                     // Apply damage
                     this.hps[j] = newHP;
+                    this.units[j].currentStrength = this.units[j].strength * this.hps[j] / 100;
                     this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
 //console.log(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
                 }
@@ -397,6 +391,9 @@ module Combat {
 
 //console.log("START HIT ANIMATION");
             setTimeout(function () {
+                chromeUI.onUnitActivated(); // Update unit icons
+                mapUI.render(); // Update unit health bar on map
+
                 if (!this.withdrew && this.hps[0] > 0 && this.hps[1] > 0) {
                     this.simRounds(cb, includeAnimationDelays);
                 } else {
