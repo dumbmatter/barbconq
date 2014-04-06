@@ -35,7 +35,7 @@ function createBattle(params) {
 }
 
 // Last two params are optional. If provided, compare Battle.odds against civ4 odds. Otherwise, only compare Battle.odds and Battle.fight.
-function testBattleOdds(params, civ4OddsAttackerWins, civ4OddsAttackerRetreats) {
+function testBattleOdds(params, civ4OddsAttackerWins, civ4OddsAttackerRetreats, cb) {
     var afterFightsComplete, attackerRetreats, attackerWins, expectedAttackerRetreats, expectedAttackerWins, expectedOddsAttackerRetreats, expectedOddsAttackerWins, i, numFights, numFightsComplete;
 
     numFights = 20000;
@@ -69,7 +69,6 @@ console.log(odds);*/
                 }
 
                 numFightsComplete += 1;
-console.log(numFightsComplete);
                 if (numFightsComplete === numFights) {
                     afterFightsComplete();
                 }
@@ -94,6 +93,8 @@ console.log("Observed Retreats: " + attackerRetreats / numFights);
         expect(Math.abs((attackerRetreats - expectedAttackerRetreats) / numFights)).toBeLessThan(0.01);
         if (civ4OddsAttackerWins !== null) { expect(Math.abs(civ4OddsAttackerWins - expectedAttackerWins / numFights)).toBeLessThan(0.01); }
         if (civ4OddsAttackerRetreats !== null) { expect(Math.abs(civ4OddsAttackerRetreats - expectedAttackerRetreats / numFights)).toBeLessThan(0.01); }
+
+        cb();
     };
 }
 
@@ -103,9 +104,12 @@ describe("Combat.Battle.odds()", function() {
     async = new AsyncSpec(this);
 
     async.it("should accurately predict outcome for random battle", function(done) {
-        var i, params, rand;
+        var i, numBattles, numBattlesComplete, params, rand;
 
-        for (i = 0; i < 1; i++) {
+        numBattles = 2;
+        numBattlesComplete = 0;
+
+        for (i = 0; i < numBattles; i++) {
             params = {};
 
             // Randomize tile
@@ -134,7 +138,12 @@ describe("Combat.Battle.odds()", function() {
             params.u2HP = 1 + Math.round(Math.random() * 99);
 //params = {tileTerrain: 'grassland', tileFeatures: ['hills'], u1Type: 'Warrior', u2Type: 'Chariot', u1Promotions: ['drill2', 'combat1', 'combat2', 'cityRaider2'], u2Promotions: ['cityGarrison3', 'drill4', 'cityGarrison3', 'cityRaider3'], u1HP: 77, u2HP: 37};
 
-            testBattleOdds(params, null, null, done);
+            testBattleOdds(params, null, null, function () {
+                numBattlesComplete += 1;
+                if (numBattlesComplete === numBattles) {
+                    done();
+                }
+            });
         }
     });
 /*    it("should match results from civ4", function() {
