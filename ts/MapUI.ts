@@ -301,6 +301,12 @@ class MapUI {
                     if (units.length === 1) {
                         // Only one to show...
                         unit = units[0];
+                    } else if (game.activeBattle && tile.units.indexOf(game.activeBattle.units[0]) >= 0) {
+                        // Attacker in active battle
+                        unit = game.activeBattle.units[0];
+                    } else if (game.activeBattle && tile.units.indexOf(game.activeBattle.units[1]) >= 0) {
+                        // Defender in active battle
+                        unit = game.activeBattle.units[1];
                     } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
                         // Active unit/group on this tile
                         if (game.activeUnit instanceof Units.Group) {

@@ -1303,6 +1303,12 @@ var MapUI = (function () {
                     if (units.length === 1) {
                         // Only one to show...
                         unit = units[0];
+                    } else if (game.activeBattle && tile.units.indexOf(game.activeBattle.units[0]) >= 0) {
+                        // Attacker in active battle
+                        unit = game.activeBattle.units[0];
+                    } else if (game.activeBattle && tile.units.indexOf(game.activeBattle.units[1]) >= 0) {
+                        // Defender in active battle
+                        unit = game.activeBattle.units[1];
                     } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
                         // Active unit/group on this tile
                         if (game.activeUnit instanceof Units.Group) {
@@ -3638,10 +3644,9 @@ var Combat;
             }
 
             //console.log("START HIT ANIMATION");
+            chromeUI.onUnitActivated(); // Update unit icons
+            mapUI.render(); // Update unit health bar on map
             setTimeout(function () {
-                chromeUI.onUnitActivated(); // Update unit icons
-                mapUI.render(); // Update unit health bar on map
-
                 if (!this.withdrew && this.hps[0] > 0 && this.hps[1] > 0) {
                     this.simRounds(cb, includeAnimationDelays);
                 } else {
@@ -3752,7 +3757,7 @@ var Combat;
     ;
 
     // If tile has enemy unit on it, initiate combat (if appropriate) and return true. Otherwise, do
-    // nothing and return false. WARNING: If returning false, some async stuff might still going on
+    // nothing and return false. WARNING: If returning true, some async stuff might still going on
     // in the background!!!
     function fightIfTileHasEnemy(attackerUnitOrGroup, coords) {
         var attacker, battle, defender, newTileUnits, units;

@@ -1,5 +1,7 @@
 # Major current tasks
 
+sound when battle starts: http://www.freesound.org/people/mistorcaveman/sounds/154684/
+
 add highlighting of two units that are fighting, or maybe red dashed path in between?
   particularly important for when AI attacks
   zoom in? popup?
@@ -12,14 +14,9 @@ add highlighting of two units that are fighting, or maybe red dashed path in bet
     FIRST ATTEMPT: try "let it ride" strategy
       have unit "hit" (animate move into other unit's tile, then come back) for each round won
         maybe not necessary?
-      should integrate nicely with unit health indicator on tile
-        necessary!
       render each step of the batle, and then only do the next step after render completes
         make some function that wraps mapUI.render and calls it repeatedly with an offset for the combat
           maybe not necessary?
-        needs to display the two fighting units on top, always
-          should dominate showing "active" unit/group or showing strongest defender
-          necessary!
   if async stuff is going on, need to prevent any user input during battle
     similarly, should prevent any user input during AI turns
     implement as some flag that Controller reads
