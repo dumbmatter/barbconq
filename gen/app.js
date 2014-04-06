@@ -3666,6 +3666,8 @@ var Combat;
         // includeAnimationDelays should be set to false for unit tests and non-visible units
         Battle.prototype.fight = function (cb, includeAnimationDelays) {
             if (typeof includeAnimationDelays === "undefined") { includeAnimationDelays = true; }
+            assets.battleStart.play();
+
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
 
@@ -3864,6 +3866,9 @@ function loadAssets(assetsToLoad, cb) {
     };
 
     assets = {};
+    assets.battleStart = new Howl({
+        urls: ["assets/battle-start.ogg", "assets/battle-start.mp3"]
+    });
     assets.battleWon = new Howl({
         urls: ["assets/battle-won.ogg", "assets/battle-won.mp3"]
     });

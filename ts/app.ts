@@ -54,6 +54,9 @@ function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
     }
 
     assets = {};
+    assets.battleStart = new Howl({
+        urls: ["assets/battle-start.ogg", "assets/battle-start.mp3"]
+    });
     assets.battleWon = new Howl({
         urls: ["assets/battle-won.ogg", "assets/battle-won.mp3"]
     });

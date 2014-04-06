@@ -411,6 +411,8 @@ module Combat {
 
         // includeAnimationDelays should be set to false for unit tests and non-visible units
         fight(cb : () => void, includeAnimationDelays : boolean = true) {
+            assets.battleStart.play();
+
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
 

@@ -1,6 +1,7 @@
 var game;
 
 var assets = {
+    battleStart: jasmine.createSpyObj("asset", ["play"]),
     battleLost: jasmine.createSpyObj("asset", ["play"]),
     battleWon: jasmine.createSpyObj("asset", ["play"])
 };
