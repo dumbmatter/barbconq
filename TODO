@@ -1,5 +1,8 @@
 # Major current tasks
 
+unit health indicator on tile
+  then have it update at each step in the battle
+
 add highlighting of two units that are fighting, or maybe red dashed path in between?
   particularly important for when AI attacks
   zoom in? popup?
@@ -48,8 +51,6 @@ unit promotions
     combat 4+
     lots of irrelevant ones
     add collateral damage stuff to drills
-
-unit health indicator on tile
 
 animate unit movement
   see below about "let it ride" - would need to do that with Unit.moveToCoords

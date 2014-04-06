@@ -1334,6 +1334,17 @@ var MapUI = (function () {
                         unitImage = assets["white" + unit.type];
                     }
                     this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX + 10, y * this.TILE_SIZE - tileOffsetY + 10);
+
+                    // Draw unit health bar
+                    (function () {
+                        var padding, width;
+
+                        padding = 4;
+                        width = 5;
+
+                        this.context.fillStyle = "orange";
+                        this.context.fillRect(x * this.TILE_SIZE - tileOffsetX + padding, y * this.TILE_SIZE - tileOffsetY + padding, width, this.TILE_SIZE - 2 * padding);
+                    }.bind(this)());
                 }
             }.bind(this));
 
