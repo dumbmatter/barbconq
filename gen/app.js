@@ -755,6 +755,8 @@ var ChromeUI = (function () {
             } else {
                 return amount + " First Strike Chances";
             }
+        } else if (name === "noDefensiveBonuses") {
+            return "Doesn't Recieve Defensive Bonuses";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }
@@ -3117,7 +3119,7 @@ var Units;
             this.currentMovement = 2;
             this.landOrSea = "land";
             this.actions = ["fortify", "skipTurn", "goTo"];
-            this.unitBonuses = { attackAxeman: 100, retreat: 10 };
+            this.unitBonuses = { attackAxeman: 100, noDefensiveBonuses: 1, retreat: 10 };
         }
         return Chariot;
     })(Unit);
@@ -3300,7 +3302,7 @@ var Combat;
             this.names[0] = game.names[this.units[0].owner] + "'s " + this.units[0].type;
             this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
         }
-        // Generates appliedBonuses object, which can be stored in this.appliedBonuses
+        // Generates appliedBonuses object, which is stored in this.appliedBonuses
         Battle.prototype.assignAppliedBonuses = function () {
             var bonuses, attacker, attackerTile, defender, defenderTile, name;
 
@@ -3316,7 +3318,7 @@ var Combat;
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
             for (name in bonuses) {
-                if (name === "cityDefense" || name === "hillsDefense") {
+                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
                     this.appliedBonuses[0][name] = bonuses[name];
@@ -3356,7 +3358,7 @@ var Combat;
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat") {
+                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat" || name === "noDefensiveBonuses") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
                     this.appliedBonuses[1][name] = bonuses[name];
@@ -3392,17 +3394,19 @@ var Combat;
             }
 
             // Add tile bonuses (terrain, improvements, culture) to the defender category
-            if (defenderTile.features.indexOf("hills") >= 0) {
-                if (!this.appliedBonuses[1].hasOwnProperty("tile")) {
-                    this.appliedBonuses[1]["tile"] = 0;
+            if (!bonuses.hasOwnProperty("noDefensiveBonuses") || !bonuses["noDefensiveBonuses"]) {
+                if (defenderTile.features.indexOf("hills") >= 0) {
+                    if (!this.appliedBonuses[1].hasOwnProperty("tile")) {
+                        this.appliedBonuses[1]["tile"] = 0;
+                    }
+                    this.appliedBonuses[1]["tile"] += 25;
                 }
-                this.appliedBonuses[1]["tile"] += 25;
-            }
-            if (defenderTile.features.indexOf("forest") >= 0 || defenderTile.features.indexOf("jungle") >= 0) {
-                if (!this.appliedBonuses[1].hasOwnProperty("tile")) {
-                    this.appliedBonuses[1]["tile"] = 0;
+                if (defenderTile.features.indexOf("forest") >= 0 || defenderTile.features.indexOf("jungle") >= 0) {
+                    if (!this.appliedBonuses[1].hasOwnProperty("tile")) {
+                        this.appliedBonuses[1]["tile"] = 0;
+                    }
+                    this.appliedBonuses[1]["tile"] += 50;
                 }
-                this.appliedBonuses[1]["tile"] += 50;
             }
         };
 
@@ -3918,45 +3922,6 @@ function init() {
     u1.promotions.push("drill1");
     u1.promotions.push("drill2");
     u1.xp += 5;
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    new Units.Chariot(config.PLAYER_ID, [10, 20]);
 
     /*    new Units.Archer(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
@@ -3966,55 +3931,7 @@ function init() {
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Warrior(config.BARB_ID, [10, 21]);*/
     new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Spearman(config.BARB_ID, [10, 21]);
-    new Units.Axeman(config.BARB_ID, [10, 21]);
-    new Units.Chariot(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    new Units.Archer(config.BARB_ID, [10, 21]);
+
     new Cities.City(config.BARB_ID, [10, 21]);
 
     game.newTurn();

@@ -175,6 +175,8 @@ class ChromeUI {
             } else {
                 return amount + " First Strike Chances";
             }
+        } else if (name === "noDefensiveBonuses") {
+            return "Doesn't Recieve Defensive Bonuses";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }

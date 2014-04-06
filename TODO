@@ -1,22 +1,11 @@
 # Major current tasks
 
-chariot shouldn't get defensive bonus from anything, right?
-
-add highlighting of two units that are fighting, or maybe red dashed path in between?
-  particularly important for when AI attacks
-  zoom in? popup?
-  see how civ2/3/freeciv do it
+add highlighting of two units that are fighting
+  boxes around them, like active units?
+  red dashed line between them?
   implementation
-    Combat.fightIfTileHasEnemy is what actually calls the fight code. needs to be async?
-      or can i just "let it ride" is this returns false?
-    Unit.moveToCoords calls fightIfTileHasEnemy and would also need to be made async?
-      or can i just "let it ride" is this returns false?
-    FIRST ATTEMPT: try "let it ride" strategy
-      have unit "hit" (animate move into other unit's tile, then come back) for each round won
-        maybe not necessary?
-      render each step of the batle, and then only do the next step after render completes
-        make some function that wraps mapUI.render and calls it repeatedly with an offset for the combat
-          maybe not necessary?
+    have unit "hit" (animate move into other unit's tile, then come back) for each round won
+      make some function that wraps mapUI.render and calls it repeatedly with an offset for the combat?
   if async stuff is going on, need to prevent any user input during battle
     similarly, should prevent any user input during AI turns
     implement as some flag that Controller reads
@@ -123,6 +112,7 @@ UI POLISH
   currently, all click events pass through transparency. in civ4, it's only dragging when right click is held. allowing normal left and right clicks can lead to a lot of mis-clicks.
   limit number of entries that can be shown in hover-box?
   CTRL and ALT messages in hover box should only be shown when applicable (>1 unit or >1 unit of a type)
+  sound volume - battle-won too loud?
 
 # Barbarian Conquest (barbconq)
 

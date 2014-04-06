@@ -48,7 +48,7 @@ module Combat {
             this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
         }
 
-        // Generates appliedBonuses object, which can be stored in this.appliedBonuses
+        // Generates appliedBonuses object, which is stored in this.appliedBonuses
         assignAppliedBonuses() {
             var bonuses : {[name: string] : number}, attacker : Units.Unit, attackerTile : MapMaker.Tile, defender : Units.Unit, defenderTile : MapMaker.Tile, name : string;
 
@@ -63,7 +63,7 @@ module Combat {
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
             for (name in bonuses) {
-                if (name === "cityDefense" || name === "hillsDefense") {
+                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
                     this.appliedBonuses[0][name] = bonuses[name];
@@ -103,7 +103,7 @@ module Combat {
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat") {
+                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat" || name === "noDefensiveBonuses") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
                     this.appliedBonuses[1][name] = bonuses[name];
@@ -139,13 +139,15 @@ module Combat {
             }
 
             // Add tile bonuses (terrain, improvements, culture) to the defender category
-            if (defenderTile.features.indexOf("hills") >= 0) {
-                if (!this.appliedBonuses[1].hasOwnProperty("tile")) { this.appliedBonuses[1]["tile"] = 0; }
-                this.appliedBonuses[1]["tile"] += 25;
-            }
-            if (defenderTile.features.indexOf("forest") >= 0 || defenderTile.features.indexOf("jungle") >= 0) {
-                if (!this.appliedBonuses[1].hasOwnProperty("tile")) { this.appliedBonuses[1]["tile"] = 0; }
-                this.appliedBonuses[1]["tile"] += 50;
+            if (!bonuses.hasOwnProperty("noDefensiveBonuses") || !bonuses["noDefensiveBonuses"]) {
+                if (defenderTile.features.indexOf("hills") >= 0) {
+                    if (!this.appliedBonuses[1].hasOwnProperty("tile")) { this.appliedBonuses[1]["tile"] = 0; }
+                    this.appliedBonuses[1]["tile"] += 25;
+                }
+                if (defenderTile.features.indexOf("forest") >= 0 || defenderTile.features.indexOf("jungle") >= 0) {
+                    if (!this.appliedBonuses[1].hasOwnProperty("tile")) { this.appliedBonuses[1]["tile"] = 0; }
+                    this.appliedBonuses[1]["tile"] += 50;
+                }
             }
         }
 
