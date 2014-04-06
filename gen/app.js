@@ -1092,9 +1092,10 @@ var MapUI = (function () {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     };
 
-    MapUI.prototype.drawPath = function (path, renderMapFirst) {
+    MapUI.prototype.drawPath = function (path, renderMapFirst, showMoveNumbers) {
         if (typeof path === "undefined") { path = []; }
         if (typeof renderMapFirst === "undefined") { renderMapFirst = true; }
+        if (typeof showMoveNumbers === "undefined") { showMoveNumbers = true; }
         window.requestAnimationFrame(function () {
             var battle, i, pixels, units;
 
@@ -1133,54 +1134,56 @@ var MapUI = (function () {
                 this.context.setLineDash([]); // Reset dash state
 
                 // Draw move numbers on top of path
-                (function () {
-                    var currentMovement, drawNumber, i, movement, movementCost, numTurns;
+                if (showMoveNumbers) {
+                    (function () {
+                        var currentMovement, drawNumber, i, movement, movementCost, numTurns;
 
-                    // Initialize with current values
-                    movement = game.activeUnit.movement;
-                    currentMovement = game.activeUnit.currentMovement;
+                        // Initialize with current values
+                        movement = game.activeUnit.movement;
+                        currentMovement = game.activeUnit.currentMovement;
 
-                    // If no movement left now, it takes an extra turn to get anywhere
-                    if (currentMovement === 0) {
-                        numTurns = 1;
-                        currentMovement = movement;
-                    } else {
-                        numTurns = 0;
-                    }
-
-                    // Universal text options
-                    this.context.textAlign = "center";
-                    this.context.textBaseline = "middle";
-                    this.context.font = "30px sans-serif";
-                    drawNumber = function (i) {
-                        var pixels;
-
-                        pixels = this.coordsToPixels(path[i][0], path[i][1]);
-
-                        if (units.defender && i === path.length - 1) {
-                            this.context.fillStyle = "#f00";
-                        } else {
-                            this.context.fillStyle = "#ccc";
-                        }
-                        this.context.fillText(numTurns, pixels[0], pixels[1]);
-                    }.bind(this);
-
-                    for (i = 1; i < path.length; i++) {
-                        movementCost = game.map.tileMovementCost(path[i - 1], path[i]);
-                        currentMovement -= movementCost;
-                        if (currentMovement <= 0) {
-                            numTurns += 1;
+                        // If no movement left now, it takes an extra turn to get anywhere
+                        if (currentMovement === 0) {
+                            numTurns = 1;
                             currentMovement = movement;
-                            drawNumber(i);
+                        } else {
+                            numTurns = 0;
                         }
-                    }
 
-                    // Add turns on the last tile if there is still remaining movement
-                    if (currentMovement < movement) {
-                        numTurns += 1;
-                        drawNumber(i - 1);
-                    }
-                }.bind(this)());
+                        // Universal text options
+                        this.context.textAlign = "center";
+                        this.context.textBaseline = "middle";
+                        this.context.font = "30px sans-serif";
+                        drawNumber = function (i) {
+                            var pixels;
+
+                            pixels = this.coordsToPixels(path[i][0], path[i][1]);
+
+                            if (units.defender && i === path.length - 1) {
+                                this.context.fillStyle = "#f00";
+                            } else {
+                                this.context.fillStyle = "#ccc";
+                            }
+                            this.context.fillText(numTurns, pixels[0], pixels[1]);
+                        }.bind(this);
+
+                        for (i = 1; i < path.length; i++) {
+                            movementCost = game.map.tileMovementCost(path[i - 1], path[i]);
+                            currentMovement -= movementCost;
+                            if (currentMovement <= 0) {
+                                numTurns += 1;
+                                currentMovement = movement;
+                                drawNumber(i);
+                            }
+                        }
+
+                        // Add turns on the last tile if there is still remaining movement
+                        if (currentMovement < movement) {
+                            numTurns += 1;
+                            drawNumber(i - 1);
+                        }
+                    }.bind(this)());
+                }
             }
         }.bind(this));
     };
@@ -1378,8 +1381,11 @@ var MapUI = (function () {
                 }
             }.bind(this));
 
-            // Highlight active unit
-            if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
+            if (game.activeBattle) {
+                // Highlight active battle
+                this.drawPath([game.activeBattle.units[0].coords, game.activeBattle.units[1].coords], true, false);
+            } else if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
+                // Highlight active unit
                 x = game.activeUnit.coords[1] - leftTile;
                 y = game.activeUnit.coords[0] - topTile;
 

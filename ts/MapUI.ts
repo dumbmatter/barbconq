@@ -90,7 +90,7 @@ class MapUI {
         this.VIEW_TILE_HEIGHT = Math.floor(this.VIEW_HEIGHT / this.TILE_SIZE) + 2;
     }
 
-    drawPath(path : number[][] = [], renderMapFirst : boolean = true) {
+    drawPath(path : number[][] = [], renderMapFirst : boolean = true, showMoveNumbers : boolean = true) {
         window.requestAnimationFrame(function () {
             var battle : Combat.Battle, i : number, pixels : number[], units : {attacker : Units.Unit; defender : Units.Unit};
 
@@ -130,54 +130,56 @@ class MapUI {
                 this.context.setLineDash([]); // Reset dash state
 
                 // Draw move numbers on top of path
-                (function () {
-                    var currentMovement : number, drawNumber : (i : number) => void, i : number, movement : number, movementCost : number, numTurns : number;
+                if (showMoveNumbers) {
+                    (function () {
+                        var currentMovement : number, drawNumber : (i : number) => void, i : number, movement : number, movementCost : number, numTurns : number;
 
-                    // Initialize with current values
-                    movement = game.activeUnit.movement;
-                    currentMovement = game.activeUnit.currentMovement;
+                        // Initialize with current values
+                        movement = game.activeUnit.movement;
+                        currentMovement = game.activeUnit.currentMovement;
 
-                    // If no movement left now, it takes an extra turn to get anywhere
-                    if (currentMovement === 0) {
-                        numTurns = 1;
-                        currentMovement = movement;
-                    } else {
-                        numTurns = 0;
-                    }
-
-                    // Universal text options
-                    this.context.textAlign = "center";
-                    this.context.textBaseline = "middle";
-                    this.context.font = "30px sans-serif";
-                    drawNumber = function (i : number) {
-                        var pixels : number[]
-
-                        pixels = this.coordsToPixels(path[i][0], path[i][1]);
-
-                        if (units.defender && i === path.length - 1) {
-                            this.context.fillStyle = "#f00";
-                        } else {
-                            this.context.fillStyle = "#ccc";
-                        }
-                        this.context.fillText(numTurns, pixels[0], pixels[1]);
-                    }.bind(this);
-
-                    for (i = 1; i < path.length; i++) { // Skip the first one
-                        movementCost = game.map.tileMovementCost(path[i - 1], path[i]);
-                        currentMovement -= movementCost;
-                        if (currentMovement <= 0) {
-                            numTurns += 1;
+                        // If no movement left now, it takes an extra turn to get anywhere
+                        if (currentMovement === 0) {
+                            numTurns = 1;
                             currentMovement = movement;
-                            drawNumber(i);
+                        } else {
+                            numTurns = 0;
                         }
-                    }
 
-                    // Add turns on the last tile if there is still remaining movement
-                    if (currentMovement < movement) { // Because they will be equal if currentMovement was reset in the last loop iteration above
-                        numTurns += 1;
-                        drawNumber(i - 1);
-                    }
-                }.bind(this)());
+                        // Universal text options
+                        this.context.textAlign = "center";
+                        this.context.textBaseline = "middle";
+                        this.context.font = "30px sans-serif";
+                        drawNumber = function (i : number) {
+                            var pixels : number[]
+
+                            pixels = this.coordsToPixels(path[i][0], path[i][1]);
+
+                            if (units.defender && i === path.length - 1) {
+                                this.context.fillStyle = "#f00";
+                            } else {
+                                this.context.fillStyle = "#ccc";
+                            }
+                            this.context.fillText(numTurns, pixels[0], pixels[1]);
+                        }.bind(this);
+
+                        for (i = 1; i < path.length; i++) { // Skip the first one
+                            movementCost = game.map.tileMovementCost(path[i - 1], path[i]);
+                            currentMovement -= movementCost;
+                            if (currentMovement <= 0) {
+                                numTurns += 1;
+                                currentMovement = movement;
+                                drawNumber(i);
+                            }
+                        }
+
+                        // Add turns on the last tile if there is still remaining movement
+                        if (currentMovement < movement) { // Because they will be equal if currentMovement was reset in the last loop iteration above
+                            numTurns += 1;
+                            drawNumber(i - 1);
+                        }
+                    }.bind(this)());
+                }
             }
         }.bind(this));
     }
@@ -374,8 +376,11 @@ class MapUI {
                 }
             }.bind(this));
 
-            // Highlight active unit
-            if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
+            if (game.activeBattle) {
+                // Highlight active battle
+                this.drawPath([game.activeBattle.units[0].coords, game.activeBattle.units[1].coords], true, false)
+            } else if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
+                // Highlight active unit
                 x = game.activeUnit.coords[1] - leftTile;
                 y = game.activeUnit.coords[0] - topTile;
 
