@@ -336,13 +336,34 @@ class MapUI {
 
                     // Draw unit health bar
                     (function () {
-                        var padding, width;
+                        var healthPct : number, height : number, heightOffset : number, paddingLeft : number, paddingTopBottom : number, width : number;
 
-                        padding = 4;
+                        paddingLeft = 4;
+                        paddingTopBottom = 18;
                         width = 5;
 
-                        this.context.fillStyle = "orange";
-                        this.context.fillRect(x * this.TILE_SIZE - tileOffsetX + padding, y * this.TILE_SIZE - tileOffsetY + padding, width, this.TILE_SIZE - 2 * padding);
+                        // Background, full height
+                        this.context.fillStyle = "black";
+                        this.context.fillRect(x * this.TILE_SIZE - tileOffsetX + paddingLeft, y * this.TILE_SIZE - tileOffsetY + paddingTopBottom, width, this.TILE_SIZE - 2 * paddingTopBottom);
+
+                        // Same as in ChromeUI.unitIcon for unit icons
+                        healthPct = Math.round(unit.currentStrength / unit.strength * 100); // 0 to 100
+                        if (healthPct >= 67) {
+                            this.context.fillStyle = "green";
+                        } else if (healthPct >= 33) {
+                            this.context.fillStyle = "yellow";
+                        } else {
+                            this.context.fillStyle = "red";
+                        }
+
+                        // Health bar, variable height
+                        height = (this.TILE_SIZE - 2 * paddingTopBottom) * healthPct / 100;
+                        heightOffset = (this.TILE_SIZE - 2 * paddingTopBottom) * (100 - healthPct) / 100;
+                        this.context.fillRect(x * this.TILE_SIZE - tileOffsetX + paddingLeft, y * this.TILE_SIZE - tileOffsetY + paddingTopBottom + heightOffset, width, height);
+
+                        // Border, full height
+                        this.context.strokeStyle = "black";
+                        this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX + paddingLeft, y * this.TILE_SIZE - tileOffsetY + paddingTopBottom, width, this.TILE_SIZE - 2 * paddingTopBottom);
                     }.bind(this)());
                 }
             }.bind(this));

@@ -335,6 +335,7 @@ class ChromeUI {
         }
 
         // Health bar
+        // Same as in MapUI.render for unit health bars
         healthBar = document.createElement("div");
         healthBar.classList.add("health-bar");
         healthPct = Math.round(unit.currentStrength / unit.strength * 100); // 0 to 100
