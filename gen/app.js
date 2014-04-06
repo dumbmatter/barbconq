@@ -3227,6 +3227,7 @@ var Combat;
             this.firstStrikes = [0, 0];
             this.names = [null, null];
             this.log = [];
+            this.withdrew = false;
             // "attacker" or "defender"
             this.winner = null;
             this.loser = null;
@@ -3527,70 +3528,12 @@ var Combat;
             return Math.random() < this.A / (this.A + this.D);
         };
 
-        Battle.prototype.fight = function () {
-            var baseXP, i, j, newHP;
-
-            this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
-            this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
-
-            // Calculate first strikes here, since it could have been perturbed by odds() call if first strikes were set previously
-            this.assignFirstStrikes();
-
-            /*console.log(JSON.stringify(this.appliedBonuses));
-            console.log(this.firstStrikes);*/
-            this.units[0].attacked = true;
-
-            while (this.hps[0] > 0 && this.hps[1] > 0) {
-                if (this.attackerWinsRound()) {
-                    i = 0; // Winner
-                    j = 1; // Loser
-                } else {
-                    i = 1; // Winner
-                    j = 0; // Loser
-                }
-
-                // If this is a first strike, only one party can win. So if the loser has first strikes left, no damage is done
-                if (this.firstStrikes[j] === 0) {
-                    newHP = Util.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
-
-                    // Check for withdrawal, if it's not a first strike and it would kill the loser
-                    if (this.firstStrikes[i] === 0 && newHP === 0) {
-                        if (this.appliedBonuses[j].hasOwnProperty("retreat") && 100 * Math.random() < this.appliedBonuses[j]["retreat"]) {
-                            // Both get damaged
-                            this.units[i].currentStrength = this.units[i].strength * this.hps[i] / 100;
-                            this.units[j].currentStrength = this.units[j].strength * this.hps[j] / 100;
-
-                            // Show event
-                            if (this.units[j].owner === config.PLAYER_ID) {
-                                assets.battleWon.play();
-                                chromeUI.eventLog("Your " + this.units[j].type + " withdrew from combat with a " + this.units[i].type + ".", "good");
-                            } else {
-                                assets.battleLost.play();
-                                chromeUI.eventLog("A " + this.units[i].type + " withdrew from combat with your " + this.units[j].type + ".", "bad");
-                            }
-
-                            // Stop the fight
-                            return;
-                        }
-                    }
-
-                    // Apply damage
-                    this.hps[j] = newHP;
-                    this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
-                }
-
-                // Decrement first strikes
-                if (this.firstStrikes[0] > 0) {
-                    this.firstStrikes[0] -= 1;
-                }
-                if (this.firstStrikes[1] > 0) {
-                    this.firstStrikes[1] -= 1;
-                }
-            }
+        // Handle everything associated with a unit dying after battle
+        Battle.prototype.processDeath = function (i, j) {
+            var baseXP;
 
             this.log.push(this.names[i] + " defeated " + this.names[j] + "!");
 
-            //console.log(this.log);
             // Process results
             this.winner = i === 0 ? "attacker" : "defender";
             this.loser = j === 0 ? "attacker" : "defender";
@@ -3615,6 +3558,88 @@ var Combat;
             // Winner gets XP
             baseXP = this.winner === "attacker" ? 4 * this.D / this.A : 2 * this.A / this.D;
             this.units[i].xp += Util.bound(Math.floor(baseXP), 1, Infinity);
+        };
+
+        // Calls itself recursively to simulate rounds of the fight until it's over (someone dies or withdraws)
+        Battle.prototype.simRounds = function (cb) {
+            var i, j, newHP;
+
+            if (this.attackerWinsRound()) {
+                i = 0; // Winner
+                j = 1; // Loser
+            } else {
+                i = 1; // Winner
+                j = 0; // Loser
+            }
+
+            // If this is a first strike, only the unit with first strikes left can win. So only do
+            // damage if the loser's first strikes are 0.
+            if (this.firstStrikes[j] === 0) {
+                newHP = Util.bound(this.hps[j] - this.damagePerHit[i], 0, 100);
+
+                // Check for withdrawal, if it's not a first strike and it would kill the loser
+                if (this.firstStrikes[i] === 0 && newHP === 0 && this.appliedBonuses[j].hasOwnProperty("retreat") && 100 * Math.random() < this.appliedBonuses[j]["retreat"]) {
+                    // Both get damaged
+                    this.units[i].currentStrength = this.units[i].strength * this.hps[i] / 100;
+                    this.units[j].currentStrength = this.units[j].strength * this.hps[j] / 100;
+
+                    // Show event
+                    if (this.units[j].owner === config.PLAYER_ID) {
+                        assets.battleWon.play();
+                        chromeUI.eventLog("Your " + this.units[j].type + " withdrew from combat with a " + this.units[i].type + ".", "good");
+                    } else {
+                        assets.battleLost.play();
+                        chromeUI.eventLog("A " + this.units[i].type + " withdrew from combat with your " + this.units[j].type + ".", "bad");
+                    }
+
+                    this.withdrew = true;
+                } else {
+                    // Apply damage
+                    this.hps[j] = newHP;
+                    this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
+                    console.log(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
+                }
+            }
+
+            // Decrement first strikes
+            if (this.firstStrikes[0] > 0) {
+                this.firstStrikes[0] -= 1;
+            }
+            if (this.firstStrikes[1] > 0) {
+                this.firstStrikes[1] -= 1;
+            }
+
+            console.log("START HIT ANIMATION");
+            setTimeout(function () {
+                if (!this.withdrew && this.hps[0] > 0 && this.hps[1] > 0) {
+                    this.simRounds(cb);
+                } else {
+                    // Fight over
+                    if (!this.withdrew) {
+                        // Somebody died
+                        this.processDeath(i, j);
+                    }
+
+                    //console.log(this.log);
+                    cb();
+                }
+            }.bind(this), 500);
+            console.log("END HIT ANIMATION");
+        };
+
+        Battle.prototype.fight = function (cb) {
+            this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
+            this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
+
+            // Calculate first strikes here, since it could have been perturbed by odds() call if first strikes were set previously
+            this.assignFirstStrikes();
+
+            /*console.log(JSON.stringify(this.appliedBonuses));
+            console.log(this.firstStrikes);*/
+            this.units[0].attacked = true;
+
+            // Simulate the fight
+            this.simRounds(cb);
         };
         return Battle;
     })();
@@ -3709,11 +3734,9 @@ var Combat;
             // Delete path
             attackerUnitOrGroup.targetCoords = null;
 
-            console.log("starting fight");
-            setTimeout(function () {
-                // We have a valid attacker and defender! Fight!
-                battle = new Battle(attacker, defender);
-                battle.fight();
+            // We have a valid attacker and defender! Fight!
+            battle = new Battle(attacker, defender);
+            battle.fight(function () {
                 if (battle.winner === "attacker") {
                     if (game.map.enemyUnits(attackerUnitOrGroup.owner, coords).length === 0) {
                         // No enemies left on tile, take it.
@@ -3730,11 +3753,10 @@ var Combat;
                     // Enemies left on tile, don't take it
                     attacker.countMovementToCoords(coords, attacker); // Only count for attacker, not whole group
                 }
-                console.log("ending fight");
-            }, 1000);
 
-            // Update hover tile, since this could change, particularly for right click attack when defending tile is hovered over
-            chromeUI.onHoverTile(game.getTile(controller.hoveredTile));
+                // Update hover tile, since this could change, particularly for right click attack when defending tile is hovered over
+                chromeUI.onHoverTile(game.getTile(controller.hoveredTile));
+            });
 
             return true;
         } else if (game.map.enemyUnits(attackerUnitOrGroup.owner, coords).length > 0) {
