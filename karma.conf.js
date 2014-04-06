@@ -15,6 +15,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'js-lib/jasmine.async.js',
       {pattern: 'assets/**/*', watched: false, included: false},
       'node_modules/easystarjs/bin/easystar-0.1.6.js',
       'js-lib/howler.js',

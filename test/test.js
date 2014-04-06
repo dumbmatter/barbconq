@@ -36,57 +36,74 @@ function createBattle(params) {
 
 // Last two params are optional. If provided, compare Battle.odds against civ4 odds. Otherwise, only compare Battle.odds and Battle.fight.
 function testBattleOdds(params, civ4OddsAttackerWins, civ4OddsAttackerRetreats) {
-    var attackerRetreats, attackerWins, b, expectedAttackerRetreats, expectedAttackerWins, expectedOddsAttackerRetreats, expectedOddsAttackerWins, i, numFights, odds;
+    var afterFightsComplete, attackerRetreats, attackerWins, b, expectedAttackerRetreats, expectedAttackerWins, expectedOddsAttackerRetreats, expectedOddsAttackerWins, i, numFights, numFightsComplete, odds;
 
     numFights = 20000;
 
     attackerWins = 0;
     attackerRetreats = 0;
+    numFightsComplete = 0;
 
     for (i = 0; i < numFights; i++) {
-        b = createBattle(params);
+        (function (i) {
+            b = createBattle(params);
 
-
-        if (i === 0) {
-            // Calculate odds for battle
-            odds = b.odds();
+            if (i === 0) {
+                // Calculate odds for battle
+                odds = b.odds();
 /*console.log([b.A, b.D]);
 console.log(b.appliedBonuses);
 console.log(b.firstStrikes);
 console.log(odds);*/
-            expectedOddsAttackerWins = odds.attackerWinsFight;
-            expectedOddsAttackerRetreats = odds.hasOwnProperty("attackerRetreats") ? odds.attackerRetreats : 0;
-        }
+                expectedOddsAttackerWins = odds.attackerWinsFight;
+                expectedOddsAttackerRetreats = odds.hasOwnProperty("attackerRetreats") ? odds.attackerRetreats : 0;
+            }
 
-        b.fight();
-        if (b.winner === "attacker") {
-            attackerWins += 1;
-        } else if (!b.winner) {
-            attackerRetreats += 1;
-        }
+            b.fight(function () {
+                if (b.winner === "attacker") {
+                    attackerWins += 1;
+                } else if (!b.winner) {
+                    attackerRetreats += 1;
+                }
+
+                numFightsComplete += 1;
+console.log(numFightsComplete);
+                if (numFightsComplete === numFights) {
+                    afterFightsComplete();
+                }
+            }, false);
+        }(i));
     }
 
-    expectedAttackerWins = expectedOddsAttackerWins * numFights;
-    expectedAttackerRetreats = expectedOddsAttackerRetreats * numFights;
 
-if (civ4OddsAttackerWins !== undefined) { console.log("civ4 Wins: " + civ4OddsAttackerWins); }
+    afterFightsComplete = function () {
+        expectedAttackerWins = expectedOddsAttackerWins * numFights;
+        expectedAttackerRetreats = expectedOddsAttackerRetreats * numFights;
+
+console.log(params);
+if (civ4OddsAttackerWins !== null) { console.log("civ4 Wins: " + civ4OddsAttackerWins); }
 console.log("Expected Wins: " + expectedAttackerWins / numFights);
 console.log("Observed Wins: " + attackerWins / numFights);
-if (civ4OddsAttackerRetreats !== undefined) { console.log("civ4 Retreats: " + civ4OddsAttackerRetreats); }
+if (civ4OddsAttackerRetreats !== null) { console.log("civ4 Retreats: " + civ4OddsAttackerRetreats); }
 console.log("Expected Retreats: " + expectedAttackerRetreats / numFights);
 console.log("Observed Retreats: " + attackerRetreats / numFights);
 
-    expect(Math.abs((attackerWins - expectedAttackerWins) / numFights)).toBeLessThan(0.01);
-    expect(Math.abs((attackerRetreats - expectedAttackerRetreats) / numFights)).toBeLessThan(0.01);
-    if (civ4OddsAttackerWins !== undefined) { expect(Math.abs(civ4OddsAttackerWins - expectedAttackerWins / numFights)).toBeLessThan(0.01); }
-    if (civ4OddsAttackerRetreats !== undefined) { expect(Math.abs(civ4OddsAttackerRetreats - expectedAttackerRetreats / numFights)).toBeLessThan(0.01); }
+        expect(Math.abs((attackerWins - expectedAttackerWins) / numFights)).toBeLessThan(0.01);
+        expect(Math.abs((attackerRetreats - expectedAttackerRetreats) / numFights)).toBeLessThan(0.01);
+        if (civ4OddsAttackerWins !== null) { expect(Math.abs(civ4OddsAttackerWins - expectedAttackerWins / numFights)).toBeLessThan(0.01); }
+        if (civ4OddsAttackerRetreats !== null) { expect(Math.abs(civ4OddsAttackerRetreats - expectedAttackerRetreats / numFights)).toBeLessThan(0.01); }
+    };
 }
 
 describe("Combat.Battle.odds()", function() {
-    it("should accurately predict outcome for random battle", function() {
+    var async;
+
+    async = new AsyncSpec(this);
+
+    async.it("should accurately predict outcome for random battle", function(done) {
         var i, params, rand;
 
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < 1; i++) {
             params = {};
 
             // Randomize tile
@@ -114,12 +131,11 @@ describe("Combat.Battle.odds()", function() {
             params.u1HP = 1 + Math.round(Math.random() * 99);
             params.u2HP = 1 + Math.round(Math.random() * 99);
 //params = {tileTerrain: 'grassland', tileFeatures: ['hills'], u1Type: 'Warrior', u2Type: 'Chariot', u1Promotions: ['drill2', 'combat1', 'combat2', 'cityRaider2'], u2Promotions: ['cityGarrison3', 'drill4', 'cityGarrison3', 'cityRaider3'], u1HP: 77, u2HP: 37};
-console.log(params);
 
-            testBattleOdds(params);
+            testBattleOdds(params, null, null, done);
         }
     });
-    it("should match results from civ4", function() {
+/*    it("should match results from civ4", function() {
         var params;
 
         params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Axeman', u2Type: 'Axeman', u1Promotions: ['drill1', 'drill2', 'drill3', 'drill4'], u2Promotions: [], u1HP: 100, u2HP: 100};
@@ -139,5 +155,5 @@ console.log(params);
 
         params = {tileTerrain: 'grassland', tileFeatures: ["forest", "hills"], u1Type: 'Spearman', u2Type: 'Archer', u1Promotions: ['cover'], u2Promotions: ['combat1'], u1HP: 100, u2HP: 2.5/3 * 100};
         testBattleOdds(params, 0.341, 0);
-    });
+    });*/
 });

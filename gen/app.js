@@ -3561,7 +3561,8 @@ var Combat;
         };
 
         // Calls itself recursively to simulate rounds of the fight until it's over (someone dies or withdraws)
-        Battle.prototype.simRounds = function (cb) {
+        Battle.prototype.simRounds = function (cb, includeAnimationDelays) {
+            if (typeof includeAnimationDelays === "undefined") { includeAnimationDelays = true; }
             var i, j, newHP;
 
             if (this.attackerWinsRound()) {
@@ -3597,7 +3598,7 @@ var Combat;
                     // Apply damage
                     this.hps[j] = newHP;
                     this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
-                    console.log(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
+                    //console.log(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
                 }
             }
 
@@ -3609,10 +3610,10 @@ var Combat;
                 this.firstStrikes[1] -= 1;
             }
 
-            console.log("START HIT ANIMATION");
+            //console.log("START HIT ANIMATION");
             setTimeout(function () {
                 if (!this.withdrew && this.hps[0] > 0 && this.hps[1] > 0) {
-                    this.simRounds(cb);
+                    this.simRounds(cb, includeAnimationDelays);
                 } else {
                     // Fight over
                     if (!this.withdrew) {
@@ -3623,11 +3624,13 @@ var Combat;
                     //console.log(this.log);
                     cb();
                 }
-            }.bind(this), 500);
-            console.log("END HIT ANIMATION");
+            }.bind(this), includeAnimationDelays ? 500 : 0);
+            //console.log("END HIT ANIMATION");
         };
 
-        Battle.prototype.fight = function (cb) {
+        // includeAnimationDelays should be set to false for unit tests and non-visible units
+        Battle.prototype.fight = function (cb, includeAnimationDelays) {
+            if (typeof includeAnimationDelays === "undefined") { includeAnimationDelays = true; }
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
 
@@ -3639,7 +3642,7 @@ var Combat;
             this.units[0].attacked = true;
 
             // Simulate the fight
-            this.simRounds(cb);
+            this.simRounds(cb, includeAnimationDelays);
         };
         return Battle;
     })();

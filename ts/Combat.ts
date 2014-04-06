@@ -349,7 +349,7 @@ module Combat {
         }
 
         // Calls itself recursively to simulate rounds of the fight until it's over (someone dies or withdraws)
-        simRounds(cb : () => void) {
+        simRounds(cb : () => void, includeAnimationDelays : boolean = true) {
             var i : number, j : number, newHP : number;
 
             if (this.attackerWinsRound()) {
@@ -385,7 +385,7 @@ module Combat {
                     // Apply damage
                     this.hps[j] = newHP;
                     this.log.push(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
-console.log(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
+//console.log(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.hps[j] + "/100HP)");
                 }
             }
 
@@ -397,10 +397,10 @@ console.log(this.names[j] + " is hit for " + this.damagePerHit[i] + " (" + this.
                 this.firstStrikes[1] -= 1;
             }
 
-console.log("START HIT ANIMATION");
+//console.log("START HIT ANIMATION");
             setTimeout(function () {
                 if (!this.withdrew && this.hps[0] > 0 && this.hps[1] > 0) {
-                    this.simRounds(cb);
+                    this.simRounds(cb, includeAnimationDelays);
                 } else {
                     // Fight over
                     if (!this.withdrew) {
@@ -411,11 +411,12 @@ console.log("START HIT ANIMATION");
 
                     cb();
                 }
-            }.bind(this), 500);
-console.log("END HIT ANIMATION");
+            }.bind(this), includeAnimationDelays ? 500 : 0);
+//console.log("END HIT ANIMATION");
         }
 
-        fight(cb : () => void) {
+        // includeAnimationDelays should be set to false for unit tests and non-visible units
+        fight(cb : () => void, includeAnimationDelays : boolean = true) {
             this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
             this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
 
@@ -428,7 +429,7 @@ console.log(this.firstStrikes);*/
             this.units[0].attacked = true;
 
             // Simulate the fight
-            this.simRounds(cb);
+            this.simRounds(cb, includeAnimationDelays);
         }
     }
 
