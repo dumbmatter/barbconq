@@ -38,7 +38,7 @@ function createBattle(params) {
 function testBattleOdds(params, civ4OddsAttackerWins, civ4OddsAttackerRetreats, cb) {
     var afterFightsComplete, attackerRetreats, attackerWins, expectedAttackerRetreats, expectedAttackerWins, expectedOddsAttackerRetreats, expectedOddsAttackerWins, i, numFights, numFightsComplete;
 
-    numFights = 20000;
+    numFights = 2000;
 
     attackerWins = 0;
     attackerRetreats = 0;
@@ -89,10 +89,14 @@ if (civ4OddsAttackerRetreats !== null) { console.log("civ4 Retreats: " + civ4Odd
 console.log("Expected Retreats: " + expectedAttackerRetreats / numFights);
 console.log("Observed Retreats: " + attackerRetreats / numFights);
 
-        expect(Math.abs((attackerWins - expectedAttackerWins) / numFights)).toBeLessThan(0.01);
-        expect(Math.abs((attackerRetreats - expectedAttackerRetreats) / numFights)).toBeLessThan(0.01);
-        if (civ4OddsAttackerWins !== null) { expect(Math.abs(civ4OddsAttackerWins - expectedAttackerWins / numFights)).toBeLessThan(0.01); }
-        if (civ4OddsAttackerRetreats !== null) { expect(Math.abs(civ4OddsAttackerRetreats - expectedAttackerRetreats / numFights)).toBeLessThan(0.01); }
+        expect(Math.abs((attackerWins - expectedAttackerWins) / numFights)).toBeLessThan(0.03);
+        expect(Math.abs((attackerRetreats - expectedAttackerRetreats) / numFights)).toBeLessThan(0.03);
+        if (civ4OddsAttackerWins !== null) {
+            expect(Math.abs(civ4OddsAttackerWins - expectedAttackerWins / numFights)).toBeLessThan(0.03);
+        }
+        if (civ4OddsAttackerRetreats !== null) {
+            expect(Math.abs(civ4OddsAttackerRetreats - expectedAttackerRetreats / numFights)).toBeLessThan(0.03);
+        }
 
         cb();
     };
@@ -103,13 +107,15 @@ describe("Combat.Battle.odds()", function() {
 
     async = new AsyncSpec(this);
 
-    async.it("should accurately predict outcome for random battle", function(done) {
-        var i, numBattles, numBattlesComplete, params, rand;
+    async.it("should accurately predict outcome for random battle", function (done) {
+        var numBattles, numBattlesComplete, recursivelyDoBattles;
 
-        numBattles = 2;
+        numBattles = 10;
         numBattlesComplete = 0;
 
-        for (i = 0; i < numBattles; i++) {
+        recursivelyDoBattles = function () {
+            var params, rand;
+
             params = {};
 
             // Randomize tile
@@ -142,29 +148,38 @@ describe("Combat.Battle.odds()", function() {
                 numBattlesComplete += 1;
                 if (numBattlesComplete === numBattles) {
                     done();
+                } else {
+                    recursivelyDoBattles();
                 }
             });
-        }
+        };
+
+        recursivelyDoBattles();
     });
-/*    it("should match results from civ4", function() {
+
+    async.it("should match results from civ4", function (done) {
         var params;
 
         params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Axeman', u2Type: 'Axeman', u1Promotions: ['drill1', 'drill2', 'drill3', 'drill4'], u2Promotions: [], u1HP: 100, u2HP: 100};
-        testBattleOdds(params, 0.787, 0);
+        testBattleOdds(params, 0.787, 0, function () {
+            params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Axeman', u2Type: 'Axeman', u1Promotions: ['drill1', 'drill2', 'drill3'], u2Promotions: [], u1HP: 100, u2HP: 100};
+            testBattleOdds(params, 0.667, 0, function () {
 
-        params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Axeman', u2Type: 'Axeman', u1Promotions: ['drill1', 'drill2', 'drill3'], u2Promotions: [], u1HP: 100, u2HP: 100};
-        testBattleOdds(params, 0.667, 0);
+                params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Archer', u2Type: 'Chariot', u1Promotions: [], u2Promotions: ['drill2', 'drill3', 'drill4'], u1HP: 100, u2HP: 100};
+                testBattleOdds(params, 0.096, 0, function () {
 
-        params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Archer', u2Type: 'Chariot', u1Promotions: [], u2Promotions: ['drill2', 'drill3', 'drill4'], u1HP: 100, u2HP: 100};
-        testBattleOdds(params, 0.096, 0);
+                    params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Chariot', u2Type: 'Chariot', u1Promotions: ['drill4'], u2Promotions: ['drill2', 'drill3', 'drill4'], u1HP: 100, u2HP: 100};
+                    testBattleOdds(params, 0.364, 0.064, function () {
 
-        params = {tileTerrain: 'grassland', tileFeatures: [], u1Type: 'Chariot', u2Type: 'Chariot', u1Promotions: ['drill4'], u2Promotions: ['drill2', 'drill3', 'drill4'], u1HP: 100, u2HP: 100};
-        testBattleOdds(params, 0.364, 0.064);
+                        params = {tileTerrain: 'grassland', tileFeatures: ["forest", "hills"], u1Type: 'Spearman', u2Type: 'Archer', u1Promotions: ['cover'], u2Promotions: ['combat1'], u1HP: 100, u2HP: 100};
+                        testBattleOdds(params, 0.093, 0, function () {
 
-        params = {tileTerrain: 'grassland', tileFeatures: ["forest", "hills"], u1Type: 'Spearman', u2Type: 'Archer', u1Promotions: ['cover'], u2Promotions: ['combat1'], u1HP: 100, u2HP: 100};
-        testBattleOdds(params, 0.093, 0);
-
-        params = {tileTerrain: 'grassland', tileFeatures: ["forest", "hills"], u1Type: 'Spearman', u2Type: 'Archer', u1Promotions: ['cover'], u2Promotions: ['combat1'], u1HP: 100, u2HP: 2.5/3 * 100};
-        testBattleOdds(params, 0.341, 0);
-    });*/
+                            params = {tileTerrain: 'grassland', tileFeatures: ["forest", "hills"], u1Type: 'Spearman', u2Type: 'Archer', u1Promotions: ['cover'], u2Promotions: ['combat1'], u1HP: 100, u2HP: 2.5/3 * 100};
+                            testBattleOdds(params, 0.341, 0, done);
+                        });
+                    });
+                });
+            });
+        });
+    });
 });
