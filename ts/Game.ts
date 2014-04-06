@@ -8,6 +8,7 @@ class Game {
     groups : {[id : number] : Units.Group}[] = []; // Same as above
     cities : {[id : number] : Cities.City}[] = [];
     activeUnit : Units.UnitOrGroup = null;
+    activeBattle : Combat.Battle = null;
     turn : number = 0;
     turnID : number; // ID number of the user whose turn it is
     result : string = "inProgress"; // Starts "inProgress", eventually will be "won" or "lost"

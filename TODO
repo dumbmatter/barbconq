@@ -23,6 +23,7 @@ add highlighting of two units that are fighting, or maybe red dashed path in bet
   if async stuff is going on, need to prevent any user input during battle
     similarly, should prevent any user input during AI turns
     implement as some flag that Controller reads
+    game.activeBattle
 
 "center" should still be shifted up, even though bottom things are transparent
 

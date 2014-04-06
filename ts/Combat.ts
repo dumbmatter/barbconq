@@ -499,7 +499,7 @@ console.log(this.firstStrikes);*/
     };
 
     // If tile has enemy unit on it, initiate combat (if appropriate) and return true. Otherwise, do
-    // nothing and return false. WARNING: If returning false, some async stuff might still going on
+    // nothing and return false. WARNING: If returning true, some async stuff might still going on
     // in the background!!!
     export function fightIfTileHasEnemy(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : boolean {
         var attacker : Units.Unit, battle : Battle, defender : Units.Unit, newTileUnits : Units.Unit[], units : {attacker : Units.Unit; defender : Units.Unit};
@@ -516,7 +516,10 @@ console.log(this.firstStrikes);*/
 
             // We have a valid attacker and defender! Fight!
             battle = new Battle(attacker, defender);
+            game.activeBattle = battle;
             battle.fight(function () {
+                game.activeBattle = null;
+
                 if (battle.winner === "attacker") {
                     if (game.map.enemyUnits(attackerUnitOrGroup.owner, coords).length === 0) {
                         // No enemies left on tile, take it.

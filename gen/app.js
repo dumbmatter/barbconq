@@ -1798,6 +1798,7 @@ var Game = (function () {
         this.groups = [];
         this.cities = [];
         this.activeUnit = null;
+        this.activeBattle = null;
         this.turn = 0;
         this.result = "inProgress";
         var i;
@@ -3768,7 +3769,10 @@ var Combat;
 
             // We have a valid attacker and defender! Fight!
             battle = new Battle(attacker, defender);
+            game.activeBattle = battle;
             battle.fight(function () {
+                game.activeBattle = null;
+
                 if (battle.winner === "attacker") {
                     if (game.map.enemyUnits(attackerUnitOrGroup.owner, coords).length === 0) {
                         // No enemies left on tile, take it.
