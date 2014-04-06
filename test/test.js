@@ -36,7 +36,7 @@ function createBattle(params) {
 
 // Last two params are optional. If provided, compare Battle.odds against civ4 odds. Otherwise, only compare Battle.odds and Battle.fight.
 function testBattleOdds(params, civ4OddsAttackerWins, civ4OddsAttackerRetreats) {
-    var afterFightsComplete, attackerRetreats, attackerWins, b, expectedAttackerRetreats, expectedAttackerWins, expectedOddsAttackerRetreats, expectedOddsAttackerWins, i, numFights, numFightsComplete, odds;
+    var afterFightsComplete, attackerRetreats, attackerWins, expectedAttackerRetreats, expectedAttackerWins, expectedOddsAttackerRetreats, expectedOddsAttackerWins, i, numFights, numFightsComplete;
 
     numFights = 20000;
 
@@ -46,6 +46,8 @@ function testBattleOdds(params, civ4OddsAttackerWins, civ4OddsAttackerRetreats) 
 
     for (i = 0; i < numFights; i++) {
         (function (i) {
+            var b, odds;
+
             b = createBattle(params);
 
             if (i === 0) {
