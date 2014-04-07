@@ -1,5 +1,18 @@
 # Major current tasks
 
+unit actions
+  fortify
+    set Unit.skippedTurn to true/false when fortifying/waking
+    defensive bonus
+    healing
+    top right indicator in unit icon
+    "fortify until healed"
+    when fortified, show "wake unit" icon
+    how to handle group?
+    how to handle unit that has already used up its moves, fully or partially?
+      shouldn't be able to heal right away. what about defensive bonus?
+  are some of these universal? can move up to root Unit?
+
 why is combat hover box showing up during battle? should probably have no hover boxes show up
 
 unit tests
@@ -58,24 +71,9 @@ right click to move
   right click on map -> drag off map -> drag back onto edge tile... path doesn't show up until drag onto another tile!
   by default, show "strongest" unit. but when right click hovering, show the strongest for defending against the impending attack
 
-unit actions
-  fortify
-    set Unit.skippedTurn to true/false when fortifying/waking
-    defensive bonus
-    healing
-    top right indicator in unit icon
-    "fortify until healed"
-    when fortified, show "wake unit" icon
-    how to handle group?
-    how to handle unit that has already used up its moves, fully or partially?
-      shouldn't be able to heal right away. what about defensive bonus?
-  are some of these universal? can move up to root Unit?
-
 unit stacking UI options
   show highest strength one on top, and "+ X more" in text below it
   series of vertical lines at the bottom
-
-tile improvements? maybe roads and forts
 
 minify assets
   have a "make barbconq" that puts all the right options in a ready-to-go barbconq folder
