@@ -41,8 +41,24 @@ class Controller {
         this.initGameActions();
     }
 
+    // Every function in Controller should check this and see if user input is allowed. If the AI is
+    // moving or a battle is occurring, then no.
+    preventUserInput() {
+        if (game.activeBattle) {
+            return true;
+        }
+
+        if (game.turnID !== config.PLAYER_ID) {
+            return true;
+        }
+
+        return false;
+    }
+
     initMapPanning() {
         document.addEventListener("keydown", function (e : KeyboardEvent) {
+            if (this.preventUserInput()) { return; }
+
             if (e.keyCode in this.keysPressed) {
                 this.keysPressed[e.keyCode] = true;
 
@@ -63,7 +79,10 @@ class Controller {
                 mapUI.render();
             }
         }.bind(this));
+
         document.addEventListener("keyup", function (e : KeyboardEvent) {
+            if (this.preventUserInput()) { return; }
+
             if (e.keyCode in this.keysPressed) {
                 this.keysPressed[e.keyCode] = false;
             }
@@ -73,6 +92,8 @@ class Controller {
     initUnitActions() {
         document.addEventListener("keydown", function (e : KeyboardEvent) {
             var activeUnit : Units.UnitOrGroup;
+
+            if (this.preventUserInput()) { return; }
 
             // Active unit stuff
             if (game.activeUnit) {
@@ -118,8 +139,11 @@ class Controller {
             e.preventDefault();
         });
 
+        // Right click path finding
         mapUI.canvas.addEventListener("mousedown", function (e : MouseEvent) {
             var coords : number[];
+
+            if (this.preventUserInput()) { return; }
 
             if (e.button === 2 && game.activeUnit && !mapUI.pathFindingSearch) { // Right click only! Active unit only! But not if Go To mode is already active
                 e.preventDefault();
@@ -140,24 +164,30 @@ class Controller {
         chromeUI.elBottomActions.addEventListener("click", function (e : MouseEvent) {
             var el;
 
+            if (this.preventUserInput()) { return; }
+
             el = <HTMLElement> e.target;
             if (el && el.dataset.action) {
                 e.preventDefault();
                 game.activeUnit[el.dataset.action](el.dataset.arg);
                 chromeUI.onHoverAction(); // Reset hover display, since stuff might have changed
             }
-        });
+        }.bind(this));
         chromeUI.elBottomActions.addEventListener("mouseover", function (e : MouseEvent) {
             var el;
+
+            if (this.preventUserInput()) { return; }
 
             el = <HTMLElement> e.target;
             if (el && el.dataset.action) {
                 e.preventDefault();
                 chromeUI.onHoverAction(el.dataset.action, el.dataset.arg);
             }
-        });
+        }.bind(this));
         chromeUI.elBottomActions.addEventListener("mouseout", function (e : MouseEvent) {
             var el;
+
+            if (this.preventUserInput()) { return; }
 
             el = <HTMLElement> e.target;
             if (el && el.dataset.action) {
@@ -165,7 +195,7 @@ class Controller {
                 
                 chromeUI.onHoverAction();
             }
-        });
+        }.bind(this));
     }
 
     // Handles path finding search for "Go To" button, "G" and "Right Click"
@@ -183,7 +213,7 @@ class Controller {
         mapUI.pathFindingSearch = true;
 
         // Disable normal left click actions until pathFinding is done
-        mapUI.canvas.removeEventListener("mousedown", this.leftClickOnMap);
+        mapUI.canvas.removeEventListener("mousedown", this.leftClickOnMap.bind(this));
 
         // Find paths to hovered tile as button remains down
         mouseMoveWhileDown = function (e : MouseEvent) {
@@ -230,7 +260,7 @@ class Controller {
             setPathOn.el.removeEventListener(setPathOn.event, setPath);
 
             // Re-enable normal left click functions
-            mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap);
+            mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap.bind(this));
         }.bind(this);
         setPathOn.el.addEventListener(setPathOn.event, setPath);
     }
@@ -264,6 +294,8 @@ class Controller {
 
     private leftClickOnMap (e : MouseEvent) {
         var i : number, coords : number[], currentMetric : number, maxMetric : number, unit, units : Units.Unit[];
+
+        if (this.preventUserInput()) { return; }
 
         if (e.button === 0) { // Left click only!
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
@@ -311,10 +343,12 @@ class Controller {
     // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
     // if one of your units is not on the clicked tile, center the map
     initMapClick() {
-        mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap);
+        mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap.bind(this));
 
         mapUI.miniCanvas.addEventListener("mousedown", function (e : MouseEvent) {
             var coords : number[], miniMapPan : (e : MouseEvent) => void, miniMapPanStop : (e : MouseEvent) => void;
+
+            if (this.preventUserInput()) { return; }
 
             if (e.button === 0) { // Left click only!
                 e.preventDefault();
@@ -344,11 +378,13 @@ class Controller {
                 };
                 document.addEventListener("mouseup", miniMapPanStop);
             }
-        });
+        }.bind(this));
     }
 
     initGameActions() {
         document.addEventListener("keydown", function (e : KeyboardEvent) {
+            if (this.preventUserInput()) { return; }
+
             if (e.keyCode === this.KEYS.ENTER) {
                 game.newTurn();
             }
@@ -359,6 +395,8 @@ class Controller {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e : MouseEvent) {
             var activeUnit : Units.Unit, activeGroup : Units.Group, clickedId : number, clickedOwner : number, clickedSid : number, el : any, i : number, newGroup : Units.Group, newUnits : Units.Unit[], units : Units.Unit[], type : string;
+
+            if (this.preventUserInput()) { return; }
 
             el = <HTMLElement> e.target;
             el = <any> el.parentNode;
@@ -484,7 +522,7 @@ class Controller {
                     }
                 }
             }
-        });
+        }.bind(this));
         chromeUI.elBottomUnits.addEventListener("mouseover", function (e : MouseEvent) {
             var el;
 

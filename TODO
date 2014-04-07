@@ -1,9 +1,8 @@
 # Major current tasks
 
 if async stuff is going on, need to prevent any user input during battle
-  similarly, should prevent any user input during AI turns
-  implement as some flag that Controller reads
-  game.activeBattle
+  preventUserInput
+    might work, but turnID is weird, goes to 2 after user's turn is over
 
 unit tests
   grouped unit actions
@@ -202,6 +201,7 @@ Import civ4 maps
     http://www.reddit.com/r/html5/comments/1zw8yl/canvas_newb_seeking_some_pointers_about_making_a/
     PROBABLY BEST:
       either threejs or raw webgl. try threejs first, looks easier
+    http://jsiso.com/
 
 Allow lots of moddability, game modes
   look at what's in civ4

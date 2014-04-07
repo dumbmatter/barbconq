@@ -113,8 +113,26 @@ var Controller = (function () {
         this.initMapClick();
         this.initGameActions();
     }
+    // Every function in Controller should check this and see if user input is allowed. If the AI is
+    // moving or a battle is occurring, then no.
+    Controller.prototype.preventUserInput = function () {
+        if (game.activeBattle) {
+            return true;
+        }
+
+        if (game.turnID !== config.PLAYER_ID) {
+            return true;
+        }
+
+        return false;
+    };
+
     Controller.prototype.initMapPanning = function () {
         document.addEventListener("keydown", function (e) {
+            if (this.preventUserInput()) {
+                return;
+            }
+
             if (e.keyCode in this.keysPressed) {
                 this.keysPressed[e.keyCode] = true;
 
@@ -135,7 +153,12 @@ var Controller = (function () {
                 mapUI.render();
             }
         }.bind(this));
+
         document.addEventListener("keyup", function (e) {
+            if (this.preventUserInput()) {
+                return;
+            }
+
             if (e.keyCode in this.keysPressed) {
                 this.keysPressed[e.keyCode] = false;
             }
@@ -145,6 +168,10 @@ var Controller = (function () {
     Controller.prototype.initUnitActions = function () {
         document.addEventListener("keydown", function (e) {
             var activeUnit;
+
+            if (this.preventUserInput()) {
+                return;
+            }
 
             // Active unit stuff
             if (game.activeUnit) {
@@ -190,8 +217,13 @@ var Controller = (function () {
             e.preventDefault();
         });
 
+        // Right click path finding
         mapUI.canvas.addEventListener("mousedown", function (e) {
             var coords;
+
+            if (this.preventUserInput()) {
+                return;
+            }
 
             if (e.button === 2 && game.activeUnit && !mapUI.pathFindingSearch) {
                 e.preventDefault();
@@ -212,24 +244,36 @@ var Controller = (function () {
         chromeUI.elBottomActions.addEventListener("click", function (e) {
             var el;
 
+            if (this.preventUserInput()) {
+                return;
+            }
+
             el = e.target;
             if (el && el.dataset.action) {
                 e.preventDefault();
                 game.activeUnit[el.dataset.action](el.dataset.arg);
                 chromeUI.onHoverAction(); // Reset hover display, since stuff might have changed
             }
-        });
+        }.bind(this));
         chromeUI.elBottomActions.addEventListener("mouseover", function (e) {
             var el;
+
+            if (this.preventUserInput()) {
+                return;
+            }
 
             el = e.target;
             if (el && el.dataset.action) {
                 e.preventDefault();
                 chromeUI.onHoverAction(el.dataset.action, el.dataset.arg);
             }
-        });
+        }.bind(this));
         chromeUI.elBottomActions.addEventListener("mouseout", function (e) {
             var el;
+
+            if (this.preventUserInput()) {
+                return;
+            }
 
             el = e.target;
             if (el && el.dataset.action) {
@@ -237,7 +281,7 @@ var Controller = (function () {
 
                 chromeUI.onHoverAction();
             }
-        });
+        }.bind(this));
     };
 
     // Handles path finding search for "Go To" button, "G" and "Right Click"
@@ -257,7 +301,7 @@ var Controller = (function () {
         mapUI.pathFindingSearch = true;
 
         // Disable normal left click actions until pathFinding is done
-        mapUI.canvas.removeEventListener("mousedown", this.leftClickOnMap);
+        mapUI.canvas.removeEventListener("mousedown", this.leftClickOnMap.bind(this));
 
         // Find paths to hovered tile as button remains down
         mouseMoveWhileDown = function (e) {
@@ -303,7 +347,7 @@ var Controller = (function () {
             setPathOn.el.removeEventListener(setPathOn.event, setPath);
 
             // Re-enable normal left click functions
-            mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap);
+            mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap.bind(this));
         }.bind(this);
         setPathOn.el.addEventListener(setPathOn.event, setPath);
     };
@@ -337,6 +381,10 @@ var Controller = (function () {
 
     Controller.prototype.leftClickOnMap = function (e) {
         var i, coords, currentMetric, maxMetric, unit, units;
+
+        if (this.preventUserInput()) {
+            return;
+        }
 
         if (e.button === 0) {
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
@@ -388,10 +436,14 @@ var Controller = (function () {
     // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
     // if one of your units is not on the clicked tile, center the map
     Controller.prototype.initMapClick = function () {
-        mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap);
+        mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap.bind(this));
 
         mapUI.miniCanvas.addEventListener("mousedown", function (e) {
             var coords, miniMapPan, miniMapPanStop;
+
+            if (this.preventUserInput()) {
+                return;
+            }
 
             if (e.button === 0) {
                 e.preventDefault();
@@ -421,11 +473,15 @@ var Controller = (function () {
                 };
                 document.addEventListener("mouseup", miniMapPanStop);
             }
-        });
+        }.bind(this));
     };
 
     Controller.prototype.initGameActions = function () {
         document.addEventListener("keydown", function (e) {
+            if (this.preventUserInput()) {
+                return;
+            }
+
             if (e.keyCode === this.KEYS.ENTER) {
                 game.newTurn();
             }
@@ -436,6 +492,10 @@ var Controller = (function () {
         // Unit icons at the bottom
         chromeUI.elBottomUnits.addEventListener("click", function (e) {
             var activeUnit, activeGroup, clickedId, clickedOwner, clickedSid, el, i, newGroup, newUnits, units, type;
+
+            if (this.preventUserInput()) {
+                return;
+            }
 
             el = e.target;
             el = el.parentNode;
@@ -560,7 +620,7 @@ var Controller = (function () {
                     }
                 }
             }
-        });
+        }.bind(this));
         chromeUI.elBottomUnits.addEventListener("mouseover", function (e) {
             var el;
 
@@ -3940,14 +4000,9 @@ function init() {
     u1.promotions.push("drill2");
     u1.xp += 5;
 
-    /*    new Units.Archer(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Spearman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Warrior(config.BARB_ID, [10, 21]);
-    new Units.Warrior(config.BARB_ID, [10, 21]);*/
-    new Units.Archer(config.BARB_ID, [10, 21]);
+    for (i = 0; i < 100; i++) {
+        new Units.Archer(config.BARB_ID, [10, 21]);
+    }
 
     new Cities.City(config.BARB_ID, [10, 21]);
 

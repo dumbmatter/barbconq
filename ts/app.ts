@@ -115,7 +115,9 @@ function init() {
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.BARB_ID, [10, 21]);
     new Units.Warrior(config.BARB_ID, [10, 21]);*/
-    new Units.Archer(config.BARB_ID, [10, 21]);
+    for (i = 0; i < 100; i++) {
+        new Units.Archer(config.BARB_ID, [10, 21]);
+    }
 
     new Cities.City(config.BARB_ID, [10, 21]);
 
