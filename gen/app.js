@@ -3918,22 +3918,6 @@ var config = {
     DISABLE_FOG_OF_WAR: false
 };
 
-/*var assets : any = {};
-assets.hills = new Image();
-assets.hills.src = 'assets/hills.png';
-assets.hills.onload = function () {
-assets.forest = new Image();
-assets.forest.src = 'assets/forest.png';
-assets.forest.onload = function () {
-assets.Warrior = new Image();
-assets.Warrior.src = 'assets/stone-axe.png';
-assets.Warrior.onload = function () {
-assets.Chariot = new Image();
-assets.Chariot.src = 'assets/horse-head.png';
-assets.Chariot.onload = init;
-};
-};
-};*/
 function loadAssets(assetsToLoad, cb) {
     var afterEachAsset, name, numAssetsRemaining;
 
