@@ -1,15 +1,9 @@
 # Major current tasks
 
-add highlighting of two units that are fighting
-  implementation
-    have unit "hit" (animate move into other unit's tile, then come back) for each round won
-      make some function that wraps mapUI.render and calls it repeatedly with an offset for the combat?
-  if async stuff is going on, need to prevent any user input during battle
-    similarly, should prevent any user input during AI turns
-    implement as some flag that Controller reads
-    game.activeBattle
-
-"center" should still be shifted up, even though bottom things are transparent
+if async stuff is going on, need to prevent any user input during battle
+  similarly, should prevent any user input during AI turns
+  implement as some flag that Controller reads
+  game.activeBattle
 
 unit tests
   grouped unit actions
@@ -40,9 +34,6 @@ unit promotions
     combat 4+
     lots of irrelevant ones
     add collateral damage stuff to drills
-
-animate unit movement
-  see below about "let it ride" - would need to do that with Unit.moveToCoords
 
 basic barb AI
   Game.moveUnits
@@ -111,6 +102,9 @@ UI POLISH
   limit number of entries that can be shown in hover-box?
   CTRL and ALT messages in hover box should only be shown when applicable (>1 unit or >1 unit of a type)
   sound volume - battle-won too loud?
+  in battle, have units "hit" (animate move into other unit's tile, then come back) for each round won
+    make some function that wraps mapUI.render and calls it repeatedly with an offset for the combat?
+  animate unit movement
 
 # Barbarian Conquest (barbconq)
 

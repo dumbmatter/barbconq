@@ -482,7 +482,7 @@ class MapUI {
     goToCoords(coords : number[]) {
         // ith row, jth column, 0 indexed
         this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
-        this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;
+        this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2 + this.TILE_SIZE; // Last term is to shift up the center point, due to all the chrome at the bottom of the screen
         this.render();
     }
 

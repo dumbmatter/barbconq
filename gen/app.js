@@ -1486,7 +1486,7 @@ var MapUI = (function () {
     MapUI.prototype.goToCoords = function (coords) {
         // ith row, jth column, 0 indexed
         this.X = coords[1] * this.TILE_SIZE + this.TILE_SIZE / 2;
-        this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2;
+        this.Y = coords[0] * this.TILE_SIZE + this.TILE_SIZE / 2 + this.TILE_SIZE; // Last term is to shift up the center point, due to all the chrome at the bottom of the screen
         this.render();
     };
 
@@ -3678,27 +3678,28 @@ var Combat;
                     //console.log(this.log);
                     cb();
                 }
-            }.bind(this), includeAnimationDelays ? 500 : 0);
+            }.bind(this), includeAnimationDelays ? config.BATTLE_ROUND_UI_DELAY : 0);
             //console.log("END HIT ANIMATION");
         };
 
         // includeAnimationDelays should be set to false for unit tests and non-visible units
         Battle.prototype.fight = function (cb, includeAnimationDelays) {
             if (typeof includeAnimationDelays === "undefined") { includeAnimationDelays = true; }
+            setTimeout(function () {
+                this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
+                this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
+
+                // Calculate first strikes here, since it could have been perturbed by odds() call if first strikes were set previously
+                this.assignFirstStrikes();
+
+                /*console.log(JSON.stringify(this.appliedBonuses));
+                console.log(this.firstStrikes);*/
+                this.units[0].attacked = true;
+
+                // Simulate the fight
+                this.simRounds(cb, includeAnimationDelays);
+            }.bind(this), includeAnimationDelays ? config.BATTLE_ROUND_UI_DELAY : 0);
             assets.battleStart.play();
-
-            this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
-            this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
-
-            // Calculate first strikes here, since it could have been perturbed by odds() call if first strikes were set previously
-            this.assignFirstStrikes();
-
-            /*console.log(JSON.stringify(this.appliedBonuses));
-            console.log(this.firstStrikes);*/
-            this.units[0].attacked = true;
-
-            // Simulate the fight
-            this.simRounds(cb, includeAnimationDelays);
         };
         return Battle;
     })();
@@ -3853,6 +3854,7 @@ var config = {
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
+    BATTLE_ROUND_UI_DELAY: 300,
     DISABLE_FOG_OF_WAR: false
 };
 
