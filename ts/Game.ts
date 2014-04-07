@@ -195,11 +195,11 @@ class Game {
                 }
 
                 chromeUI.onAIMovingDone();
+
+                this.turnID += 1;
             } else {
                 // Should auto-move non-barb AI units here
             }
-
-            this.turnID += 1;
         }
 
         // If we made it this far, all of the user's units have moved

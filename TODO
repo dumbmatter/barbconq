@@ -1,9 +1,5 @@
 # Major current tasks
 
-if async stuff is going on, need to prevent any user input during battle
-  preventUserInput
-    might work, but turnID is weird, goes to 2 after user's turn is over
-
 unit tests
   grouped unit actions
 
