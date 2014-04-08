@@ -181,6 +181,8 @@ module Units {
         _active : boolean = false; // When set, show UI options for this unit
         _skippedTurn : boolean = false; // When set, no need to loop through this unit before showing turn is over
         _attacked : boolean = false;
+        _fortified : boolean = false;
+        _fortifiedTurns : number = 0;
 
         // Default getters/setters for units
         set owner(value : number) { this._owner = value; }
@@ -209,6 +211,10 @@ module Units {
         get skippedTurn() : boolean { return this._skippedTurn; }
         set attacked(value : boolean) { this._attacked = value; }
         get attacked() : boolean { return this._attacked; }
+        set fortified(value : boolean) { this._fortified = value; }
+        get fortified() : boolean { return this._fortified; }
+        set fortifiedTurns(value : number) { this._fortifiedTurns = value; }
+        get fortifiedTurns() : number { return this._fortifiedTurns; }
 
         constructor() {
             // Set unique ID for unit or group
@@ -466,6 +472,11 @@ module Units {
 
         fortify() {
 console.log("FORTIFY")
+            this.fortified = true;
+            this.fortifiedTurns = 0;
+
+            chromeUI.onUnitActivated(); // Update unit icons
+            mapUI.render(); // Update unit health bar on map
         }
 
         isVisible() : boolean {

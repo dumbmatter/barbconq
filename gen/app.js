@@ -1305,10 +1305,10 @@ var MapUI = (function () {
         }
 
         // Clear canvas and redraw everything in view
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.fillStyle = "#000";
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
+        // Clearing not needed since everything is painted over!
+        //        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        //        this.context.fillStyle = "#000";
+        //        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         // Function to loop over all tiles, call cb on each tile in the viewport
         var drawViewport = function (cb) {
             var i, j, x, y;
@@ -1490,11 +1490,6 @@ var MapUI = (function () {
 
     MapUI.prototype.renderMiniMap = function () {
         var bottom, bottomTile, i, j, k, left, leftTile, right, rightTile, top, tile, topTile, unit;
-
-        // Clear canvas and redraw everything
-        this.miniContext.clearRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
-        this.miniContext.fillStyle = "#000";
-        this.miniContext.fillRect(0, 0, this.miniCanvas.width, this.miniCanvas.height);
 
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
@@ -2211,6 +2206,8 @@ var Units;
             this._active = false;
             this._skippedTurn = false;
             this._attacked = false;
+            this._fortified = false;
+            this._fortifiedTurns = 0;
             // Set unique ID for unit or group
             this.id = game.maxId;
             game.maxId += 1;
@@ -2342,6 +2339,26 @@ var Units;
             },
             set: function (value) {
                 this._attacked = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(UnitOrGroup.prototype, "fortified", {
+            get: function () {
+                return this._fortified;
+            },
+            set: function (value) {
+                this._fortified = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(UnitOrGroup.prototype, "fortifiedTurns", {
+            get: function () {
+                return this._fortifiedTurns;
+            },
+            set: function (value) {
+                this._fortifiedTurns = value;
             },
             enumerable: true,
             configurable: true
@@ -2601,6 +2618,11 @@ var Units;
 
         UnitOrGroup.prototype.fortify = function () {
             console.log("FORTIFY");
+            this.fortified = true;
+            this.fortifiedTurns = 0;
+
+            chromeUI.onUnitActivated(); // Update unit icons
+            mapUI.render(); // Update unit health bar on map
         };
 
         UnitOrGroup.prototype.isVisible = function () {

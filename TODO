@@ -2,10 +2,16 @@
 
 unit actions
   fortify
+    unit properties: fortified (bool) and fortifiedTurns (number)
+      group? just read from individual ones, either all or nothing
     set Unit.skippedTurn to true/false when fortifying/waking
     defensive bonus
-    healing
+    when turnID is incremented
+      heal
+      increment fortifiedTurns
+    wake
     top right indicator in unit icon
+    on map tile indicator?
     "fortify until healed"
     when fortified, show "wake unit" icon
     how to handle group?
