@@ -202,8 +202,12 @@ var Controller = (function () {
                 }
 
                 // Unit-specific actions, might not always apply
-                if (e.keyCode === this.KEYS.F && activeUnit.actions.indexOf("fortify") >= 0) {
-                    activeUnit.fortify();
+                if (e.keyCode === this.KEYS.F) {
+                    if (activeUnit.actions.indexOf("fortify") >= 0) {
+                        activeUnit.fortify();
+                    } else if (activeUnit.actions.indexOf("wake") >= 0) {
+                        activeUnit.wake();
+                    }
                 } else if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
                     activeUnit.skipTurn();
                 } else if (e.keyCode === this.KEYS.G && activeUnit.actions.indexOf("goTo") >= 0) {
@@ -829,6 +833,10 @@ var ChromeUI = (function () {
 
         if (action === "fortify") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.</p>';
+            this.elHoverBox.style.display = "block";
+        }
+        if (action === "wake") {
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Wake</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>Wake up the unit so it can be issued orders.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "skipTurn") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Skip Turn</span> <span class="action-shortcut">&lt;Space Bar&gt;</span></p><p>The unit does nothing this turn, but will ask for orders again next turn.</p>';
@@ -2201,6 +2209,7 @@ var Units;
     var UnitOrGroup = (function () {
         function UnitOrGroup() {
             this._targetCoords = null;
+            this._actions = [];
             this._promotions = [];
             // Turn stuff
             this._active = false;
@@ -2617,9 +2626,15 @@ var Units;
         };
 
         UnitOrGroup.prototype.fortify = function () {
-            console.log("FORTIFY");
             this.fortified = true;
             this.fortifiedTurns = 0;
+
+            chromeUI.onUnitActivated(); // Update unit icons
+            mapUI.render(); // Update unit health bar on map
+        };
+
+        UnitOrGroup.prototype.wake = function () {
+            this.fortified = false;
 
             chromeUI.onUnitActivated(); // Update unit icons
             mapUI.render(); // Update unit health bar on map
@@ -2674,6 +2689,32 @@ var Units;
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
         }
+        Object.defineProperty(Unit.prototype, "actions", {
+            get: function () {
+                var actions;
+
+                actions = this._actions.slice();
+
+                if (this.fortified) {
+                    actions = actions.filter(function (a) {
+                        return a !== "fortify";
+                    });
+                } else {
+                    actions = actions.filter(function (a) {
+                        return a !== "wake";
+                    });
+                }
+
+                return actions;
+            },
+            // Filter out fortify/wake and other action combos
+            set: function (value) {
+                this._actions = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Unit.prototype.moveOnMap = function (coords) {
             // It's an individual unit!
             game.map.moveUnit(this, coords);
@@ -3163,7 +3204,7 @@ var Units;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "goTo"];
+            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
         }
         return Scout;
     })(Unit);
@@ -3180,7 +3221,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "goTo"];
+            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
         }
         return Warrior;
     })(Unit);
@@ -3197,7 +3238,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "goTo"];
+            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { cityDefense: 50, hillsDefense: 25, firstStrikes: 1 };
         }
         return Archer;
@@ -3215,7 +3256,7 @@ var Units;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "goTo"];
+            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { attackAxeman: 100, noDefensiveBonuses: 1, retreat: 10 };
         }
         return Chariot;
@@ -3233,7 +3274,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "goTo"];
+            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { mounted: 100 };
         }
         return Spearman;
@@ -3251,7 +3292,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "skipTurn", "goTo"];
+            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { melee: 50 };
         }
         return Axeman;

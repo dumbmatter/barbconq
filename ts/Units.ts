@@ -174,7 +174,7 @@ module Units {
         _landOrSea : string;
         _canAttack : boolean;
         _canDefend : boolean;
-        _actions : string[];
+        _actions : string[] = [];
         _promotions : string[] = [];
 
         // Turn stuff
@@ -471,9 +471,15 @@ module Units {
         }
 
         fortify() {
-console.log("FORTIFY")
             this.fortified = true;
             this.fortifiedTurns = 0;
+
+            chromeUI.onUnitActivated(); // Update unit icons
+            mapUI.render(); // Update unit health bar on map
+        }
+
+        wake() {
+            this.fortified = false;
 
             chromeUI.onUnitActivated(); // Update unit icons
             mapUI.render(); // Update unit health bar on map
@@ -520,6 +526,22 @@ console.log("FORTIFY")
         canAttack = true;
         canDefend = true;
         unitBonuses : any = {}; // {[name : string] : number} // These are bonuses inherent to a unit type, regardless of promotions
+
+        // Filter out fortify/wake and other action combos
+        set actions(value : string[]) { this._actions = value; }
+        get actions() : string[] {
+            var actions : string[];
+
+            actions = this._actions.slice();
+
+            if (this.fortified) {
+                actions = actions.filter(function (a : string) : boolean { return a !== "fortify"; });
+            } else {
+                actions = actions.filter(function (a : string) : boolean { return a !== "wake"; });
+            }
+
+            return actions;
+        }
 
         constructor(owner : number, coords : number[]) {
             super();
@@ -951,7 +973,7 @@ console.log("FORTIFY")
         currentMovement = 2;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "goTo"];
+        actions = ["fortify", "wake", "skipTurn", "goTo"];
     }
 
     export class Warrior extends Unit {
@@ -964,7 +986,7 @@ console.log("FORTIFY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "goTo"];
+        actions = ["fortify", "wake", "skipTurn", "goTo"];
     }
 
     export class Archer extends Unit {
@@ -977,7 +999,7 @@ console.log("FORTIFY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "goTo"];
+        actions = ["fortify", "wake", "skipTurn", "goTo"];
         unitBonuses = {cityDefense: 50, hillsDefense: 25, firstStrikes: 1};
     }
 
@@ -991,7 +1013,7 @@ console.log("FORTIFY")
         currentMovement = 2;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "goTo"];
+        actions = ["fortify", "wake", "skipTurn", "goTo"];
         unitBonuses = {attackAxeman: 100, noDefensiveBonuses: 1, retreat: 10};
     }
 
@@ -1005,7 +1027,7 @@ console.log("FORTIFY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "goTo"];
+        actions = ["fortify", "wake", "skipTurn", "goTo"];
         unitBonuses = {mounted: 100};
     }
 
@@ -1019,7 +1041,7 @@ console.log("FORTIFY")
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "skipTurn", "goTo"];
+        actions = ["fortify", "wake", "skipTurn", "goTo"];
         unitBonuses = {melee: 50};
     }
 

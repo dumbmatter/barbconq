@@ -124,8 +124,12 @@ class Controller {
                 }
 
                 // Unit-specific actions, might not always apply
-                if (e.keyCode === this.KEYS.F && activeUnit.actions.indexOf("fortify") >= 0) {
-                    activeUnit.fortify();
+                if (e.keyCode === this.KEYS.F) {
+                    if (activeUnit.actions.indexOf("fortify") >= 0) {
+                        activeUnit.fortify();
+                    } else if (activeUnit.actions.indexOf("wake") >= 0) {
+                        activeUnit.wake();
+                    }
                 } else if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
                     activeUnit.skipTurn();
                 } else if (e.keyCode === this.KEYS.G && activeUnit.actions.indexOf("goTo") >= 0) {

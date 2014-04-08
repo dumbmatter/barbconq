@@ -8,13 +8,15 @@ unit actions
     defensive bonus
     when turnID is incremented
       heal
-      increment fortifiedTurns
+      increment fortifiedTurns, or reset
     wake
+      shouldn't reset fortifiedTurns. instead, have soem "movedThisTurn" boolean that is checked in turnID and when applying fortify bonus
     top right indicator in unit icon
     on map tile indicator?
     "fortify until healed"
     when fortified, show "wake unit" icon
     how to handle group?
+    when adding a unit to a group, wake all
     how to handle unit that has already used up its moves, fully or partially?
       shouldn't be able to heal right away. what about defensive bonus?
   are some of these universal? can move up to root Unit?
