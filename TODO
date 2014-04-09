@@ -3,18 +3,16 @@
 unit actions
   fortify
     unit properties: fortified (bool) and fortifiedTurns (number)
-      group? just read from individual ones, either all or nothing
     when turnID is incremented
-      heal
-      increment fortifiedTurns, or reset
-        increment if fortified && !movedThisTurn - should be done at *beginning* of turn
-          also, heal
-        reset if movedThisTurn - should be done at *end* of turn
+      make game.nextPlayer() which will increment game.turnID, do turn-specific stuff (healing, fortify bonus, some of the stuff in game.newTurn, ...), and then call game.moveUnits. this should be the only way that turnID is increased
+        heal
+        increment fortifiedTurns, or reset
+          increment if fortified && !movedThisTurn - should be done at *beginning* of turn
+            also, heal
+          reset if movedThisTurn - should be done at *end* of turn
     "fortify until healed"
-    how to handle group?
-    when adding a unit to a group, wake all
-    how to handle unit that has already used up its moves, fully or partially?
-      shouldn't be able to heal right away. what about defensive bonus?
+    does healing occur in a turn where no movement occurred, but unit is not fortified?
+      doesn't have to be fortified, just can't have moved
   are some of these universal? can move up to root Unit?
 
 why is combat hover box showing up during battle? should probably have no hover boxes show up

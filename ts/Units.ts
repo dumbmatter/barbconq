@@ -848,6 +848,17 @@ module Units {
         }
         get skippedTurn() : boolean { return this._skippedTurn; }
 
+        // Set for group and every group member
+        set fortified(value : boolean) {
+            var i : number;
+
+            for (i = 0; i < this.units.length; i++) {
+                this.units[i].fortified = value;
+            }
+            this._fortified = value;
+        }
+        get fortified() : boolean { return this._fortified; }
+
         // Do nothing, can't be changed at group level
         set attacked(value : boolean) {
             throw new Error('"attacked" can only be set for individual units, not groups.');
@@ -888,11 +899,28 @@ module Units {
         }
 
         add(units : Unit[]) {
-            var i : number;
+            var allNewUnitsAreFortified : boolean, i : number;
+
+            allNewUnitsAreFortified = true;
 
             for (i = 0; i < units.length; i++) {
                 this.units.push(units[i]);
                 units[i].group = this;
+
+                if (!units[i].fortified) {
+                    allNewUnitsAreFortified = false;
+                }
+            }
+
+            // Fortify group if it's a new group and all members are fortified
+            if (units.length === this.units.length && allNewUnitsAreFortified) {
+                this.fortified = true;
+            }
+
+            // Unfortify everyone when adding to a group, unless everyone involved is fortified.
+            if (!this.fortified || !allNewUnitsAreFortified) {
+                this.fortified = false;
+                this.skippedTurn = false;
             }
         }
 

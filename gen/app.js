@@ -3096,6 +3096,23 @@ var Units;
             configurable: true
         });
 
+        Object.defineProperty(Group.prototype, "fortified", {
+            get: function () {
+                return this._fortified;
+            },
+            // Set for group and every group member
+            set: function (value) {
+                var i;
+
+                for (i = 0; i < this.units.length; i++) {
+                    this.units[i].fortified = value;
+                }
+                this._fortified = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
 
         Object.defineProperty(Group.prototype, "attacked", {
             // Only true if every group member either can't attack or has already attacked
@@ -3126,11 +3143,28 @@ var Units;
         };
 
         Group.prototype.add = function (units) {
-            var i;
+            var allNewUnitsAreFortified, i;
+
+            allNewUnitsAreFortified = true;
 
             for (i = 0; i < units.length; i++) {
                 this.units.push(units[i]);
                 units[i].group = this;
+
+                if (!units[i].fortified) {
+                    allNewUnitsAreFortified = false;
+                }
+            }
+
+            // Fortify group if it's a new group and all members are fortified
+            if (units.length === this.units.length && allNewUnitsAreFortified) {
+                this.fortified = true;
+            }
+
+            // Unfortify everyone when adding to a group, unless everyone involved is fortified.
+            if (!this.fortified || !allNewUnitsAreFortified) {
+                this.fortified = false;
+                this.skippedTurn = false;
             }
         };
 
@@ -4052,9 +4086,9 @@ function init() {
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
     [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
-    /*    new Units.Scout(config.PLAYER_ID, [10, 20]);
+    new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
+    new Units.Archer(config.PLAYER_ID, [10, 20]);
     u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
     u1.promotions.push("drill1");
     u1.promotions.push("drill2");
