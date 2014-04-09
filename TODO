@@ -2,17 +2,18 @@
 
 unit actions
   fortify
-    unit properties: fortified (bool) and fortifiedTurns (number)
+    canHeal
+      initialize to true at beginning of every turn, then set to false based on activities in http://civilization.wikia.com/wiki/Heal
+      whenever canHeal is set to false, unfortify too!
     when turnID is incremented
       make game.nextPlayer() which will increment game.turnID, do turn-specific stuff (healing, fortify bonus, some of the stuff in game.newTurn, ...), and then call game.moveUnits. this should be the only way that turnID is increased
-        heal
-        increment fortifiedTurns, or reset
-          increment if canHeal - should be done at *beginning* of turn
-            also, heal
-          reset if !canHeal - should be done at *end* of turn, but leave !canHeal so it's not incremented at the start of the next turn
+        game.moveUnits barb AI should be made like player's turn - do one unit, call again at end of async step
+      increment fortifiedTurns and heal, or reset fortifiedTurns=0 and don't heal - at beginning of turn
+        increment+heal if canHeal
+          healing amount based on http://civilization.wikia.com/wiki/Heal
+        reset if !canHeal
+    don't apply fortify bonus if !canHeal
     "fortify until healed"
-    does healing occur in a turn where no movement occurred, but unit is not fortified?
-      doesn't have to be fortified, just can't have moved
   are some of these universal? can move up to root Unit?
 
 why is combat hover box showing up during battle? should probably have no hover boxes show up
@@ -178,10 +179,11 @@ Combat
   http://home.comcast.net/~proc/civ4/combat_calc.htm - seems weird with injured units
   BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
   collateral damage
+  some units are immune to first strikes
+  Does cityDefense bonus apply for other civ's cities? Like a neutral city, or an ally's city?
 
-some units are immune to first strikes
-
-Does cityDefense bonus apply for other civ's cities? Like a neutral city, or an ally's city?
+healing details
+  http://civilization.wikia.com/wiki/Heal
 
 Import civ4 maps
 
