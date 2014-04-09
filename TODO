@@ -7,9 +7,9 @@ unit actions
       make game.nextPlayer() which will increment game.turnID, do turn-specific stuff (healing, fortify bonus, some of the stuff in game.newTurn, ...), and then call game.moveUnits. this should be the only way that turnID is increased
         heal
         increment fortifiedTurns, or reset
-          increment if fortified && !movedThisTurn - should be done at *beginning* of turn
+          increment if canHeal - should be done at *beginning* of turn
             also, heal
-          reset if movedThisTurn - should be done at *end* of turn
+          reset if !canHeal - should be done at *end* of turn, but leave !canHeal so it's not incremented at the start of the next turn
     "fortify until healed"
     does healing occur in a turn where no movement occurred, but unit is not fortified?
       doesn't have to be fortified, just can't have moved
@@ -36,7 +36,6 @@ unit promotions
     in unit icon
     on tile
   confirm
-    unit is unfortified when promoted
     make sure all unitBonuses are applied in battle
     battle odds match real game
   remaining promotions for barbconq
