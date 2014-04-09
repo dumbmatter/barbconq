@@ -807,6 +807,8 @@ var ChromeUI = (function () {
             return "Withdrawal Chance: " + amount + "%";
         } else if (name === "tile") {
             return "+" + amount + "% Tile Defense";
+        } else if (name === "fortified") {
+            return "+" + amount + "% Fortify Bonus";
         } else if (name === "firstStrikes") {
             if (amount === 1) {
                 return "1 First Strike";
@@ -2637,7 +2639,6 @@ var Units;
 
         UnitOrGroup.prototype.fortify = function () {
             this.fortified = true;
-            this.fortifiedTurns = 0;
 
             this.skipTurn();
         };
@@ -2781,6 +2782,11 @@ var Units;
                         bonuses[name] = promotionBonuses[name];
                     }
                 }
+            }
+
+            // Add fortify bonus
+            if (this.fortifiedTurns > 0) {
+                bonuses["fortified"] = Util.bound(5 * this.fortifiedTurns, 0, 25);
             }
 
             return bonuses;
@@ -3464,7 +3470,7 @@ var Combat;
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
             for (name in bonuses) {
-                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses") {
+                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
                     this.appliedBonuses[0][name] = bonuses[name];
@@ -3532,7 +3538,7 @@ var Combat;
                     if (attacker.category === "gunpowder") {
                         this.appliedBonuses[1][name] = bonuses[name];
                     }
-                } else if (name === "firstStrikes" || name === "firstStrikeChances") {
+                } else if (name === "firstStrikes" || name === "firstStrikeChances" || name === "fortified") {
                     this.appliedBonuses[1][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');

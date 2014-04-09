@@ -163,6 +163,8 @@ class ChromeUI {
             return "Withdrawal Chance: " + amount + "%";
         } else if (name === "tile") {
             return "+" + amount + "% Tile Defense";
+        } else if (name === "fortified") {
+            return "+" + amount + "% Fortify Bonus";
         } else if (name === "firstStrikes") {
             if (amount === 1) {
                 return "1 First Strike";

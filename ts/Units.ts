@@ -472,7 +472,6 @@ module Units {
 
         fortify() {
             this.fortified = true;
-            this.fortifiedTurns = 0;
 
             this.skipTurn();
         }
@@ -612,6 +611,11 @@ module Units {
                         bonuses[name] = promotionBonuses[name];
                     }
                 }
+            }
+
+            // Add fortify bonus
+            if (this.fortifiedTurns > 0) {
+                bonuses["fortified"] = Util.bound(5 * this.fortifiedTurns, 0, 25);
             }
 
             return bonuses;

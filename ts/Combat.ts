@@ -63,7 +63,7 @@ module Combat {
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
             for (name in bonuses) {
-                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses") {
+                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
                     this.appliedBonuses[0][name] = bonuses[name];
@@ -131,7 +131,7 @@ module Combat {
                     if (attacker.category === "gunpowder") {
                         this.appliedBonuses[1][name] = bonuses[name];
                     }
-                } else if (name === "firstStrikes" || name === "firstStrikeChances") {
+                } else if (name === "firstStrikes" || name === "firstStrikeChances" || name === "fortified") {
                     this.appliedBonuses[1][name] = bonuses[name];
                 } else {
                     throw new Error('Unknown bonus type "' + name + '".');
