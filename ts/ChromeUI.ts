@@ -321,7 +321,7 @@ class ChromeUI {
 
 
     private unitIcon(unit : Units.Unit) : HTMLDivElement {
-        var healthPct : number, healthBar : HTMLDivElement, icon : HTMLDivElement, iconWrapper, movementIndicator : HTMLDivElement;
+        var healthPct : number, healthBar : HTMLDivElement, icon : HTMLDivElement, iconWrapper, movementIndicator : HTMLDivElement, statusIndicator : HTMLDivElement;
 
         iconWrapper = document.createElement("div");
         iconWrapper.classList.add("unit-icon-wrapper");
@@ -366,9 +366,19 @@ class ChromeUI {
             movementIndicator.classList.add("movement-none");
         }
 
+        // Status indicator
+        if (unit.fortified) {
+            statusIndicator = document.createElement("div");
+            statusIndicator.classList.add("status-indicator");
+            statusIndicator.classList.add("status-fortified");
+        }
+
         iconWrapper.appendChild(icon);
         iconWrapper.appendChild(healthBar);
         iconWrapper.appendChild(movementIndicator);
+        if (statusIndicator) {
+            iconWrapper.appendChild(statusIndicator);
+        }
 
         return iconWrapper;
     }

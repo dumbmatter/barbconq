@@ -4,14 +4,12 @@ unit actions
   fortify
     unit properties: fortified (bool) and fortifiedTurns (number)
       group? just read from individual ones, either all or nothing
-    set Unit.skippedTurn to true/false when fortifying/waking
     defensive bonus
     when turnID is incremented
       heal
       increment fortifiedTurns, or reset
     wake
       shouldn't reset fortifiedTurns. instead, have soem "movedThisTurn" boolean that is checked in turnID and when applying fortify bonus
-    top right indicator in unit icon
     on map tile indicator?
     "fortify until healed"
     when fortified, show "wake unit" icon

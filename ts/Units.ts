@@ -474,15 +474,14 @@ module Units {
             this.fortified = true;
             this.fortifiedTurns = 0;
 
-            chromeUI.onUnitActivated(); // Update unit icons
-            mapUI.render(); // Update unit health bar on map
+            this.skipTurn();
         }
 
         wake() {
+            this.skippedTurn = false;
             this.fortified = false;
 
-            chromeUI.onUnitActivated(); // Update unit icons
-            mapUI.render(); // Update unit health bar on map
+            mapUI.render();
         }
 
         isVisible() : boolean {

@@ -956,7 +956,7 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.unitIcon = function (unit) {
-        var healthPct, healthBar, icon, iconWrapper, movementIndicator;
+        var healthPct, healthBar, icon, iconWrapper, movementIndicator, statusIndicator;
 
         iconWrapper = document.createElement("div");
         iconWrapper.classList.add("unit-icon-wrapper");
@@ -1001,9 +1001,19 @@ var ChromeUI = (function () {
             movementIndicator.classList.add("movement-none");
         }
 
+        // Status indicator
+        if (unit.fortified) {
+            statusIndicator = document.createElement("div");
+            statusIndicator.classList.add("status-indicator");
+            statusIndicator.classList.add("status-fortified");
+        }
+
         iconWrapper.appendChild(icon);
         iconWrapper.appendChild(healthBar);
         iconWrapper.appendChild(movementIndicator);
+        if (statusIndicator) {
+            iconWrapper.appendChild(statusIndicator);
+        }
 
         return iconWrapper;
     };
@@ -2629,15 +2639,14 @@ var Units;
             this.fortified = true;
             this.fortifiedTurns = 0;
 
-            chromeUI.onUnitActivated(); // Update unit icons
-            mapUI.render(); // Update unit health bar on map
+            this.skipTurn();
         };
 
         UnitOrGroup.prototype.wake = function () {
+            this.skippedTurn = false;
             this.fortified = false;
 
-            chromeUI.onUnitActivated(); // Update unit icons
-            mapUI.render(); // Update unit health bar on map
+            mapUI.render();
         };
 
         UnitOrGroup.prototype.isVisible = function () {
