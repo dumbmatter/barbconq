@@ -683,8 +683,7 @@ module Units {
                 this.currentStrength = (this.currentStrength + this.strength) / 2;
 
                 if (this.owner === config.PLAYER_ID) {
-                    chromeUI.onUnitActivated(); // Update unit icons
-                    mapUI.render(); // Update unit health bar on map
+                    mapUI.render();
                 }
             } else {
                 throw new Error('Unit is not allowed to get the ' + promotionName + ' promotion now.')

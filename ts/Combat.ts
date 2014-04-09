@@ -392,8 +392,7 @@ module Combat {
             }
 
 //console.log("START HIT ANIMATION");
-            chromeUI.onUnitActivated(); // Update unit icons
-            mapUI.render(); // Update unit health bar on map
+            mapUI.render();
             setTimeout(function () {
                 if (!this.withdrew && this.hps[0] > 0 && this.hps[1] > 0) {
                     this.simRounds(cb, includeAnimationDelays);
