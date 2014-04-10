@@ -487,7 +487,7 @@ var Controller = (function () {
             }
 
             if (e.keyCode === this.KEYS.ENTER) {
-                game.newTurn();
+                game.nextPlayer();
             }
         }.bind(this));
     };
@@ -2000,81 +2000,92 @@ var Game = (function () {
         this.moveUnits();
     };
 
+    // Within a turn, move to the next player. Or if all players have moved, start the next turn.
+    Game.prototype.nextPlayer = function () {
+        if (this.turnID < this.names.length - 1) {
+            this.turnID += 1;
+            this.moveUnits();
+        } else {
+            this.newTurn();
+        }
+    };
+
     Game.prototype.moveUnits = function () {
         var centerViewport, i, j, unit, group;
 
-        for (i = this.turnID; i < this.names.length; i++) {
-            if (i === config.PLAYER_ID) {
-                for (j in this.groups[i]) {
-                    group = this.groups[i][j];
-                    if (group.currentMovement > 0 && !group.skippedTurn && !group.targetCoords) {
-                        group.activate();
-                        return true;
-                    }
+        i = this.turnID;
+
+        if (i === config.PLAYER_ID) {
+            for (j in this.groups[i]) {
+                group = this.groups[i][j];
+                if (group.currentMovement > 0 && !group.skippedTurn && !group.targetCoords) {
+                    group.activate();
+                    return true;
                 }
-
-                for (j in this.groups[i]) {
-                    group = this.groups[i][j];
-                    if (group.currentMovement > 0 && !group.skippedTurn) {
-                        group.activate(true, true); // Activate, center screen, and auto-move to targetCoords
-                        return true;
-                    }
-                }
-
-                for (j in this.units[i]) {
-                    unit = this.units[i][j];
-                    if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.targetCoords && !unit.group) {
-                        unit.activate();
-                        return true;
-                    }
-                }
-
-                for (j in this.units[i]) {
-                    unit = this.units[i][j];
-                    if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.group) {
-                        unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
-                        return true;
-                    }
-                }
-            } else if (i === config.BARB_ID) {
-                chromeUI.onAIMoving();
-
-                for (j in this.units[i]) {
-                    unit = this.units[i][j];
-                    if (unit.currentMovement > 0 && !unit.skippedTurn) {
-                        centerViewport = !(game.activeUnit && game.activeUnit.id === unit.id); // Don't center viewport if unit is already active (multi-move)
-                        unit.activate(centerViewport);
-
-                        setTimeout(function () {
-                            // If in city, only move to attack with >75% chance of winning
-                            // Attack with >25% chance of winning
-                            // Move towards weaker unit
-                            // Move into city, if possible
-                            // Move away from stronger unit
-                            // Hurt, so fortify until healed
-                            // Move randomly
-                            if (Math.random() < 0.75) {
-                                unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
-                            } else {
-                                unit.skipTurn();
-                            }
-                        }, unit.movementDelay());
-                        return true;
-                    }
-                }
-
-                chromeUI.onAIMovingDone();
-
-                this.turnID += 1;
-            } else {
-                // Should auto-move non-barb AI units here
             }
-        }
 
-        // If we made it this far, all of the user's units have moved
-        chromeUI.onMovesDone();
-        mapUI.render();
-        return false;
+            for (j in this.groups[i]) {
+                group = this.groups[i][j];
+                if (group.currentMovement > 0 && !group.skippedTurn) {
+                    group.activate(true, true); // Activate, center screen, and auto-move to targetCoords
+                    return true;
+                }
+            }
+
+            for (j in this.units[i]) {
+                unit = this.units[i][j];
+                if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.targetCoords && !unit.group) {
+                    unit.activate();
+                    return true;
+                }
+            }
+
+            for (j in this.units[i]) {
+                unit = this.units[i][j];
+                if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.group) {
+                    unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
+                    return true;
+                }
+            }
+
+            // If we made it this far, all of the user's units have moved
+            chromeUI.onMovesDone();
+            mapUI.render();
+            return false;
+        } else if (i === config.BARB_ID) {
+            chromeUI.onAIMoving();
+
+            for (j in this.units[i]) {
+                unit = this.units[i][j];
+                if (unit.currentMovement > 0 && !unit.skippedTurn) {
+                    centerViewport = !(game.activeUnit && game.activeUnit.id === unit.id); // Don't center viewport if unit is already active (multi-move)
+                    unit.activate(centerViewport);
+
+                    setTimeout(function () {
+                        // If in city, only move to attack with >75% chance of winning
+                        // Attack with >25% chance of winning
+                        // Move towards weaker unit
+                        // Move into city, if possible
+                        // Move away from stronger unit
+                        // Hurt, so fortify until healed
+                        // Move randomly
+                        if (Math.random() < 0.75) {
+                            unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                        } else {
+                            unit.skipTurn();
+                        }
+                    }, unit.movementDelay());
+                    return true;
+                }
+            }
+
+            // If we made it this far, all of the barbarian units have moved
+            chromeUI.onAIMovingDone();
+            game.nextPlayer();
+            return false;
+        } else {
+            // Should auto-move non-barb AI units here
+        }
     };
     return Game;
 })();

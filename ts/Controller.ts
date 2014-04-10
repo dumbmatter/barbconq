@@ -390,7 +390,7 @@ class Controller {
             if (this.preventUserInput()) { return; }
 
             if (e.keyCode === this.KEYS.ENTER) {
-                game.newTurn();
+                game.nextPlayer();
             }
         }.bind(this));
     }
