@@ -1986,6 +1986,7 @@ var Game = (function () {
                 unit = this.units[i][u];
                 unit.skippedTurn = false;
                 unit.attacked = false;
+                unit.canHeal = true;
                 unit.currentMovement = unit.movement;
                 unit.updateCanPromoteToLevel();
             }
@@ -2314,6 +2315,22 @@ var Units;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(UnitOrGroup.prototype, "canHeal", {
+            get: function () {
+                return this._canHeal;
+            },
+            set: function (value) {
+                this._canHeal = value;
+
+                // Any action taken to set canHeal to false should also unfortify.
+                if (!value) {
+                    this.fortified = false;
+                    this.fortifiedTurns = 0;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(UnitOrGroup.prototype, "actions", {
             get: function () {
                 return this._actions;
@@ -2485,6 +2502,9 @@ var Units;
             if (Combat.fightIfTileHasEnemy(this, coords)) {
                 return false;
             }
+
+            // Set canHeal this after Combat.fightIfTileHasEnemy, since *if* a fight is started, that will handle it
+            this.canHeal = false;
 
             // Move the unit(s) in the map data structure
             this.moveOnMap(coords);
@@ -2688,6 +2708,7 @@ var Units;
             this.landOrSea = "land";
             this.canAttack = true;
             this.canDefend = true;
+            this.canHeal = true;
             this.unitBonuses = {};
 
             this.owner = owner;
@@ -3038,6 +3059,22 @@ var Units;
             // Do nothing, can't be changed at group level
             set: function (value) {
                 throw new Error('"canDefend" can only be set for individual units, not groups.');
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(Group.prototype, "canHeal", {
+            get: function () {
+                throw new Error('"canHeal" can only be get for individual units, not groups.');
+            },
+            // Can't be read at group level
+            set: function (value) {
+                var i;
+
+                for (i = 0; i < this.units.length; i++) {
+                    this.units[i].canHeal = value;
+                }
             },
             enumerable: true,
             configurable: true
@@ -3865,6 +3902,7 @@ var Combat;
                 /*console.log(JSON.stringify(this.appliedBonuses));
                 console.log(this.firstStrikes);*/
                 this.units[0].attacked = true;
+                this.units[0].canHeal = false;
 
                 // Simulate the fight
                 this.simRounds(cb, includeAnimationDelays);

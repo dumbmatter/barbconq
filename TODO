@@ -2,15 +2,12 @@
 
 unit actions
   fortify
-    canHeal
-      initialize to true at beginning of every turn, then set to false based on activities in http://civilization.wikia.com/wiki/Heal
-      whenever canHeal is set to false, unfortify too!
     when turnID is incremented
       make game.nextPlayer() which will increment game.turnID, do turn-specific stuff (healing, fortify bonus, some of the stuff in game.newTurn, ...), and then call game.moveUnits. this should be the only way that turnID is increased
         game.moveUnits barb AI should be made like player's turn - do one unit, call again at end of async step
       increment fortifiedTurns and heal, or reset fortifiedTurns=0 and don't heal - at beginning of turn
         increment+heal if canHeal
-          healing amount based on http://civilization.wikia.com/wiki/Heal
+          healing amount based on
         reset if !canHeal
     don't apply fortify bonus if !canHeal
     "fortify until healed"
@@ -184,6 +181,7 @@ Combat
 
 healing details
   http://civilization.wikia.com/wiki/Heal
+  canHeal should be set for various other actions: http://civilization.wikia.com/wiki/Heal
 
 Import civ4 maps
 

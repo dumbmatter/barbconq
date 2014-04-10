@@ -103,6 +103,7 @@ class Game {
                 unit = this.units[i][u];
                 unit.skippedTurn = false;
                 unit.attacked = false;
+                unit.canHeal = true;
                 unit.currentMovement = unit.movement;
                 unit.updateCanPromoteToLevel();
             }

@@ -174,6 +174,7 @@ module Units {
         _landOrSea : string;
         _canAttack : boolean;
         _canDefend : boolean;
+        _canHeal : boolean; // http://civilization.wikia.com/wiki/Heal
         _actions : string[] = [];
         _promotions : string[] = [];
 
@@ -201,6 +202,16 @@ module Units {
         get canAttack() : boolean { return this._canAttack; }
         set canDefend(value : boolean) { this._canDefend = value; }
         get canDefend() : boolean { return this._canDefend; }
+        set canHeal(value : boolean) {
+            this._canHeal = value;
+
+            // Any action taken to set canHeal to false should also unfortify.
+            if (!value) {
+                this.fortified = false;
+                this.fortifiedTurns = 0;
+            }
+        }
+        get canHeal() : boolean { return this._canHeal; }
         set actions(value : string[]) { this._actions = value; }
         get actions() : string[] { return this._actions; }
         set promotions(value : string[]) { this._promotions = value; }
@@ -314,12 +325,16 @@ module Units {
         moveToCoords(coords : number[]) : boolean {
             var city : Cities.City;
 
+
             // Reset skippedTurn status
             this.skippedTurn = false;
 
             if (Combat.fightIfTileHasEnemy(this, coords)) {
                 return false;
             }
+
+            // Set canHeal this after Combat.fightIfTileHasEnemy, since *if* a fight is started, that will handle it
+            this.canHeal = false;
 
             // Move the unit(s) in the map data structure
             this.moveOnMap(coords);
@@ -523,6 +538,7 @@ module Units {
         landOrSea = "land";
         canAttack = true;
         canDefend = true;
+        canHeal = true;
         unitBonuses : any = {}; // {[name : string] : number} // These are bonuses inherent to a unit type, regardless of promotions
 
         // Filter out fortify/wake and other action combos
@@ -811,6 +827,18 @@ module Units {
                 }
             }
             return false;
+        }
+
+        // Can't be read at group level
+        set canHeal(value : boolean) {
+            var i : number;
+
+            for (i = 0; i < this.units.length; i++) {
+                this.units[i].canHeal = value;
+            }
+        }
+        get canHeal() : boolean {
+            throw new Error('"canHeal" can only be get for individual units, not groups.');
         }
 
         // Do nothing, can't be changed at group level

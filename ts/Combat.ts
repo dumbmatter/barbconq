@@ -423,6 +423,7 @@ module Combat {
 console.log(this.firstStrikes);*/
 
                 this.units[0].attacked = true;
+                this.units[0].canHeal = false;
 
                 // Simulate the fight
                 this.simRounds(cb, includeAnimationDelays);
