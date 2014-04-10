@@ -1,16 +1,7 @@
 # Major current tasks
 
 unit actions
-  fortify
-    when turnID is incremented
-      game.nextPlayer()
-        do turn-specific stuff (healing, fortify bonus, some of the stuff in game.newTurn, ...)
-      increment fortifiedTurns and heal, or reset fortifiedTurns=0 and don't heal - at beginning of turn
-        increment+heal if canHeal
-          healing amount based on
-        reset if !canHeal
-    don't apply fortify bonus if !canHeal
-    "fortify until healed"
+  fortify until healed
   are some of these universal? can move up to root Unit?
 
 why is combat hover box showing up during battle? should probably have no hover boxes show up
@@ -181,7 +172,8 @@ Combat
 
 healing details
   http://civilization.wikia.com/wiki/Heal
-  canHeal should be set for various other actions: http://civilization.wikia.com/wiki/Heal
+  canHeal should be set for various other actions
+  healing formula based on tile ownership
 
 Import civ4 maps
 

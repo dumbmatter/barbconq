@@ -116,6 +116,9 @@ class Game {
 
                 if (unit.canHeal) {
                     unit.fortifiedTurns += 1;
+
+                    // Heal 10 HP
+                    unit.currentStrength = Util.bound(unit.currentStrength + 10 * unit.strength / 100, 0, unit.strength);
                 } else {
                     unit.fortifiedTurns = 0;
                 }
@@ -133,7 +136,13 @@ class Game {
             }
             for (u in this.groups[this.turnID]) {
                 group = this.groups[this.turnID][u];
-                group.skippedTurn = false;
+
+                if (!group.fortified) {
+                    group.skippedTurn = false;
+                } else {
+                    unit.skippedTurn = true;
+                }
+
                 group.currentMovement = group.movement;
             }
         }
