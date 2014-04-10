@@ -4,7 +4,7 @@
 
 unit actions
   fortifyUntilHealed
-    needs a flag, so fortify can be unset
+    unset fortifyUntilHealed when waking or when healed
     red icon instead of normal fortify one
     group?
       should remain fortified (including icon) for all units in group until they're all healed

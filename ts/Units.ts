@@ -183,6 +183,7 @@ module Units {
         _skippedTurn : boolean = false; // When set, no need to loop through this unit before showing turn is over
         _attacked : boolean = false;
         _fortified : boolean = false;
+        _fortifiedUntilHealed : boolean = false;
         _fortifiedTurns : number = 0;
 
         // Default getters/setters for units
@@ -224,6 +225,8 @@ module Units {
         get attacked() : boolean { return this._attacked; }
         set fortified(value : boolean) { this._fortified = value; }
         get fortified() : boolean { return this._fortified; }
+        set fortifiedUntilHealed(value : boolean) { this._fortifiedUntilHealed = value; }
+        get fortifiedUntilHealed() : boolean { return this._fortifiedUntilHealed; }
         set fortifiedTurns(value : number) { this._fortifiedTurns = value; }
         get fortifiedTurns() : number { return this._fortifiedTurns; }
 
@@ -489,6 +492,12 @@ module Units {
             this.fortified = true;
 
             this.skipTurn();
+        }
+
+        fortifyUntilHealed() {
+            this.fortifiedUntilHealed = true;
+
+            this.fortify();
         }
 
         wake() {

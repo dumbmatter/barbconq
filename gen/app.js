@@ -2267,6 +2267,7 @@ var Units;
             this._skippedTurn = false;
             this._attacked = false;
             this._fortified = false;
+            this._fortifiedUntilHealed = false;
             this._fortifiedTurns = 0;
             // Set unique ID for unit or group
             this.id = game.maxId;
@@ -2425,6 +2426,16 @@ var Units;
             },
             set: function (value) {
                 this._fortified = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(UnitOrGroup.prototype, "fortifiedUntilHealed", {
+            get: function () {
+                return this._fortifiedUntilHealed;
+            },
+            set: function (value) {
+                this._fortifiedUntilHealed = value;
             },
             enumerable: true,
             configurable: true
@@ -2699,6 +2710,12 @@ var Units;
             this.fortified = true;
 
             this.skipTurn();
+        };
+
+        UnitOrGroup.prototype.fortifyUntilHealed = function () {
+            this.fortifiedUntilHealed = true;
+
+            this.fortify();
         };
 
         UnitOrGroup.prototype.wake = function () {
