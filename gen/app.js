@@ -487,7 +487,9 @@ var Controller = (function () {
             }
 
             if (e.keyCode === this.KEYS.ENTER) {
-                game.nextPlayer();
+                if (game.turnID === config.PLAYER_ID && !game.moveUnits()) {
+                    game.nextPlayer();
+                }
             }
         }.bind(this));
     };
