@@ -331,6 +331,9 @@ a:hover {
 #bottom-units .status-fortified {
   background-color: #444;
 }
+#bottom-units .status-fortified-until-healed {
+  background-color: red;
+}
 
 #modal-background {
   position: absolute;

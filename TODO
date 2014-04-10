@@ -4,10 +4,10 @@
 
 unit actions
   fortifyUntilHealed
-    unset fortifyUntilHealed when waking or when healed
-    red icon instead of normal fortify one
-    group?
-      should remain fortified (including icon) for all units in group until they're all healed
+    if part of a group
+      should remain fortifiedUntilHealed for all units in group until they're all healed
+    else
+      wake fortifyUntilHealed when healed, at beginning of turn
   are some of these universal? can move up to root Unit?
 
 why is combat hover box showing up during battle? should probably have no hover boxes show up

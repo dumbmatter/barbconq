@@ -375,7 +375,11 @@ class ChromeUI {
         if (unit.fortified) {
             statusIndicator = document.createElement("div");
             statusIndicator.classList.add("status-indicator");
-            statusIndicator.classList.add("status-fortified");
+            if (unit.fortifiedUntilHealed) {
+                statusIndicator.classList.add("status-fortified-until-healed");
+            } else {
+                statusIndicator.classList.add("status-fortified");
+            }
         }
 
         iconWrapper.appendChild(icon);

@@ -503,6 +503,7 @@ module Units {
         wake() {
             this.skippedTurn = false;
             this.fortified = false;
+            this.fortifiedUntilHealed = false;
 
             mapUI.render();
         }
