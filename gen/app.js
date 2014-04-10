@@ -1954,7 +1954,7 @@ var Game = (function () {
     };
 
     Game.prototype.newTurn = function () {
-        var group, i, j, u, unit, unitTypes, tile;
+        var i, j, unitTypes, tile;
 
         // See if anything still has to be moved, after the initial turn
         if (this.turn > 0 && this.moveUnits()) {
@@ -1966,7 +1966,7 @@ var Game = (function () {
         this.map.updateVisibility();
         chromeUI.onNewTurn();
 
-        // Randomly spawn barbs on non-visible tiles
+        // Randomly spawn barbs on non-visible tiles - works because barbs are turnID=0
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
@@ -1980,34 +1980,34 @@ var Game = (function () {
                 }
             }
         }
-
-        for (i = 0; i < this.units.length; i++) {
-            for (u in this.units[i]) {
-                unit = this.units[i][u];
-                unit.skippedTurn = false;
-                unit.attacked = false;
-                unit.canHeal = true;
-                unit.currentMovement = unit.movement;
-                unit.updateCanPromoteToLevel();
-            }
-            for (u in this.groups[i]) {
-                group = this.groups[i][u];
-                group.skippedTurn = false;
-                group.currentMovement = group.movement;
-            }
-        }
-
-        this.moveUnits();
     };
 
     // Within a turn, move to the next player. Or if all players have moved, start the next turn.
     Game.prototype.nextPlayer = function () {
+        var group, u, unit;
+
+        // Move to the next player, or start a new turn (move to player 0)
         if (this.turnID < this.names.length - 1) {
             this.turnID += 1;
-            this.moveUnits();
         } else {
             this.newTurn();
         }
+
+        for (u in this.units[this.turnID]) {
+            unit = this.units[this.turnID][u];
+            unit.skippedTurn = false;
+            unit.attacked = false;
+            unit.canHeal = true;
+            unit.currentMovement = unit.movement;
+            unit.updateCanPromoteToLevel();
+        }
+        for (u in this.groups[this.turnID]) {
+            group = this.groups[this.turnID][u];
+            group.skippedTurn = false;
+            group.currentMovement = group.movement;
+        }
+
+        this.moveUnits();
     };
 
     Game.prototype.moveUnits = function () {
@@ -4150,6 +4150,7 @@ function init() {
     new Cities.City(config.BARB_ID, [10, 21]);
 
     game.newTurn();
+    game.moveUnits();
 }
 
 function startBarbConq() {

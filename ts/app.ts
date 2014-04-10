@@ -105,6 +105,7 @@ function init() {
     new Cities.City(config.BARB_ID, [10, 21]);
 
     game.newTurn();
+    game.moveUnits();
 }
 
 function startBarbConq() {

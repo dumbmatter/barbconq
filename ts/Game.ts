@@ -70,7 +70,7 @@ class Game {
     }
 
     newTurn() {
-        var group : Units.Group, i : number, j : number, u : string, unit : Units.Unit, unitTypes : string[], tile : MapMaker.Tile;
+        var i : number, j : number, unitTypes : string[], tile : MapMaker.Tile;
 
         // See if anything still has to be moved, after the initial turn
         if (this.turn > 0 && this.moveUnits()) {
@@ -82,7 +82,7 @@ class Game {
         this.map.updateVisibility();
         chromeUI.onNewTurn();
 
-        // Randomly spawn barbs on non-visible tiles
+        // Randomly spawn barbs on non-visible tiles - works because barbs are turnID=0
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
@@ -96,35 +96,35 @@ class Game {
                 }
             }
         }
-
-        // Reset all movement counters
-        for (i = 0; i < this.units.length; i++) {
-            for (u in this.units[i]) {
-                unit = this.units[i][u];
-                unit.skippedTurn = false;
-                unit.attacked = false;
-                unit.canHeal = true;
-                unit.currentMovement = unit.movement;
-                unit.updateCanPromoteToLevel();
-            }
-            for (u in this.groups[i]) {
-                group = this.groups[i][u];
-                group.skippedTurn = false;
-                group.currentMovement = group.movement;
-            }
-        }
-
-        this.moveUnits();
     }
 
     // Within a turn, move to the next player. Or if all players have moved, start the next turn.
     nextPlayer() {
+        var group : Units.Group, u : string, unit : Units.Unit;
+
+        // Move to the next player, or start a new turn (move to player 0)
         if (this.turnID < this.names.length - 1) {
             this.turnID += 1;
-            this.moveUnits();
         } else {
             this.newTurn();
         }
+
+        // Reset all unit counters
+        for (u in this.units[this.turnID]) {
+            unit = this.units[this.turnID][u];
+            unit.skippedTurn = false;
+            unit.attacked = false;
+            unit.canHeal = true;
+            unit.currentMovement = unit.movement;
+            unit.updateCanPromoteToLevel();
+        }
+        for (u in this.groups[this.turnID]) {
+            group = this.groups[this.turnID][u];
+            group.skippedTurn = false;
+            group.currentMovement = group.movement;
+        }
+
+        this.moveUnits();
     }
 
     moveUnits() : boolean {
