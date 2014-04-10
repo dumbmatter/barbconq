@@ -548,10 +548,16 @@ module Units {
 
             actions = this._actions.slice();
 
+            // Handle fortified/wake
             if (this.fortified) {
                 actions = actions.filter(function (a : string) : boolean { return a !== "fortify"; });
             } else {
                 actions = actions.filter(function (a : string) : boolean { return a !== "wake"; });
+            }
+
+            // Handle fortifyUntilHealed
+            if (this.fortified || this.currentStrength >= this.strength) {
+                actions = actions.filter(function (a : string) : boolean { return a !== "fortifyUntilHealed"; });
             }
 
             return actions;
@@ -1031,7 +1037,7 @@ module Units {
         currentMovement = 2;
 
         landOrSea = "land";
-        actions = ["fortify", "wake", "skipTurn", "goTo"];
+        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
     }
 
     export class Warrior extends Unit {
@@ -1044,7 +1050,7 @@ module Units {
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "wake", "skipTurn", "goTo"];
+        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
     }
 
     export class Archer extends Unit {
@@ -1057,7 +1063,7 @@ module Units {
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "wake", "skipTurn", "goTo"];
+        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         unitBonuses = {cityDefense: 50, hillsDefense: 25, firstStrikes: 1};
     }
 
@@ -1071,7 +1077,7 @@ module Units {
         currentMovement = 2;
 
         landOrSea = "land";
-        actions = ["fortify", "wake", "skipTurn", "goTo"];
+        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         unitBonuses = {attackAxeman: 100, noDefensiveBonuses: 1, retreat: 10};
     }
 
@@ -1085,7 +1091,7 @@ module Units {
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "wake", "skipTurn", "goTo"];
+        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         unitBonuses = {mounted: 100};
     }
 
@@ -1099,7 +1105,7 @@ module Units {
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "wake", "skipTurn", "goTo"];
+        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         unitBonuses = {melee: 50};
     }
 

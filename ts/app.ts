@@ -92,6 +92,7 @@ function init() {
     u1.promotions.push("drill1");
     u1.promotions.push("drill2");
     u1.xp += 5;
+    u1.currentStrength = 3;
 /*    new Units.Archer(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);

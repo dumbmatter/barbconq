@@ -838,8 +838,10 @@ var ChromeUI = (function () {
         if (action === "fortify") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.</p>';
             this.elHoverBox.style.display = "block";
-        }
-        if (action === "wake") {
+        } else if (action === "fortifyUntilHealed") {
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify Until Healed</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit remains inactive until it is fully healed.</p>';
+            this.elHoverBox.style.display = "block";
+        } else if (action === "wake") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Wake</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>Wake up the unit so it can be issued orders.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "skipTurn") {
@@ -2762,6 +2764,7 @@ var Units;
 
                 actions = this._actions.slice();
 
+                // Handle fortified/wake
                 if (this.fortified) {
                     actions = actions.filter(function (a) {
                         return a !== "fortify";
@@ -2769,6 +2772,13 @@ var Units;
                 } else {
                     actions = actions.filter(function (a) {
                         return a !== "wake";
+                    });
+                }
+
+                // Handle fortifyUntilHealed
+                if (this.fortified || this.currentStrength >= this.strength) {
+                    actions = actions.filter(function (a) {
+                        return a !== "fortifyUntilHealed";
                     });
                 }
 
@@ -3325,7 +3335,7 @@ var Units;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
-            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
+            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         }
         return Scout;
     })(Unit);
@@ -3342,7 +3352,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
+            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         }
         return Warrior;
     })(Unit);
@@ -3359,7 +3369,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
+            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { cityDefense: 50, hillsDefense: 25, firstStrikes: 1 };
         }
         return Archer;
@@ -3377,7 +3387,7 @@ var Units;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
-            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
+            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { attackAxeman: 100, noDefensiveBonuses: 1, retreat: 10 };
         }
         return Chariot;
@@ -3395,7 +3405,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
+            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { mounted: 100 };
         }
         return Spearman;
@@ -3413,7 +3423,7 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "wake", "skipTurn", "goTo"];
+            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { melee: 50 };
         }
         return Axeman;
@@ -4168,6 +4178,7 @@ function init() {
     u1.promotions.push("drill1");
     u1.promotions.push("drill2");
     u1.xp += 5;
+    u1.currentStrength = 3;
 
     for (i = 0; i < 100; i++) {
         new Units.Archer(config.BARB_ID, [10, 21]);
