@@ -1993,18 +1993,32 @@ var Game = (function () {
             this.newTurn();
         }
 
-        for (u in this.units[this.turnID]) {
-            unit = this.units[this.turnID][u];
-            unit.skippedTurn = false;
-            unit.attacked = false;
-            unit.canHeal = true;
-            unit.currentMovement = unit.movement;
-            unit.updateCanPromoteToLevel();
-        }
-        for (u in this.groups[this.turnID]) {
-            group = this.groups[this.turnID][u];
-            group.skippedTurn = false;
-            group.currentMovement = group.movement;
+        if (this.turn > 1) {
+            for (u in this.units[this.turnID]) {
+                unit = this.units[this.turnID][u];
+
+                if (unit.canHeal) {
+                    unit.fortifiedTurns += 1;
+                } else {
+                    unit.fortifiedTurns = 0;
+                }
+
+                if (!unit.fortified) {
+                    unit.skippedTurn = false;
+                } else {
+                    unit.skippedTurn = true;
+                }
+
+                unit.attacked = false;
+                unit.canHeal = true;
+                unit.currentMovement = unit.movement;
+                unit.updateCanPromoteToLevel();
+            }
+            for (u in this.groups[this.turnID]) {
+                group = this.groups[this.turnID][u];
+                group.skippedTurn = false;
+                group.currentMovement = group.movement;
+            }
         }
 
         this.moveUnits();
@@ -2817,7 +2831,7 @@ var Units;
             }
 
             // Add fortify bonus
-            if (this.fortifiedTurns > 0) {
+            if (this.fortifiedTurns > 0 && (!bonuses.hasOwnProperty("noDefensiveBonuses") || !bonuses["noDefensiveBonuses"])) {
                 bonuses["fortified"] = Util.bound(5 * this.fortifiedTurns, 0, 25);
             }
 
@@ -4135,10 +4149,11 @@ function init() {
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
     [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
-    new Units.Scout(config.PLAYER_ID, [10, 20]);
+    /*new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);
-    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
+    new Units.Warrior(config.PLAYER_ID, [5, 20]);
+    u1 = new Units.Chariot(config.PLAYER_ID, [5, 20]);
     u1.promotions.push("drill1");
     u1.promotions.push("drill2");
     u1.xp += 5;

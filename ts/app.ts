@@ -84,10 +84,11 @@ function init() {
     [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
 
-    new Units.Scout(config.PLAYER_ID, [10, 20]);
+    /*new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);
-    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
+    new Units.Warrior(config.PLAYER_ID, [5, 20]);
+    u1 = new Units.Chariot(config.PLAYER_ID, [5, 20]);
     u1.promotions.push("drill1");
     u1.promotions.push("drill2");
     u1.xp += 5;

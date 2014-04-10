@@ -630,7 +630,7 @@ module Units {
             }
 
             // Add fortify bonus
-            if (this.fortifiedTurns > 0) {
+            if (this.fortifiedTurns > 0 && (!bonuses.hasOwnProperty("noDefensiveBonuses") || !bonuses["noDefensiveBonuses"])) {
                 bonuses["fortified"] = Util.bound(5 * this.fortifiedTurns, 0, 25);
             }
 

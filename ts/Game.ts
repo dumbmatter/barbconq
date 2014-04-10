@@ -109,19 +109,33 @@ class Game {
             this.newTurn();
         }
 
-        // Reset all unit counters
-        for (u in this.units[this.turnID]) {
-            unit = this.units[this.turnID][u];
-            unit.skippedTurn = false;
-            unit.attacked = false;
-            unit.canHeal = true;
-            unit.currentMovement = unit.movement;
-            unit.updateCanPromoteToLevel();
-        }
-        for (u in this.groups[this.turnID]) {
-            group = this.groups[this.turnID][u];
-            group.skippedTurn = false;
-            group.currentMovement = group.movement;
+        if (this.turn > 1) {
+            // Reset all unit counters, do healing/fortifiedTurns crap
+            for (u in this.units[this.turnID]) {
+                unit = this.units[this.turnID][u];
+
+                if (unit.canHeal) {
+                    unit.fortifiedTurns += 1;
+                } else {
+                    unit.fortifiedTurns = 0;
+                }
+
+                if (!unit.fortified) {
+                    unit.skippedTurn = false;
+                } else {
+                    unit.skippedTurn = true;
+                }
+
+                unit.attacked = false;
+                unit.canHeal = true;
+                unit.currentMovement = unit.movement;
+                unit.updateCanPromoteToLevel();
+            }
+            for (u in this.groups[this.turnID]) {
+                group = this.groups[this.turnID][u];
+                group.skippedTurn = false;
+                group.currentMovement = group.movement;
+            }
         }
 
         this.moveUnits();
