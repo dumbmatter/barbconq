@@ -101,11 +101,11 @@ class MapUI {
             }
 
             if (path && path.length > 1) {
-                if (showMoveNumbers) { // Only for real paths, not paths drawn between fighting units
-                    // See if the path ends at an enemy unit. If so, display combat info.
-                    units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
-                    if (units.defender) {
-                        battle = new Combat.Battle(units.attacker, units.defender);
+                // See if the path ends at an enemy unit. If so, display combat info.
+                units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
+                if (units.defender) {
+                    battle = new Combat.Battle(units.attacker, units.defender);
+                    if (showMoveNumbers) { // Only for real paths, not paths drawn between fighting units
                         chromeUI.onHoverMoveEnemy(battle);
                     }
                 }
@@ -390,7 +390,8 @@ class MapUI {
             if (game.activeBattle) {
                 // Highlight active battle
                 this.drawPath([game.activeBattle.units[0].coords, game.activeBattle.units[1].coords], false, true, false)
-            } else if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
+            }
+            if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
                 // Highlight active unit
                 x = game.activeUnit.coords[1] - leftTile;
                 y = game.activeUnit.coords[0] - topTile;

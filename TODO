@@ -24,8 +24,11 @@ unit promotions
   remaining promotions for barbconq
     http://www.civfanatics.com/civ4/info/promotions/
     start with guerilla, continue alphabetical and pick relevant ones
-  remaining promotions for after barbconq
     combat 4+
+    doubleMovementHills from guerilla2
+      if moving onto hills (regardless of other features), cost only 0.5 moves
+        needs to be accounted for in pathfinding
+  remaining promotions for after barbconq
     lots of irrelevant ones
     add collateral damage stuff to drills
 

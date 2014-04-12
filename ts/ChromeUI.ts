@@ -149,6 +149,8 @@ class ChromeUI {
             return "+" + amount + "% Hills Defense";
         } else if (name === "cityAttack") {
             return "+" + amount + "% City Attack";
+        } else if (name === "hillsAttack") {
+            return "+" + amount + "% Hills Attack";
         } else if (name === "attackAxeman") {
             return "+" + amount + "% Attack vs. Axeman";
         } else if (name === "archery") {
@@ -179,6 +181,8 @@ class ChromeUI {
             }
         } else if (name === "noDefensiveBonuses") {
             return "Doesn't Recieve Defensive Bonuses";
+        } else if (name === "doubleMovementHills") {
+            return "Double Movement in Hills";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }

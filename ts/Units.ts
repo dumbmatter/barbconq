@@ -179,6 +179,32 @@ module Units {
             },
             categories: ["archery", "mounted", "melee", "gunpowder"],
             prereqs: [["combat2"], ["drill2"]]
+        },
+        guerilla1: {
+            name: "Guerilla I",
+            bonuses: {
+                hillsDefense: 20
+            },
+            categories: ["recon", "archery", "gunpowder"],
+            prereqs: []
+        },
+        guerilla2: {
+            name: "Guerilla II",
+            bonuses: {
+                hillsDefense: 30,
+                doubleMovementHills: 20
+            },
+            categories: ["recon", "archery", "gunpowder", "melee"],
+            prereqs: [["guerilla1"]]
+        },
+        guerilla3: {
+            name: "Guerilla III",
+            bonuses: {
+                hillsAttack: 25,
+                retreat: 50
+            },
+            categories: ["archery", "gunpowder", "melee"],
+            prereqs: [["guerilla2"]]
         }
     };
 

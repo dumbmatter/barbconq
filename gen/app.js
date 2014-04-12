@@ -804,6 +804,8 @@ var ChromeUI = (function () {
             return "+" + amount + "% Hills Defense";
         } else if (name === "cityAttack") {
             return "+" + amount + "% City Attack";
+        } else if (name === "hillsAttack") {
+            return "+" + amount + "% Hills Attack";
         } else if (name === "attackAxeman") {
             return "+" + amount + "% Attack vs. Axeman";
         } else if (name === "archery") {
@@ -834,6 +836,8 @@ var ChromeUI = (function () {
             }
         } else if (name === "noDefensiveBonuses") {
             return "Doesn't Recieve Defensive Bonuses";
+        } else if (name === "doubleMovementHills") {
+            return "Double Movement in Hills";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }
@@ -1207,11 +1211,11 @@ var MapUI = (function () {
             }
 
             if (path && path.length > 1) {
-                if (showMoveNumbers) {
-                    // See if the path ends at an enemy unit. If so, display combat info.
-                    units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
-                    if (units.defender) {
-                        battle = new Combat.Battle(units.attacker, units.defender);
+                // See if the path ends at an enemy unit. If so, display combat info.
+                units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
+                if (units.defender) {
+                    battle = new Combat.Battle(units.attacker, units.defender);
+                    if (showMoveNumbers) {
                         chromeUI.onHoverMoveEnemy(battle);
                     }
                 }
@@ -1495,7 +1499,8 @@ var MapUI = (function () {
             if (game.activeBattle) {
                 // Highlight active battle
                 this.drawPath([game.activeBattle.units[0].coords, game.activeBattle.units[1].coords], false, true, false);
-            } else if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
+            }
+            if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
                 // Highlight active unit
                 x = game.activeUnit.coords[1] - leftTile;
                 y = game.activeUnit.coords[0] - topTile;
@@ -2319,6 +2324,32 @@ var Units;
             },
             categories: ["archery", "mounted", "melee", "gunpowder"],
             prereqs: [["combat2"], ["drill2"]]
+        },
+        guerilla1: {
+            name: "Guerilla I",
+            bonuses: {
+                hillsDefense: 20
+            },
+            categories: ["recon", "archery", "gunpowder"],
+            prereqs: []
+        },
+        guerilla2: {
+            name: "Guerilla II",
+            bonuses: {
+                hillsDefense: 30,
+                doubleMovementHills: 20
+            },
+            categories: ["recon", "archery", "gunpowder", "melee"],
+            prereqs: [["guerilla1"]]
+        },
+        guerilla3: {
+            name: "Guerilla III",
+            bonuses: {
+                hillsAttack: 25,
+                retreat: 50
+            },
+            categories: ["archery", "gunpowder", "melee"],
+            prereqs: [["guerilla2"]]
         }
     };
 
@@ -3688,12 +3719,16 @@ var Combat;
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
             for (name in bonuses) {
-                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified") {
+                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementHills") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
                     this.appliedBonuses[0][name] = bonuses[name];
                 } else if (name === "cityAttack") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
+                        this.appliedBonuses[0][name] = bonuses[name];
+                    }
+                } else if (name === "hillsAttack") {
+                    if (defenderTile.features.indexOf("hills") >= 0) {
                         this.appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "attackAxeman") {
@@ -3728,7 +3763,7 @@ var Combat;
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat" || name === "noDefensiveBonuses") {
+                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementHills") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
                     this.appliedBonuses[1][name] = bonuses[name];
@@ -4273,9 +4308,9 @@ function init() {
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
     /*new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Archer(config.PLAYER_ID, [10, 20]);
+    new Units.Warrior(config.PLAYER_ID, [10, 20]);*/
+    u1 = new Units.Archer(config.PLAYER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");
     //    u1.promotions.push("drill2");
