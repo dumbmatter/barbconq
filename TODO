@@ -18,15 +18,10 @@ unit promotions
   icons for the promotions a unit has
     show in hover-box and bottom-info
     can they be text?
-  indicator of if unit has promotions available
-    in unit icon
-    on tile
-  confirm
-    make sure all unitBonuses are applied in battle
-    battle odds match real game
+  indicator of if unit has promotions available on tile?
   remaining promotions for barbconq
     http://www.civfanatics.com/civ4/info/promotions/
-    start with drill, continue alphabetical and pick relevant ones
+    start with guerilla, continue alphabetical and pick relevant ones
   remaining promotions for after barbconq
     combat 4+
     lots of irrelevant ones
@@ -170,6 +165,7 @@ Combat
   BEST: http://apolyton.net/showthread.php/140622-The-Civ-IV-Combat-System
   collateral damage
   some units are immune to first strikes
+    flanking2
   Does cityDefense bonus apply for other civ's cities? Like a neutral city, or an ally's city?
 
 healing details

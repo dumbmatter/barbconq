@@ -283,6 +283,9 @@ a:hover {
   -ms-user-select: none;
   user-select: none;
 }
+#bottom-units .upgrade-available {
+  box-shadow: 0 0 12px #ffde00, inset 0 0 6px #ffde00;
+}
 #bottom-units .active {
   line-height: 26px;
   border: 2px solid red;

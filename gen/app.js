@@ -988,6 +988,9 @@ var ChromeUI = (function () {
         if (unit.active || (unit.group && unit.group.active)) {
             icon.classList.add("active");
         }
+        if (unit.canPromoteToLevel > unit.level) {
+            icon.classList.add("upgrade-available");
+        }
 
         // Health bar
         // Same as in MapUI.render for unit health bars
@@ -2292,6 +2295,30 @@ var Units;
             },
             categories: ["archery", "siege", "armored", "helicopter", "naval"],
             prereqs: [["drill3"]]
+        },
+        flanking1: {
+            name: "Flanking I",
+            bonuses: {
+                retreat: 10
+            },
+            categories: ["mounted", "armored", "helicopter", "naval"],
+            prereqs: [[]]
+        },
+        flanking2: {
+            name: "Flanking II",
+            bonuses: {
+                retreat: 10
+            },
+            categories: ["mounted", "armored", "helicopter", "naval"],
+            prereqs: [["flanking1"]]
+        },
+        formation: {
+            name: "Formation",
+            bonuses: {
+                mounted: 25
+            },
+            categories: ["archery", "mounted", "melee", "gunpowder"],
+            prereqs: [["combat2"], ["drill2"]]
         }
     };
 
@@ -4254,9 +4281,10 @@ function init() {
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
-    u1.promotions.push("drill1");
-    u1.promotions.push("drill2");
-    u1.xp += 5;
+
+    //    u1.promotions.push("drill1");
+    //    u1.promotions.push("drill2");
+    u1.xp += 40;
     u1.currentStrength = 3;
 
     for (i = 0; i < 100; i++) {

@@ -155,6 +155,30 @@ module Units {
             },
             categories: ["archery", "siege", "armored", "helicopter", "naval"],
             prereqs: [["drill3"]]
+        },
+        flanking1: {
+            name: "Flanking I",
+            bonuses: {
+                retreat: 10
+            },
+            categories: ["mounted", "armored", "helicopter", "naval"],
+            prereqs: [[]]
+        },
+        flanking2: {
+            name: "Flanking II",
+            bonuses: {
+                retreat: 10
+            },
+            categories: ["mounted", "armored", "helicopter", "naval"],
+            prereqs: [["flanking1"]]
+        },
+        formation: {
+            name: "Formation",
+            bonuses: {
+                mounted: 25
+            },
+            categories: ["archery", "mounted", "melee", "gunpowder"],
+            prereqs: [["combat2"], ["drill2"]]
         }
     };
 

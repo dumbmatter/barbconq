@@ -343,6 +343,9 @@ class ChromeUI {
         if (unit.active || (unit.group && unit.group.active)) {
             icon.classList.add("active");
         }
+        if (unit.canPromoteToLevel > unit.level) {
+            icon.classList.add("upgrade-available");
+        }
 
         // Health bar
         // Same as in MapUI.render for unit health bars
