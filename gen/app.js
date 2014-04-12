@@ -1277,7 +1277,7 @@ var MapUI = (function () {
                         }.bind(this);
 
                         for (i = 1; i < path.length; i++) {
-                            movementCost = game.map.tileMovementCost(path[i - 1], path[i]);
+                            movementCost = game.map.tileMovementCost(path[i - 1], path[i], game.activeUnit.getBonuses());
                             currentMovement -= movementCost;
                             if (currentMovement <= 0) {
                                 numTurns += 1;
@@ -1804,10 +1804,16 @@ var MapMaker;
         };
 
         // Cost (in "movement") of moving from coordsFrom to coordsTo
-        Map.prototype.tileMovementCost = function (coordsFrom, coordsTo) {
+        Map.prototype.tileMovementCost = function (coordsFrom, coordsTo, bonuses) {
             var tileTo;
 
             tileTo = game.getTile(coordsTo);
+
+            // Short circuit check for move bonuses
+            if (tileTo.features.indexOf("hills") >= 0 && bonuses.hasOwnProperty("doubleMovementHills") && bonuses["doubleMovementHills"] > 0) {
+                return 0.5;
+            }
+
             if (tileTo.features.indexOf("hills") >= 0 || tileTo.features.indexOf("forest") >= 0) {
                 return 2;
             }
@@ -2676,7 +2682,7 @@ var Units;
             var movementCost;
 
             // Movement cost based on terrain
-            movementCost = game.map.tileMovementCost(this.coords, coords);
+            movementCost = game.map.tileMovementCost(this.coords, coords, this.getBonuses());
 
             // Keep track of unit movement (applies even if the unit fights but does not move)
             this.currentMovement -= movementCost;
@@ -2848,6 +2854,9 @@ var Units;
         UnitOrGroup.prototype.promote = function (promotionName, forceAccept) {
             if (typeof forceAccept === "undefined") { forceAccept = false; }
             throw new Error('"promote" needs to be redefined by each derived class.');
+        };
+        UnitOrGroup.prototype.getBonuses = function () {
+            throw new Error('"getBonuses" needs to be redefined by each derived class.');
         };
         return UnitOrGroup;
     })();
@@ -3457,6 +3466,31 @@ var Units;
                     unit.promote(promotionName, forceAccept);
                 }
             });
+        };
+
+        // Return only movement-related bonuses that *all* members of the group have
+        Group.prototype.getBonuses = function () {
+            var bonuses, i, name, promotionBonuses;
+
+            bonuses = {
+                "doubleMovementHills": 0
+            };
+
+            this.units.forEach(function (unit) {
+                var unitBonuses;
+
+                unitBonuses = unit.getBonuses();
+
+                if (unitBonuses.hasOwnProperty("doubleMovementHills") && unitBonuses["doubleMovementHills"] > 0) {
+                    bonuses["doubleMovementHills"] += 1;
+                }
+            });
+
+            if (bonuses["doubleMovementHills"] < this.units.length) {
+                delete bonuses["doubleMovementHills"];
+            }
+
+            return bonuses;
         };
         return Group;
     })(UnitOrGroup);
@@ -4308,8 +4342,8 @@ function init() {
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
     /*new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);
-    new Units.Warrior(config.PLAYER_ID, [10, 20]);*/
+    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
+    new Units.Warrior(config.PLAYER_ID, [10, 20]);
     u1 = new Units.Archer(config.PLAYER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");

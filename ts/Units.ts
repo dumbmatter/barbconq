@@ -412,7 +412,7 @@ module Units {
             var movementCost : number;
 
             // Movement cost based on terrain
-            movementCost = game.map.tileMovementCost(this.coords, coords);
+            movementCost = game.map.tileMovementCost(this.coords, coords, this.getBonuses());
 
             // Keep track of unit movement (applies even if the unit fights but does not move)
             this.currentMovement -= movementCost;
@@ -582,6 +582,9 @@ module Units {
         }
         promote(promotionName : string, forceAccept : boolean = false) {
             throw new Error('"promote" needs to be redefined by each derived class.')
+        }
+        getBonuses() : {[name : string] : number} {
+            throw new Error('"getBonuses" needs to be redefined by each derived class.')
         }
     }
 
@@ -1100,6 +1103,32 @@ module Units {
                     unit.promote(promotionName, forceAccept);
                 }
             });
+        }
+
+        // Return only movement-related bonuses that *all* members of the group have
+        getBonuses() : {[name : string] : number} {
+            var bonuses : {[name : string] : number}, i : number, name : string, promotionBonuses : {[name : string] : number};
+
+
+            bonuses = {
+                "doubleMovementHills": 0
+            };
+
+            this.units.forEach(function (unit) {
+                var unitBonuses : {[name : string] : number};
+
+                unitBonuses = unit.getBonuses();
+
+                if (unitBonuses.hasOwnProperty("doubleMovementHills") && unitBonuses["doubleMovementHills"] > 0) {
+                    bonuses["doubleMovementHills"] += 1;
+                }
+            });
+
+            if (bonuses["doubleMovementHills"] < this.units.length) {
+                delete bonuses["doubleMovementHills"];
+            }
+
+            return bonuses;
         }
     }
 

@@ -154,10 +154,16 @@ module MapMaker {
         }
 
         // Cost (in "movement") of moving from coordsFrom to coordsTo
-        tileMovementCost(coordsFrom : number[], coordsTo : number[]) : number {
+        tileMovementCost(coordsFrom : number[], coordsTo : number[], bonuses : {[name : string] : number}) : number {
             var tileTo : Tile;
 
             tileTo = game.getTile(coordsTo);
+
+            // Short circuit check for move bonuses
+            if (tileTo.features.indexOf("hills") >= 0 && bonuses.hasOwnProperty("doubleMovementHills") && bonuses["doubleMovementHills"] > 0) {
+                return 0.5;
+            }
+
             if (tileTo.features.indexOf("hills") >= 0 || tileTo.features.indexOf("forest") >= 0) {
                 return 2;
             }

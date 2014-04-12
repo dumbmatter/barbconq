@@ -168,7 +168,7 @@ class MapUI {
                         }.bind(this);
 
                         for (i = 1; i < path.length; i++) { // Skip the first one
-                            movementCost = game.map.tileMovementCost(path[i - 1], path[i]);
+                            movementCost = game.map.tileMovementCost(path[i - 1], path[i], game.activeUnit.getBonuses());
                             currentMovement -= movementCost;
                             if (currentMovement <= 0) {
                                 numTurns += 1;
