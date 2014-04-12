@@ -1992,7 +1992,7 @@ var Game = (function () {
 
     // Within a turn, move to the next player. Or if all players have moved, start the next turn.
     Game.prototype.nextPlayer = function () {
-        var group, u, unit;
+        var allHealed, group, u, unit;
 
         // Move to the next player, or start a new turn (move to player 0)
         if (this.turnID < this.names.length - 1) {
@@ -2014,6 +2014,11 @@ var Game = (function () {
                     unit.fortifiedTurns = 0;
                 }
 
+                // If fortifiedUntilHealed and not in group, wake when healed
+                if (unit.fortifiedUntilHealed && !unit.group && unit.currentStrength >= unit.strength) {
+                    unit.wake();
+                }
+
                 if (!unit.fortified) {
                     unit.skippedTurn = false;
                 } else {
@@ -2025,6 +2030,7 @@ var Game = (function () {
                 unit.currentMovement = unit.movement;
                 unit.updateCanPromoteToLevel();
             }
+
             for (u in this.groups[this.turnID]) {
                 group = this.groups[this.turnID][u];
 
@@ -2032,6 +2038,19 @@ var Game = (function () {
                     group.skippedTurn = false;
                 } else {
                     unit.skippedTurn = true;
+                }
+
+                // If fortifiedUntilHealed and all in group are healed, wake
+                if (group.fortifiedUntilHealed) {
+                    allHealed = true;
+                    group.units.forEach(function (unit) {
+                        if (unit.currentStrength < unit.strength) {
+                            allHealed = false;
+                        }
+                    });
+                    if (allHealed) {
+                        group.wake();
+                    }
                 }
 
                 group.currentMovement = group.movement;
@@ -2760,6 +2779,7 @@ var Units;
         __extends(Unit, _super);
         function Unit(owner, coords) {
             _super.call(this);
+            this.group = null;
             // Key attributes
             this.level = 1;
             this.canPromoteToLevel = 1;
@@ -3213,6 +3233,23 @@ var Units;
                     this.units[i].fortified = value;
                 }
                 this._fortified = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(Group.prototype, "fortifiedUntilHealed", {
+            get: function () {
+                return this._fortifiedUntilHealed;
+            },
+            // Set for group and every group member
+            set: function (value) {
+                var i;
+
+                for (i = 0; i < this.units.length; i++) {
+                    this.units[i].fortifiedUntilHealed = value;
+                }
+                this._fortifiedUntilHealed = value;
             },
             enumerable: true,
             configurable: true

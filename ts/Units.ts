@@ -535,7 +535,7 @@ module Units {
         // Identification
         type : string;
         category : string;
-        group : Group;
+        group : Group = null;
 
         // Key attributes
         level : number = 1;
@@ -902,6 +902,17 @@ module Units {
             this._fortified = value;
         }
         get fortified() : boolean { return this._fortified; }
+
+        // Set for group and every group member
+        set fortifiedUntilHealed(value : boolean) {
+            var i : number;
+
+            for (i = 0; i < this.units.length; i++) {
+                this.units[i].fortifiedUntilHealed = value;
+            }
+            this._fortifiedUntilHealed = value;
+        }
+        get fortifiedUntilHealed() : boolean { return this._fortifiedUntilHealed; }
 
         // Do nothing, can't be changed at group level
         set attacked(value : boolean) {

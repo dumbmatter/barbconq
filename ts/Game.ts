@@ -100,7 +100,7 @@ class Game {
 
     // Within a turn, move to the next player. Or if all players have moved, start the next turn.
     nextPlayer() {
-        var group : Units.Group, u : string, unit : Units.Unit;
+        var allHealed : boolean, group : Units.Group, u : string, unit : Units.Unit;
 
         // Move to the next player, or start a new turn (move to player 0)
         if (this.turnID < this.names.length - 1) {
@@ -123,6 +123,11 @@ class Game {
                     unit.fortifiedTurns = 0;
                 }
 
+                // If fortifiedUntilHealed and not in group, wake when healed
+                if (unit.fortifiedUntilHealed && !unit.group && unit.currentStrength >= unit.strength) {
+                    unit.wake();
+                }
+
                 if (!unit.fortified) {
                     unit.skippedTurn = false;
                 } else {
@@ -134,6 +139,7 @@ class Game {
                 unit.currentMovement = unit.movement;
                 unit.updateCanPromoteToLevel();
             }
+
             for (u in this.groups[this.turnID]) {
                 group = this.groups[this.turnID][u];
 
@@ -141,6 +147,19 @@ class Game {
                     group.skippedTurn = false;
                 } else {
                     unit.skippedTurn = true;
+                }
+
+                // If fortifiedUntilHealed and all in group are healed, wake
+                if (group.fortifiedUntilHealed) {
+                    allHealed = true;
+                    group.units.forEach(function (unit) {
+                        if (unit.currentStrength < unit.strength) {
+                            allHealed = false;
+                        }
+                    });
+                    if (allHealed) {
+                        group.wake();
+                    }
                 }
 
                 group.currentMovement = group.movement;
