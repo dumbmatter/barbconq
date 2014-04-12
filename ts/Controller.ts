@@ -17,6 +17,7 @@ class Controller {
         C: 67,
         F: 70,
         G: 71,
+        H: 72,
         S: 83,
         ENTER: 13,
         SPACE_BAR: 32
@@ -129,6 +130,10 @@ class Controller {
                         activeUnit.fortify();
                     } else if (activeUnit.actions.indexOf("wake") >= 0) {
                         activeUnit.wake();
+                    }
+                } else if (e.keyCode === this.KEYS.H) {
+                    if (activeUnit.actions.indexOf("fortifyUntilHealed") >= 0) {
+                        activeUnit.fortifyUntilHealed();
                     }
                 } else if (e.keyCode === this.KEYS.SPACE_BAR && activeUnit.actions.indexOf("skipTurn") >= 0) {
                     activeUnit.skipTurn();
