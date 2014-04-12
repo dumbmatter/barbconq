@@ -210,7 +210,7 @@ class Controller {
     // Handles path finding search for "Go To" button, "G" and "Right Click"
     // setPathOn is the event to listen on for actually starting the unit on the selected path. So
     // for right click and hold, it's "mouseup".
-    private initPathFindingSearch(coords : number[], setPathOn : {el; event : string;}) {
+    initPathFindingSearch(coords : number[], setPathOn : {el; event : string;}) {
         var mouseMoveWhileDown : (e : MouseEvent) => void, setPath : (e : MouseEvent) => void;
 
         // Don't activate twice

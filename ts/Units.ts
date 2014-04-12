@@ -471,6 +471,10 @@ module Units {
             }.bind(this));
         }
 
+        goTo() {
+            controller.initPathFindingSearch(controller.hoveredTile, {el: mapUI.canvas, event: "mousedown"});
+        }
+
         // Mark skippedTurn and go to the next active unit
         skipTurn() {
             this.skippedTurn = true;

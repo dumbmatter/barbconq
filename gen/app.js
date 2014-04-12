@@ -2717,6 +2717,10 @@ var Units;
             }.bind(this));
         };
 
+        UnitOrGroup.prototype.goTo = function () {
+            controller.initPathFindingSearch(controller.hoveredTile, { el: mapUI.canvas, event: "mousedown" });
+        };
+
         // Mark skippedTurn and go to the next active unit
         UnitOrGroup.prototype.skipTurn = function () {
             this.skippedTurn = true;
