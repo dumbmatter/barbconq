@@ -2833,6 +2833,7 @@ var Units;
             this.xp = 0;
             // Set some defaults for special unit properties
             this.landOrSea = "land";
+            this._actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
             this.canAttack = true;
             this.canDefend = true;
             this.canHeal = true;
@@ -3441,7 +3442,6 @@ var Units;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
-            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         }
         return Scout;
     })(Unit);
@@ -3458,7 +3458,6 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         }
         return Warrior;
     })(Unit);
@@ -3475,7 +3474,6 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { cityDefense: 50, hillsDefense: 25, firstStrikes: 1 };
         }
         return Archer;
@@ -3493,7 +3491,6 @@ var Units;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
-            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { attackAxeman: 100, noDefensiveBonuses: 1, retreat: 10 };
         }
         return Chariot;
@@ -3511,7 +3508,6 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { mounted: 100 };
         }
         return Spearman;
@@ -3529,7 +3525,6 @@ var Units;
             this.movement = 1;
             this.currentMovement = 1;
             this.landOrSea = "land";
-            this.actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
             this.unitBonuses = { melee: 50 };
         }
         return Axeman;

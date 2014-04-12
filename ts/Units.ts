@@ -574,6 +574,7 @@ module Units {
 
         // Set some defaults for special unit properties
         landOrSea = "land";
+        _actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"]; // Defaults
         canAttack = true;
         canDefend = true;
         canHeal = true;
@@ -1086,7 +1087,6 @@ module Units {
         currentMovement = 2;
 
         landOrSea = "land";
-        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
     }
 
     export class Warrior extends Unit {
@@ -1099,7 +1099,6 @@ module Units {
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
     }
 
     export class Archer extends Unit {
@@ -1112,7 +1111,6 @@ module Units {
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         unitBonuses = {cityDefense: 50, hillsDefense: 25, firstStrikes: 1};
     }
 
@@ -1126,7 +1124,6 @@ module Units {
         currentMovement = 2;
 
         landOrSea = "land";
-        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         unitBonuses = {attackAxeman: 100, noDefensiveBonuses: 1, retreat: 10};
     }
 
@@ -1140,7 +1137,6 @@ module Units {
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         unitBonuses = {mounted: 100};
     }
 
@@ -1154,7 +1150,6 @@ module Units {
         currentMovement = 1;
 
         landOrSea = "land";
-        actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
         unitBonuses = {melee: 50};
     }
 
