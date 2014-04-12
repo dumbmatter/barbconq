@@ -436,7 +436,11 @@ var Controller = (function () {
                     }
                 } else {
                     // None of the user's units are on this tile, so pan to it
-                    mapUI.goToCoords(coords);
+                    // This is disabled for three reasons:
+                    // 1. It's generally not that useful
+                    // 2. BUG where Go To mode inappropriately activates this
+                    // 3. BUG where clicks on transparent chrome inappropriately activate this
+                    //                    mapUI.goToCoords(coords);
                 }
             }
         }
@@ -445,7 +449,7 @@ var Controller = (function () {
     // if one of your units is on the clicked tile, activate it and DO NOT CENTER THE MAP
     // if one of your units is not on the clicked tile, center the map
     Controller.prototype.initMapClick = function () {
-        mapUI.canvas.addEventListener("mousedown", this.leftClickOnMap.bind(this));
+        mapUI.canvas.addEventListener("click", this.leftClickOnMap.bind(this));
 
         mapUI.miniCanvas.addEventListener("mousedown", function (e) {
             var coords, miniMapPan, miniMapPanStop;

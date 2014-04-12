@@ -1,6 +1,7 @@
 # Major current tasks
 
-"Go to" button doesn't work (g does)
+click+drag for panning on main map
+  similar to minimap or right click
 
 why is combat hover box showing up during battle? should probably have no hover boxes show up
 
