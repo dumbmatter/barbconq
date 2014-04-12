@@ -101,11 +101,13 @@ class MapUI {
             }
 
             if (path && path.length > 1) {
-                // See if the path ends at an enemy unit. If so, display combat info.
-                units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
-                if (units.defender) {
-                    battle = new Combat.Battle(units.attacker, units.defender);
-                    chromeUI.onHoverMoveEnemy(battle);
+                if (showMoveNumbers) { // Only for real paths, not paths drawn between fighting units
+                    // See if the path ends at an enemy unit. If so, display combat info.
+                    units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
+                    if (units.defender) {
+                        battle = new Combat.Battle(units.attacker, units.defender);
+                        chromeUI.onHoverMoveEnemy(battle);
+                    }
                 }
 
                 // Start at origin

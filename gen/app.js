@@ -1204,11 +1204,13 @@ var MapUI = (function () {
             }
 
             if (path && path.length > 1) {
-                // See if the path ends at an enemy unit. If so, display combat info.
-                units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
-                if (units.defender) {
-                    battle = new Combat.Battle(units.attacker, units.defender);
-                    chromeUI.onHoverMoveEnemy(battle);
+                if (showMoveNumbers) {
+                    // See if the path ends at an enemy unit. If so, display combat info.
+                    units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
+                    if (units.defender) {
+                        battle = new Combat.Battle(units.attacker, units.defender);
+                        chromeUI.onHoverMoveEnemy(battle);
+                    }
                 }
 
                 // Start at origin
@@ -2009,14 +2011,10 @@ var Game = (function () {
         } else {
             this.newTurn();
         }
-        console.log("nextPlayer " + this.turnID);
 
         for (u in this.units[this.turnID]) {
             unit = this.units[this.turnID][u];
             unit.updateCanPromoteToLevel();
-            if (unit.owner === config.PLAYER_ID) {
-                console.log(unit.xp);
-            }
         }
 
         // Stuff that happens before each turn, except the first of the game
@@ -4254,8 +4252,8 @@ function init() {
     /*new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    new Units.Warrior(config.PLAYER_ID, [5, 20]);
-    u1 = new Units.Chariot(config.PLAYER_ID, [5, 20]);
+    new Units.Warrior(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
     u1.promotions.push("drill1");
     u1.promotions.push("drill2");
     u1.xp += 5;
