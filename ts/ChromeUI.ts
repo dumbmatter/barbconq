@@ -191,7 +191,7 @@ class ChromeUI {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "fortifyUntilHealed") {
-            this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify Until Healed</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit remains inactive until it is fully healed.</p>';
+            this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify Until Healed</span> <span class="action-shortcut">&lt;H&gt;</span></p><p>The unit remains inactive until it is fully healed.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "wake") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Wake</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>Wake up the unit so it can be issued orders.</p>';
