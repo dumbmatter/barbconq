@@ -78,7 +78,7 @@ class Game {
         }
 
         this.turn++;
-        this.turnID = this.turn === 1 ? 1 : 0; // Skip barbs first turn
+        this.turnID = 0;
         this.map.updateVisibility();
         chromeUI.onNewTurn();
 
@@ -109,6 +109,13 @@ class Game {
             this.newTurn();
         }
 
+        // Stuff that happens before each turn, including the first
+        for (u in this.units[this.turnID]) {
+            unit = this.units[this.turnID][u];
+            unit.updateCanPromoteToLevel();
+        }
+
+        // Stuff that happens before each turn, except the first of the game
         if (this.turn > 1) {
             // Reset all unit counters, do healing/fortifiedTurns crap
             for (u in this.units[this.turnID]) {
@@ -137,7 +144,6 @@ class Game {
                 unit.attacked = false;
                 unit.canHeal = true;
                 unit.currentMovement = unit.movement;
-                unit.updateCanPromoteToLevel();
             }
 
             for (u in this.groups[this.turnID]) {

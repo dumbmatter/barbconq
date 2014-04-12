@@ -1979,7 +1979,7 @@ var Game = (function () {
         }
 
         this.turn++;
-        this.turnID = this.turn === 1 ? 1 : 0; // Skip barbs first turn
+        this.turnID = 0;
         this.map.updateVisibility();
         chromeUI.onNewTurn();
 
@@ -2009,7 +2009,17 @@ var Game = (function () {
         } else {
             this.newTurn();
         }
+        console.log("nextPlayer " + this.turnID);
 
+        for (u in this.units[this.turnID]) {
+            unit = this.units[this.turnID][u];
+            unit.updateCanPromoteToLevel();
+            if (unit.owner === config.PLAYER_ID) {
+                console.log(unit.xp);
+            }
+        }
+
+        // Stuff that happens before each turn, except the first of the game
         if (this.turn > 1) {
             for (u in this.units[this.turnID]) {
                 unit = this.units[this.turnID][u];
@@ -2037,7 +2047,6 @@ var Game = (function () {
                 unit.attacked = false;
                 unit.canHeal = true;
                 unit.currentMovement = unit.movement;
-                unit.updateCanPromoteToLevel();
             }
 
             for (u in this.groups[this.turnID]) {
@@ -4259,7 +4268,7 @@ function init() {
     new Cities.City(config.BARB_ID, [10, 21]);
 
     game.newTurn();
-    game.moveUnits();
+    game.nextPlayer(); // Will skip from default (0, barbs) to the player (1)
 }
 
 function startBarbConq() {
