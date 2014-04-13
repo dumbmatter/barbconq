@@ -23,11 +23,11 @@ unit promotions
   indicator of if unit has promotions available on tile?
   remaining promotions for barbconq
     http://www.civfanatics.com/civ4/info/promotions/
-    start with guerilla, continue alphabetical and pick relevant ones
-    combat 4+
+    start with mobility, continue alphabetical and pick relevant ones
   remaining promotions for after barbconq
     lots of irrelevant ones
     add collateral damage stuff to drills
+    combat 4/5 healing
 
 basic barb AI
   Game.moveUnits

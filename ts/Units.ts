@@ -115,6 +115,22 @@ module Units {
             categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
             prereqs: [["combat2"]]
         },
+        combat4: {
+            name: "Combat IV",
+            bonuses: {
+                strength: 10
+            },
+            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+            prereqs: [["combat3"]]
+        },
+        combat5: {
+            name: "Combat V",
+            bonuses: {
+                strength: 10
+            },
+            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+            prereqs: [["combat4"]]
+        },
         cover: {
             name: "Cover",
             bonuses: {
