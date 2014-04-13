@@ -63,12 +63,16 @@ module Combat {
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
             for (name in bonuses) {
-                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementHills" || name === "mobility") {
+                if (name === "cityDefense" || name === "forestDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
                     this.appliedBonuses[0][name] = bonuses[name];
                 } else if (name === "cityAttack") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
+                        this.appliedBonuses[0][name] = bonuses[name];
+                    }
+                } else if (name === "forestAttack") {
+                    if (defenderTile.features.indexOf("forest") >= 0) {
                         this.appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "hillsAttack") {
@@ -107,12 +111,16 @@ module Combat {
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementHills" || name === "mobility") {
+                if (name === "attackAxeman" || name === "cityAttack" || name === "forestAttack" || name === "hillsAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
                     this.appliedBonuses[1][name] = bonuses[name];
                 } else if (name === "cityDefense") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
+                        this.appliedBonuses[1][name] = bonuses[name];
+                    }
+                } else if (name === "forestDefense") {
+                    if (defenderTile.features.indexOf("forest") >= 0) {
                         this.appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "hillsDefense") {

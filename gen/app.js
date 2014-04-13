@@ -800,10 +800,14 @@ var ChromeUI = (function () {
             return "+" + amount + "% Strength";
         } else if (name === "cityDefense") {
             return "+" + amount + "% City Defense";
+        } else if (name === "forestDefense") {
+            return "+" + amount + "% Forest Defense";
         } else if (name === "hillsDefense") {
             return "+" + amount + "% Hills Defense";
         } else if (name === "cityAttack") {
             return "+" + amount + "% City Attack";
+        } else if (name === "forestAttack") {
+            return "+" + amount + "% Forest Attack";
         } else if (name === "hillsAttack") {
             return "+" + amount + "% Hills Attack";
         } else if (name === "attackAxeman") {
@@ -836,6 +840,8 @@ var ChromeUI = (function () {
             }
         } else if (name === "noDefensiveBonuses") {
             return "Doesn't Recieve Defensive Bonuses";
+        } else if (name === "doubleMovementForest") {
+            return "Double Movement in Forests";
         } else if (name === "doubleMovementHills") {
             return "Double Movement in Hills";
         } else if (name === "mobility") {
@@ -1815,6 +1821,9 @@ var MapMaker;
             if (tileTo.features.indexOf("hills") >= 0 && bonuses.hasOwnProperty("doubleMovementHills") && bonuses["doubleMovementHills"] > 0) {
                 return 0.5;
             }
+            if (tileTo.features.indexOf("forest") >= 0 && bonuses.hasOwnProperty("doubleMovementForest") && bonuses["doubleMovementForest"] > 0) {
+                return 0.5;
+            }
 
             cost = 1;
 
@@ -2400,6 +2409,32 @@ var Units;
             },
             categories: ["archery", "mounted", "melee", "siege"],
             prereqs: [["combat1"], ["drill1"]]
+        },
+        woodsman1: {
+            name: "Woodsman I",
+            bonuses: {
+                forestDefense: 20
+            },
+            categories: ["recon", "melee", "gunpowder"],
+            prereqs: []
+        },
+        woodsman2: {
+            name: "Woodsman II",
+            bonuses: {
+                forestDefense: 30,
+                doubleMovementForest: 1
+            },
+            categories: ["recon", "melee", "gunpowder"],
+            prereqs: [["woodsman1"]]
+        },
+        woodsman3: {
+            name: "Woodsman III",
+            bonuses: {
+                firstStrikes: 2,
+                forestAttack: 25
+            },
+            categories: ["melee", "gunpowder"],
+            prereqs: [["woodsman2"]]
         }
     };
 
@@ -3797,12 +3832,16 @@ var Combat;
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
             for (name in bonuses) {
-                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementHills" || name === "mobility") {
+                if (name === "cityDefense" || name === "forestDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
                     this.appliedBonuses[0][name] = bonuses[name];
                 } else if (name === "cityAttack") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
+                        this.appliedBonuses[0][name] = bonuses[name];
+                    }
+                } else if (name === "forestAttack") {
+                    if (defenderTile.features.indexOf("forest") >= 0) {
                         this.appliedBonuses[0][name] = bonuses[name];
                     }
                 } else if (name === "hillsAttack") {
@@ -3841,12 +3880,16 @@ var Combat;
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementHills" || name === "mobility") {
+                if (name === "attackAxeman" || name === "cityAttack" || name === "forestAttack" || name === "hillsAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
                     this.appliedBonuses[1][name] = bonuses[name];
                 } else if (name === "cityDefense") {
                     if (defenderTile.city && defenderTile.city.owner === defender.owner) {
+                        this.appliedBonuses[1][name] = bonuses[name];
+                    }
+                } else if (name === "forestDefense") {
+                    if (defenderTile.features.indexOf("forest") >= 0) {
                         this.appliedBonuses[1][name] = bonuses[name];
                     }
                 } else if (name === "hillsDefense") {
@@ -4388,11 +4431,11 @@ function init() {
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");
     //    u1.promotions.push("drill2");
-    u1.xp += 40;
+    u1.xp += 400;
     u1.currentStrength = 3;
 
     for (i = 0; i < 10; i++) {

@@ -24,11 +24,11 @@ unit promotions
   remaining promotions for barbconq
     http://www.civfanatics.com/civ4/info/promotions/
     sentry
-    woodsman1-3
   remaining promotions for after barbconq
     lots of irrelevant ones
     add collateral damage stuff to drills
-    combat 4/5 healing
+    combat4/5, woodsman3 healing
+    change woodsman descs to "Jungle/Forest"
 
 basic barb AI
   Game.moveUnits

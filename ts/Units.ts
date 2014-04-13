@@ -237,6 +237,32 @@ module Units {
             },
             categories: ["archery", "mounted", "melee", "siege"],
             prereqs: [["combat1"], ["drill1"]]
+        },
+        woodsman1: {
+            name: "Woodsman I",
+            bonuses: {
+                forestDefense: 20
+            },
+            categories: ["recon", "melee", "gunpowder"],
+            prereqs: []
+        },
+        woodsman2: {
+            name: "Woodsman II",
+            bonuses: {
+                forestDefense: 30,
+                doubleMovementForest: 1
+            },
+            categories: ["recon", "melee", "gunpowder"],
+            prereqs: [["woodsman1"]]
+        },
+        woodsman3: {
+            name: "Woodsman III",
+            bonuses: {
+                firstStrikes: 2,
+                forestAttack: 25
+            },
+            categories: ["melee", "gunpowder"],
+            prereqs: [["woodsman2"]]
         }
     };
 

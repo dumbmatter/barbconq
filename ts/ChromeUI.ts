@@ -145,10 +145,14 @@ class ChromeUI {
             return "+" + amount + "% Strength";
         } else if (name === "cityDefense") {
             return "+" + amount + "% City Defense";
+        } else if (name === "forestDefense") {
+            return "+" + amount + "% Forest Defense";
         } else if (name === "hillsDefense") {
             return "+" + amount + "% Hills Defense";
         } else if (name === "cityAttack") {
             return "+" + amount + "% City Attack";
+        } else if (name === "forestAttack") {
+            return "+" + amount + "% Forest Attack";
         } else if (name === "hillsAttack") {
             return "+" + amount + "% Hills Attack";
         } else if (name === "attackAxeman") {
@@ -181,6 +185,8 @@ class ChromeUI {
             }
         } else if (name === "noDefensiveBonuses") {
             return "Doesn't Recieve Defensive Bonuses";
+        } else if (name === "doubleMovementForest") {
+            return "Double Movement in Forests";
         } else if (name === "doubleMovementHills") {
             return "Double Movement in Hills";
         } else if (name === "mobility") {

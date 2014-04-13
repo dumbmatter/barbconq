@@ -163,7 +163,9 @@ module MapMaker {
             if (tileTo.features.indexOf("hills") >= 0 && bonuses.hasOwnProperty("doubleMovementHills") && bonuses["doubleMovementHills"] > 0) {
                 return 0.5;
             }
-
+            if (tileTo.features.indexOf("forest") >= 0 && bonuses.hasOwnProperty("doubleMovementForest") && bonuses["doubleMovementForest"] > 0) {
+                return 0.5;
+            }
 
             cost = 1;
 
