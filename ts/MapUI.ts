@@ -314,10 +314,10 @@ class MapUI {
                     if (units.length === 1) {
                         // Only one to show...
                         unit = units[0];
-                    } else if (game.activeBattle && tile.units.indexOf(game.activeBattle.units[0]) >= 0) {
+                    } else if (game.activeBattle && units.indexOf(game.activeBattle.units[0]) >= 0) {
                         // Attacker in active battle
                         unit = game.activeBattle.units[0];
-                    } else if (game.activeBattle && tile.units.indexOf(game.activeBattle.units[1]) >= 0) {
+                    } else if (game.activeBattle && units.indexOf(game.activeBattle.units[1]) >= 0) {
                         // Defender in active battle
                         unit = game.activeBattle.units[1];
                     } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
@@ -336,12 +336,21 @@ class MapUI {
                             unit = <Units.Unit> game.activeUnit;
                         }
                     } else {
-                        // Nothing active here, show highest currentStrength
-                        maxStrength = -Infinity;
-                        for (k = 0; k < units.length; k++) {
-                            if (units[k].currentStrength > maxStrength) {
-                                unit = units[k];
-                                maxStrength = units[k].currentStrength;
+                        // Nothing special, show highest currentStrength vs the current active unit
+
+                        // If activeUnit is from another civ (already guaranteed to be on another
+                        // tile, from above), then show the unit that would fare best against
+                        // activeUnit in a battle
+                        if (game.activeUnit && game.activeUnit.owner !== units[0].owner) { // THIS ASSUMES CIVS CAN'T SHARE TILE
+                            unit = Combat.findBestDefender(game.activeUnit, [i, j], true).defender;
+                        } else {
+                            // Default: show highest currentStrength
+                            maxStrength = -Infinity;
+                            for (k = 0; k < units.length; k++) {
+                                if (units[k].currentStrength > maxStrength) {
+                                    unit = units[k];
+                                    maxStrength = units[k].currentStrength;
+                                }
                             }
                         }
                     }

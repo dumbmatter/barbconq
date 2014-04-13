@@ -1433,10 +1433,10 @@ var MapUI = (function () {
                     if (units.length === 1) {
                         // Only one to show...
                         unit = units[0];
-                    } else if (game.activeBattle && tile.units.indexOf(game.activeBattle.units[0]) >= 0) {
+                    } else if (game.activeBattle && units.indexOf(game.activeBattle.units[0]) >= 0) {
                         // Attacker in active battle
                         unit = game.activeBattle.units[0];
-                    } else if (game.activeBattle && tile.units.indexOf(game.activeBattle.units[1]) >= 0) {
+                    } else if (game.activeBattle && units.indexOf(game.activeBattle.units[1]) >= 0) {
                         // Defender in active battle
                         unit = game.activeBattle.units[1];
                     } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
@@ -1455,12 +1455,20 @@ var MapUI = (function () {
                             unit = game.activeUnit;
                         }
                     } else {
-                        // Nothing active here, show highest currentStrength
-                        maxStrength = -Infinity;
-                        for (k = 0; k < units.length; k++) {
-                            if (units[k].currentStrength > maxStrength) {
-                                unit = units[k];
-                                maxStrength = units[k].currentStrength;
+                        // Nothing special, show highest currentStrength vs the current active unit
+                        // If activeUnit is from another civ (already guaranteed to be on another
+                        // tile, from above), then show the unit that would fare best against
+                        // activeUnit in a battle
+                        if (game.activeUnit && game.activeUnit.owner !== units[0].owner) {
+                            unit = Combat.findBestDefender(game.activeUnit, [i, j], true).defender;
+                        } else {
+                            // Default: show highest currentStrength
+                            maxStrength = -Infinity;
+                            for (k = 0; k < units.length; k++) {
+                                if (units[k].currentStrength > maxStrength) {
+                                    unit = units[k];
+                                    maxStrength = units[k].currentStrength;
+                                }
                             }
                         }
                     }
@@ -4256,7 +4264,7 @@ var Combat;
     Combat.Battle = Battle;
 
     // Find best attacker/defender combo for a unit/group attacking a tile. If no combo found, defender is null.
-    // If the third parameter (forceFindDefender) is true, then even invalid attackers are used. This should be used for path finding only, not for actual attacking
+    // If the third parameter (forceFindDefender) is true, then even invalid attackers are used. This should be used for path finding and UI only, not for actual attacking
     function findBestDefender(attackerUnitOrGroup, coords, forceFindDefender) {
         if (typeof forceFindDefender === "undefined") { forceFindDefender = false; }
         var attacker, defender, findBestDefenderForAttacker;

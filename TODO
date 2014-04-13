@@ -10,11 +10,7 @@ unit promotions
   Units.promotions - contains metadata
   onHoverTile bonuses for first unit
     how to define unit order? same as tile icon display
-      should change depending on activeUnit
-        like Combat.findBestDefender
-        if no activeUnit, should be best defender against a "generic" unit, without bonuses for unit type but with other bonuses
-      abstract into some general function that orders a list of units by strength
-        like Combat.findBestDefender, but return sorted list of defenders
+      what about when hovering for a battle?
   icons for the promotions a unit has
     show in hover-box and bottom-info
     can they be text?
