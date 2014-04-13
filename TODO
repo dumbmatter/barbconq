@@ -7,19 +7,16 @@ unit tests
   grouped unit actions
 
 unit promotions
-  Units.promotions - contains metadata
-  onHoverTile bonuses for first unit
-    how to define unit order? same as tile icon display. can be abstracted?
   icons for the promotions a unit has
     show in hover-box and bottom-info
     can they be text?
   indicator of if unit has promotions available on tile?
-  remaining promotions for after barbconq
-    http://www.civfanatics.com/civ4/info/promotions/
-    lots of irrelevant ones
+  after barbconq
+    add missing promotions from http://www.civfanatics.com/civ4/info/promotions/
     add collateral damage stuff to drills
     combat4/5, woodsman3 healing
     change woodsman descs to "Jungle/Forest"
+    Units.promotions should also contain the text used in ChromeUI.bonusText
 
 basic barb AI
   Game.moveUnits

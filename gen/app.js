@@ -697,13 +697,21 @@ var ChromeUI = (function () {
 
     ChromeUI.prototype.onHoverTile = function (tile) {
         if (typeof tile === "undefined") { tile = null; }
-        var content, features, i;
+        var content, features, i, topUnit;
 
         if (tile && tile.terrain !== "unseen") {
             content = "";
 
-            for (i = 0; i < tile.units.length; i++) {
-                content += this.hoverBoxUnitSummary(tile.units[i], i === 0);
+            if (tile.units.length > 0) {
+                // Show best unit in stack first, with its bonuses
+                topUnit = Units.findBestUnitInStack(tile.units);
+                content += this.hoverBoxUnitSummary(topUnit, true);
+
+                for (i = 0; i < tile.units.length; i++) {
+                    if (tile.units[i] !== topUnit) {
+                        content += this.hoverBoxUnitSummary(tile.units[i], false);
+                    }
+                }
             }
 
             // Capitalize feature names
@@ -3749,8 +3757,6 @@ var Units;
             if (game.activeUnit instanceof Units.Group) {
                 // Group is active
                 if (mapUI.pathFindingSearch) {
-                    console.log("HI");
-
                     // pathFinding is active, so pick best attacker vs tile defender
                     // Look for units with moves first. If none found, then look at all units
                     unit = Combat.findBestDefender(game.activeUnit, controller.hoveredTile, true).attacker;

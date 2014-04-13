@@ -45,15 +45,24 @@ class ChromeUI {
     }
 
     onHoverTile(tile : MapMaker.Tile = null) {
-        var content : string, features : string[], i : number;
+        var content : string, features : string[], i : number, topUnit : Units.Unit;
 
         if (tile && tile.terrain !== "unseen") {
             content = "";
 
-console.log("SHOULD USE SMART ORDERING FOR FIRST UNIT, like MapUI. (only first?)")
-            for (i = 0; i < tile.units.length; i++) {
-                content += this.hoverBoxUnitSummary(tile.units[i], i === 0);
+            if (tile.units.length > 0) {
+                // Show best unit in stack first, with its bonuses
+                topUnit = Units.findBestUnitInStack(tile.units);
+                content += this.hoverBoxUnitSummary(topUnit, true);
+
+                // Show other units in stack, without bonuses
+                for (i = 0; i < tile.units.length; i++) {
+                    if (tile.units[i] !== topUnit) {
+                        content += this.hoverBoxUnitSummary(tile.units[i], false);
+                    }
+                }
             }
+
 
             // Capitalize feature names
             features = [];
