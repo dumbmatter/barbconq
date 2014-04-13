@@ -319,16 +319,8 @@ module Units {
         get canAttack() : boolean { return this._canAttack; }
         set canDefend(value : boolean) { this._canDefend = value; }
         get canDefend() : boolean { return this._canDefend; }
-        set canHeal(value : boolean) {
-            this._canHeal = value;
-
-            // Any action taken to set canHeal to false should also unfortify.
-            if (!value) {
-                this.fortified = false;
-                this.fortifiedTurns = 0;
-            }
-        }
-        get canHeal() : boolean { return this._canHeal; }
+        set canHeal(value : boolean) { throw new Error('"canHeal" needs to be redefined by each derived class.'); }
+        get canHeal() : boolean { throw new Error('"canHeal" needs to be redefined by each derived class.'); }
         set actions(value : string[]) { this._actions = value; }
         get actions() : string[] { return this._actions; }
         set promotions(value : string[]) { this._promotions = value; }
@@ -672,7 +664,7 @@ module Units {
         _actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"]; // Defaults
         canAttack = true;
         canDefend = true;
-        canHeal = true;
+        _canHeal = true;
         unitBonuses : any = {}; // {[name : string] : number} // These are bonuses inherent to a unit type, regardless of promotions
 
         // Filter out fortify/wake and other action combos
@@ -696,6 +688,24 @@ module Units {
 
             return actions;
         }
+
+        // Needs to be set here to deal with this.group.
+        set canHeal(value : boolean) {
+            this._canHeal = value;
+
+            // Any action taken to set canHeal to false should also wake unit.
+            if (!value) {
+                this.fortifiedTurns = 0;
+
+                // If unit is part of a group, wake the group, not just this unit
+                if (this.group) {
+                    this.group.wake();
+                } else {
+                    this.wake();
+                }
+            }
+        }
+        get canHeal() : boolean { return this._canHeal; }
 
         constructor(owner : number, coords : number[]) {
             super();

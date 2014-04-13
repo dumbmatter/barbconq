@@ -97,9 +97,9 @@ function init() {
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Spearman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Warrior(config.BARB_ID, [10, 21]);
-    new Units.Warrior(config.BARB_ID, [10, 21]);*/
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);*/
+    new Units.Axeman(config.BARB_ID, [10, 21]);
+    new Units.Spearman(config.BARB_ID, [10, 21]);
     for (i = 0; i < 10; i++) {
         new Units.Archer(config.BARB_ID, [10, 21]);
     }

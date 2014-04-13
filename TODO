@@ -1,9 +1,5 @@
 # Major current tasks
 
-if fortified when attacking, no line drawn between attacker/defender, possibly other weirdness too
-  was this actually fixed? where?
-  still weird if group is fortified - should wake whole group
-
 click+drag for panning on main map
   similar to minimap or right click
 
@@ -40,9 +36,6 @@ rate of barb generation in non-visible tiles
 
 Map.pathFinding should take into account that tile movement cost does not just depend on the tile itself, but also on which tile the unit is moving from
   roads are the obvious implication, but also bonuses for double movement on certain tiles and mobility
-
-unit actions
-  are some of these universal? can move up to root Unit?
 
 How to do instructions/new game for new users?
   new game on separate html page, instructions auto show on first game

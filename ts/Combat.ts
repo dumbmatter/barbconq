@@ -424,18 +424,18 @@ module Combat {
 
         // includeAnimationDelays should be set to false for unit tests and non-visible units
         fight(cb : () => void, includeAnimationDelays : boolean = true) {
-            setTimeout(function () {
-                this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
-                this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
+            this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
+            this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
 
+            this.units[0].attacked = true;
+            this.units[0].canHeal = false; // This will wake unit and group
+
+            setTimeout(function () {
                 // Calculate first strikes here, since it could have been perturbed by odds() call if first strikes were set previously
                 this.assignFirstStrikes();
 
 /*console.log(JSON.stringify(this.appliedBonuses));
 console.log(this.firstStrikes);*/
-
-                this.units[0].attacked = true;
-                this.units[0].canHeal = false;
 
                 // Simulate the fight
                 this.simRounds(cb, includeAnimationDelays);

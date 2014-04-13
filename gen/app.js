@@ -2554,16 +2554,10 @@ var Units;
         });
         Object.defineProperty(UnitOrGroup.prototype, "canHeal", {
             get: function () {
-                return this._canHeal;
+                throw new Error('"canHeal" needs to be redefined by each derived class.');
             },
             set: function (value) {
-                this._canHeal = value;
-
-                // Any action taken to set canHeal to false should also unfortify.
-                if (!value) {
-                    this.fortified = false;
-                    this.fortifiedTurns = 0;
-                }
+                throw new Error('"canHeal" needs to be redefined by each derived class.');
             },
             enumerable: true,
             configurable: true
@@ -2971,7 +2965,7 @@ var Units;
             this._actions = ["fortify", "fortifyUntilHealed", "wake", "skipTurn", "goTo"];
             this.canAttack = true;
             this.canDefend = true;
-            this.canHeal = true;
+            this._canHeal = true;
             this.unitBonuses = {};
 
             this.owner = owner;
@@ -3012,6 +3006,30 @@ var Units;
             // Filter out fortify/wake and other action combos
             set: function (value) {
                 this._actions = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(Unit.prototype, "canHeal", {
+            get: function () {
+                return this._canHeal;
+            },
+            // Needs to be set here to deal with this.group.
+            set: function (value) {
+                this._canHeal = value;
+
+                // Any action taken to set canHeal to false should also wake unit.
+                if (!value) {
+                    this.fortifiedTurns = 0;
+
+                    // If unit is part of a group, wake the group, not just this unit
+                    if (this.group) {
+                        this.group.wake();
+                    } else {
+                        this.wake();
+                    }
+                }
             },
             enumerable: true,
             configurable: true
@@ -4216,18 +4234,18 @@ var Combat;
         // includeAnimationDelays should be set to false for unit tests and non-visible units
         Battle.prototype.fight = function (cb, includeAnimationDelays) {
             if (typeof includeAnimationDelays === "undefined") { includeAnimationDelays = true; }
-            setTimeout(function () {
-                this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
-                this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
+            this.log.push(this.names[0] + " (" + Util.round(this.A, 2) + ") attacked " + this.names[1] + " (" + Util.round(this.D, 2) + ")");
+            this.log.push("Combat odds for attacker: " + Math.round(this.odds().attackerWinsFight * 100) + "%");
 
+            this.units[0].attacked = true;
+            this.units[0].canHeal = false; // This will wake unit and group
+
+            setTimeout(function () {
                 // Calculate first strikes here, since it could have been perturbed by odds() call if first strikes were set previously
                 this.assignFirstStrikes();
 
                 /*console.log(JSON.stringify(this.appliedBonuses));
                 console.log(this.firstStrikes);*/
-                this.units[0].attacked = true;
-                this.units[0].canHeal = false;
-
                 // Simulate the fight
                 this.simRounds(cb, includeAnimationDelays);
             }.bind(this), includeAnimationDelays ? config.BATTLE_ROUND_UI_DELAY : 0);
@@ -4459,6 +4477,13 @@ function init() {
     u1.xp += 400;
     u1.currentStrength = 3;
 
+    /*    new Units.Archer(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Spearman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);*/
+    new Units.Axeman(config.BARB_ID, [10, 21]);
+    new Units.Spearman(config.BARB_ID, [10, 21]);
     for (i = 0; i < 10; i++) {
         new Units.Archer(config.BARB_ID, [10, 21]);
     }
