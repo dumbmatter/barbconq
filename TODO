@@ -2,10 +2,12 @@
 
 "End turn early" green button and "end turn" red button, next to minimap
   if end turn early, make sure to move units on path towards targetCoords first!
-  green/red should always be in sync with "begin next turn" blinker
-    need to have state variable somewhere, like game.turnOver
-      should be unset whenever wake is called?
-      should govern both red/green and display of the "turn over" text
+    do this at top of game.nextPlayer
+    complicated because async: need to wait until all moves complete and then end turn and switch to next player
+  what if all orders are given, and then you go back and wake a fortified unit? should do the stuff in chromeUI.onAIMovingDone
+    should be done...
+      whenever unit is woken up
+      whenever group is split and units become active
 
 move promotions to own file
 

@@ -946,6 +946,8 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.onMovesDone = function () {
+        this.elEndTurnButton.classList.remove("moves-not-done");
+        this.elEndTurnButton.classList.add("moves-done");
         this.updateBottomText("Press &lt;ENTER&gt; to begin the next turn...");
     };
 
@@ -954,6 +956,8 @@ var ChromeUI = (function () {
     };
 
     ChromeUI.prototype.onAIMovingDone = function () {
+        this.elEndTurnButton.classList.add("moves-not-done");
+        this.elEndTurnButton.classList.remove("moves-done");
         this.updateBottomText();
     };
 

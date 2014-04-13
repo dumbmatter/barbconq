@@ -271,6 +271,8 @@ class ChromeUI {
     }
 
     onMovesDone() {
+        this.elEndTurnButton.classList.remove("moves-not-done");
+        this.elEndTurnButton.classList.add("moves-done");
         this.updateBottomText("Press &lt;ENTER&gt; to begin the next turn...");
     }
 
@@ -279,6 +281,8 @@ class ChromeUI {
     }
 
     onAIMovingDone() {
+        this.elEndTurnButton.classList.add("moves-not-done");
+        this.elEndTurnButton.classList.remove("moves-done");
         this.updateBottomText();
     }
 

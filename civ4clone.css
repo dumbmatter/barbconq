@@ -212,8 +212,13 @@ a:hover {
   height: 30px;
   border-radius: 15px;
   border: 2px solid #ffde00;
-  background-color: green;
   cursor: pointer;
+}
+.moves-not-done {
+  background-color: green;
+}
+.moves-done {
+  background-color: red;
 }
 
 #bottom-text {
