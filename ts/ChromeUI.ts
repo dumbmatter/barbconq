@@ -8,6 +8,7 @@ class ChromeUI {
     elBottomText : HTMLDivElement;
     elBottomUnits : HTMLDivElement;
     elEvents : HTMLUListElement;
+    elEndTurnButton : HTMLDivElement;
 
     constructor() {
         this.elHoverBox = <HTMLDivElement> document.getElementById("hover-box");
@@ -17,6 +18,7 @@ class ChromeUI {
         this.elBottomText = <HTMLDivElement> document.getElementById("bottom-text");
         this.elBottomUnits = <HTMLDivElement> document.getElementById("bottom-units");
         this.elEvents = <HTMLUListElement> document.getElementById("events");
+        this.elEndTurnButton = <HTMLDivElement> document.getElementById("end-turn-button");
     }
 
     strengthFraction(unit : Units.Unit) {
@@ -124,6 +126,23 @@ class ChromeUI {
 
         this.elHoverBox.innerHTML = content;
         this.elHoverBox.style.display = "block";
+    }
+
+    onHoverEndTurnButton(earlyOrNormal : string = null) {
+        var content : string;
+
+        if (earlyOrNormal) {
+            if (earlyOrNormal === "early") {
+                content = '<p><span class="action-name">End Turn Early</span> <span class="action-shortcut">&lt;SHIFT+ENTER&gt;</span></p><p>End your turn before giving orders to all of your units.</p>';
+            } else if (earlyOrNormal === "normal") {
+                content = '<p><span class="action-name">End Turn</span> <span class="action-shortcut">&lt;ENTER&gt;</span></p>';
+            }
+
+            this.elHoverBox.innerHTML = content;
+            this.elHoverBox.style.display = "block";
+        } else {
+            this.elHoverBox.style.display = "none";
+        }
     }
 
     private hoverBoxUnitSummary(unit : Units.Unit, showCombatBonuses : boolean = true) {

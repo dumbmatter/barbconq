@@ -72,10 +72,10 @@ class Game {
     newTurn() {
         var i : number, j : number, unitTypes : string[], tile : MapMaker.Tile;
 
-        // See if anything still has to be moved, after the initial turn
+/*        // See if anything still has to be moved, after the initial turn
         if (this.turn > 0 && this.moveUnits()) {
             return;
-        }
+        }*/
 
         this.turn++;
         this.turnID = 0;

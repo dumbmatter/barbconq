@@ -404,6 +404,20 @@ class Controller {
                 }
             }
         }.bind(this));
+
+        chromeUI.elEndTurnButton.addEventListener("click", function (e : MouseEvent) {
+            if (this.preventUserInput()) { return; }
+
+            if (game.turnID === config.PLAYER_ID) {
+                game.nextPlayer();
+            }
+        }.bind(this));
+        chromeUI.elEndTurnButton.addEventListener("mouseover", function (e : MouseEvent) {
+            chromeUI.onHoverEndTurnButton("early");
+        });
+        chromeUI.elEndTurnButton.addEventListener("mouseout", function (e : MouseEvent) {
+            chromeUI.onHoverEndTurnButton();
+        });
     }
 
     initUnitIcons() {

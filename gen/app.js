@@ -501,6 +501,24 @@ var Controller = (function () {
                 }
             }
         }.bind(this));
+
+        chromeUI.elEndTurnButton.addEventListener("click", function (e) {
+            if (this.preventUserInput()) {
+                return;
+            }
+
+            if (game.turnID === config.PLAYER_ID) {
+                game.nextPlayer();
+            }
+        }.bind(this));
+        chromeUI.elEndTurnButton.addEventListener("mouseover", function (e) {
+            chromeUI.onHoverEndTurnButton("early");
+            console.log("end-turn-button hoverOn");
+        });
+        chromeUI.elEndTurnButton.addEventListener("mouseout", function (e) {
+            chromeUI.onHoverEndTurnButton();
+            console.log("end-turn-button hoverOff");
+        });
     };
 
     Controller.prototype.initUnitIcons = function () {
@@ -669,6 +687,7 @@ var ChromeUI = (function () {
         this.elBottomText = document.getElementById("bottom-text");
         this.elBottomUnits = document.getElementById("bottom-units");
         this.elEvents = document.getElementById("events");
+        this.elEndTurnButton = document.getElementById("end-turn-button");
     }
     ChromeUI.prototype.strengthFraction = function (unit) {
         if (unit.strength === unit.currentStrength) {
@@ -776,6 +795,24 @@ var ChromeUI = (function () {
 
         this.elHoverBox.innerHTML = content;
         this.elHoverBox.style.display = "block";
+    };
+
+    ChromeUI.prototype.onHoverEndTurnButton = function (earlyOrNormal) {
+        if (typeof earlyOrNormal === "undefined") { earlyOrNormal = null; }
+        var content;
+
+        if (earlyOrNormal) {
+            if (earlyOrNormal === "early") {
+                content = '<p><span class="action-name">End Turn Early</span> <span class="action-shortcut">&lt;SHIFT+ENTER&gt;</span></p><p>End your turn before giving orders to all of your units.</p>';
+            } else if (earlyOrNormal === "normal") {
+                content = '<p><span class="action-name">End Turn</span> <span class="action-shortcut">&lt;ENTER&gt;</span></p>';
+            }
+
+            this.elHoverBox.innerHTML = content;
+            this.elHoverBox.style.display = "block";
+        } else {
+            this.elHoverBox.style.display = "none";
+        }
     };
 
     ChromeUI.prototype.hoverBoxUnitSummary = function (unit, showCombatBonuses) {
@@ -2007,11 +2044,10 @@ var Game = (function () {
     Game.prototype.newTurn = function () {
         var i, j, unitTypes, tile;
 
-        // See if anything still has to be moved, after the initial turn
+        /*        // See if anything still has to be moved, after the initial turn
         if (this.turn > 0 && this.moveUnits()) {
-            return;
-        }
-
+        return;
+        }*/
         this.turn++;
         this.turnID = 0;
         this.map.updateVisibility();

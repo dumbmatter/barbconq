@@ -204,6 +204,18 @@ a:hover {
   pointer-events: auto;
 }
 
+#end-turn-button {
+  position: absolute;
+  right: 284px;
+  bottom: 132px;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  border: 2px solid #ffde00;
+  background-color: green;
+  cursor: pointer;
+}
+
 #bottom-text {
   position: absolute;
   width: 100%;
