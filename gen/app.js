@@ -496,8 +496,12 @@ var Controller = (function () {
             }
 
             if (e.keyCode === this.KEYS.ENTER) {
-                if (game.turnID === config.PLAYER_ID && !game.moveUnits()) {
-                    game.nextPlayer();
+                if (game.turnID === config.PLAYER_ID) {
+                    // With shift pressed, end turn early. Otherwise, make sure no units are waiting
+                    // for orders.
+                    if (e.shiftKey || !game.moveUnits()) {
+                        game.nextPlayer();
+                    }
                 }
             }
         }.bind(this));
@@ -513,11 +517,9 @@ var Controller = (function () {
         }.bind(this));
         chromeUI.elEndTurnButton.addEventListener("mouseover", function (e) {
             chromeUI.onHoverEndTurnButton("early");
-            console.log("end-turn-button hoverOn");
         });
         chromeUI.elEndTurnButton.addEventListener("mouseout", function (e) {
             chromeUI.onHoverEndTurnButton();
-            console.log("end-turn-button hoverOff");
         });
     };
 
@@ -4583,8 +4585,8 @@ function init() {
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
     /*new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);*/
+    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
     u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");

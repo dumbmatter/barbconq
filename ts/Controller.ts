@@ -399,8 +399,12 @@ class Controller {
             if (this.preventUserInput()) { return; }
 
             if (e.keyCode === this.KEYS.ENTER) {
-                if (game.turnID === config.PLAYER_ID && !game.moveUnits()) {
-                    game.nextPlayer();
+                if (game.turnID === config.PLAYER_ID) {
+                    // With shift pressed, end turn early. Otherwise, make sure no units are waiting
+                    // for orders.
+                    if (e.shiftKey || !game.moveUnits()) {
+                        game.nextPlayer();
+                    }
                 }
             }
         }.bind(this));

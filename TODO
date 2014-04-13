@@ -2,9 +2,12 @@
 
 "End turn early" green button and "end turn" red button, next to minimap
   if end turn early, make sure to move units on path towards targetCoords first!
-    i have the same problem is i have a warrior/chariot group move towards target, have the "End" text flashing, separate so the chariot can still move, and then press enter
-  is green/red always in sync with "begin next turn" blinker? if so, how to encode shared state, somewhere in game. ?
-  add "shift+enter" shortcut for end turn early
+  green/red should always be in sync with "begin next turn" blinker
+    need to have state variable somewhere, like game.turnOver
+      should be unset whenever wake is called?
+      should govern both red/green and display of the "turn over" text
+
+move promotions to own file
 
 click+drag for panning on main map
   similar to minimap or right click
