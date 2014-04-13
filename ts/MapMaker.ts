@@ -119,7 +119,7 @@ module MapMaker {
 
             // Loop through units, set visibility
             Object.keys(game.units[config.PLAYER_ID]).forEach(function (id : number) {
-                var i : number, j : number, radius : number, unit : Units.Unit;
+                var bonuses : {[name: string] : number}, i : number, j : number, radius : number, unit : Units.Unit;
 
                 unit = game.units[config.PLAYER_ID][id];
             
@@ -128,6 +128,12 @@ module MapMaker {
                     radius = 2;
                 }  else {
                     radius = 1;
+                }
+
+                // Check for Sentry promotion
+                bonuses = unit.getBonuses();
+                if (bonuses.hasOwnProperty("visibilityRange") && bonuses["visibilityRange"] >= 0) {
+                    radius += 1;
                 }
 
                 // Radius 1 search around unit

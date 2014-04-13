@@ -230,6 +230,14 @@ module Units {
             categories: ["mounted", "armored"],
             prereqs: [["flanking2"]]
         },
+        sentry: {
+            name: "Sentry",
+            bonuses: {
+                visibilityRange: 1
+            },
+            categories: ["recon", "mounted", "helicopter", "naval"],
+            prereqs: [["combat3"], ["flanking1"]]
+        },
         shock: {
             name: "Shock",
             bonuses: {
@@ -833,6 +841,11 @@ module Units {
 
                 // Restore half of HP
                 this.currentStrength = (this.currentStrength + this.strength) / 2;
+
+                // Only sentry can change visibility on map
+                if (promotionName === "sentry") {
+                    game.map.updateVisibility();
+                }
 
                 if (this.owner === config.PLAYER_ID) {
                     mapUI.render();

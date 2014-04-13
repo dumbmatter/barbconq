@@ -191,6 +191,8 @@ class ChromeUI {
             return "Double Movement in Hills";
         } else if (name === "mobility") {
             return "-1 Terrain Movement Cost";
+        } else if (name === "visibilityRange") {
+            return "+1 Visibility Range";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }

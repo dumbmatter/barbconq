@@ -846,6 +846,8 @@ var ChromeUI = (function () {
             return "Double Movement in Hills";
         } else if (name === "mobility") {
             return "-1 Terrain Movement Cost";
+        } else if (name === "visibilityRange") {
+            return "+1 Visibility Range";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }
@@ -1776,7 +1778,7 @@ var MapMaker;
 
             // Loop through units, set visibility
             Object.keys(game.units[config.PLAYER_ID]).forEach(function (id) {
-                var i, j, radius, unit;
+                var bonuses, i, j, radius, unit;
 
                 unit = game.units[config.PLAYER_ID][id];
 
@@ -1785,6 +1787,12 @@ var MapMaker;
                     radius = 2;
                 } else {
                     radius = 1;
+                }
+
+                // Check for Sentry promotion
+                bonuses = unit.getBonuses();
+                if (bonuses.hasOwnProperty("visibilityRange") && bonuses["visibilityRange"] >= 0) {
+                    radius += 1;
                 }
 
                 for (i = unit.coords[0] - radius; i <= unit.coords[0] + radius; i++) {
@@ -2401,6 +2409,14 @@ var Units;
             },
             categories: ["mounted", "armored"],
             prereqs: [["flanking2"]]
+        },
+        sentry: {
+            name: "Sentry",
+            bonuses: {
+                visibilityRange: 1
+            },
+            categories: ["recon", "mounted", "helicopter", "naval"],
+            prereqs: [["combat3"], ["flanking1"]]
         },
         shock: {
             name: "Shock",
@@ -3132,6 +3148,11 @@ var Units;
                 // Restore half of HP
                 this.currentStrength = (this.currentStrength + this.strength) / 2;
 
+                // Only sentry can change visibility on map
+                if (promotionName === "sentry") {
+                    game.map.updateVisibility();
+                }
+
                 if (this.owner === config.PLAYER_ID) {
                     mapUI.render();
                 }
@@ -3832,7 +3853,7 @@ var Combat;
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
             for (name in bonuses) {
-                if (name === "cityDefense" || name === "forestDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility") {
+                if (name === "cityDefense" || name === "forestDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility" || name === "visibilityRange") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
                     this.appliedBonuses[0][name] = bonuses[name];
@@ -3880,7 +3901,7 @@ var Combat;
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman" || name === "cityAttack" || name === "forestAttack" || name === "hillsAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility") {
+                if (name === "attackAxeman" || name === "cityAttack" || name === "forestAttack" || name === "hillsAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility" || name === "visibilityRange") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
                     this.appliedBonuses[1][name] = bonuses[name];
@@ -4431,7 +4452,7 @@ function init() {
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    u1 = new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");
     //    u1.promotions.push("drill2");
