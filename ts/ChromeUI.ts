@@ -50,6 +50,7 @@ class ChromeUI {
         if (tile && tile.terrain !== "unseen") {
             content = "";
 
+console.log("SHOULD USE SMART ORDERING FOR FIRST UNIT, like MapUI. (only first?)")
             for (i = 0; i < tile.units.length; i++) {
                 content += this.hoverBoxUnitSummary(tile.units[i], i === 0);
             }

@@ -1388,7 +1388,7 @@ var MapUI = (function () {
 
             // First pass: draw tiles and units
             drawViewport(function (i, j, x, y) {
-                var cityImage, k, maxStrength, tile, unit, unitImage, units;
+                var cityImage, tile, unit, unitImage, units;
 
                 tile = game.getTile([i, j]);
 
@@ -1429,56 +1429,7 @@ var MapUI = (function () {
                 // Show units on tile
                 units = tile.units;
                 if (units.length > 0) {
-                    // Pick which unit to show on top of tile
-                    if (units.length === 1) {
-                        // Only one to show...
-                        unit = units[0];
-                    } else if (game.activeBattle && units.indexOf(game.activeBattle.units[0]) >= 0) {
-                        // Attacker in active battle
-                        unit = game.activeBattle.units[0];
-                    } else if (game.activeBattle && units.indexOf(game.activeBattle.units[1]) >= 0) {
-                        // Defender in active battle
-                        unit = game.activeBattle.units[1];
-                    } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
-                        // Active unit/group on this tile
-                        if (game.activeUnit instanceof Units.Group) {
-                            // Group is active
-                            if (this.pathFindingSearch) {
-                                // pathFinding is active, so pick best attacker vs tile defender
-                                // Look for units with moves first. If none found, then look at all units
-                                unit = Combat.findBestDefender(game.activeUnit, controller.hoveredTile, true).attacker;
-                            } else {
-                                // Show highest currentStrength from the group
-                                maxStrength = -Infinity;
-                                for (k = 0; k < units.length; k++) {
-                                    if (units[k].currentStrength > maxStrength && (units[k].group && units[k].group.id === game.activeUnit.id)) {
-                                        unit = units[k];
-                                        maxStrength = units[k].currentStrength;
-                                    }
-                                }
-                            }
-                        } else {
-                            // Individual is active, show it
-                            unit = game.activeUnit;
-                        }
-                    } else {
-                        // Nothing special, show highest currentStrength vs the current active unit
-                        // If activeUnit is from another civ (already guaranteed to be on another
-                        // tile, from above), then show the unit that would fare best against
-                        // activeUnit in a battle
-                        if (game.activeUnit && game.activeUnit.owner !== units[0].owner) {
-                            unit = Combat.findBestDefender(game.activeUnit, [i, j], true).defender;
-                        } else {
-                            // Default: show highest currentStrength
-                            maxStrength = -Infinity;
-                            for (k = 0; k < units.length; k++) {
-                                if (units[k].currentStrength > maxStrength) {
-                                    unit = units[k];
-                                    maxStrength = units[k].currentStrength;
-                                }
-                            }
-                        }
-                    }
+                    unit = Units.findBestUnitInStack(units);
 
                     if (unit.owner === config.BARB_ID) {
                         unitImage = assets["black" + unit.type];
@@ -3775,6 +3726,70 @@ var Units;
         }
     }
     Units.addUnitsWithTypeToNewGroup = addUnitsWithTypeToNewGroup;
+
+    function findBestUnitInStack(units) {
+        var k, maxStrength, unit;
+
+        if (units.length === 0) {
+            throw new Error('"findBestUnitInStack" requires the input list of units to not be empty.');
+        }
+
+        // Pick which unit to show on top of tile
+        if (units.length === 1) {
+            // Only one to show...
+            unit = units[0];
+        } else if (game.activeBattle && units.indexOf(game.activeBattle.units[0]) >= 0) {
+            // Attacker in active battle
+            unit = game.activeBattle.units[0];
+        } else if (game.activeBattle && units.indexOf(game.activeBattle.units[1]) >= 0) {
+            // Defender in active battle
+            unit = game.activeBattle.units[1];
+        } else if (game.activeUnit && game.activeUnit.coords[0] === units[0].coords[0] && game.activeUnit.coords[1] === units[0].coords[1]) {
+            // Active unit/group on this tile
+            if (game.activeUnit instanceof Units.Group) {
+                // Group is active
+                if (mapUI.pathFindingSearch) {
+                    console.log("HI");
+
+                    // pathFinding is active, so pick best attacker vs tile defender
+                    // Look for units with moves first. If none found, then look at all units
+                    unit = Combat.findBestDefender(game.activeUnit, controller.hoveredTile, true).attacker;
+                } else {
+                    // Show highest currentStrength from the group
+                    maxStrength = -Infinity;
+                    for (k = 0; k < units.length; k++) {
+                        if (units[k].currentStrength > maxStrength && (units[k].group && units[k].group.id === game.activeUnit.id)) {
+                            unit = units[k];
+                            maxStrength = units[k].currentStrength;
+                        }
+                    }
+                }
+            } else {
+                // Individual is active, show it
+                unit = game.activeUnit;
+            }
+        } else {
+            // Nothing special, show highest currentStrength vs the current active unit
+            // If activeUnit is from another civ (already guaranteed to be on another
+            // tile, from above), then show the unit that would fare best against
+            // activeUnit in a battle
+            if (game.activeUnit && game.activeUnit.owner !== units[0].owner) {
+                unit = Combat.findBestDefender(game.activeUnit, units[0].coords, true).defender;
+            } else {
+                // Default: show highest currentStrength
+                maxStrength = -Infinity;
+                for (k = 0; k < units.length; k++) {
+                    if (units[k].currentStrength > maxStrength) {
+                        unit = units[k];
+                        maxStrength = units[k].currentStrength;
+                    }
+                }
+            }
+        }
+
+        return unit;
+    }
+    Units.findBestUnitInStack = findBestUnitInStack;
 })(Units || (Units = {}));
 // Cities
 var Cities;
