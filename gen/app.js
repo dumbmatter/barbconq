@@ -788,6 +788,9 @@ var ChromeUI = (function () {
         content += this.movementFraction(unit) + ', ';
         content += 'XP: (' + unit.xp + '/' + unit.xpForNextLevel() + '), ';
         content += game.names[unit.owner];
+        unit.promotions.forEach(function (promotion) {
+            content += ' <span class="promotion-mini-icon">' + Units.promotions[promotion].abbrev + '</span>';
+        });
         content += '</p>';
 
         // Combat bonuses
@@ -2197,6 +2200,7 @@ var Units;
     Units.promotions = {
         cityRaider1: {
             name: "City Raider I",
+            abbrev: "CR1",
             bonuses: {
                 cityAttack: 20
             },
@@ -2205,6 +2209,7 @@ var Units;
         },
         cityRaider2: {
             name: "City Raider II",
+            abbrev: "CR1",
             bonuses: {
                 cityAttack: 25
             },
@@ -2213,6 +2218,7 @@ var Units;
         },
         cityRaider3: {
             name: "City Raider III",
+            abbrev: "CR3",
             bonuses: {
                 cityAttack: 30,
                 gunpowder: 10
@@ -2222,6 +2228,7 @@ var Units;
         },
         cityGarrison1: {
             name: "City Garrison I",
+            abbrev: "CG1",
             bonuses: {
                 cityDefense: 20
             },
@@ -2230,6 +2237,7 @@ var Units;
         },
         cityGarrison2: {
             name: "City Garrison II",
+            abbrev: "CG2",
             bonuses: {
                 cityDefense: 25
             },
@@ -2238,6 +2246,7 @@ var Units;
         },
         cityGarrison3: {
             name: "City Garrison III",
+            abbrev: "CG3",
             bonuses: {
                 cityDefense: 30,
                 melee: 10
@@ -2247,6 +2256,7 @@ var Units;
         },
         combat1: {
             name: "Combat I",
+            abbrev: "Co1",
             bonuses: {
                 strength: 10
             },
@@ -2255,6 +2265,7 @@ var Units;
         },
         combat2: {
             name: "Combat II",
+            abbrev: "Co2",
             bonuses: {
                 strength: 10
             },
@@ -2263,6 +2274,7 @@ var Units;
         },
         combat3: {
             name: "Combat III",
+            abbrev: "Co3",
             bonuses: {
                 strength: 10
             },
@@ -2271,6 +2283,7 @@ var Units;
         },
         combat4: {
             name: "Combat IV",
+            abbrev: "Co4",
             bonuses: {
                 strength: 10
             },
@@ -2279,6 +2292,7 @@ var Units;
         },
         combat5: {
             name: "Combat V",
+            abbrev: "Co5",
             bonuses: {
                 strength: 10
             },
@@ -2287,6 +2301,7 @@ var Units;
         },
         cover: {
             name: "Cover",
+            abbrev: "Cov",
             bonuses: {
                 archery: 25
             },
@@ -2295,6 +2310,7 @@ var Units;
         },
         drill1: {
             name: "Drill I",
+            abbrev: "Dr1",
             bonuses: {
                 firstStrikeChances: 1
             },
@@ -2303,6 +2319,7 @@ var Units;
         },
         drill2: {
             name: "Drill II",
+            abbrev: "Dr2",
             bonuses: {
                 firstStrikes: 1
             },
@@ -2311,6 +2328,7 @@ var Units;
         },
         drill3: {
             name: "Drill III",
+            abbrev: "Dr3",
             bonuses: {
                 firstStrikeChances: 2
             },
@@ -2319,6 +2337,7 @@ var Units;
         },
         drill4: {
             name: "Drill IV",
+            abbrev: "Dr4",
             bonuses: {
                 firstStrikes: 2,
                 mounted: 10
@@ -2328,6 +2347,7 @@ var Units;
         },
         flanking1: {
             name: "Flanking I",
+            abbrev: "Fl1",
             bonuses: {
                 retreat: 10
             },
@@ -2336,6 +2356,7 @@ var Units;
         },
         flanking2: {
             name: "Flanking II",
+            abbrev: "Fl2",
             bonuses: {
                 retreat: 10
             },
@@ -2344,6 +2365,7 @@ var Units;
         },
         formation: {
             name: "Formation",
+            abbrev: "Frm",
             bonuses: {
                 mounted: 25
             },
@@ -2352,6 +2374,7 @@ var Units;
         },
         guerilla1: {
             name: "Guerilla I",
+            abbrev: "Gr1",
             bonuses: {
                 hillsDefense: 20
             },
@@ -2360,6 +2383,7 @@ var Units;
         },
         guerilla2: {
             name: "Guerilla II",
+            abbrev: "Gr2",
             bonuses: {
                 hillsDefense: 30,
                 doubleMovementHills: 1
@@ -2369,6 +2393,7 @@ var Units;
         },
         guerilla3: {
             name: "Guerilla III",
+            abbrev: "Gr3",
             bonuses: {
                 hillsAttack: 25,
                 retreat: 50
@@ -2378,6 +2403,7 @@ var Units;
         },
         mobility: {
             name: "Mobility",
+            abbrev: "Mbl",
             bonuses: {
                 mobility: 1
             },
@@ -2386,6 +2412,7 @@ var Units;
         },
         sentry: {
             name: "Sentry",
+            abbrev: "Snt",
             bonuses: {
                 visibilityRange: 1
             },
@@ -2394,6 +2421,7 @@ var Units;
         },
         shock: {
             name: "Shock",
+            abbrev: "Shk",
             bonuses: {
                 melee: 25
             },
@@ -2402,6 +2430,7 @@ var Units;
         },
         woodsman1: {
             name: "Woodsman I",
+            abbrev: "Wd1",
             bonuses: {
                 forestDefense: 20
             },
@@ -2410,6 +2439,7 @@ var Units;
         },
         woodsman2: {
             name: "Woodsman II",
+            abbrev: "Wd2",
             bonuses: {
                 forestDefense: 30,
                 doubleMovementForest: 1
@@ -2419,6 +2449,7 @@ var Units;
         },
         woodsman3: {
             name: "Woodsman III",
+            abbrev: "Wd3",
             bonuses: {
                 firstStrikes: 2,
                 forestAttack: 25
@@ -4504,8 +4535,8 @@ function init() {
     new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
     /*new Units.Scout(config.PLAYER_ID, [10, 20]);
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Archer(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);*/
     u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");

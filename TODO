@@ -8,7 +8,7 @@ unit tests
 
 unit promotions
   icons for the promotions a unit has
-    show in hover-box and bottom-info
+    show in bottom-info
     can they be text?
   indicator of if unit has promotions available on tile?
   after barbconq

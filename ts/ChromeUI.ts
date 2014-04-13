@@ -135,6 +135,9 @@ class ChromeUI {
         content += this.movementFraction(unit) + ', ';
         content += 'XP: (' + unit.xp + '/' + unit.xpForNextLevel() + '), ';
         content += game.names[unit.owner];
+        unit.promotions.forEach(function (promotion : string) {
+            content += ' <span class="promotion-mini-icon">' + Units.promotions[promotion].abbrev + '</span>';
+        });
         content += '</p>';
 
         // Combat bonuses
