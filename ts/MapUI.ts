@@ -323,12 +323,19 @@ class MapUI {
                     } else if (game.activeUnit && game.activeUnit.coords[0] === i && game.activeUnit.coords[1] === j) {
                         // Active unit/group on this tile
                         if (game.activeUnit instanceof Units.Group) {
-                            // Group is active, show highest currentStrength from the group
-                            maxStrength = -Infinity;
-                            for (k = 0; k < units.length; k++) {
-                                if (units[k].currentStrength > maxStrength && (units[k].group && units[k].group.id === game.activeUnit.id)) {
-                                    unit = units[k];
-                                    maxStrength = units[k].currentStrength;
+                            // Group is active
+                            if (this.pathFindingSearch) {
+                                // pathFinding is active, so pick best attacker vs tile defender
+                                // Look for units with moves first. If none found, then look at all units
+                                unit = Combat.findBestDefender(game.activeUnit, controller.hoveredTile, true).attacker;
+                            } else {
+                                // Show highest currentStrength from the group
+                                maxStrength = -Infinity;
+                                for (k = 0; k < units.length; k++) {
+                                    if (units[k].currentStrength > maxStrength && (units[k].group && units[k].group.id === game.activeUnit.id)) {
+                                        unit = units[k];
+                                        maxStrength = units[k].currentStrength;
+                                    }
                                 }
                             }
                         } else {

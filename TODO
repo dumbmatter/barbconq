@@ -9,8 +9,7 @@ unit tests
 unit promotions
   Units.promotions - contains metadata
   onHoverTile bonuses for first unit
-    how to define unit order? same as tile icon display
-      what about when hovering for a battle?
+    how to define unit order? same as tile icon display. can be abstracted?
   icons for the promotions a unit has
     show in hover-box and bottom-info
     can they be text?
