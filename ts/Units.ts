@@ -229,6 +229,14 @@ module Units {
             },
             categories: ["mounted", "armored"],
             prereqs: [["flanking2"]]
+        },
+        shock: {
+            name: "Shock",
+            bonuses: {
+                melee: 25
+            },
+            categories: ["archery", "mounted", "melee", "siege"],
+            prereqs: [["combat1"], ["drill1"]]
         }
     };
 
