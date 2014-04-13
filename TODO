@@ -23,7 +23,9 @@ unit promotions
   indicator of if unit has promotions available on tile?
   remaining promotions for barbconq
     http://www.civfanatics.com/civ4/info/promotions/
-    start with mobility, continue alphabetical and pick relevant ones
+    sentry
+    shock
+    woodsman1-3
   remaining promotions for after barbconq
     lots of irrelevant ones
     add collateral damage stuff to drills
@@ -36,6 +38,9 @@ rate of barb generation in non-visible tiles
   should increase with turns?
 
 # Minor current tasks
+
+Map.pathFinding should take into account that tile movement cost does not just depend on the tile itself, but also on which tile the unit is moving from
+  roads are the obvious implication, but also bonuses for double movement on certain tiles and mobility
 
 unit actions
   are some of these universal? can move up to root Unit?

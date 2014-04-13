@@ -183,6 +183,8 @@ class ChromeUI {
             return "Doesn't Recieve Defensive Bonuses";
         } else if (name === "doubleMovementHills") {
             return "Double Movement in Hills";
+        } else if (name === "mobility") {
+            return "-1 Terrain Movement Cost";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }

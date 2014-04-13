@@ -208,7 +208,7 @@ module Units {
             name: "Guerilla II",
             bonuses: {
                 hillsDefense: 30,
-                doubleMovementHills: 20
+                doubleMovementHills: 1
             },
             categories: ["recon", "archery", "gunpowder", "melee"],
             prereqs: [["guerilla1"]]
@@ -221,6 +221,14 @@ module Units {
             },
             categories: ["archery", "gunpowder", "melee"],
             prereqs: [["guerilla2"]]
+        },
+        mobility: {
+            name: "Mobility",
+            bonuses: {
+                mobility: 1
+            },
+            categories: ["mounted", "armored"],
+            prereqs: [["flanking2"]]
         }
     };
 

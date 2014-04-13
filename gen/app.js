@@ -838,6 +838,8 @@ var ChromeUI = (function () {
             return "Doesn't Recieve Defensive Bonuses";
         } else if (name === "doubleMovementHills") {
             return "Double Movement in Hills";
+        } else if (name === "mobility") {
+            return "-1 Terrain Movement Cost";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }
@@ -1805,7 +1807,7 @@ var MapMaker;
 
         // Cost (in "movement") of moving from coordsFrom to coordsTo
         Map.prototype.tileMovementCost = function (coordsFrom, coordsTo, bonuses) {
-            var tileTo;
+            var cost, tileTo;
 
             tileTo = game.getTile(coordsTo);
 
@@ -1814,8 +1816,18 @@ var MapMaker;
                 return 0.5;
             }
 
-            if (tileTo.features.indexOf("hills") >= 0 || tileTo.features.indexOf("forest") >= 0) {
-                return 2;
+            cost = 1;
+
+            if (tileTo.features.indexOf("hills") >= 0) {
+                cost += 1;
+            }
+            if (tileTo.features.indexOf("forest") >= 0) {
+                cost += 1;
+            }
+
+            // With mobility, decrease cost by 1, but lower bound is 1
+            if (bonuses.hasOwnProperty("mobility") && bonuses["mobility"] > 0) {
+                cost = Util.bound(cost - 1, 1, Infinity);
             }
 
             return 1;
@@ -2359,7 +2371,7 @@ var Units;
             name: "Guerilla II",
             bonuses: {
                 hillsDefense: 30,
-                doubleMovementHills: 20
+                doubleMovementHills: 1
             },
             categories: ["recon", "archery", "gunpowder", "melee"],
             prereqs: [["guerilla1"]]
@@ -2372,6 +2384,14 @@ var Units;
             },
             categories: ["archery", "gunpowder", "melee"],
             prereqs: [["guerilla2"]]
+        },
+        mobility: {
+            name: "Mobility",
+            bonuses: {
+                mobility: 1
+            },
+            categories: ["mounted", "armored"],
+            prereqs: [["flanking2"]]
         }
     };
 
@@ -3769,7 +3789,7 @@ var Combat;
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
             for (name in bonuses) {
-                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementHills") {
+                if (name === "cityDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementHills" || name === "mobility") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
                     this.appliedBonuses[0][name] = bonuses[name];
@@ -3813,7 +3833,7 @@ var Combat;
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementHills") {
+                if (name === "attackAxeman" || name === "cityAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementHills" || name === "mobility") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
                     this.appliedBonuses[1][name] = bonuses[name];
@@ -4360,14 +4380,14 @@ function init() {
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    u1 = new Units.Archer(config.PLAYER_ID, [10, 20]);
+    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");
     //    u1.promotions.push("drill2");
     u1.xp += 40;
     u1.currentStrength = 3;
 
-    for (i = 0; i < 100; i++) {
+    for (i = 0; i < 10; i++) {
         new Units.Archer(config.BARB_ID, [10, 21]);
     }
 

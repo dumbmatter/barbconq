@@ -155,7 +155,7 @@ module MapMaker {
 
         // Cost (in "movement") of moving from coordsFrom to coordsTo
         tileMovementCost(coordsFrom : number[], coordsTo : number[], bonuses : {[name : string] : number}) : number {
-            var tileTo : Tile;
+            var cost : number, tileTo : Tile;
 
             tileTo = game.getTile(coordsTo);
 
@@ -164,8 +164,20 @@ module MapMaker {
                 return 0.5;
             }
 
-            if (tileTo.features.indexOf("hills") >= 0 || tileTo.features.indexOf("forest") >= 0) {
-                return 2;
+
+            cost = 1;
+
+
+            if (tileTo.features.indexOf("hills") >= 0) {
+                cost += 1;
+            }
+            if (tileTo.features.indexOf("forest") >= 0) {
+                cost += 1;
+            }
+
+            // With mobility, decrease cost by 1, but lower bound is 1
+            if (bonuses.hasOwnProperty("mobility") && bonuses["mobility"] > 0) {
+                cost = Util.bound(cost - 1, 1, Infinity);
             }
 
             return 1;
