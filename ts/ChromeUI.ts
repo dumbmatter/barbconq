@@ -277,13 +277,25 @@ class ChromeUI {
         if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
             // Update bottom-info
             if (activeUnit instanceof Units.Unit) {
-                this.elBottomInfo.innerHTML = "<h1>" + activeUnit.type + "</h1>" +
+                content = '';
+
+                if (activeUnit.promotions.length > 0) {
+                    content += '<div class="promotions">'
+                    activeUnit.promotions.forEach(function (promotion : string) {
+                        content += '<span class="promotion-mini-icon">' + Units.promotions[promotion].abbrev + '</span> ';
+                    });
+                    content += '</div>';
+                }
+
+                content += "<h1>" + activeUnit.type + "</h1>" +
                     "<table>" +
                     "<tr><td>Strength:</td><td>" + this.strengthFraction(activeUnit) + "</td></tr>" +
                     "<tr><td>Movement:</td><td>" + this.movementFraction(activeUnit) + "</td></tr>" +
                     "<tr><td>Level:</td><td>" + activeUnit.level + "</td></tr>" +
                     "<tr><td>Experience:</td><td>" + activeUnit.xp + "/" + activeUnit.xpForNextLevel() + "</td></tr>" +
                     "</table>";
+
+                this.elBottomInfo.innerHTML = content;
             } else if (activeUnit instanceof Units.Group) {
                 content = "<h1>Unit Group (" + activeUnit.units.length + ")</h1>" +
                     "<table>" +

@@ -111,9 +111,17 @@ a:hover {
 .promotion-mini-icon {
   border: 1px solid #ffde00;
   border-radius: 5px;
+  font-family: monospace;
   font-size: 10px;
   padding: 1px;
   vertical-align: 2px;
+}
+#bottom-info .promotions {
+  float: right;
+  width: 100px;
+  line-height: 20px;
+}
+#bottom-info .promotions .promotion-mini-icon {
 }
 
 #bottom-actions {

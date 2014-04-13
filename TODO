@@ -6,18 +6,6 @@ click+drag for panning on main map
 unit tests
   grouped unit actions
 
-unit promotions
-  icons for the promotions a unit has
-    show in bottom-info
-    can they be text?
-  indicator of if unit has promotions available on tile?
-  after barbconq
-    add missing promotions from http://www.civfanatics.com/civ4/info/promotions/
-    add collateral damage stuff to drills
-    combat4/5, woodsman3 healing
-    change woodsman descs to "Jungle/Forest"
-    Units.promotions should also contain the text used in ChromeUI.bonusText
-
 basic barb AI
   Game.moveUnits
 
@@ -185,3 +173,10 @@ Allow lots of moddability, game modes
   look at what's in civ4
 
 http://blogs.adobe.com/webplatform/2014/04/01/new-canvas-features/
+
+unit promotions
+  add missing promotions from http://www.civfanatics.com/civ4/info/promotions/
+  add collateral damage stuff to drills
+  combat4/5, woodsman3 healing
+  change woodsman descs to "Jungle/Forest"
+  Units.promotions should also contain the text used in ChromeUI.bonusText
