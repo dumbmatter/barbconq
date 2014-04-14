@@ -1526,6 +1526,15 @@ var MapUI = (function () {
                     }
                     this.context.drawImage(unitImage, x * this.TILE_SIZE - tileOffsetX + 10, y * this.TILE_SIZE - tileOffsetY + 10);
 
+                    // Text about other units
+                    if (units.length > 1) {
+                        this.context.font = "10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
+                        this.context.fillStyle = unit.owner === config.BARB_ID ? "#000" : "#fff";
+                        this.context.textAlign = "center";
+                        this.context.textBaseline = "alphabetic";
+                        this.context.fillText("+" + (units.length - 1) + " more", x * this.TILE_SIZE - tileOffsetX + this.TILE_SIZE / 2 - 2, y * this.TILE_SIZE - tileOffsetY + 66);
+                    }
+
                     // Draw unit health bar
                     (function () {
                         var healthPct, height, heightOffset, paddingLeft, paddingTopBottom, width;

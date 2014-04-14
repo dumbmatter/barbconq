@@ -26,10 +26,6 @@ right click to move
   right click on map -> drag off map -> drag back onto edge tile... path doesn't show up until drag onto another tile!
   by default, show "strongest" unit. but when right click hovering, show the strongest for defending against the impending attack
 
-unit stacking UI options
-  show highest strength one on top, and "+ X more" in text below it
-  series of vertical lines at the bottom
-
 minify assets
   have a "make barbconq" that puts all the right options in a ready-to-go barbconq folder
 
