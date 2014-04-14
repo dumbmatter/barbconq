@@ -850,7 +850,7 @@ var ChromeUI = (function () {
         content += 'XP: (' + unit.xp + '/' + unit.xpForNextLevel() + '), ';
         content += game.names[unit.owner];
         unit.promotions.forEach(function (promotion) {
-            content += ' <span class="promotion-mini-icon">' + Units.promotions[promotion].abbrev + '</span>';
+            content += ' <span class="promotion-mini-icon">' + promotions[promotion].abbrev + '</span>';
         });
         content += '</p>';
 
@@ -949,7 +949,7 @@ var ChromeUI = (function () {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the group so you can move each unit individually.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "promote") {
-            promotion = Units.promotions[arg];
+            promotion = promotions[arg];
             this.elHoverBox.innerHTML = '<p><span class="action-name">Promote Unit (' + promotion.name + ')</span></p><ul>';
             for (name in promotion.bonuses) {
                 this.elHoverBox.innerHTML += '<li>' + this.bonusText(name, promotion.bonuses[name]) + '</li>';
@@ -1002,7 +1002,7 @@ var ChromeUI = (function () {
                 if (activeUnit.promotions.length > 0) {
                     content += '<div class="promotions">';
                     activeUnit.promotions.forEach(function (promotion) {
-                        content += '<span class="promotion-mini-icon">' + Units.promotions[promotion].abbrev + '</span> ';
+                        content += '<span class="promotion-mini-icon">' + promotions[promotion].abbrev + '</span> ';
                     });
                     content += '</div>';
                 }
@@ -1067,7 +1067,7 @@ var ChromeUI = (function () {
         // Second, the promotions
         availablePromotions = game.activeUnit.availablePromotions();
         for (i = 0; i < availablePromotions.length; i++) {
-            this.elBottomActions.innerHTML += '<button class="action promote" data-action="promote" data-arg="' + availablePromotions[i] + '">' + Units.promotions[availablePromotions[i]].name + '</button>';
+            this.elBottomActions.innerHTML += '<button class="action promote" data-action="promote" data-arg="' + availablePromotions[i] + '">' + promotions[availablePromotions[i]].name + '</button>';
         }
         // Third, the automated tasks
     };
@@ -2268,6 +2268,275 @@ var Game = (function () {
     };
     return Game;
 })();
+;
+
+;
+
+// IMPORTANT:
+// When adding a promotion here, make sure you also add support for it in ChromeUI.bonusText,
+// Combat.Battle.getAppliedBonuses, Combat.Battle.applyBonuses, and anywhere else that the
+// effect of the bonus is applied.
+var promotions = {
+    cityRaider1: {
+        name: "City Raider I",
+        abbrev: "CR1",
+        bonuses: {
+            cityAttack: 20
+        },
+        categories: ["melee", "siege", "armored"],
+        prereqs: []
+    },
+    cityRaider2: {
+        name: "City Raider II",
+        abbrev: "CR1",
+        bonuses: {
+            cityAttack: 25
+        },
+        categories: ["melee", "siege", "armored"],
+        prereqs: [["cityRaider1"]]
+    },
+    cityRaider3: {
+        name: "City Raider III",
+        abbrev: "CR3",
+        bonuses: {
+            cityAttack: 30,
+            gunpowder: 10
+        },
+        categories: ["melee", "siege", "armored"],
+        prereqs: [["cityRaider2"]]
+    },
+    cityGarrison1: {
+        name: "City Garrison I",
+        abbrev: "CG1",
+        bonuses: {
+            cityDefense: 20
+        },
+        categories: ["archery", "gunpowder"],
+        prereqs: []
+    },
+    cityGarrison2: {
+        name: "City Garrison II",
+        abbrev: "CG2",
+        bonuses: {
+            cityDefense: 25
+        },
+        categories: ["archery", "gunpowder"],
+        prereqs: [["cityGarrison1"]]
+    },
+    cityGarrison3: {
+        name: "City Garrison III",
+        abbrev: "CG3",
+        bonuses: {
+            cityDefense: 30,
+            melee: 10
+        },
+        categories: ["archery", "gunpowder"],
+        prereqs: [["cityGarrison2"]]
+    },
+    combat1: {
+        name: "Combat I",
+        abbrev: "Co1",
+        bonuses: {
+            strength: 10
+        },
+        categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+        prereqs: []
+    },
+    combat2: {
+        name: "Combat II",
+        abbrev: "Co2",
+        bonuses: {
+            strength: 10
+        },
+        categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+        prereqs: [["combat1"]]
+    },
+    combat3: {
+        name: "Combat III",
+        abbrev: "Co3",
+        bonuses: {
+            strength: 10
+        },
+        categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+        prereqs: [["combat2"]]
+    },
+    combat4: {
+        name: "Combat IV",
+        abbrev: "Co4",
+        bonuses: {
+            strength: 10
+        },
+        categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+        prereqs: [["combat3"]]
+    },
+    combat5: {
+        name: "Combat V",
+        abbrev: "Co5",
+        bonuses: {
+            strength: 10
+        },
+        categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
+        prereqs: [["combat4"]]
+    },
+    cover: {
+        name: "Cover",
+        abbrev: "Cov",
+        bonuses: {
+            archery: 25
+        },
+        categories: ["archery", "melee", "gunpowder"],
+        prereqs: [["combat1"], ["drill1"]]
+    },
+    drill1: {
+        name: "Drill I",
+        abbrev: "Dr1",
+        bonuses: {
+            firstStrikeChances: 1
+        },
+        categories: ["archery", "siege", "armored", "helicopter", "naval"],
+        prereqs: [[]]
+    },
+    drill2: {
+        name: "Drill II",
+        abbrev: "Dr2",
+        bonuses: {
+            firstStrikes: 1
+        },
+        categories: ["archery", "siege", "armored", "helicopter", "naval"],
+        prereqs: [["drill1"]]
+    },
+    drill3: {
+        name: "Drill III",
+        abbrev: "Dr3",
+        bonuses: {
+            firstStrikeChances: 2
+        },
+        categories: ["archery", "siege", "armored", "helicopter", "naval"],
+        prereqs: [["drill2"]]
+    },
+    drill4: {
+        name: "Drill IV",
+        abbrev: "Dr4",
+        bonuses: {
+            firstStrikes: 2,
+            mounted: 10
+        },
+        categories: ["archery", "siege", "armored", "helicopter", "naval"],
+        prereqs: [["drill3"]]
+    },
+    flanking1: {
+        name: "Flanking I",
+        abbrev: "Fl1",
+        bonuses: {
+            retreat: 10
+        },
+        categories: ["mounted", "armored", "helicopter", "naval"],
+        prereqs: [[]]
+    },
+    flanking2: {
+        name: "Flanking II",
+        abbrev: "Fl2",
+        bonuses: {
+            retreat: 10
+        },
+        categories: ["mounted", "armored", "helicopter", "naval"],
+        prereqs: [["flanking1"]]
+    },
+    formation: {
+        name: "Formation",
+        abbrev: "Frm",
+        bonuses: {
+            mounted: 25
+        },
+        categories: ["archery", "mounted", "melee", "gunpowder"],
+        prereqs: [["combat2"], ["drill2"]]
+    },
+    guerilla1: {
+        name: "Guerilla I",
+        abbrev: "Gr1",
+        bonuses: {
+            hillsDefense: 20
+        },
+        categories: ["recon", "archery", "gunpowder"],
+        prereqs: []
+    },
+    guerilla2: {
+        name: "Guerilla II",
+        abbrev: "Gr2",
+        bonuses: {
+            hillsDefense: 30,
+            doubleMovementHills: 1
+        },
+        categories: ["recon", "archery", "gunpowder", "melee"],
+        prereqs: [["guerilla1"]]
+    },
+    guerilla3: {
+        name: "Guerilla III",
+        abbrev: "Gr3",
+        bonuses: {
+            hillsAttack: 25,
+            retreat: 50
+        },
+        categories: ["archery", "gunpowder", "melee"],
+        prereqs: [["guerilla2"]]
+    },
+    mobility: {
+        name: "Mobility",
+        abbrev: "Mbl",
+        bonuses: {
+            mobility: 1
+        },
+        categories: ["mounted", "armored"],
+        prereqs: [["flanking2"]]
+    },
+    sentry: {
+        name: "Sentry",
+        abbrev: "Snt",
+        bonuses: {
+            visibilityRange: 1
+        },
+        categories: ["recon", "mounted", "helicopter", "naval"],
+        prereqs: [["combat3"], ["flanking1"]]
+    },
+    shock: {
+        name: "Shock",
+        abbrev: "Shk",
+        bonuses: {
+            melee: 25
+        },
+        categories: ["archery", "mounted", "melee", "siege"],
+        prereqs: [["combat1"], ["drill1"]]
+    },
+    woodsman1: {
+        name: "Woodsman I",
+        abbrev: "Wd1",
+        bonuses: {
+            forestDefense: 20
+        },
+        categories: ["recon", "melee", "gunpowder"],
+        prereqs: []
+    },
+    woodsman2: {
+        name: "Woodsman II",
+        abbrev: "Wd2",
+        bonuses: {
+            forestDefense: 30,
+            doubleMovementForest: 1
+        },
+        categories: ["recon", "melee", "gunpowder"],
+        prereqs: [["woodsman1"]]
+    },
+    woodsman3: {
+        name: "Woodsman III",
+        abbrev: "Wd3",
+        bonuses: {
+            firstStrikes: 2,
+            forestAttack: 25
+        },
+        categories: ["melee", "gunpowder"],
+        prereqs: [["woodsman2"]]
+    }
+};
 /*
 Units - classes for the various units types
 Inheritance chart:
@@ -2282,276 +2551,6 @@ units, like move counting, and others don't).
 */
 var Units;
 (function (Units) {
-    ;
-
-    ;
-
-    // IMPORTANT:
-    // When adding a promotion here, make sure you also add support for it in ChromeUI.bonusText,
-    // Combat.Battle.getAppliedBonuses, Combat.Battle.applyBonuses, and anywhere else that the
-    // effect of the bonus is applied.
-    Units.promotions = {
-        cityRaider1: {
-            name: "City Raider I",
-            abbrev: "CR1",
-            bonuses: {
-                cityAttack: 20
-            },
-            categories: ["melee", "siege", "armored"],
-            prereqs: []
-        },
-        cityRaider2: {
-            name: "City Raider II",
-            abbrev: "CR1",
-            bonuses: {
-                cityAttack: 25
-            },
-            categories: ["melee", "siege", "armored"],
-            prereqs: [["cityRaider1"]]
-        },
-        cityRaider3: {
-            name: "City Raider III",
-            abbrev: "CR3",
-            bonuses: {
-                cityAttack: 30,
-                gunpowder: 10
-            },
-            categories: ["melee", "siege", "armored"],
-            prereqs: [["cityRaider2"]]
-        },
-        cityGarrison1: {
-            name: "City Garrison I",
-            abbrev: "CG1",
-            bonuses: {
-                cityDefense: 20
-            },
-            categories: ["archery", "gunpowder"],
-            prereqs: []
-        },
-        cityGarrison2: {
-            name: "City Garrison II",
-            abbrev: "CG2",
-            bonuses: {
-                cityDefense: 25
-            },
-            categories: ["archery", "gunpowder"],
-            prereqs: [["cityGarrison1"]]
-        },
-        cityGarrison3: {
-            name: "City Garrison III",
-            abbrev: "CG3",
-            bonuses: {
-                cityDefense: 30,
-                melee: 10
-            },
-            categories: ["archery", "gunpowder"],
-            prereqs: [["cityGarrison2"]]
-        },
-        combat1: {
-            name: "Combat I",
-            abbrev: "Co1",
-            bonuses: {
-                strength: 10
-            },
-            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
-            prereqs: []
-        },
-        combat2: {
-            name: "Combat II",
-            abbrev: "Co2",
-            bonuses: {
-                strength: 10
-            },
-            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
-            prereqs: [["combat1"]]
-        },
-        combat3: {
-            name: "Combat III",
-            abbrev: "Co3",
-            bonuses: {
-                strength: 10
-            },
-            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
-            prereqs: [["combat2"]]
-        },
-        combat4: {
-            name: "Combat IV",
-            abbrev: "Co4",
-            bonuses: {
-                strength: 10
-            },
-            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
-            prereqs: [["combat3"]]
-        },
-        combat5: {
-            name: "Combat V",
-            abbrev: "Co5",
-            bonuses: {
-                strength: 10
-            },
-            categories: ["recon", "archery", "mounted", "melee", "gunpowder", "armored", "helicopter", "naval", "air"],
-            prereqs: [["combat4"]]
-        },
-        cover: {
-            name: "Cover",
-            abbrev: "Cov",
-            bonuses: {
-                archery: 25
-            },
-            categories: ["archery", "melee", "gunpowder"],
-            prereqs: [["combat1"], ["drill1"]]
-        },
-        drill1: {
-            name: "Drill I",
-            abbrev: "Dr1",
-            bonuses: {
-                firstStrikeChances: 1
-            },
-            categories: ["archery", "siege", "armored", "helicopter", "naval"],
-            prereqs: [[]]
-        },
-        drill2: {
-            name: "Drill II",
-            abbrev: "Dr2",
-            bonuses: {
-                firstStrikes: 1
-            },
-            categories: ["archery", "siege", "armored", "helicopter", "naval"],
-            prereqs: [["drill1"]]
-        },
-        drill3: {
-            name: "Drill III",
-            abbrev: "Dr3",
-            bonuses: {
-                firstStrikeChances: 2
-            },
-            categories: ["archery", "siege", "armored", "helicopter", "naval"],
-            prereqs: [["drill2"]]
-        },
-        drill4: {
-            name: "Drill IV",
-            abbrev: "Dr4",
-            bonuses: {
-                firstStrikes: 2,
-                mounted: 10
-            },
-            categories: ["archery", "siege", "armored", "helicopter", "naval"],
-            prereqs: [["drill3"]]
-        },
-        flanking1: {
-            name: "Flanking I",
-            abbrev: "Fl1",
-            bonuses: {
-                retreat: 10
-            },
-            categories: ["mounted", "armored", "helicopter", "naval"],
-            prereqs: [[]]
-        },
-        flanking2: {
-            name: "Flanking II",
-            abbrev: "Fl2",
-            bonuses: {
-                retreat: 10
-            },
-            categories: ["mounted", "armored", "helicopter", "naval"],
-            prereqs: [["flanking1"]]
-        },
-        formation: {
-            name: "Formation",
-            abbrev: "Frm",
-            bonuses: {
-                mounted: 25
-            },
-            categories: ["archery", "mounted", "melee", "gunpowder"],
-            prereqs: [["combat2"], ["drill2"]]
-        },
-        guerilla1: {
-            name: "Guerilla I",
-            abbrev: "Gr1",
-            bonuses: {
-                hillsDefense: 20
-            },
-            categories: ["recon", "archery", "gunpowder"],
-            prereqs: []
-        },
-        guerilla2: {
-            name: "Guerilla II",
-            abbrev: "Gr2",
-            bonuses: {
-                hillsDefense: 30,
-                doubleMovementHills: 1
-            },
-            categories: ["recon", "archery", "gunpowder", "melee"],
-            prereqs: [["guerilla1"]]
-        },
-        guerilla3: {
-            name: "Guerilla III",
-            abbrev: "Gr3",
-            bonuses: {
-                hillsAttack: 25,
-                retreat: 50
-            },
-            categories: ["archery", "gunpowder", "melee"],
-            prereqs: [["guerilla2"]]
-        },
-        mobility: {
-            name: "Mobility",
-            abbrev: "Mbl",
-            bonuses: {
-                mobility: 1
-            },
-            categories: ["mounted", "armored"],
-            prereqs: [["flanking2"]]
-        },
-        sentry: {
-            name: "Sentry",
-            abbrev: "Snt",
-            bonuses: {
-                visibilityRange: 1
-            },
-            categories: ["recon", "mounted", "helicopter", "naval"],
-            prereqs: [["combat3"], ["flanking1"]]
-        },
-        shock: {
-            name: "Shock",
-            abbrev: "Shk",
-            bonuses: {
-                melee: 25
-            },
-            categories: ["archery", "mounted", "melee", "siege"],
-            prereqs: [["combat1"], ["drill1"]]
-        },
-        woodsman1: {
-            name: "Woodsman I",
-            abbrev: "Wd1",
-            bonuses: {
-                forestDefense: 20
-            },
-            categories: ["recon", "melee", "gunpowder"],
-            prereqs: []
-        },
-        woodsman2: {
-            name: "Woodsman II",
-            abbrev: "Wd2",
-            bonuses: {
-                forestDefense: 30,
-                doubleMovementForest: 1
-            },
-            categories: ["recon", "melee", "gunpowder"],
-            prereqs: [["woodsman1"]]
-        },
-        woodsman3: {
-            name: "Woodsman III",
-            abbrev: "Wd3",
-            bonuses: {
-                firstStrikes: 2,
-                forestAttack: 25
-            },
-            categories: ["melee", "gunpowder"],
-            prereqs: [["woodsman2"]]
-        }
-    };
-
     // Things that both individual units and groups of units have in common
     var UnitOrGroup = (function () {
         function UnitOrGroup() {
@@ -3182,7 +3181,7 @@ var Units;
             bonuses = Util.deepCopy(this.unitBonuses);
 
             for (i = 0; i < this.promotions.length; i++) {
-                promotionBonuses = Units.promotions[this.promotions[i]].bonuses;
+                promotionBonuses = promotions[this.promotions[i]].bonuses;
                 for (name in promotionBonuses) {
                     if (bonuses.hasOwnProperty(name)) {
                         bonuses[name] += promotionBonuses[name];
@@ -3233,8 +3232,8 @@ var Units;
             result = [];
 
             if (this.canPromoteToLevel > this.level) {
-                for (name in Units.promotions) {
-                    if (Units.promotions[name].categories.indexOf(this.category) >= 0 && this.promotions.indexOf(name) < 0 && this.hasPrereqs(Units.promotions[name].prereqs)) {
+                for (name in promotions) {
+                    if (promotions[name].categories.indexOf(this.category) >= 0 && this.promotions.indexOf(name) < 0 && this.hasPrereqs(promotions[name].prereqs)) {
                         result.push(name);
                     }
                 }
@@ -4551,6 +4550,7 @@ var Combat;
 ///<reference path='MapUI.ts'/>
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
+///<reference path='Promotions.ts'/>
 ///<reference path='Units.ts'/>
 ///<reference path='Cities.ts'/>
 ///<reference path='Combat.ts'/>

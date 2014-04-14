@@ -4,6 +4,7 @@
 ///<reference path='MapUI.ts'/>
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
+///<reference path='Promotions.ts'/>
 ///<reference path='Units.ts'/>
 ///<reference path='Cities.ts'/>
 ///<reference path='Combat.ts'/>

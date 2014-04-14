@@ -155,7 +155,7 @@ class ChromeUI {
         content += 'XP: (' + unit.xp + '/' + unit.xpForNextLevel() + '), ';
         content += game.names[unit.owner];
         unit.promotions.forEach(function (promotion : string) {
-            content += ' <span class="promotion-mini-icon">' + Units.promotions[promotion].abbrev + '</span>';
+            content += ' <span class="promotion-mini-icon">' + promotions[promotion].abbrev + '</span>';
         });
         content += '</p>';
 
@@ -231,7 +231,7 @@ class ChromeUI {
     }
 
     onHoverAction(action : string = null, arg : string = null) {
-        var name : string, promotion : Units.Promotion;
+        var name : string, promotion : Promotion;
 
         if (action === "fortify") {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Fortify</span> <span class="action-shortcut">&lt;F&gt;</span></p><p>The unit prepares itself to defend. A unit gets a 5% defensive bonus for each turn it is fortified (maximum 25%). Units also heal while fortified.</p>';
@@ -252,7 +252,7 @@ class ChromeUI {
             this.elHoverBox.innerHTML = '<p><span class="action-name">Separate</span></p><p>Separates the group so you can move each unit individually.</p>';
             this.elHoverBox.style.display = "block";
         } else if (action === "promote") {
-            promotion = Units.promotions[arg];
+            promotion = promotions[arg];
             this.elHoverBox.innerHTML = '<p><span class="action-name">Promote Unit (' + promotion.name + ')</span></p><ul>';
             for (name in promotion.bonuses) {
                 this.elHoverBox.innerHTML += '<li>' + this.bonusText(name, promotion.bonuses[name]) + '</li>'
@@ -305,7 +305,7 @@ class ChromeUI {
                 if (activeUnit.promotions.length > 0) {
                     content += '<div class="promotions">'
                     activeUnit.promotions.forEach(function (promotion : string) {
-                        content += '<span class="promotion-mini-icon">' + Units.promotions[promotion].abbrev + '</span> ';
+                        content += '<span class="promotion-mini-icon">' + promotions[promotion].abbrev + '</span> ';
                     });
                     content += '</div>';
                 }
@@ -380,7 +380,7 @@ class ChromeUI {
         // Second, the promotions
         availablePromotions = game.activeUnit.availablePromotions();
         for (i = 0; i < availablePromotions.length; i++) {
-            this.elBottomActions.innerHTML += '<button class="action promote" data-action="promote" data-arg="' + availablePromotions[i] + '">' + Units.promotions[availablePromotions[i]].name + '</button>';
+            this.elBottomActions.innerHTML += '<button class="action promote" data-action="promote" data-arg="' + availablePromotions[i] + '">' + promotions[availablePromotions[i]].name + '</button>';
         }
 
         // Third, the automated tasks
