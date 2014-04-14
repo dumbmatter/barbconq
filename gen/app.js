@@ -534,7 +534,11 @@ var Controller = (function () {
             }
         }.bind(this));
         chromeUI.elEndTurnButton.addEventListener("mouseover", function (e) {
-            chromeUI.onHoverEndTurnButton("early");
+            if (chromeUI.elEndTurnButton.classList.contains("moves-done")) {
+                chromeUI.onHoverEndTurnButton("normal");
+            } else {
+                chromeUI.onHoverEndTurnButton("early");
+            }
         });
         chromeUI.elEndTurnButton.addEventListener("mouseout", function (e) {
             chromeUI.onHoverEndTurnButton();
