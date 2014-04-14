@@ -1,13 +1,5 @@
 # Major current tasks
 
-why is the player's top unit on map oscillating when AI moves?
-
-"End turn early" green button and "end turn" red button, next to minimap
-  what if all orders are given, and then you go back and wake a fortified unit? should do the stuff in chromeUI.onAIMovingDone
-    should be done...
-      whenever unit is woken up
-      whenever group is split and units become active
-
 move promotions to own file
 
 click+drag for panning on main map
@@ -65,6 +57,10 @@ UI POLISH
   in battle, have units "hit" (animate move into other unit's tile, then come back) for each round won
     make some function that wraps mapUI.render and calls it repeatedly with an offset for the combat?
   animate unit movement
+  what if all orders are given, and then you go back and wake a fortified unit? should do the stuff in chromeUI.onAIMovingDone (switch from red to green button, remove "enter to end turn" text)
+    should be done...
+      whenever unit is woken up
+      whenever group is split and units become active
 
 unit tests
   grouped unit actions

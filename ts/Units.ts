@@ -1364,6 +1364,7 @@ module Units {
         }
     }
 
+    // Should be used only for UI!
     export function findBestUnitInStack(units : Unit[]) : Unit {
         var k : number, maxStrength : number, unit : Unit;
 
@@ -1385,7 +1386,7 @@ module Units {
             // Active unit/group on this tile
             if (game.activeUnit instanceof Units.Group) {
                 // Group is active
-                if (mapUI.pathFindingSearch) {
+                if (mapUI.pathFindingSearch && game.turnID === config.PLAYER_ID) {
                     // pathFinding is active, so pick best attacker vs tile defender
                     // Look for units with moves first. If none found, then look at all units
                     unit = Combat.findBestDefender(game.activeUnit, controller.hoveredTile, true).attacker;
@@ -1409,7 +1410,7 @@ module Units {
             // If activeUnit is from another civ (already guaranteed to be on another
             // tile, from above), then show the unit that would fare best against
             // activeUnit in a battle
-            if (game.activeUnit && game.activeUnit.owner !== units[0].owner) { // THIS ASSUMES CIVS CAN'T SHARE TILE
+            if (game.activeUnit && game.activeUnit.owner !== units[0].owner && game.turnID === config.PLAYER_ID) { // THIS ASSUMES CIVS CAN'T SHARE TILE
                 unit = Combat.findBestDefender(game.activeUnit, units[0].coords, true).defender;
             } else {
                 // Default: show highest currentStrength

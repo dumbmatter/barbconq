@@ -3859,6 +3859,7 @@ var Units;
     }
     Units.addUnitsWithTypeToNewGroup = addUnitsWithTypeToNewGroup;
 
+    // Should be used only for UI!
     function findBestUnitInStack(units) {
         var k, maxStrength, unit;
 
@@ -3880,7 +3881,7 @@ var Units;
             // Active unit/group on this tile
             if (game.activeUnit instanceof Units.Group) {
                 // Group is active
-                if (mapUI.pathFindingSearch) {
+                if (mapUI.pathFindingSearch && game.turnID === config.PLAYER_ID) {
                     // pathFinding is active, so pick best attacker vs tile defender
                     // Look for units with moves first. If none found, then look at all units
                     unit = Combat.findBestDefender(game.activeUnit, controller.hoveredTile, true).attacker;
@@ -3903,7 +3904,7 @@ var Units;
             // If activeUnit is from another civ (already guaranteed to be on another
             // tile, from above), then show the unit that would fare best against
             // activeUnit in a battle
-            if (game.activeUnit && game.activeUnit.owner !== units[0].owner) {
+            if (game.activeUnit && game.activeUnit.owner !== units[0].owner && game.turnID === config.PLAYER_ID) {
                 unit = Combat.findBestDefender(game.activeUnit, units[0].coords, true).defender;
             } else {
                 // Default: show highest currentStrength
@@ -4644,11 +4645,12 @@ function init() {
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Spearman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);*/
-    /*new Units.Axeman(config.BARB_ID, [10, 21]);
+    new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [11, 21]);
     new Units.Axeman(config.BARB_ID, [9, 21]);
-    for (i = 0; i < 10; i++) {
+
+    /*for (i = 0; i < 10; i++) {
     new Units.Archer(config.BARB_ID, [10, 21]);
     }*/
     new Cities.City(config.BARB_ID, [10, 21]);
