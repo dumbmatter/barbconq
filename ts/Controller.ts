@@ -396,24 +396,42 @@ class Controller {
 
     initGameActions() {
         document.addEventListener("keydown", function (e : KeyboardEvent) {
+            var unitsWaiting : boolean;
+
             if (this.preventUserInput()) { return; }
 
             if (e.keyCode === this.KEYS.ENTER) {
                 if (game.turnID === config.PLAYER_ID) {
                     // With shift pressed, end turn early. Otherwise, make sure no units are waiting
                     // for orders.
-                    if (e.shiftKey || !game.moveUnits()) {
-                        game.nextPlayer();
+                    // See equivalent code in end turn button click handler
+                    unitsWaiting = game.moveUnits();
+                    if (e.shiftKey || !unitsWaiting) {
+                        if (unitsWaiting) {
+                            game.nextPlayerAfterTargetCoordsDone = true;
+                            game.moveUnits(); // Will auto-move all targetCoords units
+                        } else {
+                            game.nextPlayer();
+                        }
                     }
                 }
             }
         }.bind(this));
 
         chromeUI.elEndTurnButton.addEventListener("click", function (e : MouseEvent) {
+            var unitsWaiting : boolean;
+
             if (this.preventUserInput()) { return; }
 
             if (game.turnID === config.PLAYER_ID) {
-                game.nextPlayer();
+                // See equivalent code in shift+enter handler
+                unitsWaiting = game.moveUnits();
+                if (unitsWaiting) {
+                    game.nextPlayerAfterTargetCoordsDone = true;
+                    game.moveUnits(); // Will auto-move all targetCoords units
+                } else {
+                    game.nextPlayer();
+                }
             }
         }.bind(this));
         chromeUI.elEndTurnButton.addEventListener("mouseover", function (e : MouseEvent) {

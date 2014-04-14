@@ -491,6 +491,8 @@ var Controller = (function () {
 
     Controller.prototype.initGameActions = function () {
         document.addEventListener("keydown", function (e) {
+            var unitsWaiting;
+
             if (this.preventUserInput()) {
                 return;
             }
@@ -499,20 +501,36 @@ var Controller = (function () {
                 if (game.turnID === config.PLAYER_ID) {
                     // With shift pressed, end turn early. Otherwise, make sure no units are waiting
                     // for orders.
-                    if (e.shiftKey || !game.moveUnits()) {
-                        game.nextPlayer();
+                    // See equivalent code in end turn button click handler
+                    unitsWaiting = game.moveUnits();
+                    if (e.shiftKey || !unitsWaiting) {
+                        if (unitsWaiting) {
+                            game.nextPlayerAfterTargetCoordsDone = true;
+                            game.moveUnits(); // Will auto-move all targetCoords units
+                        } else {
+                            game.nextPlayer();
+                        }
                     }
                 }
             }
         }.bind(this));
 
         chromeUI.elEndTurnButton.addEventListener("click", function (e) {
+            var unitsWaiting;
+
             if (this.preventUserInput()) {
                 return;
             }
 
             if (game.turnID === config.PLAYER_ID) {
-                game.nextPlayer();
+                // See equivalent code in shift+enter handler
+                unitsWaiting = game.moveUnits();
+                if (unitsWaiting) {
+                    game.nextPlayerAfterTargetCoordsDone = true;
+                    game.moveUnits(); // Will auto-move all targetCoords units
+                } else {
+                    game.nextPlayer();
+                }
             }
         }.bind(this));
         chromeUI.elEndTurnButton.addEventListener("mouseover", function (e) {
@@ -1993,6 +2011,7 @@ var Game = (function () {
         this.activeBattle = null;
         this.turn = 0;
         this.result = "inProgress";
+        this.nextPlayerAfterTargetCoordsDone = false;
         var i;
 
         this.map = new MapMaker.BigIsland(mapRows, mapCols);
@@ -2090,6 +2109,7 @@ var Game = (function () {
             unit = this.units[this.turnID][u];
             unit.updateCanPromoteToLevel();
         }
+        this.nextPlayerAfterTargetCoordsDone = false;
 
         // Stuff that happens before each turn, except the first of the game
         if (this.turn > 1) {
@@ -2156,36 +2176,51 @@ var Game = (function () {
         i = this.turnID;
 
         if (i === config.PLAYER_ID) {
-            for (j in this.groups[i]) {
-                group = this.groups[i][j];
-                if (group.currentMovement > 0 && !group.skippedTurn && !group.targetCoords) {
-                    group.activate();
-                    return true;
+            // User
+            // UNIT GROUPS
+            // First look for ones not on a path towards targetCoords
+            if (!this.nextPlayerAfterTargetCoordsDone) {
+                for (j in this.groups[i]) {
+                    group = this.groups[i][j];
+                    if (group.currentMovement > 0 && !group.skippedTurn && !group.targetCoords) {
+                        group.activate();
+                        return true;
+                    }
                 }
             }
 
             for (j in this.groups[i]) {
                 group = this.groups[i][j];
-                if (group.currentMovement > 0 && !group.skippedTurn) {
+                if (group.currentMovement > 0 && !group.skippedTurn && group.targetCoords) {
                     group.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                     return true;
                 }
             }
 
-            for (j in this.units[i]) {
-                unit = this.units[i][j];
-                if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.targetCoords && !unit.group) {
-                    unit.activate();
-                    return true;
+            // INDIVIDUAL UNITS
+            // First look for ones not on a path towards targetCoords
+            if (!this.nextPlayerAfterTargetCoordsDone) {
+                for (j in this.units[i]) {
+                    unit = this.units[i][j];
+                    if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.targetCoords && !unit.group) {
+                        unit.activate();
+                        return true;
+                    }
                 }
             }
 
             for (j in this.units[i]) {
                 unit = this.units[i][j];
-                if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.group) {
+                if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.group && unit.targetCoords) {
                     unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                     return true;
                 }
+            }
+
+            if (this.nextPlayerAfterTargetCoordsDone) {
+                // All auto-moves are done and turn was ended early, so go to next turn
+                this.nextPlayer();
+                return false;
             }
 
             // If we made it this far, all of the user's units have moved
@@ -4591,6 +4626,8 @@ function init() {
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
     u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");
@@ -4603,12 +4640,11 @@ function init() {
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Spearman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);*/
-    new Units.Axeman(config.BARB_ID, [10, 21]);
+    /*new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [11, 21]);
     new Units.Axeman(config.BARB_ID, [9, 21]);
-
-    /*for (i = 0; i < 10; i++) {
+    for (i = 0; i < 10; i++) {
     new Units.Archer(config.BARB_ID, [10, 21]);
     }*/
     new Cities.City(config.BARB_ID, [10, 21]);

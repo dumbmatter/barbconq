@@ -88,6 +88,8 @@ function init() {
     new Units.Warrior(config.PLAYER_ID, [10, 20]);
     new Units.Archer(config.PLAYER_ID, [10, 20]);*/
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
+    new Units.Axeman(config.PLAYER_ID, [10, 20]);
     u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
 //    u1.promotions.push("drill1");
 //    u1.promotions.push("drill2");
@@ -98,11 +100,11 @@ function init() {
     new Units.Axeman(config.PLAYER_ID, [10, 20]);
     new Units.Spearman(config.PLAYER_ID, [10, 20]);
     new Units.Axeman(config.PLAYER_ID, [10, 20]);*/
-    new Units.Axeman(config.BARB_ID, [10, 21]);
+    /*new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [11, 21]);
     new Units.Axeman(config.BARB_ID, [9, 21]);
-    /*for (i = 0; i < 10; i++) {
+    for (i = 0; i < 10; i++) {
         new Units.Archer(config.BARB_ID, [10, 21]);
     }*/
 

@@ -12,6 +12,7 @@ class Game {
     turn : number = 0;
     turnID : number; // ID number of the user whose turn it is
     result : string = "inProgress"; // Starts "inProgress", eventually will be "won" or "lost"
+    nextPlayerAfterTargetCoordsDone : boolean = false; // Set to true when a turn is ended early
 
     constructor(numPlayers : number, mapRows : number, mapCols : number) {
         var i : number;
@@ -114,6 +115,7 @@ class Game {
             unit = this.units[this.turnID][u];
             unit.updateCanPromoteToLevel();
         }
+        this.nextPlayerAfterTargetCoordsDone = false;
 
         // Stuff that happens before each turn, except the first of the game
         if (this.turn > 1) {
@@ -185,18 +187,20 @@ class Game {
 
             // UNIT GROUPS
             // First look for ones not on a path towards targetCoords
-            for (j in this.groups[i]) {
-                group = this.groups[i][j];
-                if (group.currentMovement > 0 && !group.skippedTurn && !group.targetCoords) {
-                    group.activate();
-                    return true;
+            if (!this.nextPlayerAfterTargetCoordsDone) {
+                for (j in this.groups[i]) {
+                    group = this.groups[i][j];
+                    if (group.currentMovement > 0 && !group.skippedTurn && !group.targetCoords) {
+                        group.activate();
+                        return true;
+                    }
                 }
             }
 
             // Then process all the targetCoords ones
             for (j in this.groups[i]) {
                 group = this.groups[i][j];
-                if (group.currentMovement > 0 && !group.skippedTurn) {
+                if (group.currentMovement > 0 && !group.skippedTurn && group.targetCoords) {
                     group.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                     return true;
                 }
@@ -204,21 +208,29 @@ class Game {
 
             // INDIVIDUAL UNITS
             // First look for ones not on a path towards targetCoords
-            for (j in this.units[i]) {
-                unit = this.units[i][j];
-                if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.targetCoords && !unit.group) {
-                    unit.activate();
-                    return true;
+            if (!this.nextPlayerAfterTargetCoordsDone) {
+                for (j in this.units[i]) {
+                    unit = this.units[i][j];
+                    if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.targetCoords && !unit.group) {
+                        unit.activate();
+                        return true;
+                    }
                 }
             }
 
             // Then process all the targetCoords ones
             for (j in this.units[i]) {
                 unit = this.units[i][j];
-                if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.group) {
+                if (unit.currentMovement > 0 && !unit.skippedTurn && !unit.group && unit.targetCoords) {
                     unit.activate(true, true); // Activate, center screen, and auto-move to targetCoords
                     return true;
                 }
+            }
+
+            if (this.nextPlayerAfterTargetCoordsDone) {
+                // All auto-moves are done and turn was ended early, so go to next turn
+                this.nextPlayer();
+                return false;
             }
 
             // If we made it this far, all of the user's units have moved
