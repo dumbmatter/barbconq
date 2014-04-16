@@ -248,11 +248,15 @@ class Game {
                     unit.activate(centerViewport);
 
                     setTimeout(function () {
-                        // If in city, only move to attack with >75% chance of winning
+                        // For each visible enemy unit, calculate and store {unit, oddsWinFight, turnsAway}
+
+
+                        // MOVE DECISION
+                        // If in city, only move to attack if >75% chance of winning and if 2 other units are in city
 
                         // Attack with >25% chance of winning
 
-                        // Move towards weaker unit
+                        // Move towards weaker unit that is <= 3 turns away
 
                         // Move into city, if possible
 

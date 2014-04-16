@@ -4,7 +4,8 @@ click+drag for panning on main map
   similar to minimap or right click
 
 basic barb AI
-  Game.moveUnits
+  Game.moveUnits should call AI.Barb
+  need to make visibility concept extent to barbs
 
 rate of barb generation in non-visible tiles
   should increase with turns?
