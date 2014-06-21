@@ -12,7 +12,7 @@ function createBattle(params) {
     var u1, u2;
 
     // New game each time
-    game = new Game(1, 1, 2);
+    game = new Game(1, 2);
 
     // Same tiles every time
     game.map.tiles[0][0].terrain = params.tileTerrain;
@@ -21,7 +21,7 @@ function createBattle(params) {
     game.map.tiles[0][1].features = params.tileFeatures;
 
     // Same units every time
-    u1 = new Units[params.u1Type](config.PLAYER_ID, [0, 0]);
+    u1 = new Units[params.u1Type](config.USER_ID, [0, 0]);
     u2 = new Units[params.u2Type](config.BARB_ID, [0, 1]);
     params.u1Promotions.forEach(function (promotion) {
         u1.promote(promotion, true);
@@ -137,8 +137,8 @@ describe("Combat.Battle.odds()", function() {
             params.u2Type = Random.choice(["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"]);
 
             // Randomize promotions
-            params.u1Promotions = [Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions))];
-            params.u2Promotions = [Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions)), Random.choice(Object.keys(Units.promotions))];
+            params.u1Promotions = [Random.choice(Object.keys(promotions)), Random.choice(Object.keys(promotions)), Random.choice(Object.keys(promotions)), Random.choice(Object.keys(promotions))];
+            params.u2Promotions = [Random.choice(Object.keys(promotions)), Random.choice(Object.keys(promotions)), Random.choice(Object.keys(promotions)), Random.choice(Object.keys(promotions))];
 
             // Randomize health
             params.u1HP = 1 + Math.round(Math.random() * 99);

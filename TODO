@@ -69,6 +69,8 @@ Goal: Find and capture the barbarian capital!
 
 somewhere: "From the makers of Basketball GM, a free single-player basketball simulation game"
 
+github?
+
 place barb city randomly
   this forces exploration, which presents a tradeoff: staying together increases your strength, but allows barbs to grow in numbers before you find their city.
 
