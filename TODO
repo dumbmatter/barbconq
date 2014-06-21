@@ -7,6 +7,7 @@ basic barb AI
   Game.moveUnits should call AI.Barb
   need to make visibility concept extent to barbs
     lastSeenState for each player
+      how does this impact game.getTile? UI stuff will want getTile to return visibility info for user, but actual simulation code will want it for the current player (AI or user)
 to view barb visibility:
 config.PLAYER_ID = 0;
 game.turnID = 0;
