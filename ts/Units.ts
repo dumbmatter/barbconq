@@ -152,7 +152,7 @@ module Units {
             // Don't walk off the map!
             if (game.map.validCoords(newCoords)) {
                 // Stay on land!
-                newTerrain = game.getTile(newCoords, false).terrain;
+                newTerrain = game.getTile(newCoords, -1).terrain;
                 if (newTerrain === "snow" || newTerrain === "desert" || newTerrain === "tundra" || newTerrain === "grassland" || newTerrain === "plains") {
                     this.moveToCoords(newCoords);
                     return;
@@ -176,7 +176,6 @@ module Units {
         moveToCoords(coords : number[]) : boolean {
             var city : Cities.City;
 
-
             // Reset skippedTurn status
             this.skippedTurn = false;
 
@@ -191,7 +190,7 @@ module Units {
             this.moveOnMap(coords);
 
             // City to capture?
-            city = game.getTile(coords).city;
+            city = game.getTile(coords, -1).city;
             if (city && city.owner !== this.owner) {
                 city.capture(this.owner);
             }
@@ -454,7 +453,7 @@ module Units {
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.getTile(coords, false).units.push(this);
+            game.getTile(coords, -1).units.push(this);
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
@@ -474,7 +473,7 @@ module Units {
             }
 
             // Remove from map
-            tileUnits = game.getTile(this.coords, false).units;
+            tileUnits = game.getTile(this.coords, -1).units;
             for (i = 0; i < tileUnits.length; i++) {
                 if (tileUnits[i].id === this.id) {
                     tileUnits.splice(i, 1);

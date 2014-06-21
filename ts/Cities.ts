@@ -17,7 +17,7 @@ module Cities {
 
             // Set coordinates of city and put a reference to the city in the map
             this.coords = coords;
-            tile = game.getTile(coords, false);
+            tile = game.getTile(coords, -1);
             tile.city = this;
 
             // Store reference to unit in game.units

@@ -374,7 +374,7 @@ var Controller = (function () {
                 if (coords[0] !== this.hoveredTile[0] || coords[1] !== this.hoveredTile[1]) {
                     // Only update if new tile
                     this.hoveredTile = coords;
-                    chromeUI.onHoverTile(game.getTile(this.hoveredTile));
+                    chromeUI.onHoverTile(game.getTile(this.hoveredTile, config.PLAYER_ID));
                 }
             } else {
                 // Not over tile, over some other part of the canvas
@@ -399,7 +399,7 @@ var Controller = (function () {
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
             if (game.map.validCoords(coords)) {
-                units = game.getTile(coords).units;
+                units = game.getTile(coords, config.PLAYER_ID).units;
 
                 // Find the strongest unit with moves left
                 maxMetric = -Infinity;
@@ -575,7 +575,7 @@ var Controller = (function () {
                 }
 
                 // List of all units on the tile
-                units = game.getTile(game.activeUnit.coords).units;
+                units = game.getTile(game.activeUnit.coords, config.PLAYER_ID).units;
 
                 // Handle all the different key modifiers
                 if (e.altKey) {
@@ -1045,7 +1045,7 @@ var ChromeUI = (function () {
             this.updateActiveUnitActions();
 
             // Update bottom-units
-            units = game.getTile(game.activeUnit.coords).units;
+            units = game.getTile(game.activeUnit.coords, config.PLAYER_ID).units;
             for (i = 0; i < units.length; i++) {
                 this.elBottomUnits.appendChild(this.unitIcon(units[i]));
             }
@@ -1478,7 +1478,7 @@ var MapUI = (function () {
             drawViewport(function (i, j, x, y) {
                 var cityImage, tile, unit, unitImage, units;
 
-                tile = game.getTile([i, j]);
+                tile = game.getTile([i, j], config.PLAYER_ID);
 
                 // Background
                 this.context.fillStyle = this.terrainColors[tile.terrain];
@@ -1614,7 +1614,7 @@ var MapUI = (function () {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Background
-                tile = game.getTile([i, j]);
+                tile = game.getTile([i, j], config.PLAYER_ID);
                 this.miniContext.fillStyle = this.terrainColors[tile.terrain];
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
 
@@ -1629,7 +1629,7 @@ var MapUI = (function () {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Highlight active tile
-                tile = game.getTile([i, j]);
+                tile = game.getTile([i, j], config.PLAYER_ID);
                 if (tile.units.length > 0) {
                     for (k = 0; k < tile.units.length; k++) {
                         unit = tile.units[k];
@@ -1813,7 +1813,7 @@ var MapMaker;
             var i, tileUnits;
 
             // Delete old unit in map
-            tileUnits = game.getTile(unit.coords, false).units;
+            tileUnits = game.getTile(unit.coords, -1).units;
             for (i = 0; i < tileUnits.length; i++) {
                 if (tileUnits[i].id === unit.id) {
                     tileUnits.splice(i, 1);
@@ -1822,7 +1822,7 @@ var MapMaker;
             }
 
             // Add unit at new tile
-            game.getTile(coords, false).units.push(unit);
+            game.getTile(coords, -1).units.push(unit);
         };
 
         // Entries in output matrix are visible (1) or not visible (0).
@@ -1891,9 +1891,9 @@ var MapMaker;
             }
         };
 
-        Map.prototype.enemyUnits = function (player_id, coords) {
+        Map.prototype.enemyUnits = function (playerID, coords) {
             return game.getTile(coords).units.filter(function (unit) {
-                return unit.owner !== player_id;
+                return unit.owner !== playerID;
             });
         };
 
@@ -2069,23 +2069,31 @@ var Game = (function () {
         }
     }
     // Returns null if coords are not valid. Otherwise, returns tile info while factoring in visibility
-    // onlyVisible can be set when the base tile is needed no matter what, like adding new units at the beginning of the game
+    // playerID can be used to get the tile from the "perspective" of different players.
+    //   Default is -2, which will use the current active player in game.turnID.
+    //   -1 will force the true base tile to be returned regardless of visibility, like for altering units on tile
+    //   Anything >=0 is a player ID number
     // See also config.DISABLE_FOG_OF_WAR
-    Game.prototype.getTile = function (coords, onlyVisible) {
-        if (typeof onlyVisible === "undefined") { onlyVisible = true; }
+    Game.prototype.getTile = function (coords, playerID) {
+        if (typeof playerID === "undefined") { playerID = -2; }
         var i, j;
+
+        // If playerID is -2, use the current active player
+        if (playerID === -2) {
+            playerID = this.turnID;
+        }
 
         i = coords[0];
         j = coords[1];
 
         if (this.map.validCoords(coords)) {
-            if (!onlyVisible || config.DISABLE_FOG_OF_WAR) {
+            if (playerID === -1 || config.DISABLE_FOG_OF_WAR) {
                 // Forced to get real tile
                 return this.map.tiles[i][j];
             }
 
-            if (!this.map.visibility[this.turnID][i][j]) {
-                if (!this.map.tiles[i][j].lastSeenState[this.turnID]) {
+            if (!this.map.visibility[playerID][i][j]) {
+                if (!this.map.tiles[i][j].lastSeenState[playerID]) {
                     // Never seen this tile, show nothing
                     return {
                         terrain: "unseen",
@@ -2095,7 +2103,7 @@ var Game = (function () {
                     };
                 } else {
                     // Seen before, show last seen state
-                    return this.map.tiles[i][j].lastSeenState[this.turnID];
+                    return this.map.tiles[i][j].lastSeenState[playerID];
                 }
             } else {
                 // Tile is visible (or forced to be shown), show current state
@@ -2123,7 +2131,7 @@ var Game = (function () {
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
                 if (!this.map.visibility[config.PLAYER_ID][i][j] && Math.random() < 0.01) {
-                    tile = this.getTile([i, j], false);
+                    tile = this.getTile([i, j], -1);
 
                     // Spawn land unit
                     if (tile.terrain === "snow" || tile.terrain === "desert" || tile.terrain === "tundra" || tile.terrain === "grassland" || tile.terrain === "plains") {
@@ -2848,7 +2856,7 @@ var Units;
             // Don't walk off the map!
             if (game.map.validCoords(newCoords)) {
                 // Stay on land!
-                newTerrain = game.getTile(newCoords, false).terrain;
+                newTerrain = game.getTile(newCoords, -1).terrain;
                 if (newTerrain === "snow" || newTerrain === "desert" || newTerrain === "tundra" || newTerrain === "grassland" || newTerrain === "plains") {
                     this.moveToCoords(newCoords);
                     return;
@@ -2886,7 +2894,7 @@ var Units;
             this.moveOnMap(coords);
 
             // City to capture?
-            city = game.getTile(coords).city;
+            city = game.getTile(coords, -1).city;
             if (city && city.owner !== this.owner) {
                 city.capture(this.owner);
             }
@@ -3107,7 +3115,7 @@ var Units;
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.getTile(coords, false).units.push(this);
+            game.getTile(coords, -1).units.push(this);
 
             // Store reference to unit in game.units
             game.units[this.owner][this.id] = this;
@@ -3184,7 +3192,7 @@ var Units;
             }
 
             // Remove from map
-            tileUnits = game.getTile(this.coords, false).units;
+            tileUnits = game.getTile(this.coords, -1).units;
             for (i = 0; i < tileUnits.length; i++) {
                 if (tileUnits[i].id === this.id) {
                     tileUnits.splice(i, 1);
@@ -3974,7 +3982,7 @@ var Cities;
 
             // Set coordinates of city and put a reference to the city in the map
             this.coords = coords;
-            tile = game.getTile(coords, false);
+            tile = game.getTile(coords, -1);
             tile.city = this;
 
             // Store reference to unit in game.units
@@ -4060,8 +4068,8 @@ var Combat;
             attacker = this.units[0];
             defender = this.units[1];
 
-            //            attackerTile = game.getTile(attacker.coords, false);
-            defenderTile = game.getTile(defender.coords, false);
+            //            attackerTile = game.getTile(attacker.coords, -1);
+            defenderTile = game.getTile(defender.coords, -1);
 
             // Attacker, defender
             this.appliedBonuses = [{}, {}];

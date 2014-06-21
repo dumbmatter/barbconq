@@ -34,22 +34,30 @@ class Game {
     }
 
     // Returns null if coords are not valid. Otherwise, returns tile info while factoring in visibility
-    // onlyVisible can be set when the base tile is needed no matter what, like adding new units at the beginning of the game
+    // playerID can be used to get the tile from the "perspective" of different players.
+    //   Default is -2, which will use the current active player in game.turnID.
+    //   -1 will force the true base tile to be returned regardless of visibility, like for altering units on tile
+    //   Anything >=0 is a player ID number
     // See also config.DISABLE_FOG_OF_WAR
-    getTile(coords : number[], onlyVisible : boolean = true) : MapMaker.Tile {
+    getTile(coords : number[], playerID : number = -2) : MapMaker.Tile {
         var i : number, j : number;
+
+        // If playerID is -2, use the current active player
+        if (playerID === -2) {
+            playerID = this.turnID;
+        }
 
         i = coords[0];
         j = coords[1];
 
         if (this.map.validCoords(coords)) {
-            if (!onlyVisible || config.DISABLE_FOG_OF_WAR) {
+            if (playerID === -1 || config.DISABLE_FOG_OF_WAR) {
                 // Forced to get real tile
                 return this.map.tiles[i][j];
             }
 
-            if (!this.map.visibility[this.turnID][i][j]) {
-                if (!this.map.tiles[i][j].lastSeenState[this.turnID]) {
+            if (!this.map.visibility[playerID][i][j]) {
+                if (!this.map.tiles[i][j].lastSeenState[playerID]) {
                     // Never seen this tile, show nothing
                     return {
                         terrain: "unseen",
@@ -59,7 +67,7 @@ class Game {
                     };
                 } else {
                     // Seen before, show last seen state
-                    return this.map.tiles[i][j].lastSeenState[this.turnID];
+                    return this.map.tiles[i][j].lastSeenState[playerID];
                 }
             } else {
                 // Tile is visible (or forced to be shown), show current state
@@ -88,7 +96,7 @@ class Game {
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
                 if (!this.map.visibility[config.PLAYER_ID][i][j] && Math.random() < 0.01) {
-                    tile = this.getTile([i, j], false);
+                    tile = this.getTile([i, j], -1);
 
                     // Spawn land unit
                     if (tile.terrain === "snow" || tile.terrain === "desert" || tile.terrain === "tundra" || tile.terrain === "grassland" || tile.terrain === "plains") {

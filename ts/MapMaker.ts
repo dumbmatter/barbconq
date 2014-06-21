@@ -93,7 +93,7 @@ module MapMaker {
             var i : number, tileUnits : Units.Unit[];
 
             // Delete old unit in map
-            tileUnits = game.getTile(unit.coords, false).units;
+            tileUnits = game.getTile(unit.coords, -1).units;
             for (i = 0; i < tileUnits.length; i++) {
                 if (tileUnits[i].id === unit.id) {
                     tileUnits.splice(i, 1);
@@ -102,7 +102,7 @@ module MapMaker {
             }
 
             // Add unit at new tile
-            game.getTile(coords, false).units.push(unit);
+            game.getTile(coords, -1).units.push(unit);
         }
 
         // Entries in output matrix are visible (1) or not visible (0).
@@ -173,8 +173,8 @@ module MapMaker {
             }
         }
 
-        enemyUnits(player_id : number, coords : number[]) : Units.Unit[] {
-            return game.getTile(coords).units.filter(function (unit) { return unit.owner !== player_id; });
+        enemyUnits(playerID : number, coords : number[]) : Units.Unit[] {
+            return game.getTile(coords).units.filter(function (unit) { return unit.owner !== playerID; });
         }
 
         // Cost (in "movement") of moving from coordsFrom to coordsTo

@@ -287,7 +287,7 @@ class Controller {
                 if (coords[0] !== this.hoveredTile[0] || coords[1] !== this.hoveredTile[1]) {
                     // Only update if new tile
                     this.hoveredTile = coords;
-                    chromeUI.onHoverTile(game.getTile(this.hoveredTile));
+                    chromeUI.onHoverTile(game.getTile(this.hoveredTile, config.PLAYER_ID));
                 }
             } else {
                 // Not over tile, over some other part of the canvas
@@ -310,7 +310,7 @@ class Controller {
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
             if (game.map.validCoords(coords)) {
-                units = game.getTile(coords).units;
+                units = game.getTile(coords, config.PLAYER_ID).units;
 
                 // Find the strongest unit with moves left
                 maxMetric = -Infinity;
@@ -474,7 +474,7 @@ class Controller {
                 }
 
                 // List of all units on the tile
-                units = game.getTile(game.activeUnit.coords).units;
+                units = game.getTile(game.activeUnit.coords, config.PLAYER_ID).units;
 
                 // Handle all the different key modifiers
                 if (e.altKey) { // In GNOME, alt+click is captured for window dragging, but alt+ctrl+click works for this

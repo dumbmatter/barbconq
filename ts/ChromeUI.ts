@@ -357,7 +357,7 @@ class ChromeUI {
             this.updateActiveUnitActions();
 
             // Update bottom-units
-            units = game.getTile(game.activeUnit.coords).units;
+            units = game.getTile(game.activeUnit.coords, config.PLAYER_ID).units;
             for (i = 0; i < units.length; i++) {
                 this.elBottomUnits.appendChild(this.unitIcon(units[i]));
             }

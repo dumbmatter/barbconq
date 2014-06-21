@@ -271,7 +271,7 @@ class MapUI {
             drawViewport(function (i : number, j : number, x : number, y : number) {
                 var cityImage : HTMLImageElement, tile : MapMaker.Tile, unit : Units.Unit, unitImage : HTMLImageElement, units : Units.Unit[];
 
-                tile = game.getTile([i, j]);
+                tile = game.getTile([i, j], config.PLAYER_ID);
 
                 // Background
                 this.context.fillStyle = this.terrainColors[tile.terrain];
@@ -414,7 +414,7 @@ class MapUI {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Background
-                tile = game.getTile([i, j]);
+                tile = game.getTile([i, j], config.PLAYER_ID);
                 this.miniContext.fillStyle = this.terrainColors[tile.terrain];
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
 
@@ -430,7 +430,7 @@ class MapUI {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Highlight active tile
-                tile = game.getTile([i, j]);
+                tile = game.getTile([i, j], config.PLAYER_ID);
                 if (tile.units.length > 0) {
                     for (k = 0; k < tile.units.length; k++) {
                         unit = tile.units[k];

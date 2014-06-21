@@ -54,8 +54,8 @@ module Combat {
 
             attacker = this.units[0];
             defender = this.units[1];
-//            attackerTile = game.getTile(attacker.coords, false);
-            defenderTile = game.getTile(defender.coords, false);
+//            attackerTile = game.getTile(attacker.coords, -1);
+            defenderTile = game.getTile(defender.coords, -1);
 
             // Attacker, defender
             this.appliedBonuses = [{}, {}];

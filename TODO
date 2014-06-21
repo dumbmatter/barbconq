@@ -3,12 +3,12 @@
 click+drag for panning on main map
   similar to minimap or right click
 
+config.PLAYER_ID should be config.USER_ID
+
 basic barb AI
   Game.moveUnits should call AI.Barb
   need to make visibility concept extent to barbs
-    lastSeenState for each player
-      how does this impact game.getTile? UI stuff will want getTile to return visibility info for user, but actual simulation code will want it for the current player (AI or user)
-        maybe add option for player ID, and then set it when we need a specific player's lastSeenState
+    shouldn't center map on off screen barb
 to view barb visibility:
 config.PLAYER_ID = 0;
 game.turnID = 0;
