@@ -1,3 +1,3 @@
-Written with TypeScript 0.9.7
+Written with TypeScript 1.0.1
 
-battle-start soudns: http://www.freesound.org/people/mistorcaveman/sounds/154684/ clipped and -8 dB
+battle-start sound: http://www.freesound.org/people/mistorcaveman/sounds/154684/ clipped and -8 dB
