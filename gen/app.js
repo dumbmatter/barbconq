@@ -1499,7 +1499,7 @@ var MapUI = (function () {
                 this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
                 // Shadow for non-visible tiles?
-                if (!game.map.visibility[i][j] && tile.terrain !== "unseen") {
+                if (!game.map.visibility[config.PLAYER_ID][i][j] && tile.terrain !== "unseen") {
                     this.context.fillStyle = this.terrainColors.shadow;
                     this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
                 }
@@ -1619,7 +1619,7 @@ var MapUI = (function () {
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
 
                 // Shadow for non-visible tiles?
-                if (!game.map.visibility[i][j] && tile.terrain !== "unseen") {
+                if (!game.map.visibility[config.PLAYER_ID][i][j] && tile.terrain !== "unseen") {
                     this.miniContext.fillStyle = this.terrainColors.shadow;
                     this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
                 }
@@ -1827,53 +1827,66 @@ var MapMaker;
 
         // Entries in output matrix are visible (1) or not visible (0).
         Map.prototype.updateVisibility = function () {
-            var i, j;
+            var i, j, turnID;
 
-            // Find the visibilility of each tile in the grid (could be made smarter by only looking at units that can impact viewport)
-            // Init as everything is unseen
-            this.visibility = [];
-            for (i = 0; i < this.rows; i++) {
-                this.visibility[i] = [];
-                for (j = 0; j < this.cols; j++) {
-                    this.visibility[i][j] = 0; // Not visible
-                }
+            // Initialize visibility if this is the first call to updateVisibility
+            if (this.visibility === undefined) {
+                this.visibility = [];
+                updateAll = true;
             }
 
-            // Loop through units, set visibility
-            Object.keys(game.units[config.PLAYER_ID]).forEach(function (id) {
-                var bonuses, i, j, radius, unit;
-
-                unit = game.units[config.PLAYER_ID][id];
-
-                // Number of tiles away from center that the unit can see
-                if (this.tiles[unit.coords[0]][unit.coords[1]].features.indexOf("hills") >= 0) {
-                    radius = 2;
-                } else {
-                    radius = 1;
+            for (turnID = 0; turnID < game.names.length; turnID++) {
+                // Unless updateAll is true (such as for initialization of visibility), only update active player
+                if (!updateAll && turnID !== game.turnID) {
+                    continue;
                 }
 
-                // Check for Sentry promotion
-                bonuses = unit.getBonuses();
-                if (bonuses.hasOwnProperty("visibilityRange") && bonuses["visibilityRange"] >= 0) {
-                    radius += 1;
-                }
-
-                for (i = unit.coords[0] - radius; i <= unit.coords[0] + radius; i++) {
-                    for (j = unit.coords[1] - radius; j <= unit.coords[1] + radius; j++) {
-                        if (this.validCoords([i, j])) {
-                            this.visibility[i][j] = 1; // Visible
-
-                            // Cache current state
-                            this.tiles[i][j].lastSeenState = {
-                                terrain: this.tiles[i][j].terrain,
-                                features: this.tiles[i][j].features,
-                                units: [],
-                                city: this.tiles[i][j].city
-                            };
-                        }
+                // Find the visibilility of each tile in the grid (could be made smarter by only looking at units that can impact viewport)
+                // Init as everything is unseen
+                this.visibility[turnID] = [];
+                for (i = 0; i < this.rows; i++) {
+                    this.visibility[turnID][i] = [];
+                    for (j = 0; j < this.cols; j++) {
+                        this.visibility[turnID][i][j] = 0; // Not visible
                     }
                 }
-            }.bind(this));
+
+                // Loop through units, set visibility
+                Object.keys(game.units[turnID]).forEach(function (id) {
+                    var bonuses, i, j, radius, unit;
+
+                    unit = game.units[turnID][id];
+
+                    // Number of tiles away from center that the unit can see
+                    if (this.tiles[unit.coords[0]][unit.coords[1]].features.indexOf("hills") >= 0) {
+                        radius = 2;
+                    } else {
+                        radius = 1;
+                    }
+
+                    // Check for Sentry promotion
+                    bonuses = unit.getBonuses();
+                    if (bonuses.hasOwnProperty("visibilityRange") && bonuses["visibilityRange"] >= 0) {
+                        radius += 1;
+                    }
+
+                    for (i = unit.coords[0] - radius; i <= unit.coords[0] + radius; i++) {
+                        for (j = unit.coords[1] - radius; j <= unit.coords[1] + radius; j++) {
+                            if (this.validCoords([i, j])) {
+                                this.visibility[turnID][i][j] = 1; // Visible
+
+                                // Cache current state
+                                this.tiles[i][j].lastSeenState = {
+                                    terrain: this.tiles[i][j].terrain,
+                                    features: this.tiles[i][j].features,
+                                    units: [],
+                                    city: this.tiles[i][j].city
+                                };
+                            }
+                        }
+                    }
+                }.bind(this));
+            }
         };
 
         Map.prototype.enemyUnits = function (player_id, coords) {
@@ -2057,7 +2070,7 @@ var Game = (function () {
                 return this.map.tiles[i][j];
             }
 
-            if (!this.map.visibility[i][j]) {
+            if (!this.map.visibility[this.turnID][i][j]) {
                 if (!this.map.tiles[i][j].lastSeenState) {
                     // Never seen this tile, show nothing
                     return {
@@ -2095,7 +2108,7 @@ var Game = (function () {
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
-                if (!this.map.visibility[i][j] && Math.random() < 0.01) {
+                if (!this.map.visibility[config.PLAYER_ID][i][j] && Math.random() < 0.01) {
                     tile = this.getTile([i, j], false);
 
                     // Spawn land unit
@@ -2250,9 +2263,11 @@ var Game = (function () {
                     unit.activate(centerViewport);
 
                     setTimeout(function () {
-                        // If in city, only move to attack with >75% chance of winning
+                        // For each visible enemy unit, calculate and store {unit, oddsWinFight, turnsAway}
+                        // MOVE DECISION
+                        // If in city, only move to attack if >75% chance of winning and if 2 other units are in city
                         // Attack with >25% chance of winning
-                        // Move towards weaker unit
+                        // Move towards weaker unit that is <= 3 turns away
                         // Move into city, if possible
                         // Move away from stronger unit
                         // Hurt, so fortify until healed
@@ -3029,7 +3044,7 @@ var Units;
         };
 
         UnitOrGroup.prototype.isVisible = function () {
-            return Boolean(game.map.visibility[this.coords[0]][this.coords[1]]);
+            return Boolean(game.map.visibility[this.owner][this.coords[0]][this.coords[1]]);
         };
 
         // If unit is visible, add movement delay. If not, don't.
@@ -4617,8 +4632,6 @@ function init() {
     chromeUI = new ChromeUI();
     mapUI = new MapUI();
     controller = new Controller();
-
-    game.map.updateVisibility();
 
     for (var i = 0; i < 200; i++) {
         //    new Units.Warrior(config.BARB_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);

@@ -48,7 +48,7 @@ class Game {
                 return this.map.tiles[i][j];
             }
 
-            if (!this.map.visibility[i][j]) {
+            if (!this.map.visibility[this.turnID][i][j]) {
                 if (!this.map.tiles[i][j].lastSeenState) {
                     // Never seen this tile, show nothing
                     return {
@@ -87,7 +87,7 @@ class Game {
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
-                if (!this.map.visibility[i][j] && Math.random() < 0.01) {
+                if (!this.map.visibility[config.PLAYER_ID][i][j] && Math.random() < 0.01) {
                     tile = this.getTile([i, j], false);
 
                     // Spawn land unit

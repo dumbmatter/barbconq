@@ -292,7 +292,7 @@ class MapUI {
                 this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
                 // Shadow for non-visible tiles?
-                if (!game.map.visibility[i][j] && tile.terrain !== "unseen") {
+                if (!game.map.visibility[config.PLAYER_ID][i][j] && tile.terrain !== "unseen") {
                     this.context.fillStyle = this.terrainColors.shadow;
                     this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
                 }
@@ -419,7 +419,7 @@ class MapUI {
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
 
                 // Shadow for non-visible tiles?
-                if (!game.map.visibility[i][j] && tile.terrain !== "unseen") {
+                if (!game.map.visibility[config.PLAYER_ID][i][j] && tile.terrain !== "unseen") {
                     this.miniContext.fillStyle = this.terrainColors.shadow;
                     this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
                 }

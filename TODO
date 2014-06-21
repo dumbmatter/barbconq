@@ -6,6 +6,11 @@ click+drag for panning on main map
 basic barb AI
   Game.moveUnits should call AI.Barb
   need to make visibility concept extent to barbs
+    lastSeenState for each player
+to view barb visibility:
+config.PLAYER_ID = 0;
+game.turnID = 0;
+mapUI.render();
 
 rate of barb generation in non-visible tiles
   should increase with turns?

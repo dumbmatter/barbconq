@@ -361,7 +361,7 @@ module Units {
         }
 
         isVisible() : boolean {
-            return Boolean(game.map.visibility[this.coords[0]][this.coords[1]]);
+            return Boolean(game.map.visibility[this.owner][this.coords[0]][this.coords[1]]);
         }
 
         // If unit is visible, add movement delay. If not, don't.

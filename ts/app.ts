@@ -66,7 +66,7 @@ function init() {
     mapUI = new MapUI();
     controller = new Controller();
 
-    game.map.updateVisibility();
+//    game.map.updateVisibility();
 
     for (var i = 0; i < 200; i++) {
     //    new Units.Warrior(config.BARB_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
