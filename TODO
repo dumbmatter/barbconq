@@ -7,9 +7,7 @@ config.PLAYER_ID should be config.USER_ID
 
 basic barb AI
   Game.moveUnits should call AI.Barb
-  need to make visibility concept extent to barbs
-    shouldn't center map on off screen barb
-to view barb visibility:
+to view barb visibility (maybe put this in a debug function somehow?):
 config.PLAYER_ID = 0;
 game.turnID = 0;
 mapUI.render();
