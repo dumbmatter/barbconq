@@ -160,7 +160,7 @@ module Units {
             }
 
             // If made it this far, no move was made
-            if (game.turnID !== config.PLAYER_ID) {
+            if (game.turnID !== config.USER_ID) {
                 game.moveUnits();
             }            
         }
@@ -227,7 +227,7 @@ module Units {
                         game.activeUnit = null;
 
                         // Handle user and AI units differently
-                        if (game.turnID === config.PLAYER_ID) {
+                        if (game.turnID === config.USER_ID) {
                             game.moveUnits();
                         } else {
                             // Move only after a delay
@@ -239,7 +239,7 @@ module Units {
                         // If unit is in a group and moves are used up after an attack while enemies still remain on attacked tile, leave the group
                         attacker.group.remove(attacker.id); // Will activate rest of group
                         // Handle user and AI units differently
-                        if (game.turnID !== config.PLAYER_ID) {
+                        if (game.turnID !== config.USER_ID) {
                             setTimeout(function () {
                                 game.moveUnits();
                             }, this.movementDelay());
@@ -247,7 +247,7 @@ module Units {
                     }
                     mapUI.render();
                 }.bind(this), this.movementDelay());
-            } else if (game.turnID !== config.PLAYER_ID) {
+            } else if (game.turnID !== config.USER_ID) {
                 // For AI units, need to force move again, even if currentMovement > 0
                 // No UI_DELAY needed here
                 game.map.updateVisibility();
@@ -361,7 +361,7 @@ module Units {
 
         // This function shuold ONLY be used for UI purposes! Sees from the user's perspective.
         isVisible() : boolean {
-            return Boolean(game.map.visibility[config.PLAYER_ID][this.coords[0]][this.coords[1]]);
+            return Boolean(game.map.visibility[config.USER_ID][this.coords[0]][this.coords[1]]);
         }
 
         // If unit is visible, add movement delay. If not, don't.
@@ -488,7 +488,7 @@ module Units {
             // Update map visibility
             game.map.updateVisibility();
 
-            if (this.owner === config.PLAYER_ID && game.result === "inProgress" && Object.keys(game.units[config.PLAYER_ID]).length === 0) {
+            if (this.owner === config.USER_ID && game.result === "inProgress" && Object.keys(game.units[config.USER_ID]).length === 0) {
                 game.result = "lost";
                 chromeUI.showModal("lost");
             }
@@ -597,7 +597,7 @@ module Units {
                     game.map.updateVisibility();
                 }
 
-                if (this.owner === config.PLAYER_ID) {
+                if (this.owner === config.USER_ID) {
                     mapUI.render();
                 }
             } else {
@@ -1097,7 +1097,7 @@ module Units {
             // Active unit/group on this tile
             if (game.activeUnit instanceof Units.Group) {
                 // Group is active
-                if (mapUI.pathFindingSearch && game.turnID === config.PLAYER_ID) {
+                if (mapUI.pathFindingSearch && game.turnID === config.USER_ID) {
                     // pathFinding is active, so pick best attacker vs tile defender
                     // Look for units with moves first. If none found, then look at all units
                     unit = Combat.findBestDefender(game.activeUnit, controller.hoveredTile, true).attacker;
@@ -1121,7 +1121,7 @@ module Units {
             // If activeUnit is from another civ (already guaranteed to be on another
             // tile, from above), then show the unit that would fare best against
             // activeUnit in a battle
-            if (game.activeUnit && game.activeUnit.owner !== units[0].owner && game.turnID === config.PLAYER_ID) { // THIS ASSUMES CIVS CAN'T SHARE TILE
+            if (game.activeUnit && game.activeUnit.owner !== units[0].owner && game.turnID === config.USER_ID) { // THIS ASSUMES CIVS CAN'T SHARE TILE
                 unit = Combat.findBestDefender(game.activeUnit, units[0].coords, true).defender;
             } else {
                 // Default: show highest currentStrength

@@ -121,7 +121,7 @@ var Controller = (function () {
             return true;
         }
 
-        if (game.turnID !== config.PLAYER_ID) {
+        if (game.turnID !== config.USER_ID) {
             return true;
         }
 
@@ -374,7 +374,7 @@ var Controller = (function () {
                 if (coords[0] !== this.hoveredTile[0] || coords[1] !== this.hoveredTile[1]) {
                     // Only update if new tile
                     this.hoveredTile = coords;
-                    chromeUI.onHoverTile(game.getTile(this.hoveredTile, config.PLAYER_ID));
+                    chromeUI.onHoverTile(game.getTile(this.hoveredTile, config.USER_ID));
                 }
             } else {
                 // Not over tile, over some other part of the canvas
@@ -399,7 +399,7 @@ var Controller = (function () {
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
             if (game.map.validCoords(coords)) {
-                units = game.getTile(coords, config.PLAYER_ID).units;
+                units = game.getTile(coords, config.USER_ID).units;
 
                 // Find the strongest unit with moves left
                 maxMetric = -Infinity;
@@ -413,7 +413,7 @@ var Controller = (function () {
                         currentMetric += 1000;
                     }
 
-                    if (currentMetric > maxMetric && units[i].owner === config.PLAYER_ID) {
+                    if (currentMetric > maxMetric && units[i].owner === config.USER_ID) {
                         unit = units[i];
                         maxMetric = currentMetric;
                     }
@@ -422,10 +422,10 @@ var Controller = (function () {
                 if (unit) {
                     if (e.altKey) {
                         // Create group of all units on tile with moves and activate it
-                        Units.addUnitsToNewGroup(config.PLAYER_ID, units);
+                        Units.addUnitsToNewGroup(config.USER_ID, units);
                     } else if (e.ctrlKey) {
                         // Create group of all units on tile with moves and same type as top unit and activate it
-                        Units.addUnitsWithTypeToNewGroup(config.PLAYER_ID, units, unit.type);
+                        Units.addUnitsWithTypeToNewGroup(config.USER_ID, units, unit.type);
                     } else {
                         // Normal left click: select top unit or group
                         if (unit.group) {
@@ -498,7 +498,7 @@ var Controller = (function () {
             }
 
             if (e.keyCode === this.KEYS.ENTER) {
-                if (game.turnID === config.PLAYER_ID) {
+                if (game.turnID === config.USER_ID) {
                     // With shift pressed, end turn early. Otherwise, make sure no units are waiting
                     // for orders.
                     // See equivalent code in end turn button click handler
@@ -522,7 +522,7 @@ var Controller = (function () {
                 return;
             }
 
-            if (game.turnID === config.PLAYER_ID) {
+            if (game.turnID === config.USER_ID) {
                 // See equivalent code in shift+enter handler
                 unitsWaiting = game.moveUnits();
                 if (unitsWaiting) {
@@ -565,7 +565,7 @@ var Controller = (function () {
                 clickedSid = el.dataset.gid !== undefined ? parseInt(el.dataset.gid, 10) : null;
 
                 // Only continue if clicked unit belongs to player
-                if (clickedOwner !== config.PLAYER_ID) {
+                if (clickedOwner !== config.USER_ID) {
                     return;
                 }
 
@@ -575,7 +575,7 @@ var Controller = (function () {
                 }
 
                 // List of all units on the tile
-                units = game.getTile(game.activeUnit.coords, config.PLAYER_ID).units;
+                units = game.getTile(game.activeUnit.coords, config.USER_ID).units;
 
                 // Handle all the different key modifiers
                 if (e.altKey) {
@@ -994,7 +994,7 @@ var ChromeUI = (function () {
         this.elBottomInfo.innerHTML = "";
         this.elBottomUnits.innerHTML = "";
 
-        if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
+        if (game.activeUnit && game.activeUnit.owner === config.USER_ID) {
             // Update bottom-info
             if (activeUnit instanceof Units.Unit) {
                 content = '';
@@ -1045,7 +1045,7 @@ var ChromeUI = (function () {
             this.updateActiveUnitActions();
 
             // Update bottom-units
-            units = game.getTile(game.activeUnit.coords, config.PLAYER_ID).units;
+            units = game.getTile(game.activeUnit.coords, config.USER_ID).units;
             for (i = 0; i < units.length; i++) {
                 this.elBottomUnits.appendChild(this.unitIcon(units[i]));
             }
@@ -1478,7 +1478,7 @@ var MapUI = (function () {
             drawViewport(function (i, j, x, y) {
                 var cityImage, tile, unit, unitImage, units;
 
-                tile = game.getTile([i, j], config.PLAYER_ID);
+                tile = game.getTile([i, j], config.USER_ID);
 
                 // Background
                 this.context.fillStyle = this.terrainColors[tile.terrain];
@@ -1499,14 +1499,14 @@ var MapUI = (function () {
                 this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
                 // Shadow for non-visible tiles?
-                if (!game.map.visibility[config.PLAYER_ID][i][j] && tile.terrain !== "unseen") {
+                if (!game.map.visibility[config.USER_ID][i][j] && tile.terrain !== "unseen") {
                     this.context.fillStyle = this.terrainColors.shadow;
                     this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
                 }
 
                 // Show city on tile
                 if (tile.city) {
-                    if (tile.city.owner === config.PLAYER_ID) {
+                    if (tile.city.owner === config.USER_ID) {
                         cityImage = assets.cityCaptured;
                     } else {
                         cityImage = assets.city;
@@ -1573,7 +1573,7 @@ var MapUI = (function () {
                 // Highlight active battle
                 this.drawPath([game.activeBattle.units[0].coords, game.activeBattle.units[1].coords], false, true, false);
             }
-            if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
+            if (game.activeUnit && game.activeUnit.owner === config.USER_ID) {
                 // Highlight active unit
                 x = game.activeUnit.coords[1] - leftTile;
                 y = game.activeUnit.coords[0] - topTile;
@@ -1614,12 +1614,12 @@ var MapUI = (function () {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Background
-                tile = game.getTile([i, j], config.PLAYER_ID);
+                tile = game.getTile([i, j], config.USER_ID);
                 this.miniContext.fillStyle = this.terrainColors[tile.terrain];
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
 
                 // Shadow for non-visible tiles?
-                if (!game.map.visibility[config.PLAYER_ID][i][j] && tile.terrain !== "unseen") {
+                if (!game.map.visibility[config.USER_ID][i][j] && tile.terrain !== "unseen") {
                     this.miniContext.fillStyle = this.terrainColors.shadow;
                     this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
                 }
@@ -1629,7 +1629,7 @@ var MapUI = (function () {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Highlight active tile
-                tile = game.getTile([i, j], config.PLAYER_ID);
+                tile = game.getTile([i, j], config.USER_ID);
                 if (tile.units.length > 0) {
                     for (k = 0; k < tile.units.length; k++) {
                         unit = tile.units[k];
@@ -1836,7 +1836,6 @@ var MapMaker;
             } else {
                 updateAll = false;
             }
-            console.log(updateAll);
 
             for (turnID = 0; turnID < config.NUM_PLAYERS + 1; turnID++) {
                 // Unless updateAll is true (such as for initialization of visibility), only update active player
@@ -2131,7 +2130,7 @@ var Game = (function () {
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
-                if (!this.map.visibility[config.PLAYER_ID][i][j] && Math.random() < 0.01) {
+                if (!this.map.visibility[config.USER_ID][i][j] && Math.random() < 0.01) {
                     tile = this.getTile([i, j], -1);
 
                     // Spawn land unit
@@ -2224,7 +2223,7 @@ var Game = (function () {
 
         i = this.turnID;
 
-        if (i === config.PLAYER_ID) {
+        if (i === config.USER_ID) {
             // User
             // UNIT GROUPS
             // First look for ones not on a path towards targetCoords
@@ -2865,7 +2864,7 @@ var Units;
             }
 
             // If made it this far, no move was made
-            if (game.turnID !== config.PLAYER_ID) {
+            if (game.turnID !== config.USER_ID) {
                 game.moveUnits();
             }
         };
@@ -2933,7 +2932,7 @@ var Units;
                         game.activeUnit = null;
 
                         // Handle user and AI units differently
-                        if (game.turnID === config.PLAYER_ID) {
+                        if (game.turnID === config.USER_ID) {
                             game.moveUnits();
                         } else {
                             // Move only after a delay
@@ -2946,7 +2945,7 @@ var Units;
                         attacker.group.remove(attacker.id); // Will activate rest of group
 
                         // Handle user and AI units differently
-                        if (game.turnID !== config.PLAYER_ID) {
+                        if (game.turnID !== config.USER_ID) {
                             setTimeout(function () {
                                 game.moveUnits();
                             }, this.movementDelay());
@@ -2954,7 +2953,7 @@ var Units;
                     }
                     mapUI.render();
                 }.bind(this), this.movementDelay());
-            } else if (game.turnID !== config.PLAYER_ID) {
+            } else if (game.turnID !== config.USER_ID) {
                 // For AI units, need to force move again, even if currentMovement > 0
                 // No UI_DELAY needed here
                 game.map.updateVisibility();
@@ -3068,7 +3067,7 @@ var Units;
 
         // This function shuold ONLY be used for UI purposes! Sees from the user's perspective.
         UnitOrGroup.prototype.isVisible = function () {
-            return Boolean(game.map.visibility[config.PLAYER_ID][this.coords[0]][this.coords[1]]);
+            return Boolean(game.map.visibility[config.USER_ID][this.coords[0]][this.coords[1]]);
         };
 
         // If unit is visible, add movement delay. If not, don't.
@@ -3208,7 +3207,7 @@ var Units;
             // Update map visibility
             game.map.updateVisibility();
 
-            if (this.owner === config.PLAYER_ID && game.result === "inProgress" && Object.keys(game.units[config.PLAYER_ID]).length === 0) {
+            if (this.owner === config.USER_ID && game.result === "inProgress" && Object.keys(game.units[config.USER_ID]).length === 0) {
                 game.result = "lost";
                 chromeUI.showModal("lost");
             }
@@ -3316,7 +3315,7 @@ var Units;
                     game.map.updateVisibility();
                 }
 
-                if (this.owner === config.PLAYER_ID) {
+                if (this.owner === config.USER_ID) {
                     mapUI.render();
                 }
             } else {
@@ -3928,7 +3927,7 @@ var Units;
             // Active unit/group on this tile
             if (game.activeUnit instanceof Units.Group) {
                 // Group is active
-                if (mapUI.pathFindingSearch && game.turnID === config.PLAYER_ID) {
+                if (mapUI.pathFindingSearch && game.turnID === config.USER_ID) {
                     // pathFinding is active, so pick best attacker vs tile defender
                     // Look for units with moves first. If none found, then look at all units
                     unit = Combat.findBestDefender(game.activeUnit, controller.hoveredTile, true).attacker;
@@ -3951,7 +3950,7 @@ var Units;
             // If activeUnit is from another civ (already guaranteed to be on another
             // tile, from above), then show the unit that would fare best against
             // activeUnit in a battle
-            if (game.activeUnit && game.activeUnit.owner !== units[0].owner && game.turnID === config.PLAYER_ID) {
+            if (game.activeUnit && game.activeUnit.owner !== units[0].owner && game.turnID === config.USER_ID) {
                 unit = Combat.findBestDefender(game.activeUnit, units[0].coords, true).defender;
             } else {
                 // Default: show highest currentStrength
@@ -4011,7 +4010,7 @@ var Cities;
             delete game.cities[this.owner][this.id];
             this.owner = newOwner;
 
-            if (this.owner === config.PLAYER_ID && game.result === "inProgress") {
+            if (this.owner === config.USER_ID && game.result === "inProgress") {
                 game.result = "won";
                 chromeUI.showModal("won");
             }
@@ -4357,7 +4356,7 @@ var Combat;
             this.loser = j === 0 ? "attacker" : "defender";
 
             // Play sound and show event
-            if (this.units[i].owner === config.PLAYER_ID) {
+            if (this.units[i].owner === config.USER_ID) {
                 assets.battleWon.play();
                 chromeUI.eventLog("Your " + this.units[i].type + " killed a barbarian " + this.units[j].type + ".", "good");
             } else {
@@ -4396,7 +4395,7 @@ var Combat;
                 // Check for withdrawal, if it's not a first strike and it would kill the loser
                 if (this.firstStrikes[i] === 0 && newHP === 0 && this.appliedBonuses[j].hasOwnProperty("retreat") && 100 * Math.random() < this.appliedBonuses[j]["retreat"]) {
                     // Show event
-                    if (this.units[j].owner === config.PLAYER_ID) {
+                    if (this.units[j].owner === config.USER_ID) {
                         chromeUI.eventLog("Your " + this.units[j].type + " withdrew from combat with a " + this.units[i].type + ".", "good");
                     } else {
                         chromeUI.eventLog("A " + this.units[i].type + " withdrew from combat with your " + this.units[j].type + ".", "bad");
@@ -4599,9 +4598,9 @@ var Debug;
 (function (Debug) {
     // Display the map barbs are seeing
     function viewBarbMap() {
-        config.PLAYER_ID = 0;
+        config.USER_ID = 0;
         game.turnID = 0;
-        game.map.updateVisibility(); // Only necessary on first turn?
+        game.map.updateVisibility(); // Only necessary on first turn. Not sure why. Should never be necessary. Probably a bug somewhere.
         mapUI.render();
     }
     Debug.viewBarbMap = viewBarbMap;
@@ -4627,7 +4626,7 @@ var assets, chromeUI, controller, game, mapUI;
 var config = {
     NUM_PLAYERS: 1,
     BARB_ID: 0,
-    PLAYER_ID: 1,
+    USER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
     BATTLE_ROUND_UI_DELAY: 300,
     DISABLE_FOG_OF_WAR: false
@@ -4677,36 +4676,36 @@ function init() {
         //    new Units.Warrior(config.BARB_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
     }
     for (var i = 0; i < 1; i++) {
-        //    new Units.Warrior(config.PLAYER_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
+        //    new Units.Warrior(config.USER_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
     }
 
-    /*var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    /*var u1 = new Units.Warrior(config.USER_ID, [10, 20]);
+    var u2 = new Units.Warrior(config.USER_ID, [10, 20]);
+    var u3 = new Units.Chariot(config.USER_ID, [10, 20]);
     for (i = 0; i < 10; i++) {
-    var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    var u4 = new Units.Chariot(config.USER_ID, [10, 20]);
     }
-    new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
-    [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
-    new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
-    /*new Units.Scout(config.PLAYER_ID, [10, 20]);
-    new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);
+    [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]
+    new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);*/
+    /*new Units.Scout(config.USER_ID, [10, 20]);
+    new Units.Warrior(config.USER_ID, [10, 20]);
+    new Units.Archer(config.USER_ID, [10, 20]);*/
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    u1 = new Units.Chariot(config.USER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");
     //    u1.promotions.push("drill2");
     u1.xp += 400;
     u1.currentStrength = 3;
 
-    /*    new Units.Archer(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Spearman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);*/
+    /*    new Units.Archer(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Spearman(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);*/
     new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [11, 21]);

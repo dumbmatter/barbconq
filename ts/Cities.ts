@@ -45,7 +45,7 @@ module Cities {
             delete game.cities[this.owner][this.id];
             this.owner = newOwner;
 
-            if (this.owner === config.PLAYER_ID && game.result === "inProgress") {
+            if (this.owner === config.USER_ID && game.result === "inProgress") {
                 game.result = "won";
                 chromeUI.showModal("won");
             }

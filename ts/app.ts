@@ -22,7 +22,7 @@ var assets : any, chromeUI : ChromeUI, controller : Controller, game : Game, map
 var config : any = {
     NUM_PLAYERS: 1,
     BARB_ID: 0,
-    PLAYER_ID: 1,
+    USER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
     BATTLE_ROUND_UI_DELAY: 300,
     DISABLE_FOG_OF_WAR: false
@@ -74,35 +74,35 @@ function init() {
     //    new Units.Warrior(config.BARB_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
     }
     for (var i = 0; i < 1; i++) {
-    //    new Units.Warrior(config.PLAYER_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
+    //    new Units.Warrior(config.USER_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
     }
 
-    /*var u1 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    var u2 = new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    var u3 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    /*var u1 = new Units.Warrior(config.USER_ID, [10, 20]);
+    var u2 = new Units.Warrior(config.USER_ID, [10, 20]);
+    var u3 = new Units.Chariot(config.USER_ID, [10, 20]);
     for (i = 0; i < 10; i++) {
-        var u4 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+        var u4 = new Units.Chariot(config.USER_ID, [10, 20]);
     }
-    new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);
-    [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]
-    new Units.Group(config.PLAYER_ID, [new Units.Chariot(config.PLAYER_ID, [10, 20]), new Units.Chariot(config.PLAYER_ID, [10, 20])]);*/
+    new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);
+    [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]
+    new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);*/
 
-    /*new Units.Scout(config.PLAYER_ID, [10, 20]);
-    new Units.Warrior(config.PLAYER_ID, [10, 20]);
-    new Units.Archer(config.PLAYER_ID, [10, 20]);*/
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    u1 = new Units.Chariot(config.PLAYER_ID, [10, 20]);
+    /*new Units.Scout(config.USER_ID, [10, 20]);
+    new Units.Warrior(config.USER_ID, [10, 20]);
+    new Units.Archer(config.USER_ID, [10, 20]);*/
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    u1 = new Units.Chariot(config.USER_ID, [10, 20]);
 //    u1.promotions.push("drill1");
 //    u1.promotions.push("drill2");
     u1.xp += 400;
     u1.currentStrength = 3;
-/*    new Units.Archer(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);
-    new Units.Spearman(config.PLAYER_ID, [10, 20]);
-    new Units.Axeman(config.PLAYER_ID, [10, 20]);*/
+/*    new Units.Archer(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Spearman(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);*/
     new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [11, 21]);

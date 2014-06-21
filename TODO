@@ -3,8 +3,6 @@
 click+drag for panning on main map
   similar to minimap or right click
 
-config.PLAYER_ID should be config.USER_ID
-
 basic barb AI
   Game.moveUnits should call AI.Barb
 

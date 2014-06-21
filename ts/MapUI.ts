@@ -271,7 +271,7 @@ class MapUI {
             drawViewport(function (i : number, j : number, x : number, y : number) {
                 var cityImage : HTMLImageElement, tile : MapMaker.Tile, unit : Units.Unit, unitImage : HTMLImageElement, units : Units.Unit[];
 
-                tile = game.getTile([i, j], config.PLAYER_ID);
+                tile = game.getTile([i, j], config.USER_ID);
 
                 // Background
                 this.context.fillStyle = this.terrainColors[tile.terrain];
@@ -292,14 +292,14 @@ class MapUI {
                 this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
                 // Shadow for non-visible tiles?
-                if (!game.map.visibility[config.PLAYER_ID][i][j] && tile.terrain !== "unseen") {
+                if (!game.map.visibility[config.USER_ID][i][j] && tile.terrain !== "unseen") {
                     this.context.fillStyle = this.terrainColors.shadow;
                     this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
                 }
 
                 // Show city on tile
                 if (tile.city) {
-                    if (tile.city.owner === config.PLAYER_ID) {
+                    if (tile.city.owner === config.USER_ID) {
                         cityImage = assets.cityCaptured;
                     } else {
                         cityImage = assets.city;
@@ -366,7 +366,7 @@ class MapUI {
                 // Highlight active battle
                 this.drawPath([game.activeBattle.units[0].coords, game.activeBattle.units[1].coords], false, true, false)
             }
-            if (game.activeUnit && game.activeUnit.owner === config.PLAYER_ID) {
+            if (game.activeUnit && game.activeUnit.owner === config.USER_ID) {
                 // Highlight active unit
                 x = game.activeUnit.coords[1] - leftTile;
                 y = game.activeUnit.coords[0] - topTile;
@@ -414,12 +414,12 @@ class MapUI {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Background
-                tile = game.getTile([i, j], config.PLAYER_ID);
+                tile = game.getTile([i, j], config.USER_ID);
                 this.miniContext.fillStyle = this.terrainColors[tile.terrain];
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
 
                 // Shadow for non-visible tiles?
-                if (!game.map.visibility[config.PLAYER_ID][i][j] && tile.terrain !== "unseen") {
+                if (!game.map.visibility[config.USER_ID][i][j] && tile.terrain !== "unseen") {
                     this.miniContext.fillStyle = this.terrainColors.shadow;
                     this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
                 }
@@ -430,7 +430,7 @@ class MapUI {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Highlight active tile
-                tile = game.getTile([i, j], config.PLAYER_ID);
+                tile = game.getTile([i, j], config.USER_ID);
                 if (tile.units.length > 0) {
                     for (k = 0; k < tile.units.length; k++) {
                         unit = tile.units[k];
