@@ -1827,15 +1827,17 @@ var MapMaker;
 
         // Entries in output matrix are visible (1) or not visible (0).
         Map.prototype.updateVisibility = function () {
-            var i, j, turnID;
+            var i, j, turnID, updateAll;
 
             // Initialize visibility if this is the first call to updateVisibility
             if (this.visibility === undefined) {
                 this.visibility = [];
                 updateAll = true;
+            } else {
+                updateAll = false;
             }
 
-            for (turnID = 0; turnID < game.names.length; turnID++) {
+            for (turnID = 0; turnID < config.NUM_PLAYERS + 1; turnID++) {
                 // Unless updateAll is true (such as for initialization of visibility), only update active player
                 if (!updateAll && turnID !== game.turnID) {
                     continue;
@@ -1876,7 +1878,7 @@ var MapMaker;
                                 this.visibility[turnID][i][j] = 1; // Visible
 
                                 // Cache current state
-                                this.tiles[i][j].lastSeenState = {
+                                this.tiles[i][j].lastSeenState[turnID] = {
                                     terrain: this.tiles[i][j].terrain,
                                     features: this.tiles[i][j].features,
                                     units: [],
@@ -1929,6 +1931,18 @@ var MapMaker;
     })();
     MapMaker.Map = Map;
 
+    function initLastSeenState() {
+        var i, lastSeenState;
+
+        lastSeenState = [];
+
+        for (i = 0; i < config.NUM_PLAYERS + 1; i++) {
+            lastSeenState[i] = null;
+        }
+
+        return lastSeenState;
+    }
+
     var TotallyRandom = (function (_super) {
         __extends(TotallyRandom, _super);
         function TotallyRandom(rows, cols) {
@@ -1959,7 +1973,7 @@ var MapMaker;
                         features: [],
                         units: [],
                         city: null,
-                        lastSeenState: null
+                        lastSeenState: initLastSeenState()
                     };
                     if (Math.random() < 0.5 && types[this.tiles[i][j].terrain].length > 0) {
                         this.tiles[i][j].features.push(Random.choice(types[this.tiles[i][j].terrain]));
@@ -1999,7 +2013,7 @@ var MapMaker;
                             features: [],
                             units: [],
                             city: null,
-                            lastSeenState: null
+                            lastSeenState: initLastSeenState()
                         };
 
                         // Features
@@ -2015,7 +2029,7 @@ var MapMaker;
                             features: [],
                             units: [],
                             city: null,
-                            lastSeenState: null
+                            lastSeenState: initLastSeenState()
                         };
                     }
                 }
@@ -2027,7 +2041,7 @@ var MapMaker;
 })(MapMaker || (MapMaker = {}));
 // Game - store the state of the game here, any non-UI stuff that would need for saving/loading a game
 var Game = (function () {
-    function Game(numPlayers, mapRows, mapCols) {
+    function Game(mapRows, mapCols) {
         this.maxId = 0;
         this.names = [];
         this.units = [];
@@ -2042,7 +2056,7 @@ var Game = (function () {
 
         this.map = new MapMaker.BigIsland(mapRows, mapCols);
 
-        for (i = 0; i < numPlayers + 1; i++) {
+        for (i = 0; i < config.NUM_PLAYERS + 1; i++) {
             if (i === 0) {
                 this.names.push("Barbarian");
             } else {
@@ -2071,7 +2085,7 @@ var Game = (function () {
             }
 
             if (!this.map.visibility[this.turnID][i][j]) {
-                if (!this.map.tiles[i][j].lastSeenState) {
+                if (!this.map.tiles[i][j].lastSeenState[this.turnID]) {
                     // Never seen this tile, show nothing
                     return {
                         terrain: "unseen",
@@ -2081,7 +2095,7 @@ var Game = (function () {
                     };
                 } else {
                     // Seen before, show last seen state
-                    return this.map.tiles[i][j].lastSeenState;
+                    return this.map.tiles[i][j].lastSeenState[this.turnID];
                 }
             } else {
                 // Tile is visible (or forced to be shown), show current state
@@ -2125,7 +2139,7 @@ var Game = (function () {
         var allHealed, group, u, unit;
 
         // Move to the next player, or start a new turn (move to player 0)
-        if (this.turnID < this.names.length - 1) {
+        if (this.turnID < config.NUM_PLAYERS) {
             this.turnID += 1;
         } else {
             this.newTurn();
@@ -4586,6 +4600,7 @@ var assets, chromeUI, controller, game, mapUI;
 
 // Default options
 var config = {
+    NUM_PLAYERS: 1,
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
@@ -4628,7 +4643,7 @@ function loadAssets(assetsToLoad, cb) {
 
 var u1;
 function init() {
-    game = new Game(1, 20, 40);
+    game = new Game(20, 40);
     chromeUI = new ChromeUI();
     mapUI = new MapUI();
     controller = new Controller();

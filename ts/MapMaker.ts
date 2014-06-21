@@ -1,17 +1,19 @@
 // MapMaker - map generation module
 
 module MapMaker {
+    export interface LastSeenState {
+        terrain : string;
+        features : string[];
+        units : Units.Unit[]; // This should never get anything in it! Just a placeholder empty array!
+        city : Cities.City;
+    }
+
     export interface Tile {
         terrain : string;
         features : string[];
         units : Units.Unit[];
         city : Cities.City
-        lastSeenState? : {
-            terrain : string;
-            features : string[];
-            units : Units.Unit[]; // This should never get anything in it! Just a placeholder empty array!
-            city : Cities.City;
-        };
+        lastSeenState? : LastSeenState[];
     }
 
     export class Map {
@@ -105,16 +107,18 @@ module MapMaker {
 
         // Entries in output matrix are visible (1) or not visible (0).
         updateVisibility() {
-            var i : number, j : number, turnID : number;
+            var i : number, j : number, turnID : number, updateAll : boolean;
 
             // Initialize visibility if this is the first call to updateVisibility
             if (this.visibility === undefined) {
                 this.visibility = [];
                 updateAll = true;
+            } else {
+                updateAll = false;
             }
 
             // For loop only needed if we need to update visibility all at once
-            for (turnID = 0; turnID < game.names.length; turnID++) {
+            for (turnID = 0; turnID < config.NUM_PLAYERS + 1; turnID++) {
                 // Unless updateAll is true (such as for initialization of visibility), only update active player
                 if (!updateAll && turnID !== game.turnID) {
                     continue;
@@ -156,7 +160,7 @@ module MapMaker {
                                 this.visibility[turnID][i][j] = 1; // Visible
 
                                 // Cache current state
-                                this.tiles[i][j].lastSeenState = {
+                                this.tiles[i][j].lastSeenState[turnID] = {
                                     terrain: this.tiles[i][j].terrain,
                                     features: this.tiles[i][j].features,
                                     units: [],
@@ -206,6 +210,18 @@ module MapMaker {
         }
     }
 
+    function initLastSeenState() {
+        var i : number, lastSeenState  : LastSeenState[];
+
+        lastSeenState = [];
+
+        for (i = 0; i < config.NUM_PLAYERS + 1; i++) {
+            lastSeenState[i] = null;
+        }
+
+        return lastSeenState;
+    }
+
     export class TotallyRandom extends Map {
         constructor(rows : number, cols : number) {
             var i : number, j : number, types: {[terrain : string] : string[]};
@@ -235,7 +251,7 @@ module MapMaker {
                         features: [],
                         units: [],
                         city: null,
-                        lastSeenState: null
+                        lastSeenState: initLastSeenState()
                     };
                     if (Math.random() < 0.5 && types[this.tiles[i][j].terrain].length > 0) {
                         this.tiles[i][j].features.push(Random.choice(types[this.tiles[i][j].terrain]));
@@ -272,7 +288,7 @@ module MapMaker {
                             features: [],
                             units: [],
                             city: null,
-                            lastSeenState: null
+                            lastSeenState: initLastSeenState()
                         };
 
                         // Features
@@ -288,7 +304,7 @@ module MapMaker {
                             features: [],
                             units: [],
                             city: null,
-                            lastSeenState: null
+                            lastSeenState: initLastSeenState()
                         };
                     }
                 }

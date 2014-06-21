@@ -19,6 +19,7 @@ var assets : any, chromeUI : ChromeUI, controller : Controller, game : Game, map
 
 // Default options
 var config : any = {
+    NUM_PLAYERS: 1,
     BARB_ID: 0,
     PLAYER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
@@ -61,7 +62,7 @@ function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
 
 var u1;
 function init() {
-    game = new Game(1, 20, 40);
+    game = new Game(20, 40);
     chromeUI = new ChromeUI();
     mapUI = new MapUI();
     controller = new Controller();

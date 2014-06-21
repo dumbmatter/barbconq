@@ -14,13 +14,13 @@ class Game {
     result : string = "inProgress"; // Starts "inProgress", eventually will be "won" or "lost"
     nextPlayerAfterTargetCoordsDone : boolean = false; // Set to true when a turn is ended early
 
-    constructor(numPlayers : number, mapRows : number, mapCols : number) {
+    constructor(mapRows : number, mapCols : number) {
         var i : number;
 
         this.map = new MapMaker.BigIsland(mapRows, mapCols);
 
         // + 1 is for barbarians at index 0
-        for (i = 0; i < numPlayers + 1; i++) {
+        for (i = 0; i < config.NUM_PLAYERS + 1; i++) {
             if (i === 0) {
                 this.names.push("Barbarian");
             } else {
@@ -49,7 +49,7 @@ class Game {
             }
 
             if (!this.map.visibility[this.turnID][i][j]) {
-                if (!this.map.tiles[i][j].lastSeenState) {
+                if (!this.map.tiles[i][j].lastSeenState[this.turnID]) {
                     // Never seen this tile, show nothing
                     return {
                         terrain: "unseen",
@@ -59,7 +59,7 @@ class Game {
                     };
                 } else {
                     // Seen before, show last seen state
-                    return this.map.tiles[i][j].lastSeenState;
+                    return this.map.tiles[i][j].lastSeenState[this.turnID];
                 }
             } else {
                 // Tile is visible (or forced to be shown), show current state
@@ -104,7 +104,7 @@ class Game {
         var allHealed : boolean, group : Units.Group, u : string, unit : Units.Unit;
 
         // Move to the next player, or start a new turn (move to player 0)
-        if (this.turnID < this.names.length - 1) {
+        if (this.turnID < config.NUM_PLAYERS) {
             this.turnID += 1;
         } else {
             this.newTurn();
