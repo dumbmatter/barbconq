@@ -8,6 +8,7 @@
 ///<reference path='Units.ts'/>
 ///<reference path='Cities.ts'/>
 ///<reference path='Combat.ts'/>
+///<reference path='Debug.ts'/>
 
 // JS libs
 declare var Howl : any;

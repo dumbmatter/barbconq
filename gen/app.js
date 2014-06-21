@@ -1836,6 +1836,7 @@ var MapMaker;
             } else {
                 updateAll = false;
             }
+            console.log(updateAll);
 
             for (turnID = 0; turnID < config.NUM_PLAYERS + 1; turnID++) {
                 // Unless updateAll is true (such as for initialization of visibility), only update active player
@@ -4591,6 +4592,20 @@ var Combat;
     }
     Combat.fightIfTileHasEnemy = fightIfTileHasEnemy;
 })(Combat || (Combat = {}));
+/*
+Debug - collection of small functions used for debugging
+*/
+var Debug;
+(function (Debug) {
+    // Display the map barbs are seeing
+    function viewBarbMap() {
+        config.PLAYER_ID = 0;
+        game.turnID = 0;
+        game.map.updateVisibility(); // Only necessary on first turn?
+        mapUI.render();
+    }
+    Debug.viewBarbMap = viewBarbMap;
+})(Debug || (Debug = {}));
 ///<reference path='Util.ts'/>
 ///<reference path='Controller.ts'/>
 ///<reference path='ChromeUI.ts'/>
@@ -4601,6 +4616,7 @@ var Combat;
 ///<reference path='Units.ts'/>
 ///<reference path='Cities.ts'/>
 ///<reference path='Combat.ts'/>
+///<reference path='Debug.ts'/>
 
 var easystar = new EasyStar.js();
 

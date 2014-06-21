@@ -7,10 +7,6 @@ config.PLAYER_ID should be config.USER_ID
 
 basic barb AI
   Game.moveUnits should call AI.Barb
-to view barb visibility (maybe put this in a debug function somehow?):
-config.PLAYER_ID = 0;
-game.turnID = 0;
-mapUI.render();
 
 rate of barb generation in non-visible tiles
   should increase with turns?
