@@ -258,7 +258,7 @@ class Game {
                     setTimeout(function () {
                         var battle : Combat.Battle, currentTile : MapMaker.Tile, enemies : {coords : number[]; oddsWinFight : number}[], i : number, j : number, units : {attacker : Units.Unit; defender : Units.Unit};
 
-                        console.log(unit);
+console.log(unit);
 
                         // For each visible enemy unit within 3 tiles, calculate and store {coords, oddsWinFight}
                         enemies = [];
@@ -318,8 +318,20 @@ console.log("Attack with " + enemies[i].oddsWinFight + " odds");
 
                         // Move into city, if possible
                         // This is for both moving in to defend a barb city, and attacking a non-barb city
+                        for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
+                            for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
+                                if ((i !== unit.coords[0] || j !== unit.coords[1]) && game.map.validCoords([i, j])) {
+                                    if (game.getTile([i, j]).city) {
+console.log("Move to city");
+                                            unit.moveToCoords([i, j]);
+                                            return;
+                                    }
+                                }
+                            }
+                        }
 
                         // Move towards weaker unit that is <= 3 turns away
+                        // Set on path, then clear path after movement so next turn can find best path again
 
                         // Move away from stronger unit
 

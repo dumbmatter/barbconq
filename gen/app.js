@@ -2342,7 +2342,18 @@ var Game = (function () {
                             }
                         }
 
-                        // Move into city, if possible
+                        for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
+                            for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
+                                if ((i !== unit.coords[0] || j !== unit.coords[1]) && game.map.validCoords([i, j])) {
+                                    if (game.getTile([i, j]).city) {
+                                        console.log("Move to city");
+                                        unit.moveToCoords([i, j]);
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+
                         // Move towards weaker unit that is <= 3 turns away
                         // Move away from stronger unit
                         // Hurt, so fortify until healed
