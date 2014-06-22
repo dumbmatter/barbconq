@@ -7,9 +7,10 @@ basic barb AI
   Game.moveUnits should call AI.Barb
   is delay still appropriate for UI, now that AI is calculating shit?
   Move towards city
+  are unit.initiatePath calls in AI robust? what happens if no path is found, could it lead to infinite loop if unit never moves?
   stay on land
     don't call Unit.moveToCoords without checking Unit.canMoveToCoords
-      ideally, filter possible moves first so null case is handled
+      ideally, filter possible moves first so null case is handled. do this for random move!
 
 scouts shouldn't be able to attack
   barb AI
@@ -19,6 +20,8 @@ rate of barb generation in non-visible tiles
   should increase with turns?
 
 # Minor current tasks
+
+start game with 3 units. group first 2 and fortify. skip turn for 3rd one. it will not get activated in subsequent turns, seems auto-skipped for some reason
 
 movement cost messed up - chariots can always get 2 moves
 

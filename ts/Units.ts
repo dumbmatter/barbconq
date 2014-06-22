@@ -110,7 +110,7 @@ module Units {
             mapUI.render();
         }
 
-        canMoveToCoords(coords : number[]) {
+        canMoveOnCoords(coords : number[]) {
             var newTerrain : string;
 
             // Don't walk off the map!
@@ -165,7 +165,7 @@ module Units {
             }
 
             // Don't walk off the map!
-            if (this.canMoveToCoords(newCoords)) {
+            if (this.canMoveOnCoords(newCoords)) {
                 this.moveToCoords(newCoords);
                 return;
             }
@@ -181,7 +181,7 @@ module Units {
             throw new Error('"moveOnMap" needs to be redefined by each derived class.');
         }
 
-        // Check for valid coords before calling, such as from this.canMoveToCoords. Returns true when successful, false when "maybe
+        // Check for valid coords before calling, such as from this.canMoveOnCoords. Returns true when successful, false when "maybe
         // successful" (battle takes over because enemy is on coords). Note that the battle code is
         // async!!!!
         moveToCoords(coords : number[]) : boolean {

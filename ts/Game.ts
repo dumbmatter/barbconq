@@ -344,9 +344,6 @@ console.log("Move towards unit with " + enemies[i].oddsWinFight + " odds");
                             // Only look at adjacent tiles
                             if (Math.abs(unit.coords[0] - enemies[i].coords[0]) <= 1 && Math.abs(unit.coords[1] - enemies[i].coords[1]) <= 1) {
                                 if (enemies[i].oddsWinFight < 0.25) {
-console.log("Run away from enemy with " + enemies[i].oddsWinFight + " odds");
-
-                                    // If in corner, move anywhere except directly next to corner
                                     possibleCoords = [
                                         [unit.coords[0] + 1, unit.coords[1] + 1],
                                         [unit.coords[0] + 1, unit.coords[1]],
@@ -357,12 +354,14 @@ console.log("Run away from enemy with " + enemies[i].oddsWinFight + " odds");
                                         [unit.coords[0] - 1, unit.coords[1]],
                                         [unit.coords[0] - 1, unit.coords[1] - 1]
                                     ].filter(function (coords) {
-                                        return Math.abs(coords[0] - enemies[i].coords[0]) > 1 || Math.abs(coords[1] - enemies[i].coords[1]) > 1
+                                        return (Math.abs(coords[0] - enemies[i].coords[0]) > 1 || Math.abs(coords[1] - enemies[i].coords[1]) > 1) && unit.canMoveOnCoords(coords)
                                     });
-console.log(possibleCoords);
 
-                                    unit.moveToCoords(Random.choice(possibleCoords));
-                                    return;
+                                    if (possibleCoords.length) {
+console.log("Run away from enemy with " + enemies[i].oddsWinFight + " odds");
+                                        unit.moveToCoords(Random.choice(possibleCoords));
+                                        return;
+                                    }
                                 }
                             }
                         }

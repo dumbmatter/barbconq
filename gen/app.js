@@ -2368,9 +2368,6 @@ var Game = (function () {
                             // Only look at adjacent tiles
                             if (Math.abs(unit.coords[0] - enemies[i].coords[0]) <= 1 && Math.abs(unit.coords[1] - enemies[i].coords[1]) <= 1) {
                                 if (enemies[i].oddsWinFight < 0.25) {
-                                    console.log("Run away from enemy with " + enemies[i].oddsWinFight + " odds");
-
-                                    // If in corner, move anywhere except directly next to corner
                                     possibleCoords = [
                                         [unit.coords[0] + 1, unit.coords[1] + 1],
                                         [unit.coords[0] + 1, unit.coords[1]],
@@ -2381,12 +2378,15 @@ var Game = (function () {
                                         [unit.coords[0] - 1, unit.coords[1]],
                                         [unit.coords[0] - 1, unit.coords[1] - 1]
                                     ].filter(function (coords) {
-                                        return Math.abs(coords[0] - enemies[i].coords[0]) > 1 || Math.abs(coords[1] - enemies[i].coords[1]) > 1;
+                                        return (Math.abs(coords[0] - enemies[i].coords[0]) > 1 || Math.abs(coords[1] - enemies[i].coords[1]) > 1) && unit.canMoveOnCoords(coords);
                                     });
                                     console.log(possibleCoords);
 
-                                    unit.moveToCoords(Random.choice(possibleCoords));
-                                    return;
+                                    if (possibleCoords.length) {
+                                        console.log("Run away from enemy with " + enemies[i].oddsWinFight + " odds");
+                                        unit.moveToCoords(Random.choice(possibleCoords));
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -2922,7 +2922,7 @@ var Units;
             mapUI.render();
         };
 
-        UnitOrGroup.prototype.canMoveToCoords = function (coords) {
+        UnitOrGroup.prototype.canMoveOnCoords = function (coords) {
             var newTerrain;
 
             // Don't walk off the map!
@@ -2977,7 +2977,7 @@ var Units;
             }
 
             // Don't walk off the map!
-            if (this.canMoveToCoords(newCoords)) {
+            if (this.canMoveOnCoords(newCoords)) {
                 this.moveToCoords(newCoords);
                 return;
             }
@@ -2993,7 +2993,7 @@ var Units;
             throw new Error('"moveOnMap" needs to be redefined by each derived class.');
         };
 
-        // Check for valid coords before calling, such as from this.canMoveToCoords. Returns true when successful, false when "maybe
+        // Check for valid coords before calling, such as from this.canMoveOnCoords. Returns true when successful, false when "maybe
         // successful" (battle takes over because enemy is on coords). Note that the battle code is
         // async!!!!
         UnitOrGroup.prototype.moveToCoords = function (coords) {
@@ -4810,8 +4810,8 @@ function init() {
     new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);*/
     /*new Units.Scout(config.USER_ID, [10, 20]);
     new Units.Warrior(config.USER_ID, [10, 20]);
-    new Units.Archer(config.USER_ID, [10, 20]);*/
-    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Archer(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);*/
     new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);
     u1 = new Units.Chariot(config.USER_ID, [10, 20]);
@@ -4831,7 +4831,7 @@ function init() {
     new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [11, 21]);*/
-    var u = new Units.Axeman(config.BARB_ID, [9, 21]);
+    var u = new Units.Warrior(config.BARB_ID, [9, 21]);
     u.currentStrength = 4;
 
     /*for (i = 0; i < 10; i++) {
