@@ -362,16 +362,19 @@ console.log("Run away from enemy with " + enemies[i].oddsWinFight + " odds");
 console.log(possibleCoords);
 
                                     unit.moveToCoords(Random.choice(possibleCoords));
-
                                     return;
                                 }
                             }
                         }
 
                         // Fortify until healed, if hurt
+                        if (unit.canHeal && unit.currentStrength < unit.strength) {
+console.log("Fortify until healed");
+                            unit.skipTurn();
+                            return;
+                        }
 
-                        // Move towards city
-                        // Set on path, then clear path after movement so next turn can find best move again
+// Move towards city
 
                         // Move randomly
 console.log("Move randomly");

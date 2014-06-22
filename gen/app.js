@@ -2386,15 +2386,19 @@ var Game = (function () {
                                     console.log(possibleCoords);
 
                                     unit.moveToCoords(Random.choice(possibleCoords));
-
                                     return;
                                 }
                             }
                         }
 
                         // Fortify until healed, if hurt
+                        if (unit.canHeal && unit.currentStrength < unit.strength) {
+                            console.log("Fortify until healed");
+                            unit.skipTurn();
+                            return;
+                        }
+
                         // Move towards city
-                        // Set on path, then clear path after movement so next turn can find best move again
                         // Move randomly
                         console.log("Move randomly");
                         if (Math.random() < 0.75) {
@@ -4816,7 +4820,8 @@ function init() {
     new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [11, 21]);*/
-    new Units.Warrior(config.BARB_ID, [9, 21]);
+    var u = new Units.Axeman(config.BARB_ID, [9, 21]);
+    u.currentStrength = 4;
 
     /*for (i = 0; i < 10; i++) {
     new Units.Archer(config.BARB_ID, [10, 21]);
