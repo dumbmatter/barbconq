@@ -256,12 +256,12 @@ class Game {
                     unit.activate(centerViewport);
 
                     setTimeout(function () {
-                        var battle : Combat.Battle, currentTile : MapMaker.Tile, i : number, j : number, tilesWithEnemies, units : {attacker : Units.Unit; defender : Units.Unit};
+                        var battle : Combat.Battle, currentTile : MapMaker.Tile, enemies : {coords : number[]; oddsWinFight : number}[], i : number, j : number, units : {attacker : Units.Unit; defender : Units.Unit};
 
                         console.log(unit);
 
                         // For each visible enemy unit within 3 tiles, calculate and store {coords, oddsWinFight}
-                        tilesWithEnemies = [];
+                        enemies = [];
                         for (i = unit.coords[0] - 3; i <= unit.coords[0] + 3; i++) {
                             for (j = unit.coords[1] - 3; j <= unit.coords[1] + 3; j++) {
                                 if (game.map.validCoords([i, j])) {
@@ -269,7 +269,7 @@ class Game {
                                     units = Combat.findBestDefender(game.activeUnit, [i, j]);
                                     if (units.defender) {
                                         battle = new Combat.Battle(unit, units.defender);
-                                        tilesWithEnemies.push({
+                                        enemies.push({
                                             coords: [i, j],
                                             oddsWinFight: battle.odds().attackerWinsFight
                                         });                                        
@@ -277,7 +277,7 @@ class Game {
                                 }
                             }
                         }
-console.log(tilesWithEnemies);
+console.log(enemies);
 
                         currentTile = game.getTile(unit.coords);
 
@@ -286,20 +286,29 @@ console.log(tilesWithEnemies);
                         // If in city, only move to attack if >75% chance of winning and if 2 other units are in city
                         if (currentTile.city) {
                             if (currentTile.units.length > 2) {
-
-//console.log("Attack out of city");
+                                for (i = 0; i < enemies.length; i++) {
+                                    // Only look at adjacent tiles
+                                    if (Math.abs(unit.coords[0] - enemies[i].coords[0]) <= 1 && Math.abs(unit.coords[1] - enemies[i].coords[1]) <= 1) {
+                                        if (enemies[i].oddsWinFight >= 0.75) {
+console.log("Attack out of city");
+                                            unit.moveToCoords(enemies[i].coords);
+                                            return;
+                                        }
+                                    }
+                                }
 
                             }
 
 console.log("Wait in city");
-                            return unit.skipTurn();
+                            unit.skipTurn();
+                            return;
                         }
 
                         // Attack with >25% chance of winning
 
-                        // Move towards weaker unit that is <= 3 turns away
-
                         // Move into city, if possible
+
+                        // Move towards weaker unit that is <= 3 turns away
 
                         // Move away from stronger unit
 
@@ -307,7 +316,8 @@ console.log("Wait in city");
 
                         // Move randomly
                         if (Math.random() < 0.75) {
-                            return unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                            unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
+                            return;
                         }
 
                         unit.skipTurn();

@@ -104,6 +104,8 @@ function init() {
     new Units.Spearman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);*/
     new Units.Axeman(config.BARB_ID, [10, 21]);
+    new Units.Axeman(config.BARB_ID, [10, 21]);
+    new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [11, 21]);
     new Units.Axeman(config.BARB_ID, [9, 21]);
