@@ -2285,9 +2285,44 @@ var Game = (function () {
                     unit.activate(centerViewport);
 
                     setTimeout(function () {
-                        // For each visible enemy unit, calculate and store {unit, oddsWinFight, turnsAway}
+                        var battle, currentTile, i, j, tilesWithEnemies, units;
+
+                        console.log(unit);
+
+                        // For each visible enemy unit within 3 tiles, calculate and store {coords, oddsWinFight}
+                        // NOT GOOD ENOUGH because it doesn't make distinction about multiple enemies on the same tile! Need to store by tile. Or just do dynamically
+                        // Maybe just cache the oddsWinFight for a tile?
+                        tilesWithEnemies = [];
+                        for (i = unit.coords[0] - 3; i <= unit.coords[0] + 3; i++) {
+                            for (j = unit.coords[1] - 3; j <= unit.coords[1] + 3; j++) {
+                                if (game.map.validCoords([i, j])) {
+                                    // If there is any defender on this tile, find the best defender and calculate battle odds
+                                    units = Combat.findBestDefender(game.activeUnit, [i, j]);
+                                    if (units.defender) {
+                                        battle = new Combat.Battle(unit, units.defender);
+                                        tilesWithEnemies.push({
+                                            coords: [i, j],
+                                            oddsWinFight: battle.odds().attackerWinsFight
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        console.log(tilesWithEnemies);
+
+                        currentTile = game.getTile(unit.coords);
+
                         // MOVE DECISION
                         // If in city, only move to attack if >75% chance of winning and if 2 other units are in city
+                        if (currentTile.city) {
+                            if (currentTile.units.length > 2) {
+                                //console.log("Attack out of city");
+                            }
+
+                            console.log("Wait in city");
+                            return unit.skipTurn();
+                        }
+
                         // Attack with >25% chance of winning
                         // Move towards weaker unit that is <= 3 turns away
                         // Move into city, if possible
@@ -2295,10 +2330,10 @@ var Game = (function () {
                         // Hurt, so fortify until healed
                         // Move randomly
                         if (Math.random() < 0.75) {
-                            unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
-                        } else {
-                            unit.skipTurn();
+                            return unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
                         }
+
+                        unit.skipTurn();
                     }, unit.movementDelay());
                     return true;
                 }

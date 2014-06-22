@@ -23,7 +23,7 @@ module Units {
         // Key attributes
         _movement: number;
         _currentMovement : number;
-        _coords : number[];
+        _coords : number[]; // [rows, cols]
         _targetCoords : number[] = null;
 
         // Special unit properties
