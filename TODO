@@ -5,6 +5,7 @@ click+drag for panning on main map
 
 basic barb AI
   Game.moveUnits should call AI.Barb
+  is delay still appropriate for UI, now that AI is calculating shit?
 
 rate of barb generation in non-visible tiles
   should increase with turns?

@@ -290,7 +290,7 @@ console.log(enemies);
                                     // Only look at adjacent tiles
                                     if (Math.abs(unit.coords[0] - enemies[i].coords[0]) <= 1 && Math.abs(unit.coords[1] - enemies[i].coords[1]) <= 1) {
                                         if (enemies[i].oddsWinFight >= 0.75) {
-console.log("Attack out of city");
+console.log("Attack out of city with " + enemies[i].oddsWinFight + " odds");
                                             unit.moveToCoords(enemies[i].coords);
                                             return;
                                         }
@@ -305,8 +305,19 @@ console.log("Wait in city");
                         }
 
                         // Attack with >25% chance of winning
+                        for (i = 0; i < enemies.length; i++) {
+                            // Only look at adjacent tiles
+                            if (Math.abs(unit.coords[0] - enemies[i].coords[0]) <= 1 && Math.abs(unit.coords[1] - enemies[i].coords[1]) <= 1) {
+                                if (enemies[i].oddsWinFight >= 0.25) {
+console.log("Attack with " + enemies[i].oddsWinFight + " odds");
+                                    unit.moveToCoords(enemies[i].coords);
+                                    return;
+                                }
+                            }
+                        }
 
                         // Move into city, if possible
+                        // This is for both moving in to defend a barb city, and attacking a non-barb city
 
                         // Move towards weaker unit that is <= 3 turns away
 
