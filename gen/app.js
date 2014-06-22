@@ -2306,6 +2306,11 @@ var Game = (function () {
                                 }
                             }
                         }
+
+                        // Sort by odds descending, so that the best odds will be selected first
+                        enemies.sort(function (a, b) {
+                            return b.oddsWinFight - a.oddsWinFight;
+                        });
                         console.log(enemies);
 
                         currentTile = game.getTile(unit.coords);
@@ -2355,6 +2360,7 @@ var Game = (function () {
                         }
 
                         // Move towards weaker unit that is <= 3 turns away
+                        // Set on path, then clear path after movement so next turn can find best path again
                         // Move away from stronger unit
                         // Hurt, so fortify until healed
                         // Move randomly

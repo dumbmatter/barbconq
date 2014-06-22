@@ -277,6 +277,8 @@ console.log(unit);
                                 }
                             }
                         }
+                        // Sort by odds descending, so that the best odds will be selected first
+                        enemies.sort(function (a, b) { return b.oddsWinFight - a.oddsWinFight; }); 
 console.log(enemies);
 
                         currentTile = game.getTile(unit.coords);
@@ -322,7 +324,7 @@ console.log("Attack with " + enemies[i].oddsWinFight + " odds");
                             for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
                                 if ((i !== unit.coords[0] || j !== unit.coords[1]) && game.map.validCoords([i, j])) {
                                     if (game.getTile([i, j]).city) {
-console.log("Move to city");
+console.log("Move into city");
                                             unit.moveToCoords([i, j]);
                                             return;
                                     }
@@ -331,13 +333,17 @@ console.log("Move to city");
                         }
 
                         // Move towards weaker unit that is <= 3 turns away
-                        // Set on path, then clear path after movement so next turn can find best path again
+                        // Set on path, then clear path after movement so next turn can find best move again
 
                         // Move away from stronger unit
 
-                        // Hurt, so fortify until healed
+                        // Fortify until healed, if hurt
+
+                        // Move towards city
+                        // Set on path, then clear path after movement so next turn can find best move again
 
                         // Move randomly
+console.log("Move randomly");
                         if (Math.random() < 0.75) {
                             unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
                             return;
