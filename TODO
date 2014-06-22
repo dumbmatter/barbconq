@@ -21,6 +21,8 @@ rate of barb generation in non-visible tiles
 
 # Minor current tasks
 
+barb promotions
+
 start game with 3 units. group first 2 and fortify. skip turn for 3rd one. it will not get activated in subsequent turns, seems auto-skipped for some reason
 
 movement cost messed up - chariots can always get 2 moves

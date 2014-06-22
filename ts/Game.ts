@@ -119,6 +119,7 @@ class Game {
         }
 
         // Stuff that happens before each turn, including the first
+        this.map.updateVisibility();
         for (u in this.units[this.turnID]) {
             unit = this.units[this.turnID][u];
             unit.updateCanPromoteToLevel();

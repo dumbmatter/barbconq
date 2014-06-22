@@ -90,9 +90,9 @@ function init() {
     /*new Units.Scout(config.USER_ID, [10, 20]);
     new Units.Warrior(config.USER_ID, [10, 20]);
     new Units.Archer(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);*/
-    new Units.Axeman(config.USER_ID, [10, 20]);
-    new Units.Axeman(config.USER_ID, [10, 20]);
     u1 = new Units.Chariot(config.USER_ID, [10, 20]);
 //    u1.promotions.push("drill1");
 //    u1.promotions.push("drill2");

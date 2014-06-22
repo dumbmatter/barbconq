@@ -2153,6 +2153,8 @@ var Game = (function () {
             this.newTurn();
         }
 
+        // Stuff that happens before each turn, including the first
+        this.map.updateVisibility();
         for (u in this.units[this.turnID]) {
             unit = this.units[this.turnID][u];
             unit.updateCanPromoteToLevel();
@@ -2380,7 +2382,6 @@ var Game = (function () {
                                     ].filter(function (coords) {
                                         return (Math.abs(coords[0] - enemies[i].coords[0]) > 1 || Math.abs(coords[1] - enemies[i].coords[1]) > 1) && unit.canMoveOnCoords(coords);
                                     });
-                                    console.log(possibleCoords);
 
                                     if (possibleCoords.length) {
                                         console.log("Run away from enemy with " + enemies[i].oddsWinFight + " odds");
@@ -4660,7 +4661,6 @@ var Combat;
     function fightIfTileHasEnemy(attackerUnitOrGroup, coords) {
         var attacker, battle, defender, newTileUnits, units;
 
-        console.log(coords);
         newTileUnits = game.getTile(coords).units;
 
         units = findBestDefender(attackerUnitOrGroup, coords);
@@ -4811,9 +4811,9 @@ function init() {
     /*new Units.Scout(config.USER_ID, [10, 20]);
     new Units.Warrior(config.USER_ID, [10, 20]);
     new Units.Archer(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
+    new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);*/
-    new Units.Axeman(config.USER_ID, [10, 20]);
-    new Units.Axeman(config.USER_ID, [10, 20]);
     u1 = new Units.Chariot(config.USER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");
