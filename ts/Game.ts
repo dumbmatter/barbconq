@@ -332,8 +332,15 @@ console.log("Move into city");
                             }
                         }
 
-                        // Move towards weaker unit that is <= 3 turns away
-                        // Set on path, then clear path after movement so next turn can find best move again
+                        // Move towards nearby weaker unit
+                        for (i = 0; i < enemies.length; i++) {
+                            if (enemies[i].oddsWinFight >= 0.5) {
+console.log("Move towards unit with " + enemies[i].oddsWinFight + " odds");
+                                unit.initiatePath(enemies[i].coords);
+                                return;
+                            }
+                        }
+                        
 
                         // Move away from stronger unit
 

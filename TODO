@@ -7,10 +7,16 @@ basic barb AI
   Game.moveUnits should call AI.Barb
   is delay still appropriate for UI, now that AI is calculating shit?
 
+scouts shouldn't be able to attack
+  barb AI
+  user
+
 rate of barb generation in non-visible tiles
   should increase with turns?
 
 # Minor current tasks
+
+tile off grid should always be black. sometimes don't get overwritten
 
 Map.pathFinding should take into account that tile movement cost does not just depend on the tile itself, but also on which tile the unit is moving from
   roads are the obvious implication, but also bonuses for double movement on certain tiles and mobility

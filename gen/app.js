@@ -2351,7 +2351,7 @@ var Game = (function () {
                             for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
                                 if ((i !== unit.coords[0] || j !== unit.coords[1]) && game.map.validCoords([i, j])) {
                                     if (game.getTile([i, j]).city) {
-                                        console.log("Move to city");
+                                        console.log("Move into city");
                                         unit.moveToCoords([i, j]);
                                         return;
                                     }
@@ -2359,11 +2359,20 @@ var Game = (function () {
                             }
                         }
 
-                        // Move towards weaker unit that is <= 3 turns away
-                        // Set on path, then clear path after movement so next turn can find best path again
+                        for (i = 0; i < enemies.length; i++) {
+                            if (enemies[i].oddsWinFight >= 0.5) {
+                                console.log("Move towards unit with " + enemies[i].oddsWinFight + " odds");
+                                unit.initiatePath(enemies[i].coords);
+                                return;
+                            }
+                        }
+
                         // Move away from stronger unit
-                        // Hurt, so fortify until healed
+                        // Fortify until healed, if hurt
+                        // Move towards city
+                        // Set on path, then clear path after movement so next turn can find best move again
                         // Move randomly
+                        console.log("Move randomly");
                         if (Math.random() < 0.75) {
                             unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
                             return;
