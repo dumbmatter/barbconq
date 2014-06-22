@@ -2922,10 +2922,25 @@ var Units;
             mapUI.render();
         };
 
+        UnitOrGroup.prototype.canMoveToCoords = function (coords) {
+            var newTerrain;
+
+            // Don't walk off the map!
+            if (game.map.validCoords(coords)) {
+                // Stay on land!
+                newTerrain = game.getTile(coords, -1).terrain;
+                if (newTerrain === "snow" || newTerrain === "desert" || newTerrain === "tundra" || newTerrain === "grassland" || newTerrain === "plains") {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
         // Should be able to make this general enough to handle all units
         // Handle fight initiation here, if move goes to tile with enemy on it
         UnitOrGroup.prototype.move = function (direction) {
-            var newCoords, newTerrain;
+            var newCoords;
 
             // Short circuit if no moves are available
             if (this.currentMovement <= 0) {
@@ -2962,13 +2977,9 @@ var Units;
             }
 
             // Don't walk off the map!
-            if (game.map.validCoords(newCoords)) {
-                // Stay on land!
-                newTerrain = game.getTile(newCoords, -1).terrain;
-                if (newTerrain === "snow" || newTerrain === "desert" || newTerrain === "tundra" || newTerrain === "grassland" || newTerrain === "plains") {
-                    this.moveToCoords(newCoords);
-                    return;
-                }
+            if (this.canMoveToCoords(newCoords)) {
+                this.moveToCoords(newCoords);
+                return;
             }
 
             // If made it this far, no move was made
@@ -2982,7 +2993,7 @@ var Units;
             throw new Error('"moveOnMap" needs to be redefined by each derived class.');
         };
 
-        // Check for valid coords before calling. Returns true when successful, false when "maybe
+        // Check for valid coords before calling, such as from this.canMoveToCoords. Returns true when successful, false when "maybe
         // successful" (battle takes over because enemy is on coords). Note that the battle code is
         // async!!!!
         UnitOrGroup.prototype.moveToCoords = function (coords) {

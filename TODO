@@ -6,9 +6,10 @@ click+drag for panning on main map
 basic barb AI
   Game.moveUnits should call AI.Barb
   is delay still appropriate for UI, now that AI is calculating shit?
+  Move towards city
   stay on land
-    should moveToCoords check terrain like move?
-      check usage of moveToCoords everywhere. why do i want a function that can move on water?
+    don't call Unit.moveToCoords without checking Unit.canMoveToCoords
+      ideally, filter possible moves first so null case is handled
 
 scouts shouldn't be able to attack
   barb AI
