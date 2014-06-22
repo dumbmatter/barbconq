@@ -520,6 +520,7 @@ console.log(this.firstStrikes);*/
     export function fightIfTileHasEnemy(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : boolean {
         var attacker : Units.Unit, battle : Battle, defender : Units.Unit, newTileUnits : Units.Unit[], units : {attacker : Units.Unit; defender : Units.Unit};
 
+console.log(coords);
         newTileUnits = game.getTile(coords).units;
 
         units = findBestDefender(attackerUnitOrGroup, coords);

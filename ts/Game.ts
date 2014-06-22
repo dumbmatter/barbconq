@@ -256,9 +256,7 @@ class Game {
                     unit.activate(centerViewport);
 
                     setTimeout(function () {
-                        var battle : Combat.Battle, currentTile : MapMaker.Tile, enemies : {coords : number[]; oddsWinFight : number}[], i : number, j : number, units : {attacker : Units.Unit; defender : Units.Unit};
-
-console.log(unit);
+                        var battle : Combat.Battle, currentTile : MapMaker.Tile, enemies : {coords : number[]; oddsWinFight : number}[], i : number, j : number, possibleCoords : number[][], units : {attacker : Units.Unit; defender : Units.Unit};
 
                         // For each visible enemy unit within 3 tiles, calculate and store {coords, oddsWinFight}
                         enemies = [];
@@ -279,7 +277,6 @@ console.log(unit);
                         }
                         // Sort by odds descending, so that the best odds will be selected first
                         enemies.sort(function (a, b) { return b.oddsWinFight - a.oddsWinFight; }); 
-console.log(enemies);
 
                         currentTile = game.getTile(unit.coords);
 
@@ -343,6 +340,33 @@ console.log("Move towards unit with " + enemies[i].oddsWinFight + " odds");
                         
 
                         // Move away from stronger unit
+                        for (i = 0; i < enemies.length; i++) {
+                            // Only look at adjacent tiles
+                            if (Math.abs(unit.coords[0] - enemies[i].coords[0]) <= 1 && Math.abs(unit.coords[1] - enemies[i].coords[1]) <= 1) {
+                                if (enemies[i].oddsWinFight < 0.25) {
+console.log("Run away from enemy with " + enemies[i].oddsWinFight + " odds");
+
+                                    // If in corner, move anywhere except directly next to corner
+                                    possibleCoords = [
+                                        [unit.coords[0] + 1, unit.coords[1] + 1],
+                                        [unit.coords[0] + 1, unit.coords[1]],
+                                        [unit.coords[0] + 1, unit.coords[1] - 1],
+                                        [unit.coords[0], unit.coords[1] + 1],
+                                        [unit.coords[0], unit.coords[1] - 1],
+                                        [unit.coords[0] - 1, unit.coords[1] + 1],
+                                        [unit.coords[0] - 1, unit.coords[1]],
+                                        [unit.coords[0] - 1, unit.coords[1] - 1]
+                                    ].filter(function (coords) {
+                                        return Math.abs(coords[0] - enemies[i].coords[0]) > 1 || Math.abs(coords[1] - enemies[i].coords[1]) > 1
+                                    });
+console.log(possibleCoords);
+
+                                    unit.moveToCoords(Random.choice(possibleCoords));
+
+                                    return;
+                                }
+                            }
+                        }
 
                         // Fortify until healed, if hurt
 

@@ -6,6 +6,9 @@ click+drag for panning on main map
 basic barb AI
   Game.moveUnits should call AI.Barb
   is delay still appropriate for UI, now that AI is calculating shit?
+  stay on land
+    should moveToCoords check terrain like move?
+      check usage of moveToCoords everywhere. why do i want a function that can move on water?
 
 scouts shouldn't be able to attack
   barb AI
@@ -15,6 +18,8 @@ rate of barb generation in non-visible tiles
   should increase with turns?
 
 # Minor current tasks
+
+movement cost messed up - chariots can always get 2 moves
 
 tile off grid should always be black. sometimes don't get overwritten
 

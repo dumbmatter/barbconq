@@ -2285,9 +2285,7 @@ var Game = (function () {
                     unit.activate(centerViewport);
 
                     setTimeout(function () {
-                        var battle, currentTile, enemies, i, j, units;
-
-                        console.log(unit);
+                        var battle, currentTile, enemies, i, j, possibleCoords, units;
 
                         // For each visible enemy unit within 3 tiles, calculate and store {coords, oddsWinFight}
                         enemies = [];
@@ -2311,7 +2309,6 @@ var Game = (function () {
                         enemies.sort(function (a, b) {
                             return b.oddsWinFight - a.oddsWinFight;
                         });
-                        console.log(enemies);
 
                         currentTile = game.getTile(unit.coords);
 
@@ -2367,7 +2364,34 @@ var Game = (function () {
                             }
                         }
 
-                        // Move away from stronger unit
+                        for (i = 0; i < enemies.length; i++) {
+                            // Only look at adjacent tiles
+                            if (Math.abs(unit.coords[0] - enemies[i].coords[0]) <= 1 && Math.abs(unit.coords[1] - enemies[i].coords[1]) <= 1) {
+                                if (enemies[i].oddsWinFight < 0.25) {
+                                    console.log("Run away from enemy with " + enemies[i].oddsWinFight + " odds");
+
+                                    // If in corner, move anywhere except directly next to corner
+                                    possibleCoords = [
+                                        [unit.coords[0] + 1, unit.coords[1] + 1],
+                                        [unit.coords[0] + 1, unit.coords[1]],
+                                        [unit.coords[0] + 1, unit.coords[1] - 1],
+                                        [unit.coords[0], unit.coords[1] + 1],
+                                        [unit.coords[0], unit.coords[1] - 1],
+                                        [unit.coords[0] - 1, unit.coords[1] + 1],
+                                        [unit.coords[0] - 1, unit.coords[1]],
+                                        [unit.coords[0] - 1, unit.coords[1] - 1]
+                                    ].filter(function (coords) {
+                                        return Math.abs(coords[0] - enemies[i].coords[0]) > 1 || Math.abs(coords[1] - enemies[i].coords[1]) > 1;
+                                    });
+                                    console.log(possibleCoords);
+
+                                    unit.moveToCoords(Random.choice(possibleCoords));
+
+                                    return;
+                                }
+                            }
+                        }
+
                         // Fortify until healed, if hurt
                         // Move towards city
                         // Set on path, then clear path after movement so next turn can find best move again
@@ -4621,6 +4645,7 @@ var Combat;
     function fightIfTileHasEnemy(attackerUnitOrGroup, coords) {
         var attacker, battle, defender, newTileUnits, units;
 
+        console.log(coords);
         newTileUnits = game.getTile(coords).units;
 
         units = findBestDefender(attackerUnitOrGroup, coords);
@@ -4785,19 +4810,18 @@ function init() {
     new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Spearman(config.USER_ID, [10, 20]);
-    new Units.Axeman(config.USER_ID, [10, 20]);*/
+    new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
-    new Units.Spearman(config.BARB_ID, [11, 21]);
-    new Units.Axeman(config.BARB_ID, [9, 21]);
+    new Units.Spearman(config.BARB_ID, [11, 21]);*/
+    new Units.Warrior(config.BARB_ID, [9, 21]);
 
     /*for (i = 0; i < 10; i++) {
     new Units.Archer(config.BARB_ID, [10, 21]);
     }*/
-    new Cities.City(config.BARB_ID, [10, 21]);
-
+    //    new Cities.City(config.BARB_ID, [10, 21]);
     game.newTurn();
     game.nextPlayer(); // Will skip from default (0, barbs) to the player (1)
 }
