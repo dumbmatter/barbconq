@@ -4,8 +4,7 @@ click+drag for panning on main map
   similar to minimap or right click
 
 basic barb AI
-  Game.moveUnits should call AI.Barb
-  is delay still appropriate for UI, now that AI is calculating shit?
+  is delay still appropriate for UI, now that AI is calculating shit? probably
   Move towards city
   are unit.initiatePath calls in AI robust? what happens if no path is found, could it lead to infinite loop if unit never moves?
   stay on land
@@ -28,6 +27,7 @@ start game with 3 units. group first 2 and fortify. skip turn for 3rd one. it wi
 movement cost messed up - chariots can always get 2 moves
 
 tile off grid should always be black. sometimes don't get overwritten
+  very visible with DISABLE_FOG_OF_WAR
 
 Map.pathFinding should take into account that tile movement cost does not just depend on the tile itself, but also on which tile the unit is moving from
   roads are the obvious implication, but also bonuses for double movement on certain tiles and mobility

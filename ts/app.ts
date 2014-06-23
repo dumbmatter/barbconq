@@ -2,6 +2,7 @@
 ///<reference path='Controller.ts'/>
 ///<reference path='ChromeUI.ts'/>
 ///<reference path='MapUI.ts'/>
+///<reference path='AI.ts'/>
 ///<reference path='MapMaker.ts'/>
 ///<reference path='Game.ts'/>
 ///<reference path='Promotions.ts'/>
@@ -25,7 +26,7 @@ var config : any = {
     USER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
     BATTLE_ROUND_UI_DELAY: 300,
-    DISABLE_FOG_OF_WAR: false
+    DISABLE_FOG_OF_WAR: true
 };
 
 function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
