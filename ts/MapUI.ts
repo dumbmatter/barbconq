@@ -108,6 +108,11 @@ class MapUI {
                     if (showMoveNumbers) { // Only for real paths, not paths drawn between fighting units
                         chromeUI.onHoverMoveEnemy(battle);
                     }
+                } else if (!game.activeUnit.canAttack) {
+                    // If this is a unit that can't attack and there is a defender on the target tile, can't move there
+                    if (game.getTile(path[path.length - 1]).units.length > 0 && game.getTile(path[path.length - 1]).units[0].owner === config.BARB_ID) {
+                        return;
+                    }
                 }
 
                 // Start at origin

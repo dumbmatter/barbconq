@@ -1316,6 +1316,11 @@ var MapUI = (function () {
                     if (showMoveNumbers) {
                         chromeUI.onHoverMoveEnemy(battle);
                     }
+                } else if (!game.activeUnit.canAttack) {
+                    // If this is a unit that can't attack and there is a defender on the target tile, can't move there
+                    if (game.getTile(path[path.length - 1]).units.length > 0 && game.getTile(path[path.length - 1]).units[0].owner === config.BARB_ID) {
+                        return;
+                    }
                 }
 
                 // Start at origin
@@ -3931,6 +3936,7 @@ var Units;
             this.movement = 2;
             this.currentMovement = 2;
             this.landOrSea = "land";
+            this.canAttack = false;
         }
         return Scout;
     })(Unit);
@@ -4625,7 +4631,7 @@ var Combat;
     Combat.Battle = Battle;
 
     // Find best attacker/defender combo for a unit/group attacking a tile. If no combo found, defender is null.
-    // If the third parameter (forceFindDefender) is true, then even invalid attackers are used. This should be used for path finding and UI only, not for actual attacking
+    // If the third parameter (forceFindDefender) is true, then even attackers with no moves are used (although ones with canAttack false like Scouts are still not used). This should be used for path finding and UI only, not for actual attacking
     function findBestDefender(attackerUnitOrGroup, coords, forceFindDefender) {
         if (typeof forceFindDefender === "undefined") { forceFindDefender = false; }
         var attacker, defender, findBestDefenderForAttacker;
@@ -4661,7 +4667,8 @@ var Combat;
             attacker = attackerUnitOrGroup;
 
             // Only proceed if there is a valid attacker
-            if (forceFindDefender || (attacker.canAttack && !attacker.attacked)) {
+            //if (forceFindDefender || (attacker.canAttack && !attacker.attacked)) {
+            if (attacker.canAttack && (forceFindDefender || !attacker.attacked)) {
                 defender = findBestDefenderForAttacker(attacker, coords).defender;
             }
         } else if (attackerUnitOrGroup instanceof Units.Group) {
@@ -4857,12 +4864,11 @@ function init() {
     new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);*/
-    u1 = new Units.Chariot(config.USER_ID, [10, 20]);
+    u1 = new Units.Scout(config.USER_ID, [10, 20]);
 
     //    u1.promotions.push("drill1");
     //    u1.promotions.push("drill2");
     u1.xp += 400;
-    u1.currentStrength = 3;
 
     /*    new Units.Archer(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);
@@ -4874,8 +4880,7 @@ function init() {
     new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [11, 21]);*/
-    var u = new Units.Warrior(config.BARB_ID, [9, 21]);
-    u.currentStrength = 4;
+    var u = new Units.Scout(config.BARB_ID, [9, 21]);
 
     /*for (i = 0; i < 10; i++) {
     new Units.Archer(config.BARB_ID, [10, 21]);

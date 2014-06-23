@@ -974,6 +974,7 @@ module Units {
         currentMovement = 2;
 
         landOrSea = "land";
+        canAttack = false;
     }
 
     export class Warrior extends Unit {

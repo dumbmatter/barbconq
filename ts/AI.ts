@@ -42,7 +42,6 @@ console.log("Attack out of city with " + enemies[i].oddsWinFight + " odds");
                             }
                         }
                     }
-
                 }
 
 console.log("Wait in city");

@@ -94,11 +94,10 @@ function init() {
     new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);*/
-    u1 = new Units.Chariot(config.USER_ID, [10, 20]);
+    u1 = new Units.Scout(config.USER_ID, [10, 20]);
 //    u1.promotions.push("drill1");
 //    u1.promotions.push("drill2");
     u1.xp += 400;
-    u1.currentStrength = 3;
 /*    new Units.Archer(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);
     new Units.Axeman(config.USER_ID, [10, 20]);
@@ -109,8 +108,7 @@ function init() {
     new Units.Axeman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [10, 21]);
     new Units.Spearman(config.BARB_ID, [11, 21]);*/
-    var u = new Units.Warrior(config.BARB_ID, [9, 21]);
-    u.currentStrength = 4;
+    var u = new Units.Scout(config.BARB_ID, [9, 21]);
     /*for (i = 0; i < 10; i++) {
         new Units.Archer(config.BARB_ID, [10, 21]);
     }*/
