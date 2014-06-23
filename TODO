@@ -1,5 +1,7 @@
 # Major current tasks
 
+hover box should say scout can't attack
+
 draw city as gray on minimap
 
 click+drag for panning on main map
@@ -9,21 +11,6 @@ rate of barb generation in non-visible tiles
   should increase with turns?
 
 if unit does nothing (just skips turn in city), should be no delay. treat it as if it's not visible
-
-splash page, difficulty selector
-  instructions and about boxes should be available, somehow
-    copy/paste? include? or splash page integrated with index.html somehow?
-  separate "controls" page, beyond Instructions?
-  How to do instructions/new game for new users?
-    new game on separate html page, instructions auto show on first game
-    maybe instead of instructions showing, show a "mini-instructions" with a link to the full one
-  font
-    UnifrakturMaguntia
-    Pirata One
-    Rye
-    Modern Antiqua
-    Milonga
-    Germania One
 
 # Minor current tasks
 
@@ -79,8 +66,6 @@ unit tests
 Mode with just your units, barbarian units, and one barbarian city
 
 Goal: Find and capture the barbarian capital!
-
-somewhere: "From the makers of Basketball GM, a free single-player basketball simulation game"
 
 github?
 
