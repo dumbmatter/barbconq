@@ -4169,7 +4169,7 @@ var Units;
             // If activeUnit is from another civ (already guaranteed to be on another
             // tile, from above), then show the unit that would fare best against
             // activeUnit in a battle
-            if (game.activeUnit && game.activeUnit.owner !== units[0].owner && game.turnID === config.USER_ID) {
+            if (game.activeUnit && game.activeUnit.canAttack && game.activeUnit.owner !== units[0].owner && game.turnID === config.USER_ID) {
                 unit = Combat.findBestDefender(game.activeUnit, units[0].coords, true).defender;
             } else {
                 // Default: show highest currentStrength
@@ -4888,55 +4888,53 @@ function loadAssets(assetsToLoad, cb) {
 
 var u1;
 function init() {
+    var i, j, placedCity, r, theta;
+
     game = new Game(20, 40);
     chromeUI = new ChromeUI();
     mapUI = new MapUI();
     controller = new Controller();
 
-    for (var i = 0; i < 200; i++) {
-        //    new Units.Warrior(config.BARB_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
-    }
-    for (var i = 0; i < 1; i++) {
-        //    new Units.Warrior(config.USER_ID, [Math.floor(game.map.rows * Math.random()), Math.floor(game.map.cols * Math.random())]);
-    }
-
-    /*var u1 = new Units.Warrior(config.USER_ID, [10, 20]);
-    var u2 = new Units.Warrior(config.USER_ID, [10, 20]);
-    var u3 = new Units.Chariot(config.USER_ID, [10, 20]);
-    for (i = 0; i < 10; i++) {
-    var u4 = new Units.Chariot(config.USER_ID, [10, 20]);
-    }
-    new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);
-    [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]
-    new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);*/
-    /*new Units.Scout(config.USER_ID, [10, 20]);
-    new Units.Warrior(config.USER_ID, [10, 20]);
-    new Units.Archer(config.USER_ID, [10, 20]);
-    new Units.Axeman(config.USER_ID, [10, 20]);
-    new Units.Axeman(config.USER_ID, [10, 20]);
-    new Units.Axeman(config.USER_ID, [10, 20]);*/
+    /*    //new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);
+    
     u1 = new Units.Scout(config.USER_ID, [10, 20]);
-
     //    u1.promotions.push("drill1");
     //    u1.promotions.push("drill2");
     u1.xp += 400;
-
-    /*    new Units.Archer(config.USER_ID, [10, 20]);
-    new Units.Axeman(config.USER_ID, [10, 20]);
-    new Units.Axeman(config.USER_ID, [10, 20]);
-    new Units.Spearman(config.USER_ID, [10, 20]);
-    new Units.Axeman(config.USER_ID, [10, 20]);
-    new Units.Axeman(config.BARB_ID, [10, 21]);
-    new Units.Axeman(config.BARB_ID, [10, 21]);
-    new Units.Axeman(config.BARB_ID, [10, 21]);
-    new Units.Spearman(config.BARB_ID, [10, 21]);
-    new Units.Spearman(config.BARB_ID, [11, 21]);*/
     var u = new Units.Scout(config.BARB_ID, [9, 21]);
+    
+    new Cities.City(config.BARB_ID, [10, 21]);*/
+    // Place landing party on the leftmost land tile of middle row
+    i = Math.floor(game.map.rows / 2);
+    for (j = 0; j < game.map.cols; j++) {
+        if (game.getTile([i, j], -1).terrain !== "sea") {
+            break;
+        }
+    }
+    new Units.Scout(config.USER_ID, [i, j]);
+    new Units.Warrior(config.USER_ID, [i, j]);
+    new Units.Archer(config.USER_ID, [i, j]);
+    new Units.Chariot(config.USER_ID, [i, j]);
+    new Units.Spearman(config.USER_ID, [i, j]);
+    new Units.Axeman(config.USER_ID, [i, j]);
 
-    /*for (i = 0; i < 10; i++) {
-    new Units.Archer(config.BARB_ID, [10, 21]);
-    }*/
-    new Cities.City(config.BARB_ID, [10, 21]);
+    // Place barb city on the right half of the island
+    placedCity = false;
+    while (!placedCity) {
+        // Use polar coordinates to ensure fair distribution
+        r = Math.random() * (Math.min(game.map.rows, game.map.cols) * 0.25);
+        theta = Math.random() * Math.PI - Math.PI / 2; // Right half of circle
+
+        // Convert to map coords
+        i = Math.round(game.map.rows / 2 + Math.sin(theta) * r);
+        j = Math.round(game.map.cols / 2 + Math.cos(theta) * r);
+
+        // If this tile is on land, place city
+        if (game.getTile([i, j], -1).terrain !== "sea") {
+            new Cities.City(config.BARB_ID, [i, j]);
+            placedCity = true;
+        }
+    }
 
     game.newTurn();
     game.nextPlayer(); // Will skip from default (0, barbs) to the player (1)

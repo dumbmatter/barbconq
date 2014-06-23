@@ -1133,7 +1133,7 @@ module Units {
             // If activeUnit is from another civ (already guaranteed to be on another
             // tile, from above), then show the unit that would fare best against
             // activeUnit in a battle
-            if (game.activeUnit && game.activeUnit.owner !== units[0].owner && game.turnID === config.USER_ID) { // THIS ASSUMES CIVS CAN'T SHARE TILE
+            if (game.activeUnit && game.activeUnit.canAttack && game.activeUnit.owner !== units[0].owner && game.turnID === config.USER_ID) { // THIS ASSUMES CIVS CAN'T SHARE TILE
                 unit = Combat.findBestDefender(game.activeUnit, units[0].coords, true).defender;
             } else {
                 // Default: show highest currentStrength

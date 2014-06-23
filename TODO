@@ -1,15 +1,14 @@
 # Major current tasks
 
-place landing party on the leftmost tile of middle row
-
-place barb city randomly, on the right half of the island
-  in polar coordinates, pick angle and radius (<6). retry until it's on land.
+draw city as gray on minimap
 
 click+drag for panning on main map
   similar to minimap or right click
 
 rate of barb generation in non-visible tiles
   should increase with turns?
+
+if unit does nothing (just skips turn in city), should be no delay. treat it as if it's not visible
 
 # Minor current tasks
 
@@ -35,6 +34,8 @@ right click to move
 
 minify assets
   have a "make barbconq" that puts all the right options in a ready-to-go barbconq folder
+
+pretty up hills and forests
 
 UI POLISH
   center minimap on its canvas when it is not the correct aspect ratio
