@@ -1732,7 +1732,7 @@ var AI;
 (function (AI) {
     (function (Barb) {
         function moveUnit(unit) {
-            var battle, currentTile, enemies, i, j, possibleCoords, units;
+            var battle, cities, currentTile, enemies, i, j, k, possibleCoords, units;
 
             // For each visible enemy unit within 3 tiles, calculate and store {coords, oddsWinFight}
             enemies = [];
@@ -1845,6 +1845,21 @@ var AI;
             }
 
             // Move towards city
+            // If there can be more than one city, this should somehow intelligently decide which one
+            if (Math.random() < 0.5) {
+                cities = []; // Array of all cities
+                for (i = 0; i < game.cities.length; i++) {
+                    for (k in game.cities[i]) {
+                        cities.push(game.cities[i][k]);
+                    }
+                }
+                if (cities.length > 0) {
+                    console.log("Move towards city " + cities[0].id);
+                    unit.initiatePath(cities[0].coords);
+                    return;
+                }
+            }
+
             // Move randomly
             console.log("Move randomly");
             if (Math.random() < 0.75) {
@@ -4849,7 +4864,8 @@ function init() {
     /*for (i = 0; i < 10; i++) {
     new Units.Archer(config.BARB_ID, [10, 21]);
     }*/
-    //    new Cities.City(config.BARB_ID, [10, 21]);
+    new Cities.City(config.BARB_ID, [10, 21]);
+
     game.newTurn();
     game.nextPlayer(); // Will skip from default (0, barbs) to the player (1)
 }

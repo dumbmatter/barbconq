@@ -4,8 +4,8 @@ click+drag for panning on main map
   similar to minimap or right click
 
 basic barb AI
+  make things more probabilistic. like barb should sometimes attack out of city even if it's a losing proposition
   is delay still appropriate for UI, now that AI is calculating shit? probably
-  Move towards city
   are unit.initiatePath calls in AI robust? what happens if no path is found, could it lead to infinite loop if unit never moves?
   stay on land
     don't call Unit.moveToCoords without checking Unit.canMoveToCoords

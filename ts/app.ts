@@ -115,7 +115,7 @@ function init() {
         new Units.Archer(config.BARB_ID, [10, 21]);
     }*/
 
-//    new Cities.City(config.BARB_ID, [10, 21]);
+    new Cities.City(config.BARB_ID, [10, 21]);
 
     game.newTurn();
     game.nextPlayer(); // Will skip from default (0, barbs) to the player (1)

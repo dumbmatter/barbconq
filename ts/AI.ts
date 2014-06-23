@@ -3,7 +3,7 @@
 module AI {
     export module Barb {
         export function moveUnit(unit : Units.Unit) {
-            var battle : Combat.Battle, currentTile : MapMaker.Tile, enemies : {coords : number[]; oddsWinFight : number}[], i : number, j : number, possibleCoords : number[][], units : {attacker : Units.Unit; defender : Units.Unit};
+            var battle : Combat.Battle, cities : Cities.City[], currentTile : MapMaker.Tile, enemies : {coords : number[]; oddsWinFight : number}[], i : number, j : number, k : string, possibleCoords : number[][], units : {attacker : Units.Unit; defender : Units.Unit};
 
             // For each visible enemy unit within 3 tiles, calculate and store {coords, oddsWinFight}
             enemies = [];
@@ -120,7 +120,21 @@ console.log("Fortify until healed");
                 return;
             }
 
-// Move towards city
+            // Move towards city
+            // If there can be more than one city, this should somehow intelligently decide which one
+            if (Math.random() < 0.5) { // Add some randomness
+                cities = []; // Array of all cities
+                for (i = 0; i < game.cities.length; i++) {
+                    for (k in game.cities[i]) {
+                        cities.push(game.cities[i][k]);
+                    }
+                }
+                if (cities.length > 0) {
+console.log("Move towards city " + cities[0].id);
+                    unit.initiatePath(cities[0].coords);
+                    return;
+                }
+            }
 
             // Move randomly
 console.log("Move randomly");
