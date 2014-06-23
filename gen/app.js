@@ -2202,7 +2202,57 @@ var MapMaker;
                     }
                 }
             }
+
+            this.eliminateUnconnectedIslands(ci, cj);
         }
+        // Get rid of any unconnected islands by turning them to sea
+        BigIsland.prototype.eliminateUnconnectedIslands = function (ci, cj) {
+            var addLandNeighbors, found, goodLandCoords, i, j;
+
+            // Start in center, find all connected land tiles
+            goodLandCoords = [[ci, cj]];
+            addLandNeighbors = function (coords) {
+                var duplicate, i, j, newCoords;
+
+                for (i = coords[0] - 1; i <= coords[0] + 1; i++) {
+                    for (j = coords[1] - 1; j <= coords[1] + 1; j++) {
+                        newCoords = [i, j];
+                        if (this.validCoords(newCoords) && this.tiles[i][j].terrain !== "sea") {
+                            duplicate = false;
+                            goodLandCoords.some(function (compareCoords) {
+                                if (compareCoords[0] === newCoords[0] && compareCoords[1] === newCoords[1]) {
+                                    duplicate = true;
+                                    return true;
+                                }
+                            });
+                            if (!duplicate) {
+                                goodLandCoords.push(newCoords);
+                                addLandNeighbors(newCoords);
+                            }
+                        }
+                    }
+                }
+            }.bind(this);
+            addLandNeighbors([ci, cj]);
+
+            for (i = 0; i < this.rows; i++) {
+                for (j = 0; j < this.cols; j++) {
+                    if (this.tiles[i][j].terrain !== "sea") {
+                        found = false;
+                        goodLandCoords.some(function (compareCoords) {
+                            if (compareCoords[0] === i && compareCoords[1] === j) {
+                                found = true;
+                                return true;
+                            }
+                        });
+                        if (!found) {
+                            this.tiles[i][j].terrain = "sea";
+                            this.tiles[i][j].features = [];
+                        }
+                    }
+                }
+            }
+        };
         return BigIsland;
     })(Map);
     MapMaker.BigIsland = BigIsland;

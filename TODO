@@ -1,7 +1,9 @@
 # Major current tasks
 
-get rid of mini-islands (unreachable tiles)
-  "fill" from center (paint bucket), waterize any non-filled tiles
+place landing party on the leftmost tile of middle row
+
+place barb city randomly, on the right half of the island
+  in polar coordinates, pick angle and radius (<6). retry until it's on land.
 
 click+drag for panning on main map
   similar to minimap or right click
@@ -68,9 +70,6 @@ Goal: Find and capture the barbarian capital!
 somewhere: "From the makers of Basketball GM, a free single-player basketball simulation game"
 
 github?
-
-place barb city randomly
-  this forces exploration, which presents a tradeoff: staying together increases your strength, but allows barbs to grow in numbers before you find their city.
 
 core gameplay concept ideas
   barbarians continually spawn, with increasing rate. goal is to stay alive as long as possible

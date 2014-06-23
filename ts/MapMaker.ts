@@ -309,6 +309,58 @@ module MapMaker {
                     }
                 }
             }
+
+            this.eliminateUnconnectedIslands(ci, cj);
+        }
+
+        // Get rid of any unconnected islands by turning them to sea
+        eliminateUnconnectedIslands(ci : number, cj : number) {
+            var addLandNeighbors, found : boolean, goodLandCoords : number[][], i : number, j : number;
+
+            // Start in center, find all connected land tiles
+            goodLandCoords = [[ci, cj]];
+            addLandNeighbors = function (coords : number[]) {
+                var duplicate : boolean, i : number, j : number, newCoords : number[];
+
+                for (i = coords[0] - 1; i <= coords[0] + 1; i++) {
+                    for (j = coords[1] - 1; j <= coords[1] + 1; j++) {
+                        newCoords = [i, j];
+                        if (this.validCoords(newCoords) && this.tiles[i][j].terrain !== "sea") {
+                            duplicate = false;
+                            goodLandCoords.some(function (compareCoords : number[]) {
+                                if (compareCoords[0] === newCoords[0] && compareCoords[1] === newCoords[1]) {
+                                    duplicate = true;
+                                    return true;
+                                }
+                            });
+                            if (!duplicate) {
+                                goodLandCoords.push(newCoords);
+                                addLandNeighbors(newCoords);
+                            }
+                        }
+                    }
+                }
+            }.bind(this);
+            addLandNeighbors([ci, cj]);
+
+            // Any land tile not in goodLandCoords is part of an unconnected island. Turn them to sea.
+            for (i = 0; i < this.rows; i++) {
+                for (j = 0; j < this.cols; j++) {
+                    if (this.tiles[i][j].terrain !== "sea") {
+                        found = false;
+                        goodLandCoords.some(function (compareCoords : number[]) {
+                            if (compareCoords[0] === i && compareCoords[1] === j) {
+                                found = true;
+                                return true;
+                            }
+                        });
+                        if (!found) {
+                            this.tiles[i][j].terrain = "sea";
+                            this.tiles[i][j].features = [];
+                        }
+                    }
+                }
+            }
         }
     }
 }
