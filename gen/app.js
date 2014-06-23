@@ -1861,12 +1861,28 @@ var AI;
             }
 
             // Move randomly
-            console.log("Move randomly");
             if (Math.random() < 0.75) {
-                unit.move(Random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]));
-                return;
+                possibleCoords = [
+                    [unit.coords[0] + 1, unit.coords[1] + 1],
+                    [unit.coords[0] + 1, unit.coords[1]],
+                    [unit.coords[0] + 1, unit.coords[1] - 1],
+                    [unit.coords[0], unit.coords[1] + 1],
+                    [unit.coords[0], unit.coords[1] - 1],
+                    [unit.coords[0] - 1, unit.coords[1] + 1],
+                    [unit.coords[0] - 1, unit.coords[1]],
+                    [unit.coords[0] - 1, unit.coords[1] - 1]
+                ].filter(function (coords) {
+                    return unit.canMoveOnCoords(coords);
+                });
+
+                if (possibleCoords.length) {
+                    console.log("Move randomly");
+                    unit.moveToCoords(Random.choice(possibleCoords));
+                    return;
+                }
             }
 
+            console.log("Wait");
             unit.skipTurn();
         }
         Barb.moveUnit = moveUnit;

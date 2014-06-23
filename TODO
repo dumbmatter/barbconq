@@ -3,14 +3,6 @@
 click+drag for panning on main map
   similar to minimap or right click
 
-basic barb AI
-  make things more probabilistic. like barb should sometimes attack out of city even if it's a losing proposition
-  is delay still appropriate for UI, now that AI is calculating shit? probably
-  are unit.initiatePath calls in AI robust? what happens if no path is found, could it lead to infinite loop if unit never moves?
-  stay on land
-    don't call Unit.moveToCoords without checking Unit.canMoveToCoords
-      ideally, filter possible moves first so null case is handled. do this for random move!
-
 scouts shouldn't be able to attack
   barb AI
   user
@@ -42,7 +34,6 @@ keyboard shortcuts
 
 right click to move
   right click on map -> drag off map -> drag back onto edge tile... path doesn't show up until drag onto another tile!
-  by default, show "strongest" unit. but when right click hovering, show the strongest for defending against the impending attack
 
 minify assets
   have a "make barbconq" that puts all the right options in a ready-to-go barbconq folder
@@ -56,7 +47,7 @@ get rid of mini-islands (unreachable tiles)
 UI POLISH
   show city name somewhere, both on map and on tile hover
   center minimap on its canvas when it is not the correct aspect ratio
-  mapUI.goToCoords should be smooth
+  mapUI.goToCoords should be smooth?
     draw a line between current coords and future coords. if it's long enough, discretize it and use setTimeout to move to each point along the way. uneven discretization can make it decelerate smoothly at the end
   Map.pathFinding will cancel if an enemy blocks the path (OR WILL IT???)... but not when the enemy blocks the last tile! in that case, it'll auto-attack
     should there be any auto-attack? even for unit right outside city the turn before, should it just generally wake up unit that is near enemy?
@@ -76,12 +67,12 @@ UI POLISH
 
 unit tests
   grouped unit actions
+  barb AI?
+  visibility
 
 # Barbarian Conquest (barbconq)
 
 Mode with just your units, barbarian units, and one barbarian city
-
-allow user to pick their party, somehow. higher cost for better unit
 
 Goal: Find and capture the barbarian capital!
 
@@ -143,6 +134,8 @@ TypeScript
   tsc --noImplicitAny
 
 # Future
+
+are unit.initiatePath calls in AI robust? what happens if no path is found, could it lead to infinite loop if unit never moves?
 
 scroll wheel zoom by increasing TILE_SIZE
   but this won't scale the contents of the tiles... so instead have some variable MapUI.scale which scales everything
