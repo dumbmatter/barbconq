@@ -246,10 +246,10 @@ class MapUI {
         }
 
         // Clear canvas and redraw everything in view
-        // Clearing not needed since everything is painted over!
-//        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-//        this.context.fillStyle = "#000";
-//        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // This is actually only needed because of the off-map black border, everything else gets painted over
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.fillStyle = "#000";
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Function to loop over all tiles, call cb on each tile in the viewport
         var drawViewport = function (cb) {
