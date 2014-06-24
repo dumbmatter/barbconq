@@ -181,7 +181,7 @@ module MapMaker {
         tileMovementCost(coordsFrom : number[], coordsTo : number[], bonuses : {[name : string] : number}) : number {
             var cost : number, tileTo : Tile;
 
-            tileTo = game.getTile(coordsTo);
+            tileTo = game.getTile(coordsTo, -1);
 
             // Short circuit check for move bonuses
             if (tileTo.features.indexOf("hills") >= 0 && bonuses.hasOwnProperty("doubleMovementHills") && bonuses["doubleMovementHills"] > 0) {
@@ -192,7 +192,6 @@ module MapMaker {
             }
 
             cost = 1;
-
 
             if (tileTo.features.indexOf("hills") >= 0) {
                 cost += 1;
@@ -206,7 +205,7 @@ module MapMaker {
                 cost = Util.bound(cost - 1, 1, Infinity);
             }
 
-            return 1;
+            return cost;
         }
     }
 

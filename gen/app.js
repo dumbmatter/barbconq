@@ -2131,7 +2131,7 @@ var MapMaker;
         Map.prototype.tileMovementCost = function (coordsFrom, coordsTo, bonuses) {
             var cost, tileTo;
 
-            tileTo = game.getTile(coordsTo);
+            tileTo = game.getTile(coordsTo, -1);
 
             // Short circuit check for move bonuses
             if (tileTo.features.indexOf("hills") >= 0 && bonuses.hasOwnProperty("doubleMovementHills") && bonuses["doubleMovementHills"] > 0) {
@@ -2155,7 +2155,7 @@ var MapMaker;
                 cost = Util.bound(cost - 1, 1, Infinity);
             }
 
-            return 1;
+            return cost;
         };
         return Map;
     })();
