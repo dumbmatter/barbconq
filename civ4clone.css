@@ -471,7 +471,7 @@ h2#splash-subtitle {
 #splash-background {
   background-color: #f0f0f0;
   font-family: 'Germania One', cursive;
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
