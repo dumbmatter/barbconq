@@ -26,7 +26,7 @@ var config : any = {
     USER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
     BATTLE_ROUND_UI_DELAY: 300,
-    DISABLE_FOG_OF_WAR: true
+    DISABLE_FOG_OF_WAR: false
 };
 
 function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
@@ -113,12 +113,15 @@ function init() {
         // If this tile is on land, place city
         if (game.getTile([i, j], -1).terrain !== "sea") {
             new Cities.City(config.BARB_ID, [i, j]);
+            new Units.Archer(config.BARB_ID, [i, j]);
             placedCity = true;
         }
     }
 
     game.newTurn();
     game.nextPlayer(); // Will skip from default (0, barbs) to the player (1)
+
+    chromeUI.showModal("intro");
 
     // Hide splash, show map
     document.getElementById("splash-background").style.display = "none";

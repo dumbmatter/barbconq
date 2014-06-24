@@ -2408,7 +2408,7 @@ var Game = (function () {
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
-                if (!this.map.visibility[config.USER_ID][i][j] && Math.random() < 0.01) {
+                if (!this.map.visibility[config.USER_ID][i][j] && Math.random() < 0.004) {
                     tile = this.getTile([i, j], -1);
 
                     // Spawn land unit
@@ -4910,7 +4910,7 @@ var config = {
     USER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
     BATTLE_ROUND_UI_DELAY: 300,
-    DISABLE_FOG_OF_WAR: true
+    DISABLE_FOG_OF_WAR: false
 };
 
 function loadAssets(assetsToLoad, cb) {
@@ -4996,12 +4996,15 @@ function init() {
         // If this tile is on land, place city
         if (game.getTile([i, j], -1).terrain !== "sea") {
             new Cities.City(config.BARB_ID, [i, j]);
+            new Units.Archer(config.BARB_ID, [i, j]);
             placedCity = true;
         }
     }
 
     game.newTurn();
     game.nextPlayer(); // Will skip from default (0, barbs) to the player (1)
+
+    chromeUI.showModal("intro");
 
     // Hide splash, show map
     document.getElementById("splash-background").style.display = "none";
