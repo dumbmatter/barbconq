@@ -95,7 +95,7 @@ class Game {
         unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
-                if (!this.map.visibility[config.USER_ID][i][j] && Math.random() < 0.004) {
+                if (!this.map.visibility[config.USER_ID][i][j] && Math.random() < 0.01) {
                     tile = this.getTile([i, j], -1);
 
                     // Spawn land unit
