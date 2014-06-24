@@ -221,8 +221,35 @@ var Controller = (function () {
             }
         }.bind(this));
 
-        // Unit movement with right click
-        window.addEventListener("contextmenu", function (e) {
+        // Disable right click most places except modals and splash
+        mapUI.canvas.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        document.getElementById("top-right-box").addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        chromeUI.elHoverBox.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        chromeUI.elTurn.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        chromeUI.elBottomInfo.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        chromeUI.elBottomActions.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        chromeUI.elBottomText.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        chromeUI.elBottomUnits.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        chromeUI.elEvents.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        chromeUI.elEndTurnButton.addEventListener("contextmenu", function (e) {
             e.preventDefault();
         });
 

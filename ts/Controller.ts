@@ -143,10 +143,17 @@ class Controller {
             }
         }.bind(this));
 
-        // Unit movement with right click
-        window.addEventListener("contextmenu", function (e : MouseEvent) {
-            e.preventDefault();
-        });
+        // Disable right click most places except modals and splash
+        mapUI.canvas.addEventListener("contextmenu", function (e : MouseEvent) { e.preventDefault(); });
+        document.getElementById("top-right-box").addEventListener("contextmenu", function (e : MouseEvent) { e.preventDefault(); });
+        chromeUI.elHoverBox.addEventListener("contextmenu", function (e : MouseEvent) { e.preventDefault(); });
+        chromeUI.elTurn.addEventListener("contextmenu", function (e : MouseEvent) { e.preventDefault(); });
+        chromeUI.elBottomInfo.addEventListener("contextmenu", function (e : MouseEvent) { e.preventDefault(); });
+        chromeUI.elBottomActions.addEventListener("contextmenu", function (e : MouseEvent) { e.preventDefault(); });
+        chromeUI.elBottomText.addEventListener("contextmenu", function (e : MouseEvent) { e.preventDefault(); });
+        chromeUI.elBottomUnits.addEventListener("contextmenu", function (e : MouseEvent) { e.preventDefault(); });
+        chromeUI.elEvents.addEventListener("contextmenu", function (e : MouseEvent) { e.preventDefault(); });
+        chromeUI.elEndTurnButton.addEventListener("contextmenu", function (e : MouseEvent) { e.preventDefault(); });
 
         // Right click path finding
         mapUI.canvas.addEventListener("mousedown", function (e : MouseEvent) {
