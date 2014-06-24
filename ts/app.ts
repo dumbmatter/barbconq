@@ -115,9 +115,14 @@ function init() {
 
     game.newTurn();
     game.nextPlayer(); // Will skip from default (0, barbs) to the player (1)
+
+    // Hide splash, show map
+    document.getElementById("splash-background").style.display = "none";
 }
 
-function startBarbConq() {
+function startBarbConq(e) {
+    e.preventDefault();
+
     loadAssets({
         hills: "terrain/hills.png",
         forest: "terrain/forest.png",
@@ -137,3 +142,7 @@ function startBarbConq() {
         blackAxeman: "units/black/battle-axe.png"
     }, init);
 }
+
+document.getElementById("start-easy").addEventListener("click", startBarbConq);
+document.getElementById("start-medium").addEventListener("click", startBarbConq);
+document.getElementById("start-hard").addEventListener("click", startBarbConq);

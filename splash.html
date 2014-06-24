@@ -10,44 +10,44 @@ body {
   background-color: #f0f0f0;
   font-family: 'Germania One', cursive;
 }
-h1 {
+h1#splash-title {
   font-size: 60px;
   font-weight: normal;
   text-align: center;
   margin-bottom: 0.25em;
 }
-h1 img {
+h1#splash-title img {
   margin: 0 20px;
   vertical-align: -10%;
 }
-h2 {
+h2#splash-subtitle {
   color: darkred;
   font-weight: normal;
   text-align: center;
   margin-top: 0;
 }
-.wrapper {
+.splash-wrapper {
   margin: 0 auto;
   width: 650px;
 }
-.footer {
+.splash-footer {
   font-size: 16px;
   text-align: center;
   margin-top: 6em;
 }
-.footer a {
+.splash-footer a {
   color: blue;
   text-decoration: none;
 }
-.footer a:hover {
+.splash-footer a:hover {
   text-decoration: underline;
 }
-ul#menu {
+ul#splash-menu {
   width: 200px;
   margin: 0 auto;
   margin-top: 5em;
 }
-ul#menu li {
+ul#splash-menu li {
   border: solid 1px #039;
   border-top-width: 0;
   font-size: 30px;
@@ -55,33 +55,33 @@ ul#menu li {
   margin: 0;
   text-align: center;
 }
-ul#menu li:first-child {
+ul#splash-menu li:first-child {
   border-top-width: 1px;
 }
-ul#menu li a {
+ul#splash-menu li a {
   color: #000;
   display: block;
   padding: 5px;
   text-decoration: none;
 }
-ul#menu li a:hover {
+ul#splash-menu li a:hover {
   background-color: #ccc;
 }
     </style>
   </head>
   <body>
-    <div class="wrapper">
-      <h1><img src="assets/units/black/battle-axe.png">Barbarian Conquest<img src="assets/units/black/horse-head.png"></h1>
+    <div class="splash-wrapper">
+      <h1 id="splash-title"><img src="assets/units/black/battle-axe.png">Barbarian Conquest<img src="assets/units/black/horse-head.png"></h1>
 
-      <h2>Find and capture the barbarian capital!</h2>
+      <h2 id="splash-subtitle">Find and capture the barbarian capital!</h2>
 
-      <ul id="menu">
+      <ul id="splash-menu">
         <li><a href="">Easy</a></li>
         <li><a href="">Medium</a></li>
         <li><a href="">Hard</a></li>
       </ul>
 
-      <p class="footer">From the maker of <a href="http://basketball-gm.com/">Basketball GM</a>, a free single-player basketball simulation game.</p>
+      <p class="splash-footer">From the maker of <a href="http://basketball-gm.com/">Basketball GM</a>, a free single-player basketball simulation game.</p>
     </div>
   </body>
 </html>

@@ -1,5 +1,7 @@
 # Major current tasks
 
+splash "return to game"
+
 hover box should say scout can't attack
 
 draw city as gray on minimap

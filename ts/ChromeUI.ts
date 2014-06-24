@@ -19,6 +19,12 @@ class ChromeUI {
         this.elBottomUnits = <HTMLDivElement> document.getElementById("bottom-units");
         this.elEvents = <HTMLUListElement> document.getElementById("events");
         this.elEndTurnButton = <HTMLDivElement> document.getElementById("end-turn-button");
+
+        document.getElementById("new-game").addEventListener("click", function (e) {
+            e.preventDefault();
+
+            document.getElementById("splash-background").style.display = "block";
+        });
     }
 
     strengthFraction(unit : Units.Unit) {
