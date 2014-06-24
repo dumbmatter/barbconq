@@ -1912,7 +1912,7 @@ var AI;
 
             // Move towards city
             // If there can be more than one city, this should somehow intelligently decide which one
-            if (Math.random() < 0.5) {
+            if (Math.random() < 0.25) {
                 cities = []; // Array of all cities
                 for (i = 0; i < game.cities.length; i++) {
                     for (k in game.cities[i]) {

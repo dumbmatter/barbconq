@@ -121,7 +121,7 @@ console.log("Fortify until healed");
 
             // Move towards city
             // If there can be more than one city, this should somehow intelligently decide which one
-            if (Math.random() < 0.5) { // Add some randomness
+            if (Math.random() < 0.25) { // Add some randomness
                 cities = []; // Array of all cities
                 for (i = 0; i < game.cities.length; i++) {
                     for (k in game.cities[i]) {
