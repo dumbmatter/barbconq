@@ -980,6 +980,8 @@ var ChromeUI = (function () {
             return "-1 Terrain Movement Cost";
         } else if (name === "visibilityRange") {
             return "+1 Visibility Range";
+        } else if (name === "cannotAttack") {
+            return "Cannot Attack";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }
@@ -4048,6 +4050,7 @@ var Units;
             this.currentMovement = 2;
             this.landOrSea = "land";
             this.canAttack = false;
+            this.unitBonuses = { cannotAttack: 1 };
         }
         return Scout;
     })(Unit);
@@ -4357,7 +4360,7 @@ var Combat;
             // See which bonuses from the attacker apply
             bonuses = attacker.getBonuses();
             for (name in bonuses) {
-                if (name === "cityDefense" || name === "forestDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility" || name === "visibilityRange") {
+                if (name === "cityDefense" || name === "forestDefense" || name === "hillsDefense" || name === "noDefensiveBonuses" || name === "fortified" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility" || name === "visibilityRange" || name === "cannotAttack") {
                     // Don't apply to attackers
                 } else if (name === "strength") {
                     this.appliedBonuses[0][name] = bonuses[name];
@@ -4405,7 +4408,7 @@ var Combat;
             // See which bonuses from the defender apply
             bonuses = defender.getBonuses();
             for (name in bonuses) {
-                if (name === "attackAxeman" || name === "cityAttack" || name === "forestAttack" || name === "hillsAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility" || name === "visibilityRange") {
+                if (name === "attackAxeman" || name === "cityAttack" || name === "forestAttack" || name === "hillsAttack" || name === "retreat" || name === "noDefensiveBonuses" || name === "doubleMovementForest" || name === "doubleMovementHills" || name === "mobility" || name === "visibilityRange" || name === "cannotAttack") {
                     // Don't apply to defenders
                 } else if (name === "strength") {
                     this.appliedBonuses[1][name] = bonuses[name];

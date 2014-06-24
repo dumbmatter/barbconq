@@ -258,6 +258,8 @@ class ChromeUI {
             return "-1 Terrain Movement Cost";
         } else if (name === "visibilityRange") {
             return "+1 Visibility Range";
+        } else if (name === "cannotAttack") {
+            return "Cannot Attack";
         } else {
             throw new Error('Unknown bonus type "' + name + '".');
         }

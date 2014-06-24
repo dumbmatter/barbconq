@@ -975,6 +975,7 @@ module Units {
 
         landOrSea = "land";
         canAttack = false;
+        unitBonuses = {cannotAttack: 1};
     }
 
     export class Warrior extends Unit {
