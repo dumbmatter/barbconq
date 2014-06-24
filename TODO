@@ -1,6 +1,8 @@
 # Major current tasks
 
-splash "return to game"
+splash background color with scroll
+
+allow right click on splash screen
 
 hover box should say scout can't attack
 

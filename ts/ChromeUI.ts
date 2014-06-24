@@ -20,11 +20,38 @@ class ChromeUI {
         this.elEvents = <HTMLUListElement> document.getElementById("events");
         this.elEndTurnButton = <HTMLDivElement> document.getElementById("end-turn-button");
 
+        // Splash click handlers
+        document.getElementById("start-easy").addEventListener("click", function (e) {
+            e.preventDefault();
+            startBarbConq();
+        });
+        document.getElementById("start-medium").addEventListener("click", function (e) {
+            e.preventDefault();
+            startBarbConq();
+        });
+        document.getElementById("start-hard").addEventListener("click", function (e) {
+            e.preventDefault();
+            startBarbConq();
+        });
+        document.getElementById("splash-close").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("splash-background").style.display = "none";
+        });
+
+        // Chrome click handlers
         document.getElementById("new-game").addEventListener("click", function (e) {
             e.preventDefault();
-
             document.getElementById("splash-background").style.display = "block";
+            document.getElementById("splash-close").style.display = "inline";
         });
+        document.getElementById("show-modal-instructions").addEventListener("click", function (e) {
+            e.preventDefault();
+            this.showModal("instructions");
+        }.bind(this));
+        document.getElementById("show-modal-about").addEventListener("click", function (e) {
+            e.preventDefault();
+            this.showModal("about");
+        }.bind(this));
     }
 
     strengthFraction(unit : Units.Unit) {

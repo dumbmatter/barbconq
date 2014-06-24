@@ -713,11 +713,38 @@ var ChromeUI = (function () {
         this.elEvents = document.getElementById("events");
         this.elEndTurnButton = document.getElementById("end-turn-button");
 
+        // Splash click handlers
+        document.getElementById("start-easy").addEventListener("click", function (e) {
+            e.preventDefault();
+            startBarbConq();
+        });
+        document.getElementById("start-medium").addEventListener("click", function (e) {
+            e.preventDefault();
+            startBarbConq();
+        });
+        document.getElementById("start-hard").addEventListener("click", function (e) {
+            e.preventDefault();
+            startBarbConq();
+        });
+        document.getElementById("splash-close").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("splash-background").style.display = "none";
+        });
+
+        // Chrome click handlers
         document.getElementById("new-game").addEventListener("click", function (e) {
             e.preventDefault();
-
             document.getElementById("splash-background").style.display = "block";
+            document.getElementById("splash-close").style.display = "inline";
         });
+        document.getElementById("show-modal-instructions").addEventListener("click", function (e) {
+            e.preventDefault();
+            this.showModal("instructions");
+        }.bind(this));
+        document.getElementById("show-modal-about").addEventListener("click", function (e) {
+            e.preventDefault();
+            this.showModal("about");
+        }.bind(this));
     }
     ChromeUI.prototype.strengthFraction = function (unit) {
         if (unit.strength === unit.currentStrength) {
@@ -4892,14 +4919,18 @@ function loadAssets(assetsToLoad, cb) {
     }
 }
 
+// Start all as dummy for controller, so controller does not get initialized twice when another new game is started
+game = new Game(20, 40);
+chromeUI = new ChromeUI();
+mapUI = new MapUI();
+controller = new Controller();
+
 var u1;
 function init() {
     var i, j, placedCity, r, theta;
 
     game = new Game(20, 40);
-    chromeUI = new ChromeUI();
     mapUI = new MapUI();
-    controller = new Controller();
 
     /*    //new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);
     
@@ -4949,9 +4980,7 @@ function init() {
     document.getElementById("splash-background").style.display = "none";
 }
 
-function startBarbConq(e) {
-    e.preventDefault();
-
+function startBarbConq() {
     loadAssets({
         hills: "terrain/hills.png",
         forest: "terrain/forest.png",
@@ -4971,8 +5000,4 @@ function startBarbConq(e) {
         blackAxeman: "units/black/battle-axe.png"
     }, init);
 }
-
-document.getElementById("start-easy").addEventListener("click", startBarbConq);
-document.getElementById("start-medium").addEventListener("click", startBarbConq);
-document.getElementById("start-hard").addEventListener("click", startBarbConq);
 //# sourceMappingURL=app.js.map

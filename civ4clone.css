@@ -466,7 +466,6 @@ h1#splash-title img {
 h2#splash-subtitle {
   color: darkred;
   font-weight: normal;
-  text-align: center;
   margin-top: 0;
 }
 #splash-background {
@@ -480,28 +479,30 @@ h2#splash-subtitle {
   z-index: 1000;
 }
 #splash-wrapper {
+  font-size: 16px;
   margin: 0 auto;
   width: 650px;
-}
-#splash-footer {
-  font-size: 16px;
   text-align: center;
-  margin-top: 6em;
 }
-#splash-footer a {
+#splash-wrapper a {
   color: blue;
   text-decoration: none;
 }
-#splash-footer a:hover {
+#splash-wrapper a:hover {
   text-decoration: underline;
+}
+#splash-footer {
+  text-align: center;
+  margin-top: 6em;
 }
 ul#splash-menu {
   width: 200px;
   margin: 0 auto;
   margin-top: 5em;
+  padding: 0;
 }
 ul#splash-menu li {
-  border: solid 1px #039;
+  border: solid 1px #000;
   border-top-width: 0;
   font-size: 30px;
   list-style: none;
@@ -519,4 +520,8 @@ ul#splash-menu li a {
 }
 ul#splash-menu li a:hover {
   background-color: #ccc;
+  text-decoration: none;
+}
+#splash-close {
+  display: none;
 }

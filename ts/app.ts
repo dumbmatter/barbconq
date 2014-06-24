@@ -62,14 +62,18 @@ function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
     }
 }
 
+// Start all as dummy for controller, so controller does not get initialized twice when another new game is started
+game = new Game(20, 40);
+chromeUI = new ChromeUI();
+mapUI = new MapUI();
+controller = new Controller();
+
 var u1;
 function init() {
     var i : number, j : number, placedCity : boolean, r : number, theta : number;
 
     game = new Game(20, 40);
-    chromeUI = new ChromeUI();
     mapUI = new MapUI();
-    controller = new Controller();
 
 /*    //new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);
 
@@ -120,9 +124,7 @@ function init() {
     document.getElementById("splash-background").style.display = "none";
 }
 
-function startBarbConq(e) {
-    e.preventDefault();
-
+function startBarbConq() {
     loadAssets({
         hills: "terrain/hills.png",
         forest: "terrain/forest.png",
@@ -142,7 +144,3 @@ function startBarbConq(e) {
         blackAxeman: "units/black/battle-axe.png"
     }, init);
 }
-
-document.getElementById("start-easy").addEventListener("click", startBarbConq);
-document.getElementById("start-medium").addEventListener("click", startBarbConq);
-document.getElementById("start-hard").addEventListener("click", startBarbConq);
