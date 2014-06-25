@@ -4920,7 +4920,7 @@ var config = {
     USER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
     BATTLE_ROUND_UI_DELAY: 300,
-    DISABLE_FOG_OF_WAR: false
+    DISABLE_FOG_OF_WAR: true
 };
 
 function loadAssets(assetsToLoad, cb) {
@@ -4965,7 +4965,7 @@ controller = new Controller();
 
 var u1;
 function init(difficulty) {
-    var i, j, placedCity, r, theta;
+    var i, j, placedCity, r, theta, tile;
 
     game = new Game(difficulty);
     game.map = new MapMaker.BigIsland(20, 40);
@@ -5006,9 +5006,22 @@ function init(difficulty) {
         j = Math.round(game.map.cols / 2 + Math.cos(theta) * r);
 
         // If this tile is on land, place city
-        if (game.getTile([i, j], -1).terrain !== "sea") {
+        tile = game.getTile([i, j], -1);
+        if (tile.terrain !== "sea") {
             new Cities.City(config.BARB_ID, [i, j]);
-            new Units.Archer(config.BARB_ID, [i, j]);
+
+            // Depending on difficulty, set initial city defense
+            if (game.difficulty === "medium" || game.difficulty === "hard") {
+                new Units.Archer(config.BARB_ID, [i, j]);
+            }
+
+            // Depending on difficulty, set on hill or not
+            if (game.difficulty === "easy" || game.difficulty === "medium") {
+                tile.features = [];
+            } else if (game.difficulty === "hard") {
+                tile.features = ["hills"];
+            }
+
             placedCity = true;
         }
     }
