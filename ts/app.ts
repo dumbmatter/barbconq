@@ -19,9 +19,8 @@ var easystar : any = new EasyStar.js();
 // assets : {[name: string] : HTMLImageElement}
 var assets : any, chromeUI : ChromeUI, controller : Controller, game : Game, mapUI : MapUI;
 
-// Default options
+// Constants. Anything that is changed during gameplay should be elsewhere.
 var config : any = {
-    NUM_PLAYERS: 1,
     BARB_ID: 0,
     USER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
@@ -63,7 +62,8 @@ function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
 }
 
 // Start all as dummy for controller, so controller does not get initialized twice when another new game is started
-game = new Game(20, 40);
+game = new Game();
+game.map = new MapMaker.BigIsland(20, 40);
 chromeUI = new ChromeUI();
 mapUI = new MapUI();
 controller = new Controller();
@@ -72,7 +72,8 @@ var u1;
 function init() {
     var i : number, j : number, placedCity : boolean, r : number, theta : number;
 
-    game = new Game(20, 40);
+    game = new Game();
+    game.map = new MapMaker.BigIsland(20, 40);
     mapUI = new MapUI();
 
 /*    //new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);

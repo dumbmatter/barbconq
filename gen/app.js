@@ -2074,7 +2074,7 @@ var MapMaker;
                 updateAll = false;
             }
 
-            for (turnID = 0; turnID < config.NUM_PLAYERS + 1; turnID++) {
+            for (turnID = 0; turnID < game.numPlayers; turnID++) {
                 // Unless updateAll is true (such as for initialization of visibility), only update active player
                 if (!updateAll && turnID !== game.turnID) {
                     continue;
@@ -2173,7 +2173,7 @@ var MapMaker;
 
         lastSeenState = [];
 
-        for (i = 0; i < config.NUM_PLAYERS + 1; i++) {
+        for (i = 0; i < game.numPlayers; i++) {
             lastSeenState[i] = null;
         }
 
@@ -2328,7 +2328,7 @@ var MapMaker;
 })(MapMaker || (MapMaker = {}));
 // Game - store the state of the game here, any non-UI stuff that would need for saving/loading a game
 var Game = (function () {
-    function Game(mapRows, mapCols) {
+    function Game() {
         this.maxId = 0;
         this.names = [];
         this.units = [];
@@ -2339,11 +2339,10 @@ var Game = (function () {
         this.turn = 0;
         this.result = "inProgress";
         this.nextPlayerAfterTargetCoordsDone = false;
+        this.numPlayers = 2;
         var i;
 
-        this.map = new MapMaker.BigIsland(mapRows, mapCols);
-
-        for (i = 0; i < config.NUM_PLAYERS + 1; i++) {
+        for (i = 0; i < this.numPlayers + 1; i++) {
             if (i === 0) {
                 this.names.push("Barbarian");
             } else {
@@ -2434,7 +2433,7 @@ var Game = (function () {
         var allHealed, group, u, unit;
 
         // Move to the next player, or start a new turn (move to player 0)
-        if (this.turnID < config.NUM_PLAYERS) {
+        if (this.turnID < this.numPlayers - 1) {
             this.turnID += 1;
         } else {
             this.newTurn();
@@ -4913,9 +4912,8 @@ var easystar = new EasyStar.js();
 // assets : {[name: string] : HTMLImageElement}
 var assets, chromeUI, controller, game, mapUI;
 
-// Default options
+// Constants. Anything that is changed during gameplay should be elsewhere.
 var config = {
-    NUM_PLAYERS: 1,
     BARB_ID: 0,
     USER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
@@ -4957,7 +4955,8 @@ function loadAssets(assetsToLoad, cb) {
 }
 
 // Start all as dummy for controller, so controller does not get initialized twice when another new game is started
-game = new Game(20, 40);
+game = new Game();
+game.map = new MapMaker.BigIsland(20, 40);
 chromeUI = new ChromeUI();
 mapUI = new MapUI();
 controller = new Controller();
@@ -4966,7 +4965,8 @@ var u1;
 function init() {
     var i, j, placedCity, r, theta;
 
-    game = new Game(20, 40);
+    game = new Game();
+    game.map = new MapMaker.BigIsland(20, 40);
     mapUI = new MapUI();
 
     /*    //new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);

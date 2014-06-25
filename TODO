@@ -1,6 +1,7 @@
 # Major current tasks
 
 easy/medium/hard
+  status stored where? probably game object
   barb city terrain (no hill, hill, hill)
   xp you start with (2, 1, or 0 per unit)
   units barbs start with (0, 1 or 2 archers in city)

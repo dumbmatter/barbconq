@@ -13,14 +13,13 @@ class Game {
     turnID : number; // ID number of the user whose turn it is
     result : string = "inProgress"; // Starts "inProgress", eventually will be "won" or "lost"
     nextPlayerAfterTargetCoordsDone : boolean = false; // Set to true when a turn is ended early
+    numPlayers : number = 2; // 1 user, 1 barb. Anything else is unsupported now.
 
-    constructor(mapRows : number, mapCols : number) {
+    constructor() {
         var i : number;
 
-        this.map = new MapMaker.BigIsland(mapRows, mapCols);
-
         // + 1 is for barbarians at index 0
-        for (i = 0; i < config.NUM_PLAYERS + 1; i++) {
+        for (i = 0; i < this.numPlayers + 1; i++) {
             if (i === 0) {
                 this.names.push("Barbarian");
             } else {
@@ -112,7 +111,7 @@ class Game {
         var allHealed : boolean, group : Units.Group, u : string, unit : Units.Unit;
 
         // Move to the next player, or start a new turn (move to player 0)
-        if (this.turnID < config.NUM_PLAYERS) {
+        if (this.turnID < this.numPlayers - 1) {
             this.turnID += 1;
         } else {
             this.newTurn();

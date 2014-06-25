@@ -118,7 +118,7 @@ module MapMaker {
             }
 
             // For loop only needed if we need to update visibility all at once
-            for (turnID = 0; turnID < config.NUM_PLAYERS + 1; turnID++) {
+            for (turnID = 0; turnID < game.numPlayers; turnID++) {
                 // Unless updateAll is true (such as for initialization of visibility), only update active player
                 if (!updateAll && turnID !== game.turnID) {
                     continue;
@@ -214,7 +214,7 @@ module MapMaker {
 
         lastSeenState = [];
 
-        for (i = 0; i < config.NUM_PLAYERS + 1; i++) {
+        for (i = 0; i < game.numPlayers; i++) {
             lastSeenState[i] = null;
         }
 
