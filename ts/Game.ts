@@ -94,7 +94,13 @@ class Game {
         chromeUI.onNewTurn();
 
         // Randomly spawn barbs on non-visible tiles - works because barbs are turnID=0
-        unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
+        if (game.difficulty === "easy") {
+            unitTypes = ["Scout", "Warrior", "Archer", "Spearman"];
+        } else if (game.difficulty === "medium") {
+            unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman"];
+        } else if (game.difficulty === "hard") {
+            unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
+        }
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
                 if (!this.map.visibility[config.USER_ID][i][j] && Math.random() < 0.01) {

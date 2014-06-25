@@ -1,7 +1,6 @@
 # Major current tasks
 
-easy/medium/hard - game.difficulty
-  possible barb units (no chariot/axe, no axe, any)
+easy/medium/hard balance - test
 
 if unit does nothing (just skips turn in city), should be no delay. treat it as if it's not visible
 
@@ -16,6 +15,8 @@ end of game
   have another game.result, "wonThenLost" for when all your units die after you've captured the city previously, and then show stats again
 
 pretty up hills and forests
+
+more detailed controls instructions
 
 minify assets
 
