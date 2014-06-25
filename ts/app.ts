@@ -70,7 +70,7 @@ controller = new Controller();
 
 var u1;
 function init(difficulty : string) {
-    var i : number, j : number, placedCity : boolean, r : number, theta : number, tile : MapMaker.Tile;
+    var i : number, j : number, placedCity : boolean, r : number, theta : number, tile : MapMaker.Tile, u : string;
 
     game = new Game(difficulty);
     game.map = new MapMaker.BigIsland(20, 40);
@@ -99,6 +99,15 @@ function init(difficulty : string) {
     new Units.Chariot(config.USER_ID, [i, j]);
     new Units.Spearman(config.USER_ID, [i, j]);
     new Units.Axeman(config.USER_ID, [i, j]);
+
+    // Set unit XP based on difficulty setting
+    for (u in game.units[config.USER_ID]) {
+        if (game.difficulty === "easy") {
+            game.units[config.USER_ID][u].xp = 5;
+        } else if (game.difficulty === "medium") {
+            game.units[config.USER_ID][u].xp = 2;
+        }
+    }
 
     // Place barb city on the right half of the island
     placedCity = false;

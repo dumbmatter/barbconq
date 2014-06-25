@@ -22,7 +22,7 @@ class Game {
         this.difficulty = difficulty;
 
         // + 1 is for barbarians at index 0
-        for (i = 0; i < this.numPlayers + 1; i++) {
+        for (i = 0; i < this.numPlayers; i++) {
             if (i === 0) {
                 this.names.push("Barbarian");
             } else {

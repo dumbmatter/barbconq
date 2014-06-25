@@ -2344,7 +2344,7 @@ var Game = (function () {
 
         this.difficulty = difficulty;
 
-        for (i = 0; i < this.numPlayers + 1; i++) {
+        for (i = 0; i < this.numPlayers; i++) {
             if (i === 0) {
                 this.names.push("Barbarian");
             } else {
@@ -4965,7 +4965,7 @@ controller = new Controller();
 
 var u1;
 function init(difficulty) {
-    var i, j, placedCity, r, theta, tile;
+    var i, j, placedCity, r, theta, tile, u;
 
     game = new Game(difficulty);
     game.map = new MapMaker.BigIsland(20, 40);
@@ -4993,6 +4993,14 @@ function init(difficulty) {
     new Units.Chariot(config.USER_ID, [i, j]);
     new Units.Spearman(config.USER_ID, [i, j]);
     new Units.Axeman(config.USER_ID, [i, j]);
+
+    for (u in game.units[config.USER_ID]) {
+        if (game.difficulty === "easy") {
+            game.units[config.USER_ID][u].xp = 5;
+        } else if (game.difficulty === "medium") {
+            game.units[config.USER_ID][u].xp = 2;
+        }
+    }
 
     // Place barb city on the right half of the island
     placedCity = false;
