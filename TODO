@@ -1,13 +1,35 @@
 # Major current tasks
 
-click+drag for panning on main map
-  similar to minimap or right click
-
 easy/medium/hard
+  barb city terrain (no hill, hill, hill)
+  xp you start with (2, 1, or 0 per unit)
+  units barbs start with (0, 1 or 2 archers in city)
+  possible barb units (no chariot/axe, no axe, any)
 
 if unit does nothing (just skips turn in city), should be no delay. treat it as if it's not visible
 
+end of game
+  show stats
+    won or lost
+    turns
+    time spent
+    barbs killed, by unit type
+    your units, with promotions and killed/not killed
+    combine to a score, compare user against a famous conqueror (like civ4 does with leaders)
+  have another game.result, "wonThenLost" for when all your units die after you've captured the city previously, and then show stats again
+
+pretty up hills and forests
+
+minify assets
+
+github
+
+reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ4"
+
 # Minor current tasks
+
+click+drag for panning on main map
+  similar to minimap or right click
 
 barb promotions
 
@@ -22,11 +44,6 @@ keyboard shortcuts
 
 right click to move
   right click on map -> drag off map -> drag back onto edge tile... path doesn't show up until drag onto another tile!
-
-minify assets
-  have a "make barbconq" that puts all the right options in a ready-to-go barbconq folder
-
-pretty up hills and forests
 
 UI POLISH
   don't need shadow on text in About/Instructions boxes, just makes things blurry
@@ -56,38 +73,7 @@ unit tests
 
 # Barbarian Conquest (barbconq)
 
-Mode with just your units, barbarian units, and one barbarian city
-
-Goal: Find and capture the barbarian capital!
-
-github?
-
-core gameplay concept ideas
-  barbarians continually spawn, with increasing rate. goal is to stay alive as long as possible
-    this doesn't work, because user will just stack on forest hill
-  better idea: capture barbarian city
-    keep some barbs fortified there and spawn others too
-    to prevent people from stacking on forest hill to gain XP before attacking, make the goal to minimize the number of turns
-
-easy/medium/hard
-  barb city on hill or not
-  xp you start with
-  number of barbs
-  xp barbs start with
-  intelligence of barbs (like.. likelihood to stack, or go to city)
-
-end of game
-  show stats
-    won or lost
-    turns
-    time spent
-    barbs killed, by unit type
-    your units, with promotions and killed/not killed
-    combine to a score, compare user against a famous conqueror (like civ4 does with leaders)
-  have another game.result, "wonThenLost" for when all your units die after you've captured the city previously, and then show stats again
-
 monetization ideas
-  reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ4"
   Make desktop and cordova versions
   GCS
   adsense panel on the side of the screen. put intro/manual content in HTML as divs to hide/show in game, for both SEO and adsense
