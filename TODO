@@ -5,7 +5,12 @@ freezes when barb scout tries to attack (such as "move into city" when user hold
 
 easy/medium/hard balance - test
 
-if unit does nothing (just skips turn in city), should be no delay. treat it as if it's not visible
+if unit does nothing (just skips turn in city, or out of city), should be no delay. treat it as if it's not visible
+  Unit.movementDelay() is used for two setTimeouts: one in Game loop and one in Unit.skipTurn()
+    Game: used to pause after activating unit
+    skipTurn: used to pause after unit is moved
+  how to get rid of these? would need to pre-compute move type. is that possible? should be since it's console.logged anyway.
+    return value: some "move type" identifier and a callback function to actually implement the move.
 
 end of game
   show stats
