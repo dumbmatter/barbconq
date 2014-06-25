@@ -1,5 +1,8 @@
 # Major current tasks
 
+freezes when barb scout tries to attack (such as "move into city" when user holds it, maybe other times too)
+  if !canAttack, restrict every movement type if it could lead to an attack. everything else should be fine
+
 easy/medium/hard balance - test
 
 if unit does nothing (just skips turn in city), should be no delay. treat it as if it's not visible
@@ -13,8 +16,6 @@ end of game
     your units, with promotions and killed/not killed
     combine to a score, compare user against a famous conqueror (like civ4 does with leaders)
   have another game.result, "wonThenLost" for when all your units die after you've captured the city previously, and then show stats again
-
-pretty up hills and forests
 
 more detailed controls instructions
 
