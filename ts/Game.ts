@@ -14,9 +14,12 @@ class Game {
     result : string = "inProgress"; // Starts "inProgress", eventually will be "won" or "lost"
     nextPlayerAfterTargetCoordsDone : boolean = false; // Set to true when a turn is ended early
     numPlayers : number = 2; // 1 user, 1 barb. Anything else is unsupported now.
+    difficulty : string; // "easy", "medium", or "hard"
 
-    constructor() {
+    constructor(difficulty : string) {
         var i : number;
+
+        this.difficulty = difficulty;
 
         // + 1 is for barbarians at index 0
         for (i = 0; i < this.numPlayers + 1; i++) {

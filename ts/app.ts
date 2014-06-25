@@ -62,17 +62,17 @@ function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
 }
 
 // Start all as dummy for controller, so controller does not get initialized twice when another new game is started
-game = new Game();
+game = new Game("N/A");
 game.map = new MapMaker.BigIsland(20, 40);
 chromeUI = new ChromeUI();
 mapUI = new MapUI();
 controller = new Controller();
 
 var u1;
-function init() {
+function init(difficulty : string) {
     var i : number, j : number, placedCity : boolean, r : number, theta : number;
 
-    game = new Game();
+    game = new Game(difficulty);
     game.map = new MapMaker.BigIsland(20, 40);
     mapUI = new MapUI();
 
@@ -128,7 +128,7 @@ function init() {
     document.getElementById("splash-background").style.display = "none";
 }
 
-function startBarbConq() {
+function startBarbConq(difficulty : string) {
     loadAssets({
         hills: "terrain/hills.png",
         forest: "terrain/forest.png",
@@ -146,5 +146,7 @@ function startBarbConq() {
         blackChariot: "units/black/horse-head.png",
         blackSpearman: "units/black/spears.png",
         blackAxeman: "units/black/battle-axe.png"
-    }, init);
+    }, function () {
+        init(difficulty);
+    });
 }

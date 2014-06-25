@@ -743,15 +743,15 @@ var ChromeUI = (function () {
         // Splash click handlers
         document.getElementById("start-easy").addEventListener("click", function (e) {
             e.preventDefault();
-            startBarbConq();
+            startBarbConq("easy");
         });
         document.getElementById("start-medium").addEventListener("click", function (e) {
             e.preventDefault();
-            startBarbConq();
+            startBarbConq("medium");
         });
         document.getElementById("start-hard").addEventListener("click", function (e) {
             e.preventDefault();
-            startBarbConq();
+            startBarbConq("hard");
         });
         document.getElementById("splash-close").addEventListener("click", function (e) {
             e.preventDefault();
@@ -2328,7 +2328,7 @@ var MapMaker;
 })(MapMaker || (MapMaker = {}));
 // Game - store the state of the game here, any non-UI stuff that would need for saving/loading a game
 var Game = (function () {
-    function Game() {
+    function Game(difficulty) {
         this.maxId = 0;
         this.names = [];
         this.units = [];
@@ -2341,6 +2341,8 @@ var Game = (function () {
         this.nextPlayerAfterTargetCoordsDone = false;
         this.numPlayers = 2;
         var i;
+
+        this.difficulty = difficulty;
 
         for (i = 0; i < this.numPlayers + 1; i++) {
             if (i === 0) {
@@ -4955,17 +4957,17 @@ function loadAssets(assetsToLoad, cb) {
 }
 
 // Start all as dummy for controller, so controller does not get initialized twice when another new game is started
-game = new Game();
+game = new Game("N/A");
 game.map = new MapMaker.BigIsland(20, 40);
 chromeUI = new ChromeUI();
 mapUI = new MapUI();
 controller = new Controller();
 
 var u1;
-function init() {
+function init(difficulty) {
     var i, j, placedCity, r, theta;
 
-    game = new Game();
+    game = new Game(difficulty);
     game.map = new MapMaker.BigIsland(20, 40);
     mapUI = new MapUI();
 
@@ -5020,7 +5022,7 @@ function init() {
     document.getElementById("splash-background").style.display = "none";
 }
 
-function startBarbConq() {
+function startBarbConq(difficulty) {
     loadAssets({
         hills: "terrain/hills.png",
         forest: "terrain/forest.png",
@@ -5038,6 +5040,8 @@ function startBarbConq() {
         blackChariot: "units/black/horse-head.png",
         blackSpearman: "units/black/spears.png",
         blackAxeman: "units/black/battle-axe.png"
-    }, init);
+    }, function () {
+        init(difficulty);
+    });
 }
 //# sourceMappingURL=app.js.map

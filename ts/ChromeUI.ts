@@ -23,15 +23,15 @@ class ChromeUI {
         // Splash click handlers
         document.getElementById("start-easy").addEventListener("click", function (e) {
             e.preventDefault();
-            startBarbConq();
+            startBarbConq("easy");
         });
         document.getElementById("start-medium").addEventListener("click", function (e) {
             e.preventDefault();
-            startBarbConq();
+            startBarbConq("medium");
         });
         document.getElementById("start-hard").addEventListener("click", function (e) {
             e.preventDefault();
-            startBarbConq();
+            startBarbConq("hard");
         });
         document.getElementById("splash-close").addEventListener("click", function (e) {
             e.preventDefault();
