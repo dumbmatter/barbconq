@@ -1,12 +1,9 @@
 # Major current tasks
 
-draw city as gray on minimap
-
 click+drag for panning on main map
   similar to minimap or right click
 
-rate of barb generation in non-visible tiles
-  should increase with turns?
+easy/medium/hard
 
 if unit does nothing (just skips turn in city), should be no delay. treat it as if it's not visible
 

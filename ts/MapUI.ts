@@ -434,8 +434,15 @@ class MapUI {
         // Second pass: highlight
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
-                // Highlight active tile
                 tile = game.getTile([i, j], config.USER_ID);
+
+                // Show city on tile
+                if (tile.city) {
+                    this.miniContext.fillStyle = "#aaa";
+                    this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
+                }
+
+                // Highlight active tile
                 if (tile.units.length > 0) {
                     for (k = 0; k < tile.units.length; k++) {
                         unit = tile.units[k];
