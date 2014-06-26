@@ -40,24 +40,30 @@ function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
         }
     }
 
-    assets = {};
-    assets.battleStart = new Howl({
-        urls: ["assets/battle-start.ogg", "assets/battle-start.mp3"]
-    });
-    assets.battleWon = new Howl({
-        urls: ["assets/battle-won.ogg", "assets/battle-won.mp3"]
-    });
-    assets.battleLost = new Howl({
-        urls: ["assets/battle-lost.ogg", "assets/battle-lost.mp3"]
-    });
+    // Only load assets the first time
+    if (assets === undefined) {
+console.log("load assets");
+        assets = {};
+        assets.battleStart = new Howl({
+            urls: ["assets/battle-start.ogg", "assets/battle-start.mp3"]
+        });
+        assets.battleWon = new Howl({
+            urls: ["assets/battle-won.ogg", "assets/battle-won.mp3"]
+        });
+        assets.battleLost = new Howl({
+            urls: ["assets/battle-lost.ogg", "assets/battle-lost.mp3"]
+        });
 
-    for (name in assetsToLoad) {
-        if (assetsToLoad[name].indexOf(".png") >= 0) {
-            assets[name] = new Image();
-            assets[name].src = "assets/" + assetsToLoad[name];
-            assets[name].onload = afterEachAsset;
-        } else {
+        for (name in assetsToLoad) {
+            if (assetsToLoad[name].indexOf(".png") >= 0) {
+                assets[name] = new Image();
+                assets[name].src = "assets/" + assetsToLoad[name];
+                assets[name].onload = afterEachAsset;
+            } else {
+            }
         }
+    } else {
+        cb();
     }
 }
 
