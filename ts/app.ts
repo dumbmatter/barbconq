@@ -25,7 +25,7 @@ var config : any = {
     USER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
     BATTLE_ROUND_UI_DELAY: 300,
-    DISABLE_FOG_OF_WAR: true
+    DISABLE_FOG_OF_WAR: false
 };
 
 function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {

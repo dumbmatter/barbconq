@@ -1,7 +1,5 @@
 # Major current tasks
 
-warrior can get city raider?
-
 easy/medium/hard balance - test
 
 if unit does nothing (just skips turn in city, or out of city), should be no delay. treat it as if it's not visible
@@ -10,16 +8,6 @@ if unit does nothing (just skips turn in city, or out of city), should be no del
     skipTurn: used to pause after unit is moved
   how to get rid of these? would need to pre-compute move type. is that possible? should be since it's console.logged anyway.
     return value: some "move type" identifier and a callback function to actually implement the move.
-
-end of game
-  show stats
-    won or lost
-    turns
-    time spent
-    barbs killed, by unit type
-    your units, with promotions and killed/not killed
-    combine to a score, compare user against a famous conqueror (like civ4 does with leaders)
-  have another game.result, "wonThenLost" for when all your units die after you've captured the city previously, and then show stats again
 
 more detailed controls instructions
 
@@ -31,12 +19,22 @@ reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ
 
 # Minor current tasks
 
+start game with 3 units. group first 2 and fortify. skip turn for 3rd one. it will not get activated in subsequent turns, seems auto-skipped for some reason
+
 click+drag for panning on main map
   similar to minimap or right click
 
 barb promotions
 
-start game with 3 units. group first 2 and fortify. skip turn for 3rd one. it will not get activated in subsequent turns, seems auto-skipped for some reason
+end of game
+  show stats
+    won or lost
+    turns
+    time spent
+    barbs killed, by unit type
+    your units, with promotions and killed/not killed
+    combine to a score, compare user against a famous conqueror (like civ4 does with leaders)
+  have another game.result, "wonThenLost" for when all your units die after you've captured the city previously, and then show stats again
 
 Map.pathFinding should take into account that tile movement cost does not just depend on the tile itself, but also on which tile the unit is moving from
   roads are the obvious implication, but also bonuses for double movement on certain tiles and mobility
