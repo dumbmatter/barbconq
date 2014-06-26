@@ -1,7 +1,6 @@
 # Major current tasks
 
-freezes when barb scout tries to attack (such as "move into city" when user holds it, maybe other times too)
-  if !canAttack, restrict every movement type if it could lead to an attack. everything else should be fine
+warrior can get city raider?
 
 easy/medium/hard balance - test
 

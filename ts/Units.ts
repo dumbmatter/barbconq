@@ -111,12 +111,20 @@ module Units {
         }
 
         canMoveOnCoords(coords : number[]) {
-            var newTerrain : string;
+            var newTerrain : string, newTile : MapMaker.Tile;
 
             // Don't walk off the map!
             if (game.map.validCoords(coords)) {
+                newTile = game.getTile(coords, -1);
+
+                // If can't attack, then can't go on tile with enemy!
+                // This only works for always war between civs
+                if (!this.canAttack && newTile.units.length > 0 && newTile.units[0].owner !== this.owner) {
+                    return false;
+                }
+
                 // Stay on land!
-                newTerrain = game.getTile(coords, -1).terrain;
+                newTerrain = newTile.terrain;
                 if (newTerrain === "snow" || newTerrain === "desert" || newTerrain === "tundra" || newTerrain === "grassland" || newTerrain === "plains") {
                     return true;
                 }

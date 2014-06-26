@@ -11,6 +11,8 @@ module AI {
                 for (j = unit.coords[1] - 3; j <= unit.coords[1] + 3; j++) {
                     if (game.map.validCoords([i, j])) {
                         // If there is any defender on this tile, find the best defender and calculate battle odds
+                        // This will prevent Scouts (no canAttack) from attacking!
+                        // However, it doesn't take into account getting into good defensive position unless that is close to the same as good offensive position - not always true! Probably good enough for now, though.
                         units = Combat.findBestDefender(game.activeUnit, [i, j]);
                         if (units.defender) {
                             battle = new Combat.Battle(unit, units.defender);
@@ -66,10 +68,12 @@ console.log("Attack with " + enemies[i].oddsWinFight + " odds");
             for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
                 for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
                     if ((i !== unit.coords[0] || j !== unit.coords[1]) && game.map.validCoords([i, j])) {
-                        if (game.getTile([i, j]).city) {
+                        if (unit.canMoveOnCoords([i, j])) { // Currently, this means scouts don't go into city unless AI owns it
+                            if (game.getTile([i, j]).city) {
 console.log("Move into city");
-                                unit.moveToCoords([i, j]);
-                                return;
+                                    unit.moveToCoords([i, j]);
+                                    return;
+                            }
                         }
                     }
                 }

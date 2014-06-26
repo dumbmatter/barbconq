@@ -1815,6 +1815,8 @@ var AI;
                 for (j = unit.coords[1] - 3; j <= unit.coords[1] + 3; j++) {
                     if (game.map.validCoords([i, j])) {
                         // If there is any defender on this tile, find the best defender and calculate battle odds
+                        // This will prevent Scouts (no canAttack) from attacking!
+                        // However, it doesn't take into account getting into good defensive position unless that is close to the same as good offensive position - not always true! Probably good enough for now, though.
                         units = Combat.findBestDefender(game.activeUnit, [i, j]);
                         if (units.defender) {
                             battle = new Combat.Battle(unit, units.defender);
@@ -1869,10 +1871,12 @@ var AI;
             for (i = unit.coords[0] - 1; i <= unit.coords[0] + 1; i++) {
                 for (j = unit.coords[1] - 1; j <= unit.coords[1] + 1; j++) {
                     if ((i !== unit.coords[0] || j !== unit.coords[1]) && game.map.validCoords([i, j])) {
-                        if (game.getTile([i, j]).city) {
-                            console.log("Move into city");
-                            unit.moveToCoords([i, j]);
-                            return;
+                        if (unit.canMoveOnCoords([i, j])) {
+                            if (game.getTile([i, j]).city) {
+                                console.log("Move into city");
+                                unit.moveToCoords([i, j]);
+                                return;
+                            }
                         }
                     }
                 }
@@ -3098,12 +3102,20 @@ var Units;
         };
 
         UnitOrGroup.prototype.canMoveOnCoords = function (coords) {
-            var newTerrain;
+            var newTerrain, newTile;
 
             // Don't walk off the map!
             if (game.map.validCoords(coords)) {
+                newTile = game.getTile(coords, -1);
+
+                // If can't attack, then can't go on tile with enemy!
+                // This only works for always war between civs
+                if (!this.canAttack && newTile.units.length > 0 && newTile.units[0].owner !== this.owner) {
+                    return false;
+                }
+
                 // Stay on land!
-                newTerrain = game.getTile(coords, -1).terrain;
+                newTerrain = newTile.terrain;
                 if (newTerrain === "snow" || newTerrain === "desert" || newTerrain === "tundra" || newTerrain === "grassland" || newTerrain === "plains") {
                     return true;
                 }
@@ -4943,7 +4955,6 @@ function loadAssets(assetsToLoad, cb) {
 
     // Only load assets the first time
     if (assets === undefined) {
-        console.log("load assets");
         assets = {};
         assets.battleStart = new Howl({
             urls: ["assets/battle-start.ogg", "assets/battle-start.mp3"]

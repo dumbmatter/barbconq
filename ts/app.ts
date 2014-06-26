@@ -42,7 +42,6 @@ function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
 
     // Only load assets the first time
     if (assets === undefined) {
-console.log("load assets");
         assets = {};
         assets.battleStart = new Howl({
             urls: ["assets/battle-start.ogg", "assets/battle-start.mp3"]
