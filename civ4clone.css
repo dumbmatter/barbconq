@@ -418,6 +418,13 @@ a:hover {
   font-size: 16px;
   margin: 14px 0;
 }
+.modal h3 {
+  font-size: 16px;
+  margin: 14px 0;
+}
+.modal ul {
+  padding-left: 20px;
+}
 .instructions-unit {
   background-color: #030;
   margin: 2px;
