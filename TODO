@@ -10,10 +10,13 @@ if unit does nothing (just skips turn in city, or out of city), should be no del
     return value: some "move type" identifier and a callback function to actually implement the move.
 
 minify assets, including font?
+  WORKING from gen dir
+    $ uglifyjs app.js --source-map app2.js.map --in-source-map app.js.map -o app2.js
+    $ uglifyjs --source-map app2.js.map --in-source-map app.js.map -o app2.js
 
 github
 
-reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ4"
+reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ4 (and it's open source)"
 
 # Minor current tasks
 

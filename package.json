@@ -22,7 +22,7 @@
     "karma-jasmine": "~0.1.5"
   },
   "bundledDependencies": [
-    "easystar"
+    "easystarjs"
   ],
   "private": true
 }
