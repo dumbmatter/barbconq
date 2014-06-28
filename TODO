@@ -6,7 +6,6 @@ minify assets
   include external js files (howler, easystarjs) in minified app.js?
 
 github
-  link from index.html splash and about
   README
     link to play
     goals
