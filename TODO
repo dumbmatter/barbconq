@@ -6,9 +6,14 @@ minify assets
   include external js files (howler, easystarjs) in minified app.js?
 
 github
-  package.json links
-  license
+  link from index.html splash and about
   README
+    link to play
+    goals
+    current status
+    dev info
+    tests
+    license
 
 reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ4 (and it's open source)"
 
