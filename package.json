@@ -1,14 +1,14 @@
 {
   "name": "barbconq",
   "version": "0.0.1",
-  "homepage": "https://bitbucket.org/dumbmatter/c4c/",
+  "homepage": "https://barbconq.com/",
   "bugs": {
     "email": "jdscheff@gmail.com"
   },
   "author": "Jeremy Scheff <jdscheff@gmail.com> (http://jeremyscheff.com/)",
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/dumbmatter/c4c.git"
+    "url": "https://github.com/dumbmatter/barbconq.git"
   },
   "dependencies": {
     "easystarjs": "~0.1.6",

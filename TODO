@@ -7,6 +7,7 @@ minify assets
 
 github
   package.json links
+  license
   README
 
 reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ4 (and it's open source)"
