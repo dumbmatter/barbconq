@@ -103,7 +103,7 @@ class Game {
         }
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
-                if (!this.map.visibility[config.USER_ID][i][j] && Math.random() < 0.01) {
+                if (!this.map.visibility[config.USER_ID][i][j] && Math.random() < config.BARB_SPAWN_ODDS) {
                     tile = this.getTile([i, j], -1);
 
                     // Spawn land unit

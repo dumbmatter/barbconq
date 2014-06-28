@@ -25,6 +25,7 @@ var config : any = {
     USER_ID: 1,
     UNIT_MOVEMENT_UI_DELAY: 500,
     BATTLE_ROUND_UI_DELAY: 300,
+    BARB_SPAWN_ODDS: 0.01, // Odds a barb spawns on a tile the user can't see
     DISABLE_FOG_OF_WAR: false
 };
 

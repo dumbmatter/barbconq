@@ -19,6 +19,10 @@ reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ
 
 # Minor current tasks
 
+it's possible for AI unit to attack twice in same turn
+  async issues? either handle explicitly with callbacks, or set some "attacked" marker earlier
+    but if i start chariot next to 2 scouts, it works fine!
+
 start game with 3 units. group first 2 and fortify. skip turn for 3rd one. it will not get activated in subsequent turns, seems auto-skipped for some reason
 
 click+drag for panning on main map
