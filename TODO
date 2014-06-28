@@ -2,22 +2,23 @@
 
 easy/medium/hard balance - test
 
+minify assets
+  include external js files (howler, easystarjs) in minified app.js?
+
+github
+  package.json links
+  README
+
+reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ4 (and it's open source)"
+
+# Minor current tasks
+
 if unit does nothing (just skips turn in city, or out of city), should be no delay. treat it as if it's not visible
   Unit.movementDelay() is used for two setTimeouts: one in Game loop and one in Unit.skipTurn()
     Game: used to pause after activating unit
     skipTurn: used to pause after unit is moved
   how to get rid of these? would need to pre-compute move type. is that possible? should be since it's console.logged anyway.
     return value: some "move type" identifier and a callback function to actually implement the move.
-
-minify assets
-  locally host font?
-  include external js files (howler, easystarjs) in minified app.js?
-
-github
-
-reddit: "Barbarian Conquest, a minigame built on a partial web-based port of Civ4 (and it's open source)"
-
-# Minor current tasks
 
 it's possible for AI unit to attack twice in same turn
   async issues? either handle explicitly with callbacks, or set some "attacked" marker earlier

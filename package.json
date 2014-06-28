@@ -1,5 +1,5 @@
 {
-  "name": "c4c",
+  "name": "barbconq",
   "version": "0.0.1",
   "homepage": "https://bitbucket.org/dumbmatter/c4c/",
   "bugs": {
@@ -11,7 +11,8 @@
     "url": "https://bitbucket.org/dumbmatter/c4c.git"
   },
   "dependencies": {
-    "easystarjs": "~0.1.6"
+    "easystarjs": "~0.1.6",
+    "howler": "~1.1.21"
   },
   "devDependencies": {
     "karma": "~0.12.0",
