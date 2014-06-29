@@ -2,7 +2,7 @@
 all: clean build-js
 
 # target: minify - Minify CSS and JS and put it in the gen folder for production.
-minify: minify-css minify-js
+minify: minify-js
 
 # target: check - Run unit tests
 check:
@@ -18,10 +18,6 @@ install-npm-deps:
 # target: build-js - Compiles the TypeScript files into JavaScript
 build-js:
 	tsc --target ES5 --sourcemap --out gen/app.js ts/app.ts
-
-# target: minify-css - Minify CSS using yui-compressor
-minify-css:
-	cat barbconq.css | yui-compressor --type css -o gen/barbconq.css
 
 # target: minify-js - Minify and overwrite compiled TypeScript output
 minify-js:
