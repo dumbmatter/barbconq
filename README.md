@@ -35,7 +35,7 @@ If you just want to play the game, go to http://barbconq.com/
 
 If you want to hack at the code, it's pretty straightforward. Open `index.html`
 in your browser and you are playing the game. The game is written in
-[TypeScript]http://www.typescriptlang.org/), so you have to compile it to see
+[TypeScript](http://www.typescriptlang.org/), so you have to compile it to see
 the result of any changes you make. To do this, first install TypeScript
 (version 1.0.1 is the latest at the time I'm writing this):
 
@@ -48,8 +48,8 @@ folder:
 
 After that, you should see your changes reflected after reloading `index.html`.
 
-For production, I use [UglifyJS](https://github.com/mishoo/UglifyJS). You can
-install it with:
+For production, I use [UglifyJS](https://github.com/mishoo/UglifyJS) to minify
+the output of the TypeScript compiler. You can install it with:
 
     $ npm install -g uglify-js
 
@@ -57,9 +57,9 @@ Then, after compiling the TypeScript code above, minify with this command:
 
     $ make minify
 
-There are some unit tests related to ensuring that the battle odds are accurate
-and exactly match those from Civilization 4 (it would be nice to have more
-tests...). To run the tests:
+There are some unit tests related to ensuring that displayed battle odds are
+accurate and exactly match those from Civilization 4 (it would be nice to have
+more tests...). To run the tests:
 
     $ make check
 
