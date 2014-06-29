@@ -48,6 +48,7 @@ module Cities {
             if (this.owner === config.USER_ID && game.result === "inProgress") {
                 game.result = "won";
                 chromeUI.showModal("won");
+                if (ga) { ga("send", "event", "Game", "Won"); }
             }
         }
     }

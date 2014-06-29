@@ -1,5 +1,8 @@
 # Major current tasks
 
+google analytics
+  real referer
+
 minify assets
   include external js files (howler, easystarjs) in minified app.js?
 

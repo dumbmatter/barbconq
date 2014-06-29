@@ -510,6 +510,7 @@ module Units {
             if (this.owner === config.USER_ID && game.result === "inProgress" && Object.keys(game.units[config.USER_ID]).length === 0) {
                 game.result = "lost";
                 chromeUI.showModal("lost");
+                if (ga) { ga("send", "event", "Game", "Lost"); }
             }
 
             // Remove from active

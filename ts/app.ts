@@ -12,6 +12,7 @@
 ///<reference path='Debug.ts'/>
 
 // JS libs
+declare var ga : any;
 declare var Howl : any;
 declare var EasyStar : any;
 var easystar : any = new EasyStar.js();
@@ -176,5 +177,7 @@ function startBarbConq(difficulty : string) {
         blackAxeman: "units/black/battle-axe.png"
     }, function () {
         init(difficulty);
+
+        if (ga) { ga("send", "event", "Game", "New Game"); }
     });
 }
