@@ -11,7 +11,7 @@ Copyright (C) Jeremy Scheff. All rights reserved.
 
 * Email: jdscheff@gmail.com
 
-* Website: http://barbconq.com/
+* Website: http://dumbmatter.com/barbconq
 
 * Development website: https://github.com/dumbmatter/barbconq
 
@@ -31,7 +31,7 @@ with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Installing and Running
 
-If you just want to play the game, go to http://barbconq.com/
+If you just want to play the game, go to http://dumbmatter.com/barbconq
 
 If you want to hack at the code, it's pretty straightforward. Open `index.html`
 in your browser and you are playing the game. The game is written in
