@@ -151,7 +151,7 @@ function init(difficulty : string) {
     game.newTurn();
     game.nextPlayer(); // Will skip from default (0, barbs) to the player (1)
 
-    chromeUI.showModal("intro");
+    //chromeUI.showModal("intro");
 
     // Hide splash, show map
     document.getElementById("splash-background").style.display = "none";
@@ -181,3 +181,5 @@ function startBarbConq(difficulty : string) {
         if (ga) { ga("send", "event", "Game", "New Game"); }
     });
 }
+
+startBarbConq("easy");
