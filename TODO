@@ -3,8 +3,6 @@
 better plan for testing
   should be able to unit test individual module, without having to load app.ts and index.html
 
-link tsd install to npm install
-
 render loop
 
 # Major current tasks

@@ -11,6 +11,7 @@
     "url": "https://github.com/dumbmatter/barbconq.git"
   },
   "scripts": {
+    "postinstall": "tsd install",
     "build": "tsc --target ES5 --sourcemap --out gen/app.js ts/app.ts",
     "test": "tsc --module commonjs test/*.ts && mocha"
   },
