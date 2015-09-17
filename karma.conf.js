@@ -17,8 +17,8 @@ module.exports = function(config) {
     files: [
       'js-lib/jasmine.async.js',
       {pattern: 'assets/**/*', watched: false, included: false},
-      'node_modules/easystarjs/bin/easystar-0.1.6.js',
-      'js-lib/howler.js',
+      'node_modules/easystarjs/bin/easystar-0.1.13.js',
+      'node_modules/howler/howler.js',
       'gen/app.js',
       'test/*.js'
     ],
