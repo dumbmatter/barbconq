@@ -11,7 +11,7 @@
     "url": "https://github.com/dumbmatter/barbconq.git"
   },
   "scripts": {
-    "test": "karmar start",
+    "test": "karma start",
     "build": "tsc --target ES5 --sourcemap --out gen/app.js ts/app.ts"
   },
   "dependencies": {
