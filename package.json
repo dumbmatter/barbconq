@@ -12,13 +12,14 @@
   },
   "scripts": {
     "build": "tsc --target ES5 --sourcemap --out gen/app.js ts/app.ts",
-    "test": "tsc test/*.ts && mocha"
+    "test": "tsc --module commonjs test/*.ts && mocha"
   },
   "dependencies": {
     "easystarjs": "^0.1.13",
     "howler": "~1.1.21"
   },
   "devDependencies": {
+    "chai": "^3.2.0",
     "mocha": "^2.3.2",
     "tsd": "^0.6.4",
     "typescript": "^1.6.2"
