@@ -16,11 +16,11 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'js-lib/jasmine.async.js',
+      'test/*.js',
       {pattern: 'assets/**/*', watched: false, included: false},
       'node_modules/easystarjs/bin/easystar-0.1.13.js',
       'node_modules/howler/howler.js',
-      'gen/app.js',
-      'test/*.js'
+      'gen/app.js'
     ],
 
     // http://stackoverflow.com/a/21262098/786644

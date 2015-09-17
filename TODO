@@ -1,8 +1,7 @@
 # New
 
-build scripts with npm
-
-get karma working again
+better plan for testing
+  should be able to unit test individual module, without having to load app.ts and index.html
 
 render loop
 

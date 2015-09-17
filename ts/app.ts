@@ -13,6 +13,7 @@
 
 // JS libs
 declare var ga : any;
+declare var TESTING : any;
 declare var Howl : any;
 declare var EasyStar : any;
 var easystar : any = new EasyStar.js();
@@ -68,12 +69,15 @@ function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
     }
 }
 
-// Start all as dummy for controller, so controller does not get initialized twice when another new game is started
-game = new Game("N/A");
-game.map = new MapMaker.BigIsland(20, 40);
-chromeUI = new ChromeUI();
-mapUI = new MapUI();
-controller = new Controller();
+console.log(assets);
+if (!TESTING) {
+    // Start all as dummy for controller, so controller does not get initialized twice when another new game is started
+    game = new Game("N/A");
+    game.map = new MapMaker.BigIsland(20, 40);
+    chromeUI = new ChromeUI();
+    mapUI = new MapUI();
+    controller = new Controller();
+}
 
 var u1;
 function init(difficulty : string) {
@@ -83,15 +87,14 @@ function init(difficulty : string) {
     game.map = new MapMaker.BigIsland(20, 40);
     mapUI = new MapUI();
 
-/*    //new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);
+//new Units.Group(config.USER_ID, [new Units.Chariot(config.USER_ID, [10, 20]), new Units.Chariot(config.USER_ID, [10, 20])]);
 
-    u1 = new Units.Scout(config.USER_ID, [10, 20]);
-//    u1.promotions.push("drill1");
-//    u1.promotions.push("drill2");
-    u1.xp += 400;
-    var u = new Units.Scout(config.BARB_ID, [9, 21]);
-
-    new Cities.City(config.BARB_ID, [10, 21]);*/
+//u1 = new Units.Scout(config.USER_ID, [10, 20]);
+//u1.promotions.push("drill1");
+//u1.promotions.push("drill2");
+//u1.xp += 400;
+//var u = new Units.Scout(config.BARB_ID, [9, 21]);
+//new Cities.City(config.BARB_ID, [10, 21]);
 
     // Place landing party on the leftmost land tile of middle row
     i = Math.floor(game.map.rows / 2);
@@ -182,4 +185,6 @@ function startBarbConq(difficulty : string) {
     });
 }
 
-startBarbConq("easy");
+if (!TESTING) {
+    startBarbConq("easy");
+}

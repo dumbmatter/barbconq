@@ -7,12 +7,15 @@ var assets = {
 };
 var chromeUI = jasmine.createSpyObj("chromeUI", ["eventLog", "onUnitActivated", "showModal"]);
 var mapUI = jasmine.createSpyObj("mapUI", ["render"]);
+var ga = null;
+var TESTING = true;
 
 function createBattle(params) {
     var u1, u2;
 
     // New game each time
-    game = new Game(1, 2);
+    game = new Game("easy");
+    game.map = new MapMaker.BigIsland(1, 2);
 
     // Same tiles every time
     game.map.tiles[0][0].terrain = params.tileTerrain;

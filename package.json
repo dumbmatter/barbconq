@@ -11,8 +11,8 @@
     "url": "https://github.com/dumbmatter/barbconq.git"
   },
   "scripts": {
-    "test": "karma start",
-    "build": "tsc --target ES5 --sourcemap --out gen/app.js ts/app.ts"
+    "build": "tsc --target ES5 --sourcemap --out gen/app.js ts/app.ts",
+    "test": "npm run build && karma start"
   },
   "dependencies": {
     "easystarjs": "^0.1.13",
