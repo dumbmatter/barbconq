@@ -336,10 +336,10 @@ class Controller {
                 if (unit) {
                     if (e.altKey) { // In GNOME, alt+click is captured for window dragging, but alt+ctrl+click works for this
                         // Create group of all units on tile with moves and activate it
-                        Units.addUnitsToNewGroup(config.USER_ID, units);
+                        Units.addUnitsToNewGroup(game, config.USER_ID, units);
                     } else if (e.ctrlKey) {
                         // Create group of all units on tile with moves and same type as top unit and activate it
-                        Units.addUnitsWithTypeToNewGroup(config.USER_ID, units, unit.type);
+                        Units.addUnitsWithTypeToNewGroup(game, config.USER_ID, units, unit.type);
                     } else {
                         // Normal left click: select top unit or group
                         if (unit.group) {
@@ -485,7 +485,7 @@ class Controller {
 
                 // Handle all the different key modifiers
                 if (e.altKey) { // In GNOME, alt+click is captured for window dragging, but alt+ctrl+click works for this
-                    Units.addUnitsToNewGroup(clickedOwner, units);
+                    Units.addUnitsToNewGroup(game, clickedOwner, units);
                 } else if (e.ctrlKey && e.shiftKey) {
                     type = game.units[clickedOwner][clickedId].type;
 
@@ -510,7 +510,7 @@ class Controller {
                         });
 
                         // New group with units of type and activeUnit
-                        newGroup = new Units.Group(clickedOwner, newUnits);
+                        newGroup = new Units.Group(game, clickedOwner, newUnits);
                         newGroup.activate(false);
                     } else if (game.activeUnit instanceof Units.Group) {
                         // Unit group is active
@@ -540,17 +540,17 @@ class Controller {
                         }
                     } else {
                         // No unit active (like if they all got separateed above)
-                        newGroup = new Units.Group(clickedOwner, newUnits);
+                        newGroup = new Units.Group(game, clickedOwner, newUnits);
                         newGroup.activate(false);
                     }
                 } else if (e.ctrlKey) {
-                    Units.addUnitsWithTypeToNewGroup(clickedOwner, units, game.units[clickedOwner][clickedId].type);
+                    Units.addUnitsWithTypeToNewGroup(game, clickedOwner, units, game.units[clickedOwner][clickedId].type);
                 } else if (e.shiftKey) {
                     if (game.activeUnit instanceof Units.Unit) {
                         // Individual unit is active
                         if (game.activeUnit.id !== clickedId) {
                             // If clicked unit is not the active unit, add it to a new group with clicked unit
-                            newGroup = new Units.Group(clickedOwner, [<Units.Unit> game.activeUnit, game.units[clickedOwner][clickedId]]);
+                            newGroup = new Units.Group(game, clickedOwner, [<Units.Unit> game.activeUnit, game.units[clickedOwner][clickedId]]);
                             newGroup.activate(false);
                         }
                     } else if (game.activeUnit instanceof Units.Group) {

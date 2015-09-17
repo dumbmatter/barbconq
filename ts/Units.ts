@@ -17,6 +17,7 @@ module Units {
     // Things that both individual units and groups of units have in common
     export class UnitOrGroup {
         // Identification
+        game : Game;
         id : number; // Unique, incrementing
         _owner : number;
 
@@ -78,18 +79,19 @@ module Units {
         set fortifiedTurns(value : number) { this._fortifiedTurns = value; }
         get fortifiedTurns() : number { return this._fortifiedTurns; }
 
-        constructor() {
-            // Set unique ID for unit or group
-            this.id = game.maxId;
-            game.maxId += 1;
+        constructor(game : Game) {
+            this.game = game;
+
+            this.id = this.game.maxId;
+            this.game.maxId += 1;
         }
 
         // goToCoords can be set to false if you don't want the map centered on the unit after activating, like on a left click
         activate(centerViewport : boolean = true, autoMoveTowardsTarget : boolean = false) {
             // Deactivate current active unit, if there is one
-            if (game.activeUnit) {
-                game.activeUnit.active = false;
-                game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
+            if (this.game.activeUnit) {
+                this.game.activeUnit.active = false;
+                this.game.activeUnit = null; // Is this needed? Next unit will set it, if it exists
             }
 
             // If this unit is on a path towards a target, just go along the path instead of activating. If there are still moves left when the target is reached, activate() will be called again.
@@ -101,7 +103,7 @@ module Units {
 
             // Activate this unit
             this.active = true;
-            game.activeUnit = this;
+            this.game.activeUnit = this;
             if (centerViewport && this.isVisible()) {
                 mapUI.goToCoords(this.coords);
             }
@@ -114,8 +116,8 @@ module Units {
             var newTerrain : string, newTile : MapMaker.Tile;
 
             // Don't walk off the map!
-            if (game.map.validCoords(coords)) {
-                newTile = game.getTile(coords, -1);
+            if (this.game.map.validCoords(coords)) {
+                newTile = this.game.getTile(coords, -1);
 
                 // If can't attack, then can't go on tile with enemy!
                 // This only works for always war between civs
@@ -179,8 +181,8 @@ module Units {
             }
 
             // If made it this far, no move was made
-            if (game.turnID !== config.USER_ID) {
-                game.moveUnits();
+            if (this.game.turnID !== config.USER_ID) {
+                this.game.moveUnits();
             }            
         }
 
@@ -198,7 +200,7 @@ module Units {
             // Reset skippedTurn status
             this.skippedTurn = false;
 
-            if (Combat.fightIfTileHasEnemy(this, coords)) {
+            if (Combat.fightIfTileHasEnemy(this.game, this, coords)) {
                 return false;
             }
 
@@ -209,7 +211,7 @@ module Units {
             this.moveOnMap(coords);
 
             // City to capture?
-            city = game.getTile(coords, -1).city;
+            city = this.game.getTile(coords, -1).city;
             if (city && city.owner !== this.owner) {
                 city.capture(this.owner);
             }
@@ -228,7 +230,7 @@ module Units {
             var movementCost : number;
 
             // Movement cost based on terrain
-            movementCost = game.map.tileMovementCost(this.coords, coords, this.getBonuses());
+            movementCost = this.game.map.tileMovementCost(this.coords, coords, this.getBonuses());
 
             // Keep track of unit movement (applies even if the unit fights but does not move)
             this.currentMovement -= movementCost;
@@ -238,42 +240,42 @@ module Units {
 
                 this.active = false;
 
-                game.map.updateVisibility();
+                this.game.map.updateVisibility();
                 mapUI.render();
                 setTimeout(function () {
                     if (!attacker || !attacker.group) {
                         // After delay, move to next unit
-                        game.activeUnit = null;
+                        this.game.activeUnit = null;
 
                         // Handle user and AI units differently
-                        if (game.turnID === config.USER_ID) {
-                            game.moveUnits();
+                        if (this.game.turnID === config.USER_ID) {
+                            this.game.moveUnits();
                         } else {
                             // Move only after a delay
                             setTimeout(function () {
-                                game.moveUnits();
-                            }, this.movementDelay());
+                                this.game.moveUnits();
+                            }.bind(this), this.movementDelay());
                         }
                     } else {
                         // If unit is in a group and moves are used up after an attack while enemies still remain on attacked tile, leave the group
                         attacker.group.remove(attacker.id); // Will activate rest of group
                         // Handle user and AI units differently
-                        if (game.turnID !== config.USER_ID) {
+                        if (this.game.turnID !== config.USER_ID) {
                             setTimeout(function () {
-                                game.moveUnits();
-                            }, this.movementDelay());
+                                this.game.moveUnits();
+                            }.bind(this), this.movementDelay());
                         }
                     }
                     mapUI.render();
                 }.bind(this), this.movementDelay());
-            } else if (game.turnID !== config.USER_ID) {
+            } else if (this.game.turnID !== config.USER_ID) {
                 // For AI units, need to force move again, even if currentMovement > 0
                 // No UI_DELAY needed here
-                game.map.updateVisibility();
+                this.game.map.updateVisibility();
                 mapUI.render();
-                game.moveUnits();
+                this.game.moveUnits();
             } else {
-                game.map.updateVisibility();
+                this.game.map.updateVisibility();
                 mapUI.render();
             }
         }
@@ -281,7 +283,7 @@ module Units {
         // Sets the unit on a path towards a coordinate on the map
         initiatePath(coords : number[]) {
             // See if there is a path to these coordinates
-            game.map.pathFinding(this, coords, function (path : number[][]) {
+            this.game.map.pathFinding(this, coords, function (path : number[][]) {
                 if (path) {
                     this.targetCoords = coords;
 
@@ -301,7 +303,7 @@ module Units {
 
         // Use up the player's moves by moving towards its targetCoords
         moveTowardsTarget() {
-            game.map.pathFinding(this, this.targetCoords, function (path : number[][]) {
+            this.game.map.pathFinding(this, this.targetCoords, function (path : number[][]) {
                 var tryToMove;
 
                 if (path) {
@@ -348,9 +350,9 @@ module Units {
 
             // After delay, move to next unit
             setTimeout(function () {
-                game.activeUnit = null;
-                game.moveUnits();
-            }, this.movementDelay());
+                this.game.activeUnit = null;
+                this.game.moveUnits();
+            }.bind(this), this.movementDelay());
 
             // Clear any saved path
             this.targetCoords = null;
@@ -380,7 +382,7 @@ module Units {
 
         // This function shuold ONLY be used for UI purposes! Sees from the user's perspective.
         isVisible() : boolean {
-            return Boolean(game.map.visibility[config.USER_ID][this.coords[0]][this.coords[1]]);
+            return Boolean(this.game.map.visibility[config.USER_ID][this.coords[0]][this.coords[1]]);
         }
 
         // If unit is visible, add movement delay. If not, don't.
@@ -466,22 +468,22 @@ module Units {
         }
         get canHeal() : boolean { return this._canHeal; }
 
-        constructor(owner : number, coords : number[]) {
-            super();
+        constructor(game : Game, owner : number, coords : number[]) {
+            super(game);
 
             this.owner = owner;
 
             // Set coordinates of unit and put a reference to the unit in the map
             this.coords = coords;
-            game.getTile(coords, -1).units.push(this);
+            this.game.getTile(coords, -1).units.push(this);
 
-            // Store reference to unit in game.units
-            game.units[this.owner][this.id] = this;
+            // Store reference to unit in this.game.units
+            this.game.units[this.owner][this.id] = this;
         }
 
         moveOnMap(coords : number[]) {
             // It's an individual unit!
-            game.map.moveUnit(this, coords);
+            this.game.map.moveUnit(this, coords);
         }
 
         delete() {
@@ -493,7 +495,7 @@ module Units {
             }
 
             // Remove from map
-            tileUnits = game.getTile(this.coords, -1).units;
+            tileUnits = this.game.getTile(this.coords, -1).units;
             for (i = 0; i < tileUnits.length; i++) {
                 if (tileUnits[i].id === this.id) {
                     tileUnits.splice(i, 1);
@@ -502,21 +504,21 @@ module Units {
             }
 
             // Remove from game
-            delete game.units[this.owner][this.id];
+            delete this.game.units[this.owner][this.id];
 
             // Update map visibility
-            game.map.updateVisibility();
+            this.game.map.updateVisibility();
 
-            if (this.owner === config.USER_ID && game.result === "inProgress" && Object.keys(game.units[config.USER_ID]).length === 0) {
-                game.result = "lost";
+            if (this.owner === config.USER_ID && this.game.result === "inProgress" && Object.keys(this.game.units[config.USER_ID]).length === 0) {
+                this.game.result = "lost";
                 chromeUI.showModal("lost");
-                if (ga) { ga("send", "event", "Game", "Lost"); }
+                if (ga) { ga("send", "event", "this.game", "Lost"); }
             }
 
             // Remove from active
-            if (game.activeUnit && game.activeUnit.id === this.id) {
-                game.activeUnit = null;
-                game.moveUnits(); // Will always render map... right?
+            if (this.game.activeUnit && this.game.activeUnit.id === this.id) {
+                this.game.activeUnit = null;
+                this.game.moveUnits(); // Will always render map... right?
             } else {
                 mapUI.render();
             }
@@ -614,7 +616,7 @@ module Units {
 
                 // Only sentry can change visibility on map
                 if (promotionName === "sentry") {
-                    game.map.updateVisibility();
+                    this.game.map.updateVisibility();
                 }
 
                 if (this.owner === config.USER_ID) {
@@ -829,8 +831,8 @@ module Units {
             return true;
         }
 
-        constructor(owner : number, units : Unit[]) {
-            super();
+        constructor(game : Game, owner : number, units : Unit[]) {
+            super(game);
 
             this.owner = owner;
 
@@ -840,7 +842,7 @@ module Units {
             this.coords = units[0].coords;
 
             // Store reference to group in game.groups
-            game.groups[this.owner][this.id] = this;
+            this.game.groups[this.owner][this.id] = this;
         }
 
         moveOnMap(coords : number[]) {
@@ -848,7 +850,7 @@ module Units {
 
             // It's a unit group!
             for (i = 0; i < this.units.length; i++) {
-                game.map.moveUnit(this.units[i], coords);
+                this.game.map.moveUnit(this.units[i], coords);
             }
         }
 
@@ -908,9 +910,9 @@ module Units {
 
             // Delete group
             if (this.active) {
-                game.activeUnit = null;
+                this.game.activeUnit = null;
             }
-            delete game.groups[this.owner][this.id];
+            delete this.game.groups[this.owner][this.id];
 
             // If desired, activate one of the members of the separateed group
             if (activateUnitAtEnd) {
@@ -1054,7 +1056,7 @@ module Units {
     // Functions for working with units or groups of units
 
     // Like alt+click
-    export function addUnitsToNewGroup(owner : number, units : Unit[]) {
+    export function addUnitsToNewGroup(game : Game, owner : number, units : Unit[]) {
         var newUnits : Unit[], newGroup : Group;
 
         // Separate any current groups on the tile
@@ -1070,13 +1072,13 @@ module Units {
 
         if (newUnits.length > 0) {
             // Make a new group with all units with currentMovement > 0 and activate it
-            newGroup = new Units.Group(owner, newUnits);
+            newGroup = new Units.Group(game, owner, newUnits);
             newGroup.activate(false);
         }
     }
 
     // Like ctrl+click
-    export function addUnitsWithTypeToNewGroup(owner : number, units : Unit[], type : string) {
+    export function addUnitsWithTypeToNewGroup(game : Game, owner : number, units : Unit[], type : string) {
         var newUnits : Unit[], newGroup : Group;
 
         // Separate any current groups on this tile involving this type
@@ -1092,13 +1094,13 @@ module Units {
 
         if (newUnits.length > 0) {
             // Make a new group from all the units of the clicked type with currentMovement > 0
-            newGroup = new Units.Group(owner, newUnits);
+            newGroup = new Units.Group(game, owner, newUnits);
             newGroup.activate(false);
         }
     }
 
     // Should be used only for UI!
-    export function findBestUnitInStack(units : Unit[]) : Unit {
+    export function findBestUnitInStack(game : Game, units : Unit[]) : Unit {
         var k : number, maxStrength : number, unit : Unit;
 
         if (units.length === 0) {
@@ -1122,7 +1124,7 @@ module Units {
                 if (mapUI.pathFindingSearch && game.turnID === config.USER_ID) {
                     // pathFinding is active, so pick best attacker vs tile defender
                     // Look for units with moves first. If none found, then look at all units
-                    unit = Combat.findBestDefender(game.activeUnit, controller.hoveredTile, true).attacker;
+                    unit = Combat.findBestDefender(game, game.activeUnit, controller.hoveredTile, true).attacker;
                 } else {
                     // Show highest currentStrength from the group
                     maxStrength = -Infinity;
@@ -1144,7 +1146,7 @@ module Units {
             // tile, from above), then show the unit that would fare best against
             // activeUnit in a battle
             if (game.activeUnit && game.activeUnit.canAttack && game.activeUnit.owner !== units[0].owner && game.turnID === config.USER_ID) { // THIS ASSUMES CIVS CAN'T SHARE TILE
-                unit = Combat.findBestDefender(game.activeUnit, units[0].coords, true).defender;
+                unit = Combat.findBestDefender(game, game.activeUnit, units[0].coords, true).defender;
             } else {
                 // Default: show highest currentStrength
                 maxStrength = -Infinity;

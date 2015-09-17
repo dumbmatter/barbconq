@@ -2,7 +2,7 @@
 
 module AI {
     export module Barb {
-        export function moveUnit(unit : Units.Unit) {
+        export function moveUnit(game : Game, unit : Units.Unit) {
             var battle : Combat.Battle, cities : Cities.City[], currentTile : MapMaker.Tile, enemies : {coords : number[]; oddsWinFight : number}[], i : number, j : number, k : string, possibleCoords : number[][], units : {attacker : Units.Unit; defender : Units.Unit};
 
             // For each visible enemy unit within 3 tiles, calculate and store {coords, oddsWinFight}
@@ -13,9 +13,9 @@ module AI {
                         // If there is any defender on this tile, find the best defender and calculate battle odds
                         // This will prevent Scouts (no canAttack) from attacking!
                         // However, it doesn't take into account getting into good defensive position unless that is close to the same as good offensive position - not always true! Probably good enough for now, though.
-                        units = Combat.findBestDefender(game.activeUnit, [i, j]);
+                        units = Combat.findBestDefender(game, game.activeUnit, [i, j]);
                         if (units.defender) {
-                            battle = new Combat.Battle(unit, units.defender);
+                            battle = new Combat.Battle(game, unit, units.defender);
                             enemies.push({
                                 coords: [i, j],
                                 oddsWinFight: battle.odds().attackerWinsFight

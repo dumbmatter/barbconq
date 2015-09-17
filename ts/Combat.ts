@@ -2,6 +2,7 @@
 
 module Combat {
     export class Battle {
+        game : Game;
         units : Units.Unit[];
         A : number; // Attacker's modified strength
         D : number; // Defender's modified strength
@@ -18,8 +19,10 @@ module Combat {
         winner : string = null;
         loser : string = null;
 
-        constructor(attacker : Units.Unit, defender : Units.Unit) {
+        constructor(game : Game, attacker : Units.Unit, defender : Units.Unit) {
             var defenderBonus : number;
+
+            this.game = game;
 
             this.units = [attacker, defender];
 
@@ -44,8 +47,8 @@ module Combat {
             this.hitsNeededToWin[1] = Math.ceil(this.hps[0] / this.damagePerHit[1]);
 
             // Names
-            this.names[0] = game.names[this.units[0].owner] + "'s " + this.units[0].type;
-            this.names[1] = game.names[this.units[1].owner] + "'s " + this.units[1].type;
+            this.names[0] = this.game.names[this.units[0].owner] + "'s " + this.units[0].type;
+            this.names[1] = this.game.names[this.units[1].owner] + "'s " + this.units[1].type;
         }
 
         // Generates appliedBonuses object, which is stored in this.appliedBonuses
@@ -54,8 +57,8 @@ module Combat {
 
             attacker = this.units[0];
             defender = this.units[1];
-//            attackerTile = game.getTile(attacker.coords, -1);
-            defenderTile = game.getTile(defender.coords, -1);
+//            attackerTile = this.game.getTile(attacker.coords, -1);
+            defenderTile = this.game.getTile(defender.coords, -1);
 
             // Attacker, defender
             this.appliedBonuses = [{}, {}];
@@ -446,7 +449,7 @@ console.log(this.firstStrikes);*/
 
     // Find best attacker/defender combo for a unit/group attacking a tile. If no combo found, defender is null.
     // If the third parameter (forceFindDefender) is true, then even attackers with no moves are used (although ones with canAttack false like Scouts are still not used). This should be used for path finding and UI only, not for actual attacking
-    export function findBestDefender(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[], forceFindDefender : boolean = false) : {attacker : Units.Unit; defender : Units.Unit} {
+    export function findBestDefender(game : Game, attackerUnitOrGroup : Units.UnitOrGroup, coords : number[], forceFindDefender : boolean = false) : {attacker : Units.Unit; defender : Units.Unit} {
         var attacker : Units.Unit, defender : Units.Unit, findBestDefenderForAttacker : (attacker : Units.Unit, coords : number[]) => {defender : Units.Unit; oddsDefenderWinsFight : number};
 
         // Works on individual attacker; needs to be called on all members of group
@@ -460,7 +463,7 @@ console.log(this.firstStrikes);*/
             maxOdds = -Infinity;
             newTileUnits.forEach(function (unit) {
                 if (unit.owner !== attacker.owner) {
-                    battle = new Battle(attacker, unit);
+                    battle = new Battle(game, attacker, unit);
                     oddsDefenderWinsFight = 1 - battle.odds().attackerWinsFight;
                     if (oddsDefenderWinsFight > maxOdds) {
                         maxOdds = oddsDefenderWinsFight;
@@ -518,12 +521,12 @@ console.log(this.firstStrikes);*/
     // If tile has enemy unit on it, initiate combat (if appropriate) and return true. Otherwise, do
     // nothing and return false. WARNING: If returning true, some async stuff might still going on
     // in the background!!!
-    export function fightIfTileHasEnemy(attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : boolean {
+    export function fightIfTileHasEnemy(game : Game, attackerUnitOrGroup : Units.UnitOrGroup, coords : number[]) : boolean {
         var attacker : Units.Unit, battle : Battle, defender : Units.Unit, newTileUnits : Units.Unit[], units : {attacker : Units.Unit; defender : Units.Unit};
 
         newTileUnits = game.getTile(coords).units;
 
-        units = findBestDefender(attackerUnitOrGroup, coords);
+        units = findBestDefender(game, attackerUnitOrGroup, coords);
         attacker = units.attacker;
         defender = units.defender;
 
@@ -532,7 +535,7 @@ console.log(this.firstStrikes);*/
             attackerUnitOrGroup.targetCoords = null;
 
             // We have a valid attacker and defender! Fight!
-            battle = new Battle(attacker, defender);
+            battle = new Battle(game, attacker, defender);
             game.activeBattle = battle;
             battle.fight(function () {
                 game.activeBattle = null;

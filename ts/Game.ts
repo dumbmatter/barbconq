@@ -108,7 +108,7 @@ class Game {
 
                     // Spawn land unit
                     if (tile.terrain === "snow" || tile.terrain === "desert" || tile.terrain === "tundra" || tile.terrain === "grassland" || tile.terrain === "plains") {
-                        new Units[Random.choice(unitTypes)](config.BARB_ID, [i, j]);
+                        new Units[Random.choice(unitTypes)](game, config.BARB_ID, [i, j]);
                     }
                 }
             }
@@ -264,8 +264,8 @@ class Game {
                     centerViewport = !(game.activeUnit && game.activeUnit.id === unit.id); // Don't center viewport if unit is already active (multi-move)
                     unit.activate(centerViewport);
 
-                    setTimeout(function () {
-                        AI.Barb.moveUnit(unit);
+                    setTimeout(() => {
+                        AI.Barb.moveUnit(this, unit);
                     }, unit.movementDelay());
                     return true;
                 }

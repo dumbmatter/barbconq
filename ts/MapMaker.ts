@@ -21,6 +21,11 @@ module MapMaker {
         cols : number;
         tiles : Tile[][];
         visibility : number[][][];
+        game : Game;
+
+        constructor(game : Game) {
+            this.game = game;
+        }
 
         // Default callback will draw path (or clear path if it's not valid)
         pathFinding(unit : Units.UnitOrGroup = null, targetCoords : number[] = null, cb : (path? : number[][]) => void = mapUI.drawPath.bind(mapUI)) {
@@ -35,8 +40,8 @@ module MapMaker {
             for (i = 0; i < this.rows; i++) {
                 grid[i] = [];
                 for (j = 0; j < this.cols; j++) {
-                    tile = game.getTile([i, j]);
-                    if (this.enemyUnits(game.turnID, [i, j]).length > 0 && (i !== targetCoords[0] || j !== targetCoords[1])) {
+                    tile = this.game.getTile([i, j]);
+                    if (this.enemyUnits(this.game.turnID, [i, j]).length > 0 && (i !== targetCoords[0] || j !== targetCoords[1])) {
                         // Avoid enemies, except on the targetCoords tile
                         grid[i][j] = 0;
                     } else {
@@ -93,7 +98,7 @@ module MapMaker {
             var i : number, tileUnits : Units.Unit[];
 
             // Delete old unit in map
-            tileUnits = game.getTile(unit.coords, -1).units;
+            tileUnits = this.game.getTile(unit.coords, -1).units;
             for (i = 0; i < tileUnits.length; i++) {
                 if (tileUnits[i].id === unit.id) {
                     tileUnits.splice(i, 1);
@@ -102,7 +107,7 @@ module MapMaker {
             }
 
             // Add unit at new tile
-            game.getTile(coords, -1).units.push(unit);
+            this.game.getTile(coords, -1).units.push(unit);
         }
 
         // Entries in output matrix are visible (1) or not visible (0).
@@ -118,9 +123,9 @@ module MapMaker {
             }
 
             // For loop only needed if we need to update visibility all at once
-            for (turnID = 0; turnID < game.numPlayers; turnID++) {
+            for (turnID = 0; turnID < this.game.numPlayers; turnID++) {
                 // Unless updateAll is true (such as for initialization of visibility), only update active player
-                if (!updateAll && turnID !== game.turnID) {
+                if (!updateAll && turnID !== this.game.turnID) {
                     continue;
                 }
 
@@ -135,10 +140,10 @@ module MapMaker {
                 }
 
                 // Loop through units, set visibility
-                Object.keys(game.units[turnID]).forEach(function (id : number) {
+                Object.keys(this.game.units[turnID]).forEach(function (id : number) {
                     var bonuses : {[name: string] : number}, i : number, j : number, radius : number, unit : Units.Unit;
 
-                    unit = game.units[turnID][id];
+                    unit = this.game.units[turnID][id];
                 
                     // Number of tiles away from center that the unit can see
                     if (this.tiles[unit.coords[0]][unit.coords[1]].features.indexOf("hills") >= 0) {
@@ -174,14 +179,14 @@ module MapMaker {
         }
 
         enemyUnits(playerID : number, coords : number[]) : Units.Unit[] {
-            return game.getTile(coords).units.filter(function (unit) { return unit.owner !== playerID; });
+            return this.game.getTile(coords).units.filter(function (unit) { return unit.owner !== playerID; });
         }
 
         // Cost (in "movement") of moving from coordsFrom to coordsTo
         tileMovementCost(coordsFrom : number[], coordsTo : number[], bonuses : {[name : string] : number}) : number {
             var cost : number, tileTo : Tile;
 
-            tileTo = game.getTile(coordsTo, -1);
+            tileTo = this.game.getTile(coordsTo, -1);
 
             // Short circuit check for move bonuses
             if (tileTo.features.indexOf("hills") >= 0 && bonuses.hasOwnProperty("doubleMovementHills") && bonuses["doubleMovementHills"] > 0) {
@@ -209,7 +214,7 @@ module MapMaker {
         }
     }
 
-    function initLastSeenState() {
+    function initLastSeenState(game : Game) {
         var i : number, lastSeenState  : LastSeenState[];
 
         lastSeenState = [];
@@ -222,10 +227,10 @@ module MapMaker {
     }
 
     export class TotallyRandom extends Map {
-        constructor(rows : number, cols : number) {
+        constructor(game : Game, rows : number, cols : number) {
             var i : number, j : number, types: {[terrain : string] : string[]};
 
-            super();
+            super(game);
 
             this.cols = cols !== undefined ? cols : 80;
             this.rows = rows !== undefined ? rows : 40;
@@ -250,7 +255,7 @@ module MapMaker {
                         features: [],
                         units: [],
                         city: null,
-                        lastSeenState: initLastSeenState()
+                        lastSeenState: initLastSeenState(this.game)
                     };
                     if (Math.random() < 0.5 && types[this.tiles[i][j].terrain].length > 0) {
                         this.tiles[i][j].features.push(Random.choice(types[this.tiles[i][j].terrain]));
@@ -261,10 +266,10 @@ module MapMaker {
     }
 
     export class BigIsland extends Map {
-        constructor(rows : number, cols : number) {
+        constructor(game : Game, rows : number, cols : number) {
             var ci : number, cj : number, i : number, j : number, r : number, types: {[terrain : string] : string[]};
 
-            super();
+            super(game);
 
             this.rows = rows !== undefined ? rows : 40;
             this.cols = cols !== undefined ? cols : 80;
@@ -287,7 +292,7 @@ module MapMaker {
                             features: [],
                             units: [],
                             city: null,
-                            lastSeenState: initLastSeenState()
+                            lastSeenState: initLastSeenState(this.game)
                         };
 
                         // Features
@@ -303,7 +308,7 @@ module MapMaker {
                             features: [],
                             units: [],
                             city: null,
-                            lastSeenState: initLastSeenState()
+                            lastSeenState: initLastSeenState(this.game)
                         };
                     }
                 }

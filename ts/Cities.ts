@@ -6,22 +6,25 @@ module Cities {
         id : number; // Unique, incrementing
         owner : number;
         coords : number[];
+        game : Game;
 
-        constructor(owner : number, coords : number[]) {
+        constructor(game : Game, owner : number, coords : number[]) {
             var i : number, tile : MapMaker.Tile;
 
-            this.id = game.maxId;
-            game.maxId += 1;
+            this.game = game;
+
+            this.id = this.game.maxId;
+            this.game.maxId += 1;
 
             this.owner = owner;
 
             // Set coordinates of city and put a reference to the city in the map
             this.coords = coords;
-            tile = game.getTile(coords, -1);
+            tile = this.game.getTile(coords, -1);
             tile.city = this;
 
             // Store reference to unit in game.units
-            game.cities[this.owner][this.id] = this;
+            this.game.cities[this.owner][this.id] = this;
 
             // If tile contains forest or jungle, get rid of it
             if (tile.features.indexOf("forest") >= 0) {
@@ -41,12 +44,12 @@ module Cities {
         }
 
         capture(newOwner : number) {
-            game.cities[newOwner][this.id] = this;
-            delete game.cities[this.owner][this.id];
+            this.game.cities[newOwner][this.id] = this;
+            delete this.game.cities[this.owner][this.id];
             this.owner = newOwner;
 
             if (this.owner === config.USER_ID && game.result === "inProgress") {
-                game.result = "won";
+                this.game.result = "won";
                 chromeUI.showModal("won");
                 if (ga) { ga("send", "event", "Game", "Won"); }
             }

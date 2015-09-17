@@ -102,9 +102,9 @@ class MapUI {
 
             if (path && path.length > 1) {
                 // See if the path ends at an enemy unit. If so, display combat info.
-                units = Combat.findBestDefender(game.activeUnit, path[path.length - 1], true);
+                units = Combat.findBestDefender(game, game.activeUnit, path[path.length - 1], true);
                 if (units.defender) {
-                    battle = new Combat.Battle(units.attacker, units.defender);
+                    battle = new Combat.Battle(game, units.attacker, units.defender);
                     if (showMoveNumbers) { // Only for real paths, not paths drawn between fighting units
                         chromeUI.onHoverMoveEnemy(battle);
                     }
@@ -315,7 +315,7 @@ class MapUI {
                 // Show units on tile
                 units = tile.units;
                 if (units.length > 0) {
-                    unit = Units.findBestUnitInStack(units);
+                    unit = Units.findBestUnitInStack(game, units);
 
                     if (unit.owner === config.BARB_ID) {
                         unitImage = assets["black" + unit.type];

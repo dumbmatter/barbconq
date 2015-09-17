@@ -1,5 +1,9 @@
 # New
 
+get rid of global variables, will make testing individual components easier
+
+separate non-ui and ui code better
+
 better plan for testing
   should be able to unit test individual module, without having to load app.ts and index.html
 

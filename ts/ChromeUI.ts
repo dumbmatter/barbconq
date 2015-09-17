@@ -87,7 +87,7 @@ class ChromeUI {
 
             if (tile.units.length > 0) {
                 // Show best unit in stack first, with its bonuses
-                topUnit = Units.findBestUnitInStack(tile.units);
+                topUnit = Units.findBestUnitInStack(game, tile.units);
                 content += this.hoverBoxUnitSummary(topUnit, true);
 
                 // Show other units in stack, without bonuses
