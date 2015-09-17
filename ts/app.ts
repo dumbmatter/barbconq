@@ -69,10 +69,9 @@ function loadAssets(assetsToLoad : {[name: string] : string}, cb : () => void) {
     }
 }
 
-console.log(assets);
 if (!TESTING) {
     // Start all as dummy for controller, so controller does not get initialized twice when another new game is started
-    game = new Game("N/A");
+    game = new Game("N/A", config);
     game.map = new MapMaker.BigIsland(game, 20, 40);
     chromeUI = new ChromeUI();
     mapUI = new MapUI();
@@ -83,18 +82,18 @@ var u1;
 function init(difficulty : string) {
     var i : number, j : number, placedCity : boolean, r : number, theta : number, tile : MapMaker.Tile, u : string;
 
-    game = new Game(difficulty);
+    game = new Game(difficulty, config);
     game.map = new MapMaker.BigIsland(game, 20, 40);
     mapUI = new MapUI();
 
-//new Units.Group(game, config.USER_ID, [new Units.Chariot(game, config.USER_ID, [10, 20]), new Units.Chariot(game, config.USER_ID, [10, 20])]);
+//new Units.Group(game, game.config.USER_ID, [new Units.Chariot(game, game.config.USER_ID, [10, 20]), new Units.Chariot(game, game.config.USER_ID, [10, 20])]);
 
-//u1 = new Units.Scout(game, config.USER_ID, [10, 20]);
+//u1 = new Units.Scout(game, game.config.USER_ID, [10, 20]);
 //u1.promotions.push("drill1");
 //u1.promotions.push("drill2");
 //u1.xp += 400;
-//var u = new Units.Scout(game, config.BARB_ID, [9, 21]);
-//new Cities.City(game, config.BARB_ID, [10, 21]);
+//var u = new Units.Scout(game, game.config.BARB_ID, [9, 21]);
+//new Cities.City(game, game.config.BARB_ID, [10, 21]);
 
     // Place landing party on the leftmost land tile of middle row
     i = Math.floor(game.map.rows / 2);
@@ -103,19 +102,19 @@ function init(difficulty : string) {
             break;
         }
     }
-    new Units.Scout(game, config.USER_ID, [i, j]);
-    new Units.Warrior(game, config.USER_ID, [i, j]);
-    new Units.Archer(game, config.USER_ID, [i, j]);
-    new Units.Chariot(game, config.USER_ID, [i, j]);
-    new Units.Spearman(game, config.USER_ID, [i, j]);
-    new Units.Axeman(game, config.USER_ID, [i, j]);
+    new Units.Scout(game, game.config.USER_ID, [i, j]);
+    new Units.Warrior(game, game.config.USER_ID, [i, j]);
+    new Units.Archer(game, game.config.USER_ID, [i, j]);
+    new Units.Chariot(game, game.config.USER_ID, [i, j]);
+    new Units.Spearman(game, game.config.USER_ID, [i, j]);
+    new Units.Axeman(game, game.config.USER_ID, [i, j]);
 
     // Set unit XP based on difficulty setting
-    for (u in game.units[config.USER_ID]) {
+    for (u in game.units[game.config.USER_ID]) {
         if (game.difficulty === "easy") {
-            game.units[config.USER_ID][u].xp = 5;
+            game.units[game.config.USER_ID][u].xp = 5;
         } else if (game.difficulty === "medium") {
-            game.units[config.USER_ID][u].xp = 2;
+            game.units[game.config.USER_ID][u].xp = 2;
         }
     }
 
@@ -133,11 +132,11 @@ function init(difficulty : string) {
         // If this tile is on land, place city
         tile = game.getTile([i, j], -1);
         if (tile.terrain !== "sea") {
-            new Cities.City(game, config.BARB_ID, [i, j]);
+            new Cities.City(game, game.config.BARB_ID, [i, j]);
 
             // Depending on difficulty, set initial city defense
             if (game.difficulty === "medium" || game.difficulty === "hard") {
-                new Units.Archer(game, config.BARB_ID, [i, j]);
+                new Units.Archer(game, game.config.BARB_ID, [i, j]);
             }
 
             // Depending on difficulty, set on hill or not

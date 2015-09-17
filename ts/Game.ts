@@ -15,11 +15,13 @@ class Game {
     nextPlayerAfterTargetCoordsDone : boolean = false; // Set to true when a turn is ended early
     numPlayers : number = 2; // 1 user, 1 barb. Anything else is unsupported now.
     difficulty : string; // "easy", "medium", or "hard"
+    config : any;
 
-    constructor(difficulty : string) {
+    constructor(difficulty : string, config : any) {
         var i : number;
 
         this.difficulty = difficulty;
+        this.config = config;
 
         // + 1 is for barbarians at index 0
         for (i = 0; i < this.numPlayers; i++) {
@@ -40,7 +42,7 @@ class Game {
     //   Default is -2, which will use the current active player in game.turnID.
     //   -1 will force the true base tile to be returned regardless of visibility, like for altering units on tile
     //   Anything >=0 is a player ID number
-    // See also config.DISABLE_FOG_OF_WAR
+    // See also this.config.DISABLE_FOG_OF_WAR
     getTile(coords : number[], playerID : number = -2) : MapMaker.Tile {
         var i : number, j : number;
 
@@ -53,7 +55,7 @@ class Game {
         j = coords[1];
 
         if (this.map.validCoords(coords)) {
-            if (playerID === -1 || config.DISABLE_FOG_OF_WAR) {
+            if (playerID === -1 || this.config.DISABLE_FOG_OF_WAR) {
                 // Forced to get real tile
                 return this.map.tiles[i][j];
             }
@@ -94,21 +96,21 @@ class Game {
         chromeUI.onNewTurn();
 
         // Randomly spawn barbs on non-visible tiles - works because barbs are turnID=0
-        if (game.difficulty === "easy") {
+        if (this.difficulty === "easy") {
             unitTypes = ["Scout", "Warrior", "Archer", "Spearman"];
-        } else if (game.difficulty === "medium") {
+        } else if (this.difficulty === "medium") {
             unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman"];
-        } else if (game.difficulty === "hard") {
+        } else if (this.difficulty === "hard") {
             unitTypes = ["Scout", "Warrior", "Archer", "Chariot", "Spearman", "Axeman"];
         }
         for (i = 0; i < this.map.rows; i++) {
             for (j = 0; j < this.map.cols; j++) {
-                if (!this.map.visibility[config.USER_ID][i][j] && Math.random() < config.BARB_SPAWN_ODDS) {
+                if (!this.map.visibility[this.config.USER_ID][i][j] && Math.random() < this.config.BARB_SPAWN_ODDS) {
                     tile = this.getTile([i, j], -1);
 
                     // Spawn land unit
                     if (tile.terrain === "snow" || tile.terrain === "desert" || tile.terrain === "tundra" || tile.terrain === "grassland" || tile.terrain === "plains") {
-                        new Units[Random.choice(unitTypes)](game, config.BARB_ID, [i, j]);
+                        new Units[Random.choice(unitTypes)](this, this.config.BARB_ID, [i, j]);
                     }
                 }
             }
@@ -199,7 +201,7 @@ class Game {
 
         i = this.turnID;
 
-        if (i === config.USER_ID) {
+        if (i === this.config.USER_ID) {
             // User
 
             // UNIT GROUPS
@@ -254,14 +256,14 @@ class Game {
             chromeUI.onMovesDone();
             mapUI.render();
             return false;
-        } else if (i === config.BARB_ID) {
+        } else if (i === this.config.BARB_ID) {
             chromeUI.onAIMoving();
 
             // INDIVIDUAL UNITS
             for (j in this.units[i]) {
                 unit = this.units[i][j];
                 if (unit.currentMovement > 0 && !unit.skippedTurn) {
-                    centerViewport = !(game.activeUnit && game.activeUnit.id === unit.id); // Don't center viewport if unit is already active (multi-move)
+                    centerViewport = !(this.activeUnit && this.activeUnit.id === unit.id); // Don't center viewport if unit is already active (multi-move)
                     unit.activate(centerViewport);
 
                     setTimeout(() => {
@@ -273,7 +275,7 @@ class Game {
 
             // If we made it this far, all of the barbarian units have moved
             chromeUI.onAIMovingDone();
-            game.nextPlayer();
+            this.nextPlayer();
             return false;
         } else {
             // Should auto-move non-barb AI units here

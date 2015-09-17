@@ -1,11 +1,17 @@
 # New
 
+Game.config shouldn't be any, should also have defaults
+
 get rid of global variables, will make testing individual components easier
 
 separate non-ui and ui code better
+  how should Game send a signal to chromeUI? pubsub?
+    node_modules/.bin/tsd query pubsub
 
 better plan for testing
   should be able to unit test individual module, without having to load app.ts and index.html
+
+import howler and easystar in typescript, similar to unit test include of chai
 
 render loop
 

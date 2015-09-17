@@ -49,7 +49,7 @@ class Controller {
             return true;
         }
 
-        if (game.turnID !== config.USER_ID) {
+        if (game.turnID !== game.config.USER_ID) {
             return true;
         }
 
@@ -294,7 +294,7 @@ class Controller {
                 if (coords[0] !== this.hoveredTile[0] || coords[1] !== this.hoveredTile[1]) {
                     // Only update if new tile
                     this.hoveredTile = coords;
-                    chromeUI.onHoverTile(game.getTile(this.hoveredTile, config.USER_ID));
+                    chromeUI.onHoverTile(game.getTile(this.hoveredTile, game.config.USER_ID));
                 }
             } else {
                 // Not over tile, over some other part of the canvas
@@ -317,7 +317,7 @@ class Controller {
             coords = mapUI.pixelsToCoords(e.layerX, e.layerY);
 
             if (game.map.validCoords(coords)) {
-                units = game.getTile(coords, config.USER_ID).units;
+                units = game.getTile(coords, game.config.USER_ID).units;
 
                 // Find the strongest unit with moves left
                 maxMetric = -Infinity;
@@ -327,7 +327,7 @@ class Controller {
                     if (units[i].currentMovement > 0) { currentMetric += 100; }
                     if (units[i].active || (units[i].group && units[i].group.active)) { currentMetric += 1000; }
 
-                    if (currentMetric > maxMetric && units[i].owner === config.USER_ID) { // Only select user's units
+                    if (currentMetric > maxMetric && units[i].owner === game.config.USER_ID) { // Only select user's units
                         unit = units[i];
                         maxMetric = currentMetric;
                     }
@@ -336,10 +336,10 @@ class Controller {
                 if (unit) {
                     if (e.altKey) { // In GNOME, alt+click is captured for window dragging, but alt+ctrl+click works for this
                         // Create group of all units on tile with moves and activate it
-                        Units.addUnitsToNewGroup(game, config.USER_ID, units);
+                        Units.addUnitsToNewGroup(game, game.config.USER_ID, units);
                     } else if (e.ctrlKey) {
                         // Create group of all units on tile with moves and same type as top unit and activate it
-                        Units.addUnitsWithTypeToNewGroup(game, config.USER_ID, units, unit.type);
+                        Units.addUnitsWithTypeToNewGroup(game, game.config.USER_ID, units, unit.type);
                     } else {
                         // Normal left click: select top unit or group
                         if (unit.group) {
@@ -408,7 +408,7 @@ class Controller {
             if (this.preventUserInput()) { return; }
 
             if (e.keyCode === this.KEYS.ENTER) {
-                if (game.turnID === config.USER_ID) {
+                if (game.turnID === game.config.USER_ID) {
                     // With shift pressed, end turn early. Otherwise, make sure no units are waiting
                     // for orders.
                     // See equivalent code in end turn button click handler
@@ -430,7 +430,7 @@ class Controller {
 
             if (this.preventUserInput()) { return; }
 
-            if (game.turnID === config.USER_ID) {
+            if (game.turnID === game.config.USER_ID) {
                 // See equivalent code in shift+enter handler
                 unitsWaiting = game.moveUnits();
                 if (unitsWaiting) {
@@ -471,7 +471,7 @@ class Controller {
                 clickedSid = el.dataset.gid !== undefined ? parseInt(el.dataset.gid, 10) : null;
 
                 // Only continue if clicked unit belongs to player
-                if (clickedOwner !== config.USER_ID) {
+                if (clickedOwner !== game.config.USER_ID) {
                     return;
                 }
 
@@ -481,7 +481,7 @@ class Controller {
                 }
 
                 // List of all units on the tile
-                units = game.getTile(game.activeUnit.coords, config.USER_ID).units;
+                units = game.getTile(game.activeUnit.coords, game.config.USER_ID).units;
 
                 // Handle all the different key modifiers
                 if (e.altKey) { // In GNOME, alt+click is captured for window dragging, but alt+ctrl+click works for this

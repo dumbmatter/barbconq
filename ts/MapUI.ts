@@ -110,7 +110,7 @@ class MapUI {
                     }
                 } else if (!game.activeUnit.canAttack) {
                     // If this is a unit that can't attack and there is a defender on the target tile, can't move there
-                    if (game.getTile(path[path.length - 1]).units.length > 0 && game.getTile(path[path.length - 1]).units[0].owner === config.BARB_ID) {
+                    if (game.getTile(path[path.length - 1]).units.length > 0 && game.getTile(path[path.length - 1]).units[0].owner === game.config.BARB_ID) {
                         return;
                     }
                 }
@@ -276,7 +276,7 @@ class MapUI {
             drawViewport(function (i : number, j : number, x : number, y : number) {
                 var cityImage : HTMLImageElement, tile : MapMaker.Tile, unit : Units.Unit, unitImage : HTMLImageElement, units : Units.Unit[];
 
-                tile = game.getTile([i, j], config.USER_ID);
+                tile = game.getTile([i, j], game.config.USER_ID);
 
                 // Background
                 this.context.fillStyle = this.terrainColors[tile.terrain];
@@ -297,14 +297,14 @@ class MapUI {
                 this.context.strokeRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
 
                 // Shadow for non-visible tiles?
-                if (!game.map.visibility[config.USER_ID][i][j] && tile.terrain !== "unseen") {
+                if (!game.map.visibility[game.config.USER_ID][i][j] && tile.terrain !== "unseen") {
                     this.context.fillStyle = this.terrainColors.shadow;
                     this.context.fillRect(x * this.TILE_SIZE - tileOffsetX, y * this.TILE_SIZE - tileOffsetY, this.TILE_SIZE, this.TILE_SIZE);
                 }
 
                 // Show city on tile
                 if (tile.city) {
-                    if (tile.city.owner === config.USER_ID) {
+                    if (tile.city.owner === game.config.USER_ID) {
                         cityImage = assets.cityCaptured;
                     } else {
                         cityImage = assets.city;
@@ -317,7 +317,7 @@ class MapUI {
                 if (units.length > 0) {
                     unit = Units.findBestUnitInStack(game, units);
 
-                    if (unit.owner === config.BARB_ID) {
+                    if (unit.owner === game.config.BARB_ID) {
                         unitImage = assets["black" + unit.type];
                     } else {
                         unitImage = assets["white" + unit.type];
@@ -327,7 +327,7 @@ class MapUI {
                     // Text about other units
                     if (units.length > 1) {
                         this.context.font = "10px 'Helvetica Neue', Helvetica, Arial, sans-serif";
-                        this.context.fillStyle = unit.owner === config.BARB_ID ? "#000" : "#fff";
+                        this.context.fillStyle = unit.owner === game.config.BARB_ID ? "#000" : "#fff";
                         this.context.textAlign = "center";
                         this.context.textBaseline = "alphabetic";
                         this.context.fillText("+" + (units.length - 1) + " more", x * this.TILE_SIZE - tileOffsetX + this.TILE_SIZE / 2 - 2, y * this.TILE_SIZE - tileOffsetY + 66);
@@ -371,7 +371,7 @@ class MapUI {
                 // Highlight active battle
                 this.drawPath([game.activeBattle.units[0].coords, game.activeBattle.units[1].coords], false, true, false)
             }
-            if (game.activeUnit && game.activeUnit.owner === config.USER_ID) {
+            if (game.activeUnit && game.activeUnit.owner === game.config.USER_ID) {
                 // Highlight active unit
                 x = game.activeUnit.coords[1] - leftTile;
                 y = game.activeUnit.coords[0] - topTile;
@@ -419,12 +419,12 @@ class MapUI {
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
                 // Background
-                tile = game.getTile([i, j], config.USER_ID);
+                tile = game.getTile([i, j], game.config.USER_ID);
                 this.miniContext.fillStyle = this.terrainColors[tile.terrain];
                 this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
 
                 // Shadow for non-visible tiles?
-                if (!game.map.visibility[config.USER_ID][i][j] && tile.terrain !== "unseen") {
+                if (!game.map.visibility[game.config.USER_ID][i][j] && tile.terrain !== "unseen") {
                     this.miniContext.fillStyle = this.terrainColors.shadow;
                     this.miniContext.fillRect(j * this.miniTileSize, i * this.miniTileSize, this.miniTileSize, this.miniTileSize);
                 }
@@ -434,7 +434,7 @@ class MapUI {
         // Second pass: highlight
         for (i = 0; i < game.map.rows; i++) {
             for (j = 0; j < game.map.cols; j++) {
-                tile = game.getTile([i, j], config.USER_ID);
+                tile = game.getTile([i, j], game.config.USER_ID);
 
                 // Show city on tile
                 if (tile.city) {

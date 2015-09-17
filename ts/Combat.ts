@@ -344,7 +344,7 @@ module Combat {
             this.loser = j === 0 ? "attacker" : "defender";
 
             // Play sound and show event
-            if (this.units[i].owner === config.USER_ID) {
+            if (this.units[i].owner === this.game.config.USER_ID) {
                 assets.battleWon.play();
                 chromeUI.eventLog("Your " + this.units[i].type + " killed a barbarian " + this.units[j].type + ".", "good");
             } else {
@@ -382,7 +382,7 @@ module Combat {
                 // Check for withdrawal, if it's not a first strike and it would kill the loser
                 if (this.firstStrikes[i] === 0 && newHP === 0 && this.appliedBonuses[j].hasOwnProperty("retreat") && 100 * Math.random() < this.appliedBonuses[j]["retreat"]) {
                     // Show event
-                    if (this.units[j].owner === config.USER_ID) {
+                    if (this.units[j].owner === this.game.config.USER_ID) {
                         chromeUI.eventLog("Your " + this.units[j].type + " withdrew from combat with a " + this.units[i].type + ".", "good");
                     } else {
                         chromeUI.eventLog("A " + this.units[i].type + " withdrew from combat with your " + this.units[j].type + ".", "bad");
@@ -421,7 +421,7 @@ module Combat {
 
                     cb();
                 }
-            }.bind(this), includeAnimationDelays ? config.BATTLE_ROUND_UI_DELAY : 0);
+            }.bind(this), includeAnimationDelays ? this.game.config.BATTLE_ROUND_UI_DELAY : 0);
 //console.log("END HIT ANIMATION");
         }
 
@@ -442,7 +442,7 @@ console.log(this.firstStrikes);*/
 
                 // Simulate the fight
                 this.simRounds(cb, includeAnimationDelays);
-            }.bind(this), includeAnimationDelays ? config.BATTLE_ROUND_UI_DELAY : 0);
+            }.bind(this), includeAnimationDelays ? this.game.config.BATTLE_ROUND_UI_DELAY : 0);
             assets.battleStart.play();
         }
     }

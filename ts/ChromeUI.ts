@@ -332,7 +332,7 @@ class ChromeUI {
         this.elBottomInfo.innerHTML = "";
         this.elBottomUnits.innerHTML = "";
 
-        if (game.activeUnit && game.activeUnit.owner === config.USER_ID) {
+        if (game.activeUnit && game.activeUnit.owner === game.config.USER_ID) {
             // Update bottom-info
             if (activeUnit instanceof Units.Unit) {
                 content = '';
@@ -392,7 +392,7 @@ class ChromeUI {
             this.updateActiveUnitActions();
 
             // Update bottom-units
-            units = game.getTile(game.activeUnit.coords, config.USER_ID).units;
+            units = game.getTile(game.activeUnit.coords, game.config.USER_ID).units;
             for (i = 0; i < units.length; i++) {
                 this.elBottomUnits.appendChild(this.unitIcon(units[i]));
             }
